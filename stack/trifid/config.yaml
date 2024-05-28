@@ -1,0 +1,51 @@
+template:
+  title: Demo Trifid instance
+
+globals:
+  datasetBaseUrl: env:DATASET_BASE_URL
+  sparqlEndpoint:
+    url: env:SPARQL_ENDPOINT_URL
+    username: env:SPARQL_USERNAME
+    password: env:SPARQL_PASSWORD
+
+middlewares:
+  morgan:
+    module: trifid/middlewares/morgan.js
+    order: 0
+
+  entity-renderer:
+    module: "@zazuko/trifid-renderer-entity"
+    config:
+      labelLoader:
+        chunkSize: 30
+        concurrency: 2
+        timeout: 4000
+
+  yasgui:
+    module: trifid-plugin-yasgui
+    paths: /sparql
+    config:
+      urlShortener: https://s.zazuko.com/api/v1/shorten
+
+  graph-explorer:
+    module: trifid-plugin-graph-explorer
+    paths: /graph-explorer
+
+  spex:
+    module: trifid-plugin-spex
+    paths: /spex
+
+  sparql-proxy:
+    module: "@zazuko/trifid-plugin-sparql-proxy"
+    paths: /query
+    config:
+      queryOperation: postQueryUrlencoded
+      rewriteQueries: true
+
+  sparql-handler:
+    module: trifid-handler-sparql
+    config:
+      resourceExistsQuery: "ASK { GRAPH ?g { <${iri}> ?p ?o }}"
+      resourceGraphQuery: "#pragma describe.strategy cbd\nDESCRIBE <${iri}>"
+      containerExistsQuery: "ASK { GRAPH ?g { <${iri}> ?p ?o }}"
+      containerGraphQuery: "#pragma describe.strategy cbd\nDESCRIBE <${iri}>"

@@ -1,0 +1,21 @@
+.grid {
+    width: 100%;
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 210px);
+    grid-auto-rows: 194px;
+    grid-gap: 12px;
+}
+
+.total {
+    font-size: 13px;
+    color: var(--quaternary-contrast);
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}

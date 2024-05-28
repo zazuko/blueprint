@@ -1,0 +1,68 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop>
+   rdf:type <https://k8s.described.at/Cluster> ;
+   rdfs:label "docker-desktop" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/default>
+   rdf:type <https://k8s.described.at/Namespace> ;
+   rdfs:label "default" ;
+   <https://k8s.described.at/cluster> <http://127.0.0.1:8080/k8s/cluster/docker-desktop> ;
+   <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/default/label/kubernetes.io/metadata.name> .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/default/label/kubernetes.io/metadata.name>
+   rdf:type <https://k8s.described.at/Label> ;
+   rdf:value "default" ;
+   rdfs:label "kubernetes.io/metadata.name" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-node-lease>
+   rdf:type <https://k8s.described.at/Namespace> ;
+   rdfs:label "kube-node-lease" ;
+   <https://k8s.described.at/cluster> <http://127.0.0.1:8080/k8s/cluster/docker-desktop> ;
+   <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-node-lease/label/kubernetes.io/metadata.name> .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-node-lease/label/kubernetes.io/metadata.name>
+   rdf:type <https://k8s.described.at/Label> ;
+   rdf:value "kube-node-lease" ;
+   rdfs:label "kubernetes.io/metadata.name" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-public>
+   rdf:type <https://k8s.described.at/Namespace> ;
+   rdfs:label "kube-public" ;
+   <https://k8s.described.at/cluster> <http://127.0.0.1:8080/k8s/cluster/docker-desktop> ;
+   <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-public/label/kubernetes.io/metadata.name> .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-public/label/kubernetes.io/metadata.name>
+   rdf:type <https://k8s.described.at/Label> ;
+   rdf:value "kube-public" ;
+   rdfs:label "kubernetes.io/metadata.name" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system>
+   rdf:type <https://k8s.described.at/Namespace> ;
+   rdfs:label "kube-system" ;
+   <https://k8s.described.at/cluster> <http://127.0.0.1:8080/k8s/cluster/docker-desktop> ;
+   <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/label/kubernetes.io/metadata.name> .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/label/kubernetes.io/metadata.name>
+   rdf:type <https://k8s.described.at/Label> ;
+   rdf:value "kube-system" ;
+   rdfs:label "kubernetes.io/metadata.name" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns>
+   rdf:type <https://k8s.described.at/Deployment> ;
+   rdfs:label "coredns" ;
+   <https://k8s.described.at/annotation> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/annotation/deployment.kubernetes.io/revision> ;
+   <https://k8s.described.at/image> <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.9.3> ;
+   <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/label/k8s-app> ;
+   <https://k8s.described.at/namespace> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system> .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/label/k8s-app>
+   rdf:type <https://k8s.described.at/Label> ;
+   rdf:value "kube-dns" ;
+   rdfs:label "k8s-app" .
+<http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/annotation/deployment.kubernetes.io/revision>
+   rdf:type <https://k8s.described.at/Annotation> ;
+   rdf:value "1" ;
+   rdfs:label "deployment.kubernetes.io/revision" .
+<http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.9.3>
+   rdf:type <https://oci.described.at/Image> ;
+   rdfs:label "registry.k8s.io/coredns/coredns:v1.9.3" ;
+   <https://oci.described.at/repository> <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns> .
+<http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns>
+   rdf:type <https://oci.described.at/Repository> ;
+   rdfs:label "registry.k8s.io/coredns/coredns" ;
+   <https://oci.described.at/registry> <http://127.0.0.1:8080/oci/registry.k8s.io> .
+<http://127.0.0.1:8080/oci/registry.k8s.io>
+   rdf:type <https://oci.described.at/Registry> ;
+   rdfs:label "registry.k8s.io" .

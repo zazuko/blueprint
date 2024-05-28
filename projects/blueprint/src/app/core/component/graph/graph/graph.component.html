@@ -1,0 +1,45 @@
+<!-- set with and hight to svgHeight and svgWidth-->
+<div class="graph-component" [style.width.px]="svgWidth" [style.height.px]="svgHeight">
+
+  <!-- the graph svg -->
+  <svg [attr.width]="svgWidth" [attr.height]="svgHeight" [attr.viewBox]="'0 0 ' + svgWidth + ' ' + svgHeight"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" class="graph-panel">
+    <g [attr.transform]="'translate(' + xOffset + ', ' + yOffset + ')'">
+      <g class="zoomable">
+        <!-- links -->
+        <g class="link-layer">
+          @for(link of linksSignal(); track link.id) {
+          <g bp-arrow [x1]="link.source.x" [y1]="link.source.y" [x2]="link.target.x" [y2]="link.target.y" [link]="link"
+            (multiLinkSelected)="onMultiLinkSelected($event)" (click)="onLinkSelected(link)"></g>
+          }
+        </g>
+        <!-- nodes -->
+        <g class="node-layer">
+          @for(node of nodesSignal(); track node.id) {
+          <g bp-node fluxDraggable [node]="node" [disableMenu]="disableNodeMenu()"
+            [color]="colorForNode(node.colorIndex)" [isSelected]="node.id === selectedSubject"
+            (dragStartEvent)="dragStart($event, node)" (dragEvent)="drag($event, node)"
+            (dragEndEvent)="dragEnd($event, node)" (nodeSelected)="emitNodeSelected($event)"
+            (nodeExpanded)="emitNodeExpanded($event)" (nodeFocused)="emitNodeFocused($event)"></g>
+          }
+        </g>
+
+      </g>
+    </g>
+  </svg>
+
+  @if(!disableZoomMenu()) {
+  <div class="tool-bar">
+
+    <!-- the zoom menu -->
+
+    <p-button icon="pi pi-search-plus" [rounded]="true" [outlined]="true" aria-label="Zoom in" (click)="onZoomIn()" />
+
+    <p-button icon="pi pi-search-minus" [rounded]="true" [outlined]="true" aria-label="Zoom out"
+      (click)="onZoomOut()" />
+
+    <!-- end zoom menu -->
+  </div>
+  }
+
+</div>

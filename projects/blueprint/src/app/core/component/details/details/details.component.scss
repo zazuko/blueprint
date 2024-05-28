@@ -1,0 +1,49 @@
+.details-container {
+  --padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+
+  height: calc(100vh - 150px);
+  max-height: calc(100vh - 150px);
+
+  --flex-shrink: 0;
+
+  .details-content {
+    --padding: 0 0 0 16px;
+  }
+
+  .sticky {
+    padding: 0 10px 0 0;
+    flex: 0 1 auto;
+  }
+
+  .scrollable {
+    padding: 0 10px 0 0;
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+
+  .detail-label {
+    color: #007b91;
+    font-weight: 700;
+    font-size: 24px;
+    --line-height: 30px;
+    text-align: left;
+  }
+
+  .detail-comment {
+    --margin-top: 5px;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+}
+
+.details-list {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}

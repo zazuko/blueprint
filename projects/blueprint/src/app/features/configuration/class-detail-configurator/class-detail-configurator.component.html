@@ -1,0 +1,63 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs()">
+    @if(classMetadataSignal()) {
+    <div style="display:flex; flex-direction: row; align-items: center;">
+        <bp-avatar [avatars]="avatars()" />
+        <div>
+            <h1>{{className}}</h1>
+            <div class="small">&lt;{{id}}&gt;</div>
+        </div>
+    </div>
+
+
+    <p>Detail configuration for class {{className}}.</p>
+
+    <h2>Props</h2>
+    <button (click)="getProps()">Get Props</button>
+
+    <h2>Select Predicates</h2>
+    <div style="display: flex; flex-direction: row;">
+        <div>
+
+
+            @for(availablePredicate of availablePredicates(); track availablePredicate.iri) {
+            <div pDraggable="props" (onDragStart)="dragStart(availablePredicate)">
+                <h3>{{availablePredicate.label}}</h3>
+                <p class="small">{{availablePredicate.iri}}</p>
+            </div>
+            }
+        </div>
+
+        <div style="margin-left: 12px; border: 1px dashed white; flex-grow: 1;" pDroppable="props" (onDrop)="drop()">
+            @for(predicate of selectedPredicates(); track predicate.iri) {
+            <div>
+                <h3>{{predicate.label}}</h3>
+                <p class="small">{{predicate.iri}}</p>
+            </div>
+            }
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <h2>Configure Predicates</h2>
+    <div style="display: flex; flex-direction: row;">
+        <div>
+            @for(predicate of configuredPredicates(); track predicate.predicate.iri) {
+            <div (click)="selectPredicate(predicate.predicate)" (keyup.enter)="selectPredicate(predicate.predicate)"
+                tabindex="1">
+                <h3>{{predicate.predicate.label}}</h3>
+                <p class="small">{{predicate.predicate.iri}}</p>
+            </div>
+            }
+        </div>
+        <div style="margin-left: 12px; border: 1px dashed white; flex-grow: 1;">
+            @if(selectedPredicateSignal()) {
+            <div>
+                <h3>{{selectedPredicateSignal().label}}</h3>
+                <p class="small">{{selectedPredicateSignal().iri}}</p>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</bp-breadcrumb-page>

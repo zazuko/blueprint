@@ -1,0 +1,7 @@
+@if(breadcrumb.disabled) {
+<span>{{breadcrumb.label}}</span>
+} @else {
+<a [routerLink]="[breadcrumb.route,]">
+    {{breadcrumb.label}}
+</a>
+}

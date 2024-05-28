@@ -1,0 +1,17 @@
+table {
+    width: 100%;
+    background-color: var(--octonary-contrast);
+    color: var(--quandary-contrast);
+}
+
+.reference {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.reference:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

@@ -1,0 +1,50 @@
+@if (data && !singleLine) {
+<bp-info-section [heading]="data.label">
+  @for (l of data.literal; track l) {
+  <div class="literal">
+    @switch (l.datatype) {
+    @case ('http://www.w3.org/2001/XMLSchema#date') {
+    {{
+    l.value | date: "d.M.YYYY"
+    }}
+    }
+    @default {
+    {{ l.value }}
+    }
+    }
+  </div>
+  }
+  @if (data.literal.length === 0) {
+  <div class="unknown">(unknown)</div>
+  }
+</bp-info-section>
+}
+
+@if (data && singleLine) {
+<div class="result-item" [ngClass]="{ 'result-item-line': singleLine }">
+  <div class="result-item-content" [ngClass]="{ line: singleLine }">
+    <div class="item-label-subsection" [ngClass]="{ 'item-label-subsection-line': singleLine }">
+      {{ data.label }}
+    </div>
+    <div>
+      @for (l of data.literal; track l) {
+      <div class="literal">
+        @switch (l.datatype) {
+        @case ('http://www.w3.org/2001/XMLSchema#date') {
+        {{
+        l.value | date: "d.M.YYYY"
+        }}
+        }
+        @default {
+        {{ l.value }}
+        }
+        }
+      </div>
+      }
+      @if (data.literal.length === 0) {
+      <div class="unknown">(unknown)</div>
+      }
+    </div>
+  </div>
+</div>
+}

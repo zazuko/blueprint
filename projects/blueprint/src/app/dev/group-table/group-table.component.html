@@ -1,0 +1,30 @@
+@if(tableDataSignal() !== null) {
+
+<p-table [value]="tableDataSignal().data" sortMode="single" [scrollable]="true" scrollHeight="400px"
+    rowGroupMode="subheader" [groupRowsBy]="groupByField" [globalFilterFields]="globalFilterFieldsSignal()">
+
+    <ng-template pTemplate="header">
+        <tr>
+            @for (head of rowsHeaderSignal(); track head) {
+            <th [pSortableColumn]="head.key">{{head.label}}</th>
+            }
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="groupheader" let-row>
+        <tr pRowGroupHeader>
+            <td [attr.colspan]="rowsHeaderSignal().length">
+                <span class="font-bold ml-2">{{row[groupByField]}}</span>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+        <tr>
+            @for (head of rowsHeaderSignal(); track head) {
+            <td>{{row[head.key]}}</td>
+            }
+        </tr>
+    </ng-template>
+</p-table>
+}

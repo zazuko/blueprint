@@ -1,0 +1,22 @@
+line {
+  stroke: var(--quaternary-contrast);
+  stroke-opacity: 0.6;
+}
+
+path {
+  stroke: var(--quaternary-contrast);
+  fill: var(--quaternary-contrast);
+  stroke-opacity: 0.6;
+}
+
+.noFill {
+  fill: none;
+}
+
+.noStroke {
+  stroke: none;
+}
+
+tspan {
+  fill: var(--primary-contrast);
+}

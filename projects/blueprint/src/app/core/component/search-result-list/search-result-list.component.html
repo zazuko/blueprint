@@ -1,0 +1,17 @@
+@if(searchResult.length > 0) {
+<div class="grid">
+    @for (item of searchResult; track item.iri) {
+    <bp-search-result-item [item]="item" (selected)="emitSelected($event)" @fade />
+    }
+</div>
+}
+<div class="center total">
+    <div>
+        <span>{{searchResult.length}}</span> of <span>{{total}}</span> Items
+    </div>
+</div>
+
+@if( searchResult.length > 0 && searchResult.length < total) { <div class="center">
+    <p-button (click)="emitMore()" label="Show more" />
+    </div>
+    }

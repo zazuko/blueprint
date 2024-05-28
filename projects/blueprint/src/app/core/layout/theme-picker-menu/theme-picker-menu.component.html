@@ -1,0 +1,6 @@
+<div class="menu">
+    @for(item of menuItems; track item.label) {
+    <bp-theme-picker-menu-item [item]="item" [active]="item.theme === currentTheme()"
+        (selected)="setTheme(item.theme)" />
+    }
+</div>

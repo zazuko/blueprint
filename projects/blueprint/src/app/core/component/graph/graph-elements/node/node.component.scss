@@ -1,0 +1,77 @@
+.node-symbol {
+  cursor: pointer;
+  stroke-width: 0;
+  --transition: fill-opacity 1.2s ease;
+  // fill-opacity: 0.2;
+  fill-opacity: 1;
+
+  &--selected {
+    --stroke-dasharray: none;
+    --stroke-opacity: 1;
+    fill-opacity: 1;
+  }
+}
+
+.mouse-event-capture {
+  //  fill: white;
+  //  stroke: white;
+  opacity: 1;
+  fill: var(--octonary-contrast);
+  stroke-opacity: 0;
+  stroke-width: 40;
+}
+
+.highlight-indicator {
+  stroke-width: 3;
+  visibility: hidden;
+  fill: none;
+
+  &--active {
+    visibility: visible;
+  }
+}
+
+.menu-item-container {
+  cursor: pointer;
+
+  circle {
+    fill: #ddd;
+    stroke: none;
+  }
+
+  text {
+    text-anchor: middle;
+    dominant-baseline: central;
+    stroke: none;
+  }
+
+  &:hover {
+    circle {
+      fill: #bbb;
+    }
+  }
+}
+
+.node-label {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12pt;
+  line-height: 25px;
+  color: var(--primary-contrast);
+  fill: var(--primary-contrast);
+
+  .node-label-type,
+  .node-label-icon {
+    line-height: 12pt;
+    font-size: 10pt;
+  }
+}
+
+.node-label-bg {
+  --background-color: rgba(255, 255, 255, 0.5);
+}
+
+//.node-group {
+//}

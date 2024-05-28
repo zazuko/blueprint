@@ -1,0 +1,29 @@
+@if (filterItems?.length > 0) {
+<div class="filter-panel">
+  <div class="header">
+    <i class="pi pi-filter"></i>
+    <h2 class="title"> Filter </h2>
+  </div>
+  <div class="content">
+    <div class="filters">
+      <div class="all">
+        <p-checkbox [binary]="true" label="All" [(ngModel)]="allInclude"
+          (ngModelChange)="toggleAll($event)"></p-checkbox>
+      </div>
+      @for (filter of uiFilterItems(); track filter.iri) {
+      <div style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-bottom: 5px;
+        " @fade>
+
+        <p-checkbox [binary]="true" [(ngModel)]="filterItems[$index].include" (ngModelChange)="toggleFilter()" />
+        <bp-filter-item [icon]="filter.icon" [color]="filter.color" [label]="filter.label"
+          [count]="filter.count"></bp-filter-item>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+}

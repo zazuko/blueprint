@@ -1,0 +1,11 @@
+button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: transparent;
+    border: none;
+}
+
+mat-icon {
+    color: var(--primary-contrast);
+}

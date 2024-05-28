@@ -1,0 +1,19 @@
+{
+  "name": "trifid-instance",
+  "version": "0.0.0",
+  "description": "A demo Trifid instance",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "trifid",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "trifid": "^3.0.0-rc.3"
+  },
+  "devDependencies": {
+    "@tpluscode/eslint-config": "^0.4.3"
+  }
+}

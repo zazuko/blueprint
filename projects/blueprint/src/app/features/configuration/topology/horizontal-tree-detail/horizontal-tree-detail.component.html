@@ -1,0 +1,14 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    @if(hierarchyDefinition() !== null && hierarchyDefinition() !== undefined) {
+    @defer (when hierarchyDefinition() !== null) {
+    <h1>{{hierarchyDefinition().label}}</h1>
+    <p-tree layout="horizontal" [value]="hierarchy()">
+
+    </p-tree>
+    }
+    } @else if(hierarchyDefinition() === null) {
+    <h1>Topology</h1>
+    <p>Topology with Id {{id}} does not exist</p>
+    }
+
+</bp-breadcrumb-page>

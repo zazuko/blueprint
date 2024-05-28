@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  store:
+    image: ghcr.io/zazuko/fuseki-geosparql:v2.2.0
+    ports:
+      - 3030:3030
+    environment:
+      - ADMIN_PASSWORD=admin
+    volumes:
+      - ./fuseki/config.ttl:/fuseki/config.ttl:ro
+      - ./fuseki/shiro.ini:/opt/fuseki/shiro.ini:ro
+      - ./volumes/fuseki/:/fuseki/databases/
+
+  store-data:
+    build:
+      context: ./fuseki-data/
+      dockerfile: Dockerfile
+    restart: "no"
+    volumes:
+      - ./fuseki-data:/app/data:ro
+
+  nilea:
+    build:
+      context: ..
+      dockerfile: nilea.Dockerfile
+    volumes:
+      - ./nilea/config.json:/app/config.json:ro
+    ports:
+      - 8081:80
+
+  trifid:
+    build:
+      context: ./trifid/
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - DATASET_BASE_URL=
+      - SPARQL_ENDPOINT_URL=http://store:3030/nilea/query
+      - SPARQL_USERNAME=admin
+      - SPARQL_PASSWORD=admin

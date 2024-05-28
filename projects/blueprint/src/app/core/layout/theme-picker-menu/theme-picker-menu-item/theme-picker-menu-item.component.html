@@ -1,0 +1,5 @@
+<div class="item" (click)="onSelected()" (keydown.enter)="onSelected()" tabindex="0"
+    [ngClass]="active() ? 'active' : ''">
+    <i [ngClass]="item()?.icon"></i>
+    <span class="label">{{item().label}}</span>
+</div>

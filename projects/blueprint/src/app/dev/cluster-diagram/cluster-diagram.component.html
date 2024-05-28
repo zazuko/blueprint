@@ -1,0 +1,44 @@
+@if(treeNodeSignal() !== null) {
+<p-panel [toggleable]="true" [collapsed]="collapsed" (collapsedChange)="onCollapsedChange($event)">
+    <ng-template pTemplate="header">
+        <bp-avatar size="normal" [avatars]="treeNodeSignal().data.avatars" />
+        <div>
+            <div class="node" (click)="emitNodeSelected(treeNodeSignal().data.iri)">
+                {{treeNodeSignal().label}}</div>
+            <div>
+                @for(classLabel of treeNodeSignal().data.classLabel; track classLabel) {
+                <span>{{classLabel}}</span>
+                }
+            </div>
+
+        </div>
+    </ng-template>
+
+    @if(isExpanded()) {
+    <!-- render leaves -->
+    @if(leaveSignal().length > 0) {
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, 200px); grid-gap: 10px; margin-bottom: 20px">
+        @for(leave of leaveSignal(); track leave.key) {
+        <div class="single-element" (click)="emitNodeSelected(leave.data.iri)" [pTooltip]="leave.label">
+            <bp-avatar size="normal" [avatars]="leave.data.avatars" />
+            <div>
+                <div class="line1">{{leave.label}}</div>
+                <div class="line2">{{leave.data.classLabel}}</div>
+            </div>
+        </div>
+        }
+    </div>
+
+    }
+
+    <!-- render nodes -->
+
+    @for(node of nodeSignal(); track node.key) {
+    <bp-cluster-diagram (nodeSelected)="emitNodeSelected($event)" [data]="node" [collapsed]="true" />
+    <br>
+    }
+    }
+</p-panel>
+
+
+}

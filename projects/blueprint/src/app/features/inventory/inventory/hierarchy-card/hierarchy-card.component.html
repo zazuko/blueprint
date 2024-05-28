@@ -1,0 +1,15 @@
+<div class="card">
+
+    <div class="head">
+        <bp-avatar size="normal" [avatars]="avatars()" />
+    </div>
+
+
+    <div class="body">
+        <div class="big">{{firstLine()}}</div>
+        @if (secondLine) {
+        <div class="small">{{secondLine()}}</div>
+        }
+    </div>
+
+</div>

@@ -1,0 +1,26 @@
+$font-size: 0.875rem;
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    line-height: $font-size;
+    height: $font-size;
+}
+
+
+.separator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    line-height: $font-size;
+    height: $font-size;
+    width: calc($font-size * 1.5);
+
+    i {
+        color: oklch(70.9% 0.015 305.05);
+
+    }
+}

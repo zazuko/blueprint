@@ -1,0 +1,26 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Query Development\n\nThis notebook is intended to Develop and Test SPARQL Queries. ",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX blueprint: <https://flux.described.at/>\nCONSTRUCT {\n  ?var_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> blueprint:TreeRoot.\n  ?var_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> blueprint:TreeNode.\n  ?var_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class_0.\n  ?var_0 rdfs:label ?label_0.\n  ?var_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> blueprint:TreeNode.\n  ?var_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class_1.\n  ?var_1 rdfs:label ?label_1.\n  ?child_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> blueprint:Child.\n  ?parent_0 blueprint:child ?child_0.\n}\nWHERE {\n\n  {\n    ?parent_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization>.\n    ?child_1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person>;\n      ^<https://schema.org/member> ?parent_1.\n  }\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n    PREFIX sh: <http://www.w3.org/ns/shacl#> \n    PREFIX nileaUi: <https://zazuko.com/nilea/ui/> \n    PREFIX blueprint: <https://flux.described.at/> \n    CONSTRUCT {\n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0> a nileaUi:UiView .\n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0> nileaUi:forClass <https://k8s.described.at/Deployment> .\n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0> nileaUi:hasViewContainer  <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0/viewContainer> .\n        \n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0/viewContainer> a  nileaUi:ViewContainer . \n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0/viewContainer> sh:order 1 .\n        <https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0/viewContainer> nileaUi:hasViewComponent ?componentIri .\n        \n        ?componentIri nileaUi:hasComponentDefinition nileaUi:TreeViewComponent .\n        nileaUi:TreeViewComponent rdfs:label 'Tree'.\n        ?componentIri a nileaUi:TreeViewComponent .\n        ?componentIri  nileaUi:hasComponentData ?componentDataIri .\n        ?componentDataIri blueprint:hasRoot ?child_0 .\n      ?child_0 a blueprint:TreeRoot .\n \n       ?child_0 blueprint:instance ?subject.\n\n\n      ?subject rdfs:label ?label_0 .\n\n      ?subject  a ?class_0 .\n\n      ?child_0  blueprint:child ?child_1.\n\n     \n    }\n    \n    WHERE {\n      {\n        BIND(<https://k8s.described.at/Deployment> as ?class_0)\n?subject a ?class_0 .\n?subject rdfs:label ?label_0 .\nBIND (IRI(CONCAT(str(?subject), 'https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree/view/0-0/viewContainer'))  AS ?child_0)\n\n      }\n    }\n    ",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX blueprint: <https://flux.described.at/>\nCONSTRUCT {\n  <https://ld.flux.zazuko.com/blueprint/app/BusinessObjectToDatabaseSchemaLink> blueprint:result <https://ld.flux.zazuko.com/blueprint/app/BusinessObjectToDatabaseSchemaLink/0>.\n  <https://ld.flux.zazuko.com/blueprint/app/BusinessObjectToDatabaseSchemaLink/0> rdf:type blueprint:CompositionLinkResult.\n  <https://ld.flux.zazuko.com/blueprint/app/BusinessObjectToDatabaseSchemaLink/0> blueprint:result ?result.\n  <https://ld.flux.zazuko.com/blueprint/app/BusinessObjectToDatabaseSchemaLink/0> rdfs:label \"Sotred Business Objects\".\n  ?result ?resultP ?resultO.\n  ?element_0_1 ?connectionPointP ?connectionPointO.\n  ?element_0_1 rdf:type blueprint:ConnectionPoint.\n}\nWHERE {\n  <http://data.table.org/wiski-db/stationsattribute/stationsnummer> rdf:type <http://schema.table.org/Column>;\n    ^<http://example.org/ea/assignment> ?element_0_1.\n  VALUES ?connectionPointP {\n    rdfs:label\n    rdf:type\n  }\n  ?element_0_1 ?connectionPointP ?connectionPointO;\n    rdf:type <http://example.org/ea/Attribute>;\n    ^<http://example.org/ea/assignment> ?result.\n  ?result rdf:type <http://example.org/ea/BusinessObject>.\n  VALUES ?resultP {\n    rdf:type\n    rdfs:label\n  }\n  ?result ?resultP ?resultO.\n}",
+    "metadata": {}
+  }
+]

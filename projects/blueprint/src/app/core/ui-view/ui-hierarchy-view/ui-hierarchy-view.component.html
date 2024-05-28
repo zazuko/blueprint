@@ -1,0 +1,5 @@
+@if(elementsSignal().length > 0) {
+@defer (when elementsSignal().length > 0) {
+<bp-hierarchy [hierarchy]="elementsSignal()" [label]="labelSignal()" (nodeSelected)="emitNodeSelected($event)" />
+}
+}

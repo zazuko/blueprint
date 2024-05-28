@@ -1,0 +1,18 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    @if(hierarchyDefinition() !== null && hierarchyDefinition() !== undefined) {
+    @defer (when hierarchyDefinition() !== null) {
+    <h1>{{hierarchyDefinition().label}}</h1>
+    <p-organizationChart [value]="hierarchy()">
+        <ng-template let-node pTemplate="default">
+            <div> {{node.data.classLabel}}</div>
+            <div>&lt;{{node.label}}&gt;</div>
+
+        </ng-template>
+    </p-organizationChart>
+    }
+    } @else if(hierarchyDefinition() === null) {
+    <h1>Topology</h1>
+    <p>Topology with Id {{id}} does not exist</p>
+    }
+
+</bp-breadcrumb-page>

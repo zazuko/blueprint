@@ -1,0 +1,87 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ex: <http://schema.example.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX schema: <http://schema.org/>
+PREFIX fluxShape: <https://ld.flux.zazuko.com/shapes/metadata/>
+PREFIX flux: <https://ld.flux.zazuko.com/>
+PREFIX fluxSchema: <https://flux.described.at/>
+PREFIX k8s: <https://k8s.described.at/>
+PREFIX oci: <https://oci.described.at/>
+PREFIX dash: <http://datashapes.org/dash#>
+
+# --- k8s:Cluster ---
+flux:ClusterNamespaceDetail a sh:PropertyShape, fluxSchema:Detail ;
+    dash:viewer dash:LiteralViewer ;
+    rdfs:label "Namespaces" ;
+    sh:class k8s:Cluster ;
+    sh:path ([sh:inversePath k8s:cluster] rdfs:label) ;
+    sh:order 10;
+.
+
+# -- k8s:Namespace ---
+flux:NamespaceClusterDetail a sh:PropertyShape, fluxSchema:Detail ;
+    dash:viewer dash:LiteralViewer ;
+    rdfs:label "Cluster" ;
+    sh:class k8s:Namespace ;
+    sh:path (k8s:cluster rdfs:label) ;
+    sh:order 10;
+.
+
+flux:NamespaceDeploymentDetail a sh:PropertyShape, fluxSchema:Detail ;
+    dash:viewer dash:LiteralViewer ;
+    rdfs:label "Deployment" ;
+    sh:class k8s:Namespace ;
+    sh:path ([sh:inversePath k8s:namespace] rdfs:label) ;
+    sh:order 20;
+.
+
+# -- k8s:Deployment ---
+
+# ----- flux:DeploymentLabelDetail Table -----
+flux:DeploymentLabelTableDetail a sh:PropertyShape, fluxSchema:Detail ;
+    dash:viewer dash:ValueTableViewer ;
+    rdfs:label "Label" ;
+    sh:class k8s:Deployment ;
+    sh:path k8s:label ;
+    sh:order 10;
+    sh:node flux:DeploymentLabelTableShape ;
+.
+
+flux:DeploymentLabelTableShape a sh:NodeShape ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:name "Label" ;
+        sh:order 10;
+    ] ;
+    sh:property [
+        sh:path rdf:value ;
+        sh:name "Value" ;
+        sh:order 20;
+    ] ;
+.
+
+# ----- flux:DeploymentAnnotationDetail Table -----
+
+flux:DeploymentAnnotationTableDetail a sh:PropertyShape, fluxSchema:Detail ;
+    dash:viewer dash:ValueTableViewer ;
+    rdfs:label "Annotations" ;
+    sh:class k8s:Deployment ;
+    sh:path k8s:annotation ;
+    sh:order 20;
+    sh:node flux:DeploymentAnnotationTableShape ;
+.
+
+flux:DeploymentAnnotationTableShape a sh:NodeShape ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:name "Annotation" ;
+        sh:order 10;
+    ] ;
+    sh:property [
+        sh:path rdf:value ;
+        sh:name "Value" ;
+        sh:order 20;
+    ] ;
+.
+

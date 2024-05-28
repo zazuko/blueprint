@@ -1,0 +1,22 @@
+@use '../../../../styles/media-queries' as mq;
+
+
+p {
+    color: var(--quaternary-contrast);
+}
+
+.graph {
+    width: 100%;
+    height: calc(100vh - 50px - 14px - 85px - 25px);
+
+    @include mq.for-phone-only {
+        width: 100%;
+        height: calc(100vh - 50px - 14px - 85px - 25px);
+    }
+
+    @include mq.for-tablet {
+        width: 100%;
+        height: calc(100vh - 50px - 14px - 85px);
+
+    }
+}

@@ -1,0 +1,8 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    <h1>Concept Relations</h1>
+
+
+    <div class="graph">
+        <bp-graph [disableNodeMenu]="true" [disableZoomMenu]="true" [graph]="graph$ | async" />
+    </div>
+</bp-breadcrumb-page>

@@ -1,0 +1,1 @@
+export { InfoSectionComponent } from './info-section/info-section.component';

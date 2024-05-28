@@ -1,0 +1,10 @@
+<div class="row">
+    @for (breadcrumb of breadcrumbs; track breadcrumb.label) {
+    <bp-breadcrumb [breadcrumb]="breadcrumb" />
+    @if (!$last) {
+    <div class="separator">
+        <i class="pi pi-angle-right"></i>
+    </div>
+    }
+    }
+</div>

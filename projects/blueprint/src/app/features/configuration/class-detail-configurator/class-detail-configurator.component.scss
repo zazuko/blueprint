@@ -1,0 +1,20 @@
+p {
+    color: var(--quaternary-contrast);
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+.small {
+    font-size: 0.6em;
+    color: var(--quaternary-contrast);
+}
+
+
+.detail-block {
+    border-radius: 5px;
+    border: dashed 1px var(--quaternary-contrast);
+    padding: 16px;
+    margin-bottom: 16px;
+}

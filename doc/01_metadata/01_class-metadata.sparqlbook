@@ -1,0 +1,44 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Blueprint UI Configuration\n\nNilea utilizes the data and relationships within your Knowledge Graph to improve visibility and provide valuable insights.\n\nWith Nilea, you have the ability to configure which objects within your Knowledge Graph are visible in the user interface. This allows you to tailor the presentation of your graph to your specific needs and preferences, ensuring that you're able to easily access and analyze the information that matters most to you.",
+    "metadata": {}
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Configure Visible Classes\n\nNilea Class metadata, also known as 'ui class meta data,' is used to configure the display label, description, color, search priority, and icon for each visible class in Nilea.\n\nLet's say it with an example. This is the UI class metadata for a Kubernets Cluster. \n\n```turtle\nflux:ClusterFluxClassInstance\n        rdf:type               nileaMetaShapes:ClassMetadataShape ;\n        rdfs:comment           \"K8S Cluster\" ;\n        rdfs:label             \"Cluster\" ;\n        fluxSchema:faIcon      \"fas fa-microchip\" ;\n        fluxSchema:colorIndex  6 ;\n        fluxSchema:searchPrio  3 ;\n        sh:targetNode          k8s:Cluster ;\n.\n```\n\n| Syntax                | Value              | UI Impact |\n| --------------------- | ------------------ | ----------|\n| rdfs:label            | \"Cluster\"          | Display Label         |\n| rdfs:comment          | \"K8S Cluster\"      | Display Comment         |\n| fluxSchema:faIcon     | \"fas fa-microchip\" | Font Awesome Icon string you find them [here](https://fontawesome.com/search?o=r&m=free) |\n| fluxSchema:colorIndex | 6                  | The color palette index (0 - 9 is valid)      |\n| fluxSchema:searchPrio | 3                  | This is a multiplier for the search score (higher = better)         |\n| sh:targetNode         | k8s:Cluster        | Apply this configuration to the k8s:Cluster class        |\n\n\n",
+    "metadata": {}
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### See the current configuration\n\nThe class metadata is stored in your database and can be queried to retrieve and modify attributes for each class within Nilea. Here some example queries. ",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "#\n# Get all ClassMetadataShape with the label\n# \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX nileaMetaShapes: <https://ld.flux.zazuko.com/shapes/metadata/>\n\nSELECT ?meta ?label\nWHERE {\n  ?meta a nileaMetaShapes:ClassMetadataShape .\n  ?meta rdfs:label ?label . \n}\n",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "#\n# Get all the properties of one ClassMetadataShape\n#\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\nPREFIX nileaMetaShapes: <https://ld.flux.zazuko.com/shapes/metadata/>\n\nSELECT ?metaInstance ?p ?o WHERE {\n    {\n        SELECT ?metaInstance WHERE {\n            ?metaInstance a nileaMetaShapes:ClassMetadataShape .\n        } LIMIT 1\n    }\n    ?metaInstance ?p ?o .\n}\n",
+    "metadata": {}
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Do we have any classes ?",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "SELECT DISTINCT ?class WHERE {\n  ?s a ?class .\n}",
+    "metadata": {}
+  }
+]

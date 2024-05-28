@@ -1,0 +1,48 @@
+default:
+  image: ghcr.io/zazuko/deploy-image:v1.4
+  tags:
+    - kubernetes
+
+stages:
+  - build
+  - push
+
+# build App Docker image
+build-app:
+  stage: build
+
+  artifacts:
+    paths:
+      - image-app.tar
+
+  script:
+    - crane auth login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - |
+      executor \
+        --context="$CI_PROJECT_DIR" \
+        --dockerfile=Dockerfile \
+        --destination="$CI_REGISTRY_IMAGE/app" \
+        --build-arg="BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+        --build-arg="COMMIT=$CI_COMMIT_SHA" \
+        --build-arg="VERSION=$CI_COMMIT_REF_SLUG" \
+        --no-push \
+        --tarPath="$CI_PROJECT_DIR/image-app.tar"
+
+# push Docker image
+push:
+  stage: push
+
+  needs:
+    - job: build-app
+      artifacts: true
+
+  variables: # We don't need the sources for that
+    GIT_STRATEGY: none
+
+  script:
+    - crane auth login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - gitlab-docker-push image-app.tar "$CI_REGISTRY_IMAGE/app"
+    - gitlab-docker-push image-trifid.tar "$CI_REGISTRY_IMAGE/trifid"
+
+  only:
+    - master

@@ -1,0 +1,94 @@
+<div class="content">
+
+  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject" [subjectLabel]="subjectLabel()"
+    [subjectClassLabel]="subjectClassLabel()" [avatars]="subjectAvatars()" />
+
+
+  <p-tabMenu [model]="tabNavItems" [activeItem]="activeItem" (activeItemChange)="openView($event)" />
+
+
+
+  @if(currentPageView() === PageView.Details) {
+
+  <div class="subject-view" @fadeIn>
+
+
+    @if(uiHierarchy.length > 0) {
+    @defer (when uiHierarchy.length > 0) {
+    <div class="hierarchy-container">
+      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
+      }
+    </div>
+    }
+    }
+
+    <div class="view-container">
+      <bp-comment [text]="subjectComment()" />
+
+      @for(detail of uiDetailElementsSignal(); track detail.iri) {
+      <bp-literal-view [value]="detail.value.join()" [label]="detail.label"
+        [renderLiteralAs]="detail.renderLiteralAs" />
+      }
+
+      <br>
+      <br>
+      <br>
+      <br>
+
+      <bp-details />
+
+    </div>
+  </div>
+
+
+  } @else if (currentPageView() === PageView.Nearby) {
+  <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeSelected($event)" @fadeIn />
+  } @else if (currentPageView() === PageView.Views) {
+
+  <div class="subject-view" @fadeIn>
+
+    @if(uiHierarchy.length > 0) {
+    @defer (when uiHierarchy.length > 0) {
+    <div class="hierarchy-container">
+      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
+      }
+    </div>
+    }
+    }
+    <div class="view-container">
+
+      @defer (when uiView.length > 0) {
+      <div class="view-container" @fade>
+        @for( view of uiView; track view.iri) {
+        <bp-ui-view style="flex-grow: 1" [uiView]="view" (nodeSelected)="selectByIri($event)" />
+        }
+      </div>
+      }
+      @for(l of compositionLinks(); track l.iri) {
+      <bp-aggregate-relation [label]="l.label" [relation]="l.result" [subject]="thisNodeElement()"
+        (nodeSelected)="selectByIri($event)" />
+
+      }
+    </div>
+  </div>
+  }
+  <!-- graph view: content is moved away if not shown-->
+  <div class="graph" [ngClass]="currentPageView() === PageView.Graph ? '' : 'weg'">
+
+    <div class="content-size content-style">
+
+      <bp-graph (nodeSelected)="onNodeSelected($event)" (nodeExpanded)="onNodeExpanded($event)"
+        (nodeFocused)="onNodeFocused($event)" (multiLinkSelected)="onMultiLinkSelected($event)" [disableNodeMenu]="true"
+        [disableZoomMenu]="true" [graph]="graph()" xOffset="80" yOffset="40" />
+
+    </div>
+
+
+
+
+
+
+  </div>
+</div>

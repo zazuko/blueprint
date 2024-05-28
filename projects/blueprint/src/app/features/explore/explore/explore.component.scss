@@ -1,0 +1,129 @@
+// scss variable 
+@use '../../../../styles/media-queries' as mq;
+
+
+$nav-top-height: 95px;
+
+$page-padding: 50px;
+$title-height: 118px;
+
+:host {
+  min-width: calc(100vw - 84px);
+  max-width: calc(100vw - 84px);
+  color: var(--primary-contrast);
+  overflow: hidden;
+}
+
+.loading-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background-color: transparent;
+  width: 100%;
+}
+
+.content {
+  padding: $page-padding;
+  max-width: 100%;
+}
+
+.subject-view {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.view-container {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0px;
+  flex-grow: 1;
+  max-width: 100%;
+  overflow: hidden;
+
+  .comment {
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    max-width: 100%;
+    overflow-x: clip;
+    color: var(--quaternary-contrast);
+  }
+
+}
+
+.graph {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  height: calc(100vh - $page-padding - $title-height - 38px - 38px);
+  max-height: calc(100vh - $page-padding - $title-height - 38px - 38px);
+  width: calc(100vw - var(--nav-panel-left-width) - $page-padding * 2);
+  max-width: calc(100vw - var(--nav-panel-left-width) - $page-padding * 2);
+
+  @include mq.for-phone-only {
+    height: calc(100vh - $page-padding * 2 - $title-height - 38px);
+    max-height: calc(100vh - $page-padding * 2 - $title-height - 38px);
+    width: calc(100vw - $page-padding * 2 - 16px);
+    max-width: calc(100vw - $page-padding * 2 - 16px);
+  }
+
+  @include mq.for-tablet {
+    height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
+    max-height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
+    width: calc(100vw - $page-padding * 2 - 16px);
+    max-width: calc(100vw - $page-padding * 2 - 16px);
+  }
+
+  .content-style {
+    // background-color: var(--page-background);
+    border: 1px solid var(--octonary-contrast);
+
+  }
+
+  .content-size {
+    height: calc(100vh - $page-padding - $title-height - 38px - 38px);
+    width: calc(100vw - var(--nav-panel-left-width) - $page-padding * 2);
+    max-width: calc(100vw - var(--nav-panel-left-width) - $page-padding * 2);
+
+    @include mq.for-phone-only {
+      height: calc(100vh - $page-padding * 2 - $title-height - 38px);
+      width: calc(100vw - $page-padding * 2 - 16px);
+      max-width: calc(100vw - $page-padding * 2 - 16px);
+    }
+
+
+    @include mq.for-tablet {
+      height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
+      width: calc(100vw - $page-padding * 2 - 16px);
+      max-width: calc(100vw - $page-padding * 2 - 16px);
+    }
+
+
+  }
+}
+
+.weg {
+  position: relative;
+  height: 0;
+  width: 0;
+
+  .content-style {
+    position: absolute;
+    top: -1000px;
+    left: -1000px;
+  }
+}
+
+
+.hierarchy-container {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--surface-border);
+  margin-top: 12px;
+
+}

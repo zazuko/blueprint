@@ -1,0 +1,124 @@
+@use 'styles/colors';
+@use 'styles/button';
+@use 'styles/typography';
+@use 'styles/media-queries' as mq;
+
+@import "primeicons/primeicons.css";
+
+//// fonts
+// icons 
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/font/material-icons.woff2') format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/font/inter.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  src: url('/assets/font/inter-tight.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/assets/font/dm-mono.woff2') format('woff2');
+}
+
+// blueprint logo
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/font/orbitron.woff2') format('woff2');
+}
+
+// layout sizes
+:root {
+  --nav-panel-left-width: 85px;
+
+}
+
+//................................................................................
+body {
+  // primeng theme
+  background-color: var(--surface-ground);
+
+  margin: 0;
+
+  // scrollbar
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+    background-color: var(--surface-ground);
+  }
+
+  *::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.08);
+    ;
+    border-radius: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+.bp-dark-mode {
+  color-scheme: dark;
+}
+
+
+
+// include
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+
+.theme-select {
+  margin-left: 50px;
+  margin-top: 20px;
+  padding: none !important;
+  background-color: var(--page-background);
+
+  &:before {
+    content: none;
+  }
+
+  &:after {
+    content: none;
+  }
+
+  .p-overlaypanel-content {}
+
+  @include mq.for-tablet {
+    margin-left: 0;
+    margin-top: 44px;
+  }
+}

@@ -1,0 +1,58 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+
+    @if(hierarchyDefinitionSignal() && dataSignal()) {
+    <div @fade>
+        <h1>{{labelSignal()}}</h1>
+        <p> {{commentSignal()}}</p>
+        <br>
+        <p-toolbar>
+
+            <div class="p-toolbar-group-start">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-filter"></i>
+                    <input type="text" pInputText [ngModel]="filterTerm()"
+                        (ngModelChange)="onFilterInputChanged($event)" />
+                </span>
+
+            </div>
+            <div class="p-toolbar-group-end">
+                <p-selectButton #stateSelect size="small" [options]="stateOptions" [(ngModel)]="state"
+                    optionLabel="label" (ngModelChange)="stateSignal.set(stateSelect.value)"
+                    optionValue="value"></p-selectButton>
+
+            </div>
+        </p-toolbar>
+        <br>
+
+
+        <div style="display: flex; flex-direction: column; width: 100%;">
+            @if(stateSignal() === 'tree') {
+            <p-tree [value]="filteredData()" selectionMode="single" (onNodeSelect)="treeNodeSelected($event)">
+                <ng-template let-node pTemplate="default">
+                    <div class="content">
+                        <bp-avatar size="normal" [avatars]="node.data.avatars" />
+                        <div>
+                            <div class="big">{{node.label}}</div>
+                            <div class="small">{{node.data.classLabel}}</div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tree>
+            }
+            @else if (stateSignal() === 'cluster') {
+            @for( tree of filteredData(); track tree.key) {
+
+            <bp-cluster-diagram (nodeSelected)=" nodeSelected($event)" [data]="tree" [collapsed]="!tree.expanded" />
+            <br>
+            <br>
+
+            }
+            }
+
+        </div>
+    </div>
+    } @else if(hierarchyDefinitionSignal() === null) {
+    <p @fade> This hierarchy does not exist </p>
+    }
+
+</bp-breadcrumb-page>

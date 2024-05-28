@@ -1,0 +1,21 @@
+$font-size: 0.875rem;
+
+:host {
+    color: oklch(70.9% 0.015 305.05);
+    font-size: $font-size;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+
+}
+
+a:visited {
+    color: inherit; // or specify the same color as your normal links
+}
+
+
+a:hover {
+    text-decoration: underline;
+}

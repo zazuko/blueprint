@@ -1,0 +1,14 @@
+[
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "\n  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n  PREFIX sh: <http://www.w3.org/ns/shacl#>\n  PREFIX blueprintMetaShapes: <https://ld.flux.zazuko.com/shapes/metadata/>\n  \n  CONSTRUCT {\n    ?detailShape ?p ?o  .\n  }\n  WHERE {\n    {\n      SELECT ?detailShape WHERE {\n        ?detailShape sh:targetClass <https://schema.org/Person> .\n     #   ?detailShape a blueprintMetaShapes:ClassDetailShape .\n      }\n    }\n    \n      VALUES ?p {\n        rdf:type\n        rdfs:label\n        sh:path\n        sh:order\n        blueprintMetaShapes:showAs\n        sh:targetClass\n      }\n      ?detailShape ?p ?o  .\n    \n  }",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "\n  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n  PREFIX sh: <http://www.w3.org/ns/shacl#>\n  PREFIX blueprintMetaShapes: <https://ld.flux.zazuko.com/shapes/metadata/>\n  \n \n      SELECT * WHERE {\n        ?detailShape a blueprintMetaShapes:ClassDetailShape .\n\n            ?detailShape ?p ?o .\n      }\n",
+    "metadata": {}
+  }
+]

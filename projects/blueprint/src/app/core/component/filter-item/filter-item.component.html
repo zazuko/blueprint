@@ -1,0 +1,14 @@
+<div class="avatar"
+    [ngStyle]="{'background-color':  conditionalColor(), 'color':   count() !== 0 ? 'var(--primary-contrast)' : 'var(--quaternary-contrast)'}">
+    <i [ngClass]="icon()"> </i>
+</div>
+
+
+<div class="entry-text">
+    <div class="label" [ngStyle]="{'color':  count() !== 0 ? 'var(--primary-contrast)' : 'var(--quinary-contrast)'}">
+        {{ label() }}
+    </div>
+    <div class="count">
+        (<span>{{ count() }}</span>)
+    </div>
+</div>

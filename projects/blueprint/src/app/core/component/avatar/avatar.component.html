@@ -1,0 +1,18 @@
+@if(avatars().length > 1) {
+
+<p-avatarGroup>
+    @for(avatar of avatars(); track avatar) {
+    <p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()"
+        [style]="{'background-color': avatar.color}"></p-avatar>
+    }
+</p-avatarGroup>
+}@else if(avatars().length === 1) {
+@for(avatar of avatars(); track avatar) {
+
+<p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()"
+    [style]="{'background-color': avatar.color}"></p-avatar>
+}
+} @else {
+<p-avatar [size]="size()"></p-avatar>
+
+}

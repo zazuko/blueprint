@@ -1,0 +1,27 @@
+:host {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+bp-avatar {
+    margin-right: 8px;
+}
+
+.labels {
+    flex-direction: column;
+}
+
+.small {
+    font-size: 0.6rem;
+    opacity: 0.8;
+}
+
+.big {
+    font-size: 0.8rem;
+}
+
+.content {
+    // flex row
+    display: flex;
+    flex-direction: row;
+}

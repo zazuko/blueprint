@@ -1,0 +1,25 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    <h1>Topology</h1>
+    <p>View the Topologies</p>
+    <h2>Trees</h2>
+    <p>Tree Data Structures</p>
+    <div class="grid-container">
+        @for(t of hierarchiesSignal(); track t.iri) {
+        <a [routerLink]="['tree', t.iri ]">
+            <bp-configuration-card [firstLine]="t.label" [secondLine]="t.description" icon="fa-solid fa-sitemap" />
+        </a>
+        }
+    </div>
+    <br>
+    <h2>Graph</h2>
+    <p>These are items arranged horizontally, distinct from the treelike structures. Employ them for call graphs or
+        entities consumption. Utilize them to establish connections between the trees.</p>
+    <div class="grid-container">
+        @for(t of graphSignal(); track t.iri) {
+        <a [routerLink]="['horizontal-tree', t.iri ]">
+            <bp-configuration-card [firstLine]="t.label" [secondLine]="t.comment" icon="fa-solid fa-circle-nodes" />
+        </a>
+        }
+    </div>
+
+</bp-breadcrumb-page>

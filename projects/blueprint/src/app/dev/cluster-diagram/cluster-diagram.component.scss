@@ -1,0 +1,73 @@
+.cluster-diagram {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+}
+
+.element-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.cluster {
+    width: 100%;
+}
+
+.single-element {
+    cursor: pointer;
+    height: 75px;
+    width: 200px;
+    padding: 12px 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+
+    .line1 {
+        max-width: calc(200px - (48px + 24px));
+        font-size: 12px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .line2 {
+        max-width: calc(200px - (48px + 24px));
+        font-size: 10px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
+
+.single-element:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    background-color: var(--surface-hover);
+}
+
+.border {
+    border: 1px solid var(--quaternary-contrast);
+    border-radius: 7px;
+}
+
+bp-avatar {
+    margin-right: 8px;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node:hover {
+    text-decoration: underline;
+}

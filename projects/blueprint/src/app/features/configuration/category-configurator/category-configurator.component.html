@@ -1,0 +1,12 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    <h1>Category</h1>
+    <p>View the Category tree</p>
+    <h2>Things without category</h2>
+    <p-tree [value]="treeSignal()">
+        <ng-template let-node pTemplate="concept">
+            @defer(when node.data !== null) {
+            <bp-category-tree-node [concept]="node.data" />
+            }
+        </ng-template>
+    </p-tree>
+</bp-breadcrumb-page>

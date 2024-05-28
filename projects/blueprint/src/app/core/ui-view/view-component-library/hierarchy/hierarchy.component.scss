@@ -1,0 +1,113 @@
+// variable for width and height
+$panel-width: 200px;
+$padding: 12px;
+// icon size
+$width: 32px;
+$height: 32px;
+
+$line-color: var(--quinary-contrast);
+$line-width: 1px;
+
+.circle-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-radius: 10px;
+    padding: $padding;
+    width: $panel-width;
+    max-width: $panel-width;
+    overflow: hidden;
+}
+
+h3 {
+    margin: 0;
+    padding-bottom: 24px;
+    font-size: 16px;
+}
+
+.level {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.line {
+    border-left: $line-width solid $line-color;
+    height: calc($height / 2);
+}
+
+.el {
+    // this is an L shaped line 
+    border-bottom: $line-width dashed $line-color;
+    border-left: $line-width solid $line-color;
+    height: calc($height / 2);
+    width: calc($width / 3);
+    margin-left: calc($width / 2 - ($line-width / 2));
+}
+
+.circle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    height: $height;
+    width: $width;
+    font-size: 1.5em;
+    color: var(--secondary-contrast);
+}
+
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.label-container {
+    display: flex;
+    flex-direction: column;
+    max-width: calc($panel-width - $padding - 32px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 5px;
+}
+
+.label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--primary-contrast);
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sub-label {
+    font-size: 0.7rem;
+    font-weight: 400;
+    margin-left: 0.5rem;
+    color: var(--quaternary-contrast);
+    margin-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.last {
+    max-width: calc($panel-width - $padding - 32px - 31px) !important;
+}
+
+
+
+.link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.circle-link:hover {
+    cursor: pointer;
+
+}

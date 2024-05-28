@@ -1,0 +1,196 @@
+@prefix nileaUi: <https://zazuko.com/nilea/ui/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+
+nileaUi:SqlDatabseTable  rdfs:subClassOf nileaUi:ViewComponentDefinition;
+    rdfs:label "SQL Database Table" ;
+    rdfs:comment "A SQL Database Table is a view component that displays a SQL Database Table." ;
+.
+
+# config for the UI
+nileaUi:SqlDatabseTableDefinition a nileaUi:SqlDatabseTable;
+    rdfs:label "Table" ;
+    rdfs:comment "A SQL Database Table is a view component that displays a SQL Database Table." ;
+    nileaUi:query """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+
+PREFIX nileaUi: <https://zazuko.com/nilea/ui/> 
+PREFIX local: <http://localhost/data> 
+PREFIX database: <http://schema.table.org/>
+
+
+CONSTRUCT {
+    ?componentIri nileaUi:hasComponentData ?subject .
+    # interface DatabaseTable 
+    ?subject ?nileaTableP ?tableO .
+
+    # DatabaseColumn
+    ## iri: string
+    ## label: string;
+    ## type: string;
+    ?column ?nileaColumnP ?columnO .
+   
+    # DatabaseColumn.settings: DatabaseColumnSettings[]
+    # export interface DatabaseColumnSettings {
+    # label: string;
+    # isKey?: boolean;
+    # isPrimaryKey?: boolean;
+    ## this is more difficult 
+    ## its' about fk, pk, unique, and  nullable
+    ### unique
+    ?column nileaUi:hasSettings ?uniqueContraint.
+    ?uniqueContraint rdfs:label ?uniqueContraintLabel .
+    ?uniqueContraint nileaUi:isKey false .
+    ?uniqueContraint nileaUi:isPrimaryKey false.
+
+    ### pk
+    ?column nileaUi:hasSettings ?pkContraint.
+    ?pkContraint nileaUi:hasDeterminant ?column .
+    ?pkContraint nileaUi:isKey true .
+    ?pkContraint nileaUi:isPrimaryKey true .
+    ?pkContraint  rdfs:label ?pkContraintLabel .
+
+    ## fk
+    ?column nileaUi:hasSettings ?fk.
+    ?fk nileaUi:isKey true .
+    ?fk nileaUi:isPrimaryKey false .
+    ?fk  rdfs:label ?fkLabel .
+
+    ## nullable
+    ?column nileaUi:hasSettings ?nullableIri.
+    ?nullableIri nileaUi:isKey false .
+    ?nullableIri nileaUi:isPrimaryKey false .
+    ?nullableIri  rdfs:label ?nullableLabel .
+
+    # DatabaseReference 
+    #toTable: string;
+    #toColumn: string;
+    ?column nileaUi:references ?referenceOutIri.
+    ?referenceOutIri nileaUi:isInbound false .
+    ?referenceOutIri nileaUi:table ?toTable .
+    ?toTable rdfs:label ?toTableLabel .
+    ?referenceOutIri nileaUi:column ?toColumn .
+    ?toColumn rdfs:label ?toColumnLabel . 
+    # fromTable: string;
+    # fromColumn: string;
+    ?column nileaUi:references ?referenceInIri.
+    ?referenceInIri nileaUi:isInbound true .
+    ?referenceInIri nileaUi:table ?fromTable .
+    ?fromTable rdfs:label ?fromTableLabel .
+    ?referenceInIri nileaUi:column ?fromColumn .
+    ?fromColumn rdfs:label ?fromColumnLabel .  
+} WHERE {
+    {
+        # table props
+        VALUES (?tableP ?nileaTableP)  { 
+            (rdfs:label rdfs:label)
+            (database:contextLabel nileaUi:contextLabel)
+            (database:column nileaUi:column)
+         }
+         ?subject ?tableP ?tableO .
+        
+    } UNION {
+        # columns props
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        VALUES (?columnP ?nileaColumnP) { 
+            (rdf:type rdf:type)
+            (rdfs:label rdfs:label)
+            (database:dataType nileaUi:dataType)
+         }
+         ?column ?columnP ?columnO . 
+
+    } UNION {
+        # columns settings unique contraints
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?uniqueContraint database:hasDeterminant ?column .
+        ?uniqueContraint database:isPrimaryKey false .
+        BIND("unique" as ?uniqueContraintLabel)   
+    } UNION {
+        # columns settings pk contraints
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?pkContraint database:hasDeterminant ?column .
+        ?pkContraint database:isPrimaryKey true .
+        BIND("PK" as ?pkContraintLabel)   
+    } UNION {
+        # columns settings fk 
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?fk database:sourceTableColumn ?column .
+        BIND("FK" as ?fkLabel)   
+    } UNION {
+        # columns settings non nullable 
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?column database:isNullable false.
+        # create a new iri for nullable
+        BIND(IRI(CONCAT(STR(?column),"/non-nullable")) as ?nullableIri)
+        BIND("not null" as ?nullableLabel)   
+    } UNION {
+        # DatabaseReference OUT means FK
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?referenceOut database:sourceTableColumn ?column .
+        ?referenceOut database:referenceTable ?toTable .
+        ?toTable rdfs:label ?toTableLabel .
+        ?referenceOut database:referenceTableColumn ?toColumn .
+        ?toColumn rdfs:label ?toColumnLabel .
+        BIND(IRI(CONCAT(STR(?referenceOut),'/out'))as ?referenceOutIri )
+    }
+    UNION {
+        # DatabaseReference IN
+         {
+            SELECT ?subject ?column WHERE {
+               ?subject database:column ?column .
+            }
+        }
+        ?referenceIn database:referenceTableColumn ?column .
+        ?referenceIn database:sourceTable ?fromTable .
+        ?fromTable rdfs:label ?fromTableLabel .
+        ?referenceIn database:sourceTableColumn ?fromColumn .
+        ?fromColumn rdfs:label ?fromColumnLabel .
+        BIND(IRI(CONCAT(STR(?referenceIn),'/in'))as ?referenceInIri )
+    }
+    
+    
+}
+""" ;
+.
+# instance
+
+nileaUi:SqlDatabseTable a nileaUi:UiView ;
+    nileaUi:forClass <http://schema.table.org/Table> ;
+    nileaUi:hasViewContainer nileaUi:SqlDatabseTableViewContainer; ;
+.
+
+nileaUi:SqlDatabseTableViewContainer a nileaUi:ViewContainer ;
+    nileaUi:order 1 ;
+    nileaUi:hasComponent nileaUi:SqlDatabseTableComponent;
+.
+
+nileaUi:SqlDatabseTableComponent a nileaUi:UiComponent ;
+    nileaUi:hasComponentDefinition nileaUi:SqlDatabseTableDefinition;
+    # nileaUi:componentData
+.

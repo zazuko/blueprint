@@ -1,0 +1,28 @@
+:host {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.graph-component {
+  max-width: 100%;
+  display: block;
+  background-color: var(--octonary-contrast);
+  position: relative;
+}
+
+svg {
+  cursor: move;
+}
+
+
+
+
+.tool-bar {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}

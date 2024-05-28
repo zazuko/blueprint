@@ -1,0 +1,29 @@
+<bp-info-section [heading]="sectionLabel">
+  <div>
+
+    <p-table [value]="columnsData">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          @for (column of columnLabels; track column) {
+          <th>{{ column }}</th>
+
+          }
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row let-columns="columnLabels">
+        <tr>
+          @for (column of columnLabels; track column) {
+
+          <td>
+            {{ row[column] }}
+          </td>
+          }
+
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+
+  </div>
+</bp-info-section>

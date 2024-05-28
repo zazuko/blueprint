@@ -1,0 +1,14 @@
+@if(data().length > 0 && data()[0].children.length > 0) {
+<h2>{{label()}}</h2>
+<p-tree [value]="data()" selectionMode="single" (onNodeSelect)="emitNodeSelected($event)">
+    <ng-template let-node pTemplate="default">
+        <div class="content">
+            <bp-avatar size="normal" [avatars]="node.data.avatars" />
+            <div>
+                <div class="big">{{node.label}}</div>
+                <div class="small">{{node.data.classLabel}}</div>
+            </div>
+        </div>
+    </ng-template>
+</p-tree>
+}

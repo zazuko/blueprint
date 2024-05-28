@@ -1,0 +1,46 @@
+<svg:defs>
+  <svg:marker id="arrow" markerWidth="10" markerHeight="10" refX="67" refY="3" orient="auto" markerUnits="strokeWidth">
+    <svg:path d="M0,0 L0,6 L9,3 z"  />
+  </marker>
+</defs>
+
+@if (!(x1 === x2 && y1 === y2)) {
+<svg:g>
+  <svg:line marker-end="url(#arrow)" [attr.x1]="x1" [attr.y1]="y1" [attr.x2]="x2" [attr.y2]="y2"></line>
+  <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
+    @if (forwardLabels?.length === 1 && backwardLabels?.length == 0) {
+<text y="10" text-anchor="middle">
+      @for (line of forwardLabels; track line) {
+  <tspan font-size="12px" class="left" x="0" dy="-1.2em">{{line}}</tspan>
+}
+    </text>
+}
+    @if (backwardLabels && (backwardLabels.length > 0 || forwardLabels.length > 1)) {
+<text y="10" text-anchor="middle">
+      <tspan font-size="12px" font-weight="bold" style="cursor: pointer;" x="0" dy="-1.2em" (click)="onMultiLinkSelected($event)">{{(forwardLabels.length + backwardLabels.length)}} Links</tspan>
+    </text>
+}
+  </g>
+</g>
+}
+
+@if (x1 === x2 && y1 === y2) {
+<svg:g>
+  <path class="noFill" [attr.d]="'m ' + x1 + ',' + y1 + ' c-81.019,-40.454 -149.467,-67.527 -117.78,-106.421c35.07,-43.046 70.811,28.985 117.78,106.421Z'" />
+  <svg:line class="noStroke" marker-end="url(#arrow)" [attr.x1]="x1 - 46" [attr.y1]="y1 - 76.91" [attr.x2]="x1" [attr.y2]="y1"></line>
+  <svg:g class="link-label-layer">
+    @if (forwardLabels.length === 1) {
+<text t y="-150" text-anchor="middle" [attr.transform]="calculateLoopLinkLabelTransform()">
+      @for (line of forwardLabels; track line) {
+  <tspan class="left" x="0" dy="-1.2em">{{line}}</tspan>
+}
+    </text>
+}
+    @if (backwardLabels.length > 0 || forwardLabels.length > 1) {
+<text t y="-150" [attr.y]="y1" text-anchor="middle">
+      <tspan font-weight="bold" style="cursor: pointer;" x="0" dy="-1.2em" (click)="onMultiLinkSelected($event)">{{(forwardLabels.length + backwardLabels.length)}} Links</tspan>
+    </text>
+}
+  </g>
+</g>
+}

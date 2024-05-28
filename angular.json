@@ -1,0 +1,164 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "blueprint": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/blueprint",
+      "sourceRoot": "projects/blueprint/src",
+      "prefix": "bp",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/blueprint",
+            "index": "projects/blueprint/src/index.html",
+            "browser": "projects/blueprint/src/main.ts",
+            "polyfills": [
+              "projects/blueprint/src/polyfills.ts"
+            ],
+            "tsConfig": "projects/blueprint/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/blueprint/src/favicon.ico",
+              "projects/blueprint/src/assets",
+              "projects/blueprint/src/config.json"
+            ],
+            "styles": [
+              "node_modules/primeng/resources/primeng.min.css",
+              "projects/blueprint/src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              {
+                "input": "projects/blueprint/src/theme/lara-dark-blue.scss",
+                "bundleName": "blueprint-dark-blue",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-dark-purple.scss",
+                "bundleName": "blueprint-dark-purple",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-light-blue.scss",
+                "bundleName": "blueprint-light-blue",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-light-purple.scss",
+                "bundleName": "blueprint-light-purple",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-dark-indigo.scss",
+                "bundleName": "blueprint-dark-indigo",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-dark-teal.scss",
+                "bundleName": "blueprint-dark-teal",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-light-indigo.scss",
+                "bundleName": "blueprint-light-indigo",
+                "inject": false
+              },
+              {
+                "input": "projects/blueprint/src/theme/lara-light-teal.scss",
+                "bundleName": "blueprint-light-teal",
+                "inject": false
+              }
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "6kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/blueprint/src/environments/environment.ts",
+                  "with": "projects/blueprint/src/environments/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "blueprint:build:production"
+            },
+            "development": {
+              "buildTarget": "blueprint:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "blueprint:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:web-test-runner",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing",
+              "projects/blueprint/src/polyfills.ts"
+            ],
+            "tsConfig": "projects/blueprint/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/blueprint/src/favicon.ico",
+              "projects/blueprint/src/assets"
+            ],
+            "styles": [
+              "projects/blueprint/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/blueprint/**/*.ts",
+              "projects/blueprint/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

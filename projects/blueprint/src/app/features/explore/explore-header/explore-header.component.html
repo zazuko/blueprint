@@ -1,0 +1,33 @@
+<div style="display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%">
+    @if(isLoading()) {
+    <p-skeleton shape="circle" styleClass="mr-2"></p-skeleton>
+
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+        <p-skeleton width="10rem" styleClass="mb-2" />
+        <p-skeleton height="2rem" width="30rem" styleClass="mb-2" />
+    </div>
+    }@else {
+    <bp-avatar [avatars]="avatars()" @fadeIn />
+
+    <div @fadeIn>
+        <p>
+            @if (subjectClassLabel().length === 0) {
+            &nbsp;
+            } @else {
+            <span>{{subjectClassLabel()}}</span>
+            }
+        </p>
+        <h1 class="title">{{subjectLabel()}}</h1>
+    </div>
+    }
+    <div style="flex-grow: 1;">
+
+    </div>
+    <div>
+        <p-toast></p-toast>
+        <p-menu #menu [model]="items" [popup]="true"></p-menu>
+        <p-button icon="pi pi-ellipsis-v" (click)="menu.toggle($event)" [rounded]="true" [outlined]="true"></p-button>
+    </div>
+
+</div>

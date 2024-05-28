@@ -1,0 +1,55 @@
+@if (value()) {
+@switch (renderLiteralAs()) {
+@case (LiteralViewType.LINK) {
+<div class="literal-view">
+    <div class="literal">
+        <span class="label">{{ label() }}:</span>
+        <i class="pi pi-external-link"></i>&nbsp;&nbsp;<a class="value" [href]="value()" target="_blank">{{ value()
+            }}</a>
+    </div>
+</div>
+}
+@case (LiteralViewType.EMAIL) {
+<div class="literal-view">
+    <div class="literal">
+        <span class="label">{{ label() }}:</span>
+        <i class="pi pi-at"></i>&nbsp;&nbsp;<a class="value" [href]="'mailto:' + value()">{{ value() }}</a>
+    </div>
+</div>
+}
+@case (LiteralViewType.PHONE) {
+<div class="literal-view">
+    <div class="literal">
+        <span class="label">{{ label() }}:</span>
+        <i class="pi pi-phone"></i>&nbsp;&nbsp;<a class="value" [href]="'tel:' + value()">{{ value() }}</a>
+    </div>
+</div>
+}
+
+@case (LiteralViewType.PLAIN || LiteralViewType.BOOLEAN) {
+
+<div class="literal-view">
+    <div class="literal">
+        <span class="label">{{ label() }}:</span>
+        <span class="value">{{ value() }}</span>
+    </div>
+</div>
+}
+@case (LiteralViewType.BOOLEAN ) {
+
+<div class="literal-view">
+    <div class="literal">
+        <span class="label">{{ label() }}:</span>
+        @if(value() === 'true') {
+        <span style="color: lightgreen" class="pi pi-check-circle"></span>
+
+        } @else {
+        <span style="color: lightcoral" class="pi pi-times-circle"></span>
+        }
+
+    </div>
+</div>
+}
+
+}
+}

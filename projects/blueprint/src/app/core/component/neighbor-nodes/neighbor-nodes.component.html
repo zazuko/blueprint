@@ -1,0 +1,29 @@
+@for(key of keys(); track key) {
+<div class="panel">
+
+
+    <div class="title">Explore a <span class="highlight">{{key}}</span> within the context of the
+        <span class="highlight">{{currentNode().label}} {{currentNode().type}}</span>.
+    </div>
+
+    <div>
+        <div class="node-list">
+            @for(node of nodeMap().get(key); track node.id) {
+
+            <div class="node" (click)="emitNodeSelected(node)" @fade>
+                <div class="avatar"
+                    [ngStyle]="{'background-color': colorUtil.getColorForIndex(Number(node.colorIndex))}">
+                    <i [ngClass]="node.icon"></i>
+                </div>
+                <div class="label">{{node.label}}</div>
+            </div>
+            }
+        </div>
+    </div>
+
+</div>
+} @empty {
+<div class="panel">
+    <div class="title">No neighbors found.</div>
+</div>
+}

@@ -1,0 +1,39 @@
+@use '../../../../../styles/media-queries.scss' as mq;
+
+$color-transition: color 0.3s ease;
+$hover-color: var(--primary-contrast);
+$color: var(--quaternary-contrast);
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: $color;
+    gap: 15px;
+
+
+    i {
+        transition: $color-transition;
+    }
+
+    .label {
+        font-size: 13px;
+        transition: $color-transition;
+
+    }
+
+}
+
+
+.item:hover {
+    color: $hover-color;
+    transition: $color-transition;
+    cursor: pointer;
+}
+
+
+
+.active {
+    color: $hover-color !important;
+}

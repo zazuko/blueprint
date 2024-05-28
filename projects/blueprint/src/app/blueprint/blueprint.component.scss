@@ -1,0 +1,59 @@
+@use '../../styles/media-queries.scss' as mq;
+
+:host {
+    max-width: 2560px;
+    width: 100%;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    min-height: 100vh;
+
+    @include mq.for-tablet-landscape-down {
+        flex-direction: column;
+    }
+
+
+
+    // If navs are open, render a blurry background over content
+    &:has(.bp-nav-secondary--open),
+    &:has(.bp-nav-primary--open) {
+        .bp-app-main-content {
+            &::after {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+    }
+
+    &:has(.bp-home) {
+        .bp-nav {
+            width: 0;
+            height: 0;
+        }
+
+        @include mq.for-tablet-landscape-up {
+            footer {
+                margin-left: var(--primary-nav-width);
+            }
+        }
+    }
+}
+
+
+.bp-app-main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    z-index: 1;
+
+
+    @include mq.for-tablet {
+        width: 100%;
+    }
+}
+
+.bp-nav {
+    z-index: 10;
+}

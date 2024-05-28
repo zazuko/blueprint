@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": [
+        "endpointUrl",
+        "fullTextSearchDialect"
+    ],
+    "properties": {
+        "endpointUrl": {
+            "type": "string",
+            "format": "uri"
+        },
+        "sparqlConsoleUrl": {
+            "type": "string",
+            "format": "uri"
+        },
+        "graphExplorerUrl": {
+            "type": "string",
+            "format": "uri"
+        },
+        "fullTextSearchDialect": {
+            "type": "string",
+            "enum": [
+                "stardog",
+                "fuseki",
+                "neptune",
+                "graphdb"
+            ]
+        },
+        "neptune": {
+            "type": "object",
+            "properties": {
+                "ftsEndpoint": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": [
+                "ftsEndpoint"
+            ]
+        }
+    },
+    "if": {
+        "properties": {
+            "fullTextSearchDialect": {
+                "const": "neptune"
+            }
+        }
+    },
+    "then": {
+        "required": [
+            "neptune"
+        ]
+    }
+}

@@ -1,0 +1,161 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+
+}
+
+.this {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .this-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+        height: 100%;
+
+        bp-avatar {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .text {
+            margin-left: 10px;
+            margin-right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        // a nice dashed lightgrey border with round corners
+        border: 1px dashed lightgrey;
+        border-radius: 5px;
+    }
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+
+}
+
+
+
+.arrow {
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .line {
+        // draw the line using a dashed line using the border property
+        border-bottom: 1px dashed lightgrey;
+        width: 100%;
+    }
+
+    .arrowhead {
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 10px solid lightgrey;
+    }
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+    width: 100%;
+
+    .text {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    // a nice dashed lightgrey border with round corners
+    border: 1px dashed lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 10px;
+
+
+}
+
+.item:hover {
+    cursor: pointer;
+}
+
+.node-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.item {
+    position: relative;
+}
+
+.connection-points-left {
+
+    position: absolute;
+    left: -10px; // Adjust the left position as needed
+    top: 50%; // Adjust the top position as needed
+    transform: translateY(-50%); // Center the dots vertically
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.connection-points-right {
+
+    position: absolute;
+    right: -10px; // Adjust the left position as needed
+    //   top: 50%; // Adjust the top position as needed
+    //   transform: translateY(-50%); // Center the dots vertically
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.connection-point {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.arrow-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+}

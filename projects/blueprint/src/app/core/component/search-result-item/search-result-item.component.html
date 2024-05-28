@@ -1,0 +1,12 @@
+<div class="card" (click)="emitSelected()" (keyup.enter)="emitSelected()" tabindex="1">
+    <div class="head">
+        <bp-avatar size="large" [avatars]="item().avatars" />
+    </div>
+
+    <div class="body">
+        <div class="small">{{item().classLabel}}</div>
+        <div class="big">{{item().label}}</div>
+        <div class="small">{{item().description}}</div>
+    </div>
+
+</div>

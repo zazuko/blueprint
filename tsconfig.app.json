@@ -1,0 +1,41 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": [],
+    "paths": {
+      "@blueprint/ontology": [
+        "projects/blueprint/src/app/core/ontology/index"
+      ],
+      "@blueprint/utils": [
+        "projects/blueprint/src/app/core/utils/index"
+      ],
+      "@blueprint/service/*": [
+        "projects/blueprint/src/app/core/service/*"
+      ],
+      "@blueprint/http-interceptor/*": [
+        "projects/blueprint/src/app/core/http-interceptor/*"
+      ],
+      "@blueprint/model/*": [
+        "projects/blueprint/src/app/core/model/*"
+      ],
+      "@blueprint/component/*": [
+        "projects/blueprint/src/app/core/component/*"
+      ],
+      "@blueprint/animation/*": [
+        "projects/blueprint/src/app/core/animation/*"
+      ],
+      "@blueprint/constant/*": [
+        "projects/blueprint/src/app/core/constant/*"
+      ],
+    }
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

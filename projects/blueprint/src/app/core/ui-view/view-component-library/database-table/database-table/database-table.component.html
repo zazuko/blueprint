@@ -1,0 +1,66 @@
+<!-- a table with name, type settings references and Default Value and Note -->
+@if (table) {
+
+<p-table [value]="table.columns">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Settings</th>
+            <th>References</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+        <tr>
+            <td>{{ row.label }}</td>
+            <td>{{ row.type }}</td>
+            <td>
+                <bp-database-settings-list [list]="row.settings" />
+            </td>
+            <td>
+                @for (reference of row.references; track reference) {
+                <div>
+                    <div class="reference" (click)="emitNodeSelected(reference.tableIri)"
+                        (keyup.enter)="emitNodeSelected(reference.tableIri)" role="button" tabindex="1">
+                        @if (reference.isIncoming) {
+                        <div>
+                            <svg fill="none" viewBox="0 0 64 64" height="64" width="64"
+                                xmlns="http://www.w3.org/2000/svg" alt="1-n rel icon"
+                                class="inline w-5 h-4 outline-none">
+                                <ellipse xmlns="http://www.w3.org/2000/svg" cx="12.8" cy="30.8" rx="4.8" ry="4.8"
+                                    fill="currentColor"></ellipse>
+                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M12.8008 30.7999C12.8008 29.4744 13.8753 28.3999 15.2008 28.3999H53.6008C54.9263 28.3999 56.0008 29.4744 56.0008 30.7999C56.0008 32.1254 54.9263 33.1999 53.6008 33.1999H15.2008C13.8753 33.1999 12.8008 32.1254 12.8008 30.7999Z"
+                                    fill="currentColor"></path>
+                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M52.9146 14.7203C53.8423 15.667 53.8268 17.1865 52.8801 18.1142L40.2295 30.5103L52.8801 42.9065C53.8268 43.8342 53.8423 45.3537 52.9146 46.3004C51.9869 47.2472 50.4674 47.2626 49.5207 46.3349L35.1207 32.2246C34.66 31.7731 34.4004 31.1553 34.4004 30.5103C34.4004 29.8654 34.66 29.2475 35.1207 28.7961L49.5207 14.6858C50.4674 13.7581 51.9869 13.7735 52.9146 14.7203Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </div>
+                        }
+                        @if (!reference.isIncoming) {
+                        <div>
+                            <svg fill="none" viewBox="0 0 64 64" height="64" width="64"
+                                xmlns="http://www.w3.org/2000/svg" alt="n-1 rel icon"
+                                class="inline w-5 h-4 outline-none">
+                                <ellipse xmlns="http://www.w3.org/2000/svg" rx="4.8" ry="4.8"
+                                    transform="matrix(-1 0 0 1 51.2 31.8)" fill="currentColor"></ellipse>
+                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M51.1992 31.7999C51.1992 30.4744 50.1247 29.3999 48.7992 29.3999H10.3992C9.07373 29.3999 7.99922 30.4744 7.99922 31.7999C7.99922 33.1254 9.07373 34.1999 10.3992 34.1999H48.7992C50.1247 34.1999 51.1992 33.1254 51.1992 31.7999Z"
+                                    fill="currentColor"></path>
+                                <path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M11.0854 15.7203C10.1577 16.667 10.1732 18.1865 11.1199 19.1142L23.7705 31.5103L11.1199 43.9065C10.1732 44.8342 10.1577 46.3537 11.0854 47.3004C12.0131 48.2472 13.5326 48.2626 14.4793 47.3349L28.8793 33.2246C29.34 32.7731 29.5996 32.1553 29.5996 31.5103C29.5996 30.8654 29.34 30.2475 28.8793 29.7961L14.4793 15.6858C13.5326 14.7581 12.0131 14.7735 11.0854 15.7203Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </div>
+                        }
+                        <div> {{reference.table}}.{{reference.column}}</div>
+                    </div>
+                </div>
+                }
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+}

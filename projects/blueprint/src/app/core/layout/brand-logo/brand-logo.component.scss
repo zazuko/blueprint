@@ -1,0 +1,25 @@
+@use '../../../../styles/media-queries.scss' as mq;
+
+
+.logo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @include mq.for-tablet {
+        flex-direction: row;
+    }
+
+}
+
+.title {
+    text-transform: uppercase;
+    text-align: center;
+    line-height: normal;
+    color: var(--quaternary-contrast);
+    text-decoration: none;
+    font-family: 'Orbitron';
+    font-size: 0.7em;
+}

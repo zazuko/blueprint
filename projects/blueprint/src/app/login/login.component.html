@@ -1,0 +1,21 @@
+<div>
+  <div>
+    <bp-brand-logo/>
+  </div>
+  <br>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <input size="small" type="text" pInputText formControlName="username" placeholder="Username" autocomplete="username" />
+    <br>
+    <input size="small" type="text" pInputText type="password" formControlName="password" placeholder="Password"
+      autocomplete="password" />
+
+
+    <p class="error">
+      {{errorMessage}}&nbsp;
+    </p>
+
+    <p-button label="Login" size="small" [disabled]="!loginForm.valid" type="submit"/>
+
+  </form>
+</div>

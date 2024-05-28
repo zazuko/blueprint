@@ -1,0 +1,30 @@
+<div class="content">
+
+  <div class="search-input">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input type="text" pInputText [ngModel]="searchTerm()" (ngModelChange)="onSearchInput($event)" />
+    </span>
+
+    <span>{{ resultCount() }} Results
+    </span>
+  </div>
+
+  <div class="result">
+    <bp-filter-panel (filtersChange)="onFilterChange($event)" [filterItems]="searchFilterItems$ | async"
+      [classCount]="classCount()" />
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column;">
+
+      <bp-search-result-list [searchResult]="searchResult()" [total]="resultCount()" (more)="onMore()"
+        (selected)="onItemSelected($event)" />
+
+
+
+
+    </div>
+  </div>
+
+
+
+</div>

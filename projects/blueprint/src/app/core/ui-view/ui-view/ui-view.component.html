@@ -1,0 +1,13 @@
+@if (uiView) {
+
+
+@for (viewContainer of viewContainers; track viewContainer.iri) {
+
+@for (component of viewContainer.viewComponent; track component.iri) {
+<bp-ui-view-component [uiViewComponent]="component" (nodeSelected)="emitNodeSelected($event)" />
+}
+
+}
+
+
+}

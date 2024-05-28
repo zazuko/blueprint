@@ -1,0 +1,77 @@
+<h1>Archimate - Context Diagram</h1>
+
+<div class="diagram-container">
+    <div>
+        <div>
+            <div class="left-container-grid">
+                @for (inFlow of incomingFlows(); track inFlow.iri) {
+                @if(inFlow.source !== null) {
+
+                <div class="grid-app-box" (click)="emitNodeSelected(inFlow.source.iri)"
+                    (keyup.enter)="emitNodeSelected(inFlow.source.iri)" role="button" tabindex="1">
+                    <span class="symbol"></span>
+                    {{inFlow.source.label}}
+                </div>
+                <div class="arrow-with-label">
+                    @for(businessObject of inFlow.businessObjectsTransported; track businessObject.iri) {
+                    <div class="label" [pTooltip]="inFlow.label + '\n' + inFlow.flowType"
+                        (click)="emitNodeSelected(businessObject.iri)"
+                        (keyup.enter)="emitNodeSelected(businessObject.iri)" role="button" tabindex="2">
+                        {{businessObject.label}}
+                    </div>
+
+                    }
+                    <div class="arrow">
+                        <div class="stroke"></div>
+                        <div class="head"></div>
+                    </div>
+
+                </div>
+                }
+
+                }
+            </div>
+            <div class="spaceing"></div>
+        </div>
+    </div>
+
+    <div class="center-container">
+        @for (application of center(); track application.iri) {
+        <div class="app-box">
+            <span class="symbol"></span>{{application.label}}
+        </div>
+        }
+    </div>
+
+    <div>
+        <div class="right-container-grid">
+            @for (outFlow of outgoingFlows(); track outFlow.iri) {
+            @if(outFlow.target !== null) {
+
+            <div class="arrow-with-label">
+                @for(businessObject of outFlow.businessObjectsTransported; track businessObject.iri) {
+                <div class="label" [pTooltip]="outFlow.label + '\n' + outFlow.flowType"
+                    (click)="emitNodeSelected(businessObject.iri)" (keyup.enter)="emitNodeSelected(businessObject.iri)"
+                    role="button" tabindex="2">
+                    {{businessObject.label}}
+                </div>
+
+                }
+
+                <div class="arrow">
+                    <div class="stroke"></div>
+                    <div class="head"></div>
+                </div>
+
+            </div>
+            <div class="grid-app-box" (click)="emitNodeSelected(outFlow.target.iri)"
+                (keyup.enter)="emitNodeSelected(outFlow.target.iri)" role="button" tabindex="1">
+                <span class="symbol"></span>
+                {{outFlow.target.label}}
+            </div>
+            }
+            }
+        </div>
+        <div class="spaceing"></div>
+    </div>
+</div>

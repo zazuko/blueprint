@@ -1,0 +1,22 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+
+    <h1>Settings</h1>
+    <p>Configure what you need.</p>
+
+    <div class="grid-container">
+
+        <a [routerLink]="['concept']">
+            <bp-configuration-card icon="fa-solid fa-circle-nodes" firstLine="Concepts"
+                secondLine="Things and connections" />
+        </a>
+
+        <a routerLink="topology">
+            <bp-configuration-card icon="fa-solid fa-sitemap" firstLine="Topology" secondLine="View the Topologies" />
+
+        </a>
+        <a routerLink="details">
+            <bp-configuration-card icon="fa-solid fa-palette" firstLine="Details"
+                secondLine="Blueprint Detail Configuration" />
+        </a>
+    </div>
+</bp-breadcrumb-page>

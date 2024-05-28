@@ -1,0 +1,27 @@
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix flux: <https://flux.described.at/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> . 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix fluxShapes: <https://ld.flux.zazuko.com/shapes/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix fluxMatadataShapes: <https://ld.flux.zazuko.com/shapes/metadata/> .
+@prefix  schema: <https://schema.org/> . 
+
+fluxMatadataShapes:SimpleNode
+    a sh:NodeShape ;
+    sh:name "Simple Node Shape" ;
+    sh:description: "SHACL Shape for a Simple UI Node" ; 
+    sh:targetClass rdfs:Class;
+    sh:property fluxMatadataShapes:SimpleNodeTypeProperty
+ .
+
+fluxMatadataShapes:SimpleNodeTypeProperty
+    a sh:PropertyShape ;
+    sh:path rdf:type ;
+    sh:name "nodeType" ;
+    sh:description "The type of this thing" ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:message "Invalid type Property" .

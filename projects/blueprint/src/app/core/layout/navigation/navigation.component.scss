@@ -1,0 +1,180 @@
+@use '../../../../styles/media-queries' as mq;
+
+// primary nav
+:host {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-index-nav);
+    width: var(--nav-panel-left-width);
+    max-width: var(--nav-panel-left-width);
+
+    // render tablet primary nav under blur when secondary is open
+    @include mq.for-tablet {
+        width: 100%;
+        max-width: 100%;
+
+        &:has(.bp-nav-primary--open) {
+            z-index: 50;
+        }
+    }
+
+    @include mq.for-phone-only {
+        width: 100%;
+        max-width: 100%;
+    }
+
+}
+
+.bp-mobile-nav-bar {
+    display: none;
+
+    @include mq.for-phone-only {
+        display: flex;
+    }
+
+    gap: 0.75rem;
+    backdrop-filter: blur(16px);
+    background-color: color-mix(in srgb, var(--page-background) 70%, transparent);
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    padding-block: 0.75rem;
+    padding-inline: var(--layout-padding);
+    border-block-end: 1px solid var(--septenary-contrast);
+    box-sizing: border-box;
+
+    transform: translateY(0);
+    transition: transform 0.3s ease-out 0.6s;
+
+    &:has(+ .bp-nav-primary--open) {
+        transform: translateY(-100%);
+        // mobile bar: exit without delay
+        transition: transform 0.3s ease-in;
+    }
+}
+
+// First level navigation
+.bp-nav-primary {
+    width: var(--nav-panel-left-width);
+    max-width: var(--nav-panel-left-width);
+    min-width: var(--nav-panel-left-width);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 100vh;
+    overflow: auto;
+    backdrop-filter: blur(16px);
+    background-color: color-mix(in srgb, var(--page-background) 70%, transparent);
+    // render primary nav / mini menu above tablet secondary bar
+    z-index: 250;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    height: 100dvh;
+    padding-block-start: 1rem;
+    padding-block-end: 2rem;
+    box-sizing: border-box;
+
+    // div containing mobile close button and bp-nav_top
+    >div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @include mq.for-phone-only {
+        position: absolute;
+        top: 0;
+        background-color: var(--page-background);
+        box-shadow: 10px 4px 3px 0 rgba(0, 0, 0, 0.001);
+
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in 0.38s;
+
+        &.bp-nav-primary--open {
+            transform: translateX(0%);
+            transition: transform 0.3s ease-out 0.1s;
+        }
+
+        @media (prefers-reduced-motion: reduce-motion) {
+            transition: none;
+        }
+    }
+
+    @include mq.for-tablet {
+        flex-direction: row;
+        width: 100%;
+        max-width: 100%;
+        padding-inline: calc(var(--layout-padding) - 1.25rem);
+        height: auto;
+        padding-block: 0;
+    }
+
+    // Add a subtle border for the home page
+    border-block-end: 1px solid var(--septenary-contrast);
+
+    @include mq.for-tablet-up {
+        border-inline-end: 1px solid var(--septenary-contrast);
+    }
+
+    @include mq.for-phone-only {
+        border-inline-end: 1px solid var(--septenary-contrast);
+    }
+}
+
+.bp-close-nav {
+    color: var(--primary-contrast);
+    background-color: transparent;
+    border: none;
+    display: none;
+
+    @include mq.for-phone-only {
+        display: block;
+    }
+}
+
+
+
+// new 
+
+
+.navigation-items {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex-grow: 1;
+    justify-content: flex-start !important;
+    margin-top: 30px;
+
+    @include mq.for-tablet {
+        flex-direction: row !important;
+        gap: 30px;
+        margin-left: 30px;
+        height: 109px !important;
+        margin-top: 0;
+    }
+}
+
+.brand {
+    text-decoration: none;
+    padding: 20px 0;
+
+    @include mq.for-tablet {
+        padding-left: 32px;
+    }
+}
+
+.brand:hover {
+    cursor: pointer;
+}
+
+.bottom-items {
+    margin-bottom: 20px;
+
+    @include mq.for-tablet {
+        margin-bottom: 0;
+        margin-right: 32px;
+    }
+}

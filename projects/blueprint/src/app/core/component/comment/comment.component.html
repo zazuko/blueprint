@@ -1,0 +1,14 @@
+@if(comment()) {
+
+<p-card>
+    @if(lineCount() > 10) {
+    <p-scrollPanel [style]="{ width: '100%', height: height() + 'px'}">
+        <div class="comment">{{ comment() }}</div>
+    </p-scrollPanel>
+    } @else {
+    <div class="comment">{{ comment() }}</div>
+    }
+
+</p-card>
+
+}

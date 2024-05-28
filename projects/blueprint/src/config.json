@@ -1,0 +1,10 @@
+{
+    "$schema": "../../../blueprint-config-schema.json",
+    "endpointUrl": "https://ld.flux.zazuko.com/query",
+    "sparqlConsoleUrl": "https://ld.flux.zazuko.com/sparql/#query",
+    "graphExplorerUrl": "https://ld.flux.zazuko.com/graph-explorer/?resource",
+    "fullTextSearchDialect": "neptune",
+    "neptune": {
+        "ftsEndpoint": " https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
+    }
+}

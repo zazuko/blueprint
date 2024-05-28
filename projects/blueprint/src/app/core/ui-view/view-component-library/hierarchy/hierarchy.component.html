@@ -1,0 +1,32 @@
+<div class="circle-container">
+    <h3>{{label}}</h3>
+    @for(element of hierarchy; track element.iri ) {
+    <div class="row">
+        @if(!$last) {
+        <div class="level">
+            <div class="row">
+
+                <bp-avatar size="normal" shape="square"
+                    [avatars]="[{label:'',icon: element.icon, color: element.color}]" />
+            </div>
+            <div class="line"></div>
+        </div>
+        <div [pTooltip]="element.label" class="label-container link" (click)="emitNodeSelected(element.iri)"
+            (keyup.enter)="emitNodeSelected(element.iri)" tabindex="0">
+            <div class="label">{{element.label}}</div>
+            <div class="sub-label">{{element.classLabel}}</div>
+        </div>
+
+        } @else {
+        <div class="el"></div>
+        <bp-avatar size="normal" shape="circle" [avatars]="[{label:'',icon: element.icon, color: element.color}]" />
+
+        <div [pTooltip]="element.label" class="label-container last">
+            <div class="label">{{element.label}}</div>
+            <div class="sub-label">{{element.classLabel}}</div>
+        </div>
+        }
+
+    </div>
+    }
+</div>

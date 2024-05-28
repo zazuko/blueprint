@@ -1,0 +1,75 @@
+@if(relation().length > 0) {
+<h1>{{label() ?? 'no label'}}</h1>
+<div class="content">
+    <div style="display: flex; flex-direction: row;">
+        <div class="this">
+            <div class="this-box">
+                <bp-avatar [avatars]="subject().avatars" size="large" />
+                <div class="text">
+                    <div>{{subject().label}}</div>
+                    <div style="font-size: 10px; color:lightgray">
+                        @for(classLabel of subject().classLabel; track classLabel) {
+                        <span>{{classLabel}}</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="connection-points-right">
+                @for(node of relation(); track node.iri) {
+
+                @for(s of node.connections; track s) {
+                @if(s.source !== null) {
+                <div (click)="emitNodeSelected(s.source.iri, $event)"
+                    (keyup.enter)="emitNodeSelected(s.source.iri, $event)" tabindex="1" class="connection-point"
+                    [pTooltip]="s.source.classLabel + ' ' + s.source.label"
+                    [ngStyle]="{'backgroundColor': s.source.color}">
+                </div> }
+                }
+                }
+            </div>
+        </div>
+        <div class="arrow-container">
+            @for(node of relation(); track node.iri) {
+
+            @for(c of node.connections; track c) {
+            <div class="arrow">
+                <div class="line"></div>
+                <div class="arrowhead"></div>
+            </div>
+            }
+            }
+        </div>
+        <div class="node-container">
+            @for(node of relation(); track node.iri) {
+
+            <div class="item" (click)="emitNodeSelected(node.iri, $event)"
+                (keyup.enter)="emitNodeSelected(node.iri, $event)" tabindex="1">
+                <bp-avatar [avatars]="node.avatars" size="normal" />
+                <div class="text">
+                    <div>{{node.label}}</div>
+                    <div style="font-size: 10px; color:lightgray">
+                        @for(classLabel of node.classLabel; track classLabel) {
+                        <span>{{classLabel}}</span>
+                        }
+                    </div>
+                </div>
+                <div class="connection-points-left">
+                    @for(c of node.connections; track c) {
+                    @if(c.target !== null) {
+                    <div (click)="emitNodeSelected(c.target.iri, $event)"
+                        (keyup.enter)="emitNodeSelected(c.target.iri, $event)" tabindex="1" class="connection-point"
+                        [pTooltip]="c.target.classLabel + ' ' + c.target.label"
+                        [ngStyle]="{'backgroundColor': c.target.color}">
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+}

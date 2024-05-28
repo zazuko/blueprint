@@ -1,0 +1,82 @@
+@prefix nileaUi: <https://zazuko.com/nilea/ui/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+
+nileaUi:ArchimateContextDiagram  rdfs:subClassOf nileaUi:ViewComponentDefinition;
+    rdfs:label "Archimate Context Diagram" ;
+    rdfs:comment "An Archimate Context Diagram is a view component that is used to display an Archimate Context Diagram." ;
+.
+
+nileaUi:ViewComponent a rdfs:Class;
+    rdfs:label "View Component" ;
+    rdfs:subClassOf nileaUi:ViewComponent ;
+    rdfs:comment "A view component is a component that is used to display a view." ;
+.
+
+# config for the UI
+nileaUi:ApplicationArchimateContextDiagramDefinition a nileaUi:ArchimateContextDiagram;
+    rdfs:label "Application Context Diagram" ;
+    rdfs:comment "Dataflows between applications" ;
+    nileaUi:query """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ea: <http://example.org/ea/>
+
+PREFIX  nileaUi: <https://zazuko.com/nilea/ui/> 
+PREFIX  local: <http://localhost/data> 
+
+CONSTRUCT {
+    ?componentIri nileaUi:hasComponentData ?componentDataIri .
+    ?componentDataIri a nileaUi:ContextDiagramData;
+        nileaUi:hasSource ?sourceIri;
+        nileaUi:hasDestination ?destinationIri;
+        nileaUi:hasCenter ?subject;
+    .
+    ?sourceIri rdfs:label ?sourceLabel .
+    ?subject rdfs:label ?centerLabel .
+    ?destinationIri rdfs:label ?destinationLabel .
+} WHERE {
+    {
+        ?subject rdfs:label ?centerLabel .
+    } UNION
+    {
+        ?subject ^ea:target/ea:source ?sourceIri .
+        ?sourceIri rdfs:label ?sourceLabel .
+    } UNION {
+        ?subject ^ea:source/ea:target ?destinationIri .
+        ?destinationIri rdfs:label ?destinationLabel .
+    }
+}""" ;
+.
+
+
+### schema:SoftwareApplication
+
+nileaUi:UiView a rdfs:Class ;
+.
+
+nileaUi:ViewContainer a rdfs:Class ;
+    rdfs:label "View Container" ;
+    rdfs:comment "A view container is a container that contains views." ;
+.
+
+nileaUi:UiComponent a rdfs:Class ;
+    rdfs:label "View Component" ;
+    rdfs:comment "A view component is a component that is used to display a view." ;
+.
+# instance
+
+nileaUi:SoftwareApplicationView a nileaUi:UiView ;
+    nileaUi:forClass schema:SoftwareApplication ;
+    nileaUi:hasViewContainer nileaUi:ArchiViewContainer ;
+.
+
+nileaUi:ArchiViewContainer a nileaUi:ViewContainer ;
+    nileaUi:order 1 ;
+    nileaUi:hasComponent nileaUi:ApplicationArchimateContextDiagram;
+.
+
+nileaUi:ApplicationArchimateContextDiagram a nileaUi:UiComponent ;
+    nileaUi:hasComponentDefinition nileaUi:ApplicationArchimateContextDiagramDefinition;
+    # nileaUi:componentData
+.

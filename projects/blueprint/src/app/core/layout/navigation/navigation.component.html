@@ -1,0 +1,57 @@
+<!-- Primary Nav -->
+<!-- Mobile nav bar -->
+<div class="bp-mobile-nav-bar">
+  <bp-mobile-logo-button (click)="openMobileNav($event)" />
+</div>
+<!-- End Mobile nav bar -->
+
+<nav class="bp-nav-primary bp-scroll-hide" [class.bp-nav-primary--open]="isMobileNavigationOpened()" #e>
+  <button type="button" class="bp-close-nav" (click)="closeMobileNav()" aria-label="Close navigation">
+    <i class="pi pi-times"></i>
+  </button>
+  <!-- Top section of primary nav -->
+  <a aria-label="Blueprint homepage" routerLink="/" class="brand">
+    <!-- Logo Symbol -->
+    <bp-brand-logo />
+  </a>
+
+
+
+  <div class="navigation-items">
+    @for(item of navigationItems; track item.label) {
+    <bp-nav-menu-item [item]="item" [active]="false" (selected)="onNavigationItemSelected($event)" />
+    }
+  </div>
+
+
+  <!-- Bottom section of primary nav -->
+  <div class="bottom-items">
+    <p-overlayPanel #op [styleClass]="'theme-select'">
+      <bp-theme-picker-menu></bp-theme-picker-menu>
+    </p-overlayPanel>
+    <div (click)="op.toggle($event)" tabindex="10" (keyup.enter)="op.toggle($event)">
+      @switch (theme()) {
+      @case ('light') {
+      <i class="pi pi-sun"></i>
+      } @case ('dark') {
+      <i class="pi pi-moon"></i>
+      } @case ('auto') {
+      <i class="pi pi-desktop"></i>
+      } }
+
+    </div>
+
+
+
+  </div>
+</nav>
+
+<!-- Tablet: Second horizontal nav layer which opens the secondary nav
+     @if (activeRouteItem() === DOCS_ROUTE || activeRouteItem() === REFERENCE_ROUTE) { 
+  <div class="bp-secondary-tablet-bar">
+    <button type="button" (click)="openMobileNav($event)">
+      <mat-icon>menu</mat-icon>
+      <span>Docs</span>
+    </button>
+  </div>
+} -->

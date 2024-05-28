@@ -1,0 +1,163 @@
+$archimate-border-color: rgb(137, 177, 177);
+$archimate-box-color: rgb(192, 253, 254);
+
+
+
+.diagram-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin-top: 50px;
+}
+
+.app-box {
+    border: 1px solid $archimate-border-color;
+    background-color: $archimate-box-color;
+    width: min-content;
+    padding: 10px;
+    text-align: center;
+    min-width: 150px;
+    position: relative;
+    flex-grow: 1;
+    padding: 1rem;
+
+    /* ArchiMate application component symbol */
+    .symbol {
+        width: 20px;
+        height: 20px;
+        background-image: url('/assets/icons/archimate/application_component.svg');
+        background-size: cover;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+}
+
+.center-container {
+    display: flex;
+}
+
+.center-container .app-box {
+    flex-grow: 1;
+    /* Allow the box to grow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 35px;
+    padding-right: 35px;
+    white-space: nowrap;
+    color: black;
+}
+
+.arrow {
+    flex-direction: row;
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+
+    .stroke {
+        border-bottom: 1px dashed var(--primary-contrast);
+        height: 1px;
+        flex-shrink: 1;
+        min-width: 90px;
+        flex-grow: 1;
+    }
+
+    .head {
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 10px solid var(--primary-contrast);
+        flex-grow: 0;
+    }
+
+}
+
+
+
+
+
+// ----
+.left-container-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-row-gap: 10px;
+    flex-grow: 0;
+}
+
+.right-container-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-row-gap: 10px;
+    flex-grow: 0;
+}
+
+.spacing {
+    flex-grow: 1;
+}
+
+.grid-app-box {
+    border: 1px solid $archimate-border-color;
+    background-color: $archimate-box-color;
+    padding: 10px;
+    padding-left: 35px;
+    padding-right: 35px;
+    text-align: center;
+    position: relative;
+    color: black;
+
+    /* ArchiMate application component symbol */
+    .symbol {
+        width: 20px;
+        height: 20px;
+        background-image: url('/assets/icons/archimate/application_component.svg');
+        background-size: cover;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: black;
+    }
+
+}
+
+.grid-app-box:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.app-box:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.arrow-with-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+
+
+}
+
+.label {
+    color: var(--quaternary-contrast);
+    margin-left: 10px;
+    margin-right: 20px;
+    max-width: 200px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: -20px;
+    position: relative;
+    z-index: 1;
+}
+
+.label:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

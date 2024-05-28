@@ -1,0 +1,66 @@
+// variable for node width
+
+$node-width: 6.5em;
+
+.panel {
+    color: var(--quaternary-contrast);
+    background-color: var(--octonary-contrast);
+    padding: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.title {
+    color: var(--quaternary-contrast);
+    margin-bottom: 2em;
+    font-size: 1.2em;
+
+    .highlight {
+        color: var(--primary-contrast);
+    }
+
+}
+
+.node-list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+}
+
+.node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: $node-width;
+    min-width: $node-width;
+    padding: 1em;
+    margin-bottom: 0.5em;
+    border-radius: 0.5em;
+
+    .avatar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 2em;
+        height: 2em;
+        border-radius: 50%;
+        font-size: 1.5em;
+        color: var(--primary-contrast);
+    }
+
+    .label {
+        margin-top: 0.5em;
+        max-width: $node-width;
+        min-width: $node-width;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+}
+
+.node:hover {
+    cursor: pointer;
+    background-color: var(--senary-contrast);
+}
