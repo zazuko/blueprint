@@ -1,22 +1,20 @@
-version: "3"
-
 services:
-  # add k8s demo data (for those who don't have a Kubernetes cluster)
+  # Add k8s demo data (for those who don't have a Kubernetes cluster)
   add-demo-k8s-data:
     build:
       context: ./alpine-curl/
       dockerfile: Dockerfile
     restart: "no"
-    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/nilea/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
+    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/blueprint/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
     volumes:
       - ./demo-data/k8s.ttl:/app/data.ttl:ro
 
-  # add custom k8s data generated locally (will not be in the git history)
+  # Add custom k8s data generated locally (will not be in the git history)
   add-custom-k8s-data:
     build:
       context: ./alpine-curl/
       dockerfile: Dockerfile
     restart: "no"
-    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/nilea/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
+    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/blueprint/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
     volumes:
       - ./volumes/k8s-data/data.ttl:/app/data.ttl:ro
