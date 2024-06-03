@@ -6,7 +6,7 @@ import {
 import { routes } from './app.routes';
 import { APP_INITIALIZER, importProvidersFrom } from '@angular/core';
 
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigService } from './core/service/config/config.service';
 
