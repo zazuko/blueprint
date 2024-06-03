@@ -4,13 +4,13 @@ import {
 } from '@angular/router';
 
 import { routes } from './app.routes';
-import { APP_INITIALIZER, importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER } from '@angular/core';
 
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigService } from './core/service/config/config.service';
+import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.function';
 
-import { AuthInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.service';
 
 function initializeAppFactory(configService: ConfigService): () => void {
     return () => configService.fetchConfig()
@@ -18,7 +18,7 @@ function initializeAppFactory(configService: ConfigService): () => void {
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        importProvidersFrom(HttpClientModule),
+        provideHttpClient(withInterceptors([authInterceptor])),
         provideRouter(routes,
             withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
             withComponentInputBinding()
@@ -29,8 +29,7 @@ export const appConfig: ApplicationConfig = {
             useFactory: initializeAppFactory,
             deps: [ConfigService],
             multi: true
-        },
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+        }
 
     ],
 };

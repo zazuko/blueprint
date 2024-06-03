@@ -1,1 +1,1 @@
-export * from './auth-interceptor/auth-interceptor.service'
+export * from './auth-interceptor/auth-interceptor.function'
