@@ -2,12 +2,27 @@
 
 ## Introduction
 
-This is the Blueprint Enterprise Knowledge Graph Browser WebApp.
-Currently it runs fully in browser and is a single page application.
+> Zazuko Blueprint is an enterprise knowledge graph frontend and browser, designed to make RDF Knowledge Graphs accessible and customizable for domain users.
 
-## Configuration
+Zazuko Blueprint is the culmination of a decade of experience at Zazuko working with RDF Knowledge Graphs. We understand that for Knowledge Graphs to be truly accessible to domain users, they must align with the context, experience, and expectations of those users. Generic "bubble"-oriented graph browsers often fall short in this regard. Zazuko Blueprint simplifies the creation of customized configurations or hypergraphs on top of your RDF Knowledge Graph, allowing you to focus on the most relevant elements from a high-level domain specialist perspective. You can also tailor generic vocabularies, such as schema.org, to reflect the specific terminology used within your organization or domain.
 
-The configuration file is located in `./src/config.json`.
+Recognizing the challenges web developers face when building applications on top of RDF, Zazuko Blueprint minimizes their exposure to RDF, enabling them to create specialized views of domain-specific knowledge with ease. Developers can provide a web component, and we leverage the declarative power of RDF to map the data schema to a highly specific visualization schema without extensive coding.
+
+Zazuko Blueprint has been in development for several years for our customers, and we are now making the code base publicly available. While we currently anticipate our audience to have some knowledge of RDF Knowledge Graphs, Zazuko also offers retainers for assistance with using and working with Zazuko Blueprint. [Contact us](mailto:info@zazuko.com?subject=Blueprint%20Support) to learn more.
+
+Zazuko Blueprint is an Angular web application that runs entirely in the browser.
+
+## Customization and Configuration of Zazuko Blueprint
+
+We plan to provide a configuration frontend in the future. For now, you need to add the configuration directly to the knowledge graph. This configuration is purely written in RDF and resides with your data in the knowledge graph. Blueprint will read this configuration when you interact with the application.
+
+The configuration allows you to define various aspects such as what should be visible and what should be hidden, how different entities relate to each other, and many other customizable elements. Please note that the configuration language and style may change before we release version 1.0 of Zazuko Blueprint. Examples and detailed documentation will be added soon to help guide you through the process.
+
+## Deployment
+
+### Standalone
+
+The configuration file of the Angular app itself is located in `./src/config.json`.
 
 ```json
 {
@@ -40,7 +55,7 @@ In case you are using the `neptune` dialect you need to provide the OpenSearch e
 }
 ```
 
-## Using Docker
+### Using Docker
 
 You can use our Docker image to run Blueprint.
 
@@ -76,7 +91,7 @@ Before the Blueprint Angular App starts it fetches the `/config.json`. It will t
 
 You can still add configuration parameters to the environment files as usual. Internally the Blueprint app is only using `src/environments/environment.ts`.
 
-## Development server
+### Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
