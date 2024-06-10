@@ -10,19 +10,19 @@ if [ -z "${ENDPOINT_URL}" ]; then
   exit 0
 fi
 
-if [ -z "${SPARQL_CONSOLE_URL}" ]; then
-  echo "SPARQL_CONSOLE_URL is not set, let's keep the current config.json file."
-  exit 0
-fi
-
-if [ -z "${GRAPH_EXPLORER_URL}" ]; then
-  echo "GRAPH_EXPLORER_URL is not set, let's keep the current config.json file."
-  exit 0
-fi
-
 #########################################################
 # Set default values for optional environment variables #
 #########################################################
+
+if [ -z "${SPARQL_CONSOLE_URL}" ]; then
+  echo "SPARQL_CONSOLE_URL is not set, let's use 'http://example.com/sparql/#query' as default value."
+  SPARQL_CONSOLE_URL="http://example.com/sparql/#query"
+fi
+
+if [ -z "${GRAPH_EXPLORER_URL}" ]; then
+  echo "GRAPH_EXPLORER_URL is not set, let's use 'http://example.com/graph-explorer/?resource' as default value."
+  GRAPH_EXPLORER_URL="http://example.com/graph-explorer/?resource"
+fi
 
 if [ -z "${FULL_TEXT_SEARCH_DIALECT}" ]; then
   echo "FULL_TEXT_SEARCH_DIALECT is not set, let's use 'fuseki' as default value."
@@ -41,6 +41,13 @@ fi
 # Generate config.json file from environment variables #
 ########################################################
 
+echo "Generating config.json file with the following values:"
+echo "- ENDPOINT_URL: ${ENDPOINT_URL}"
+echo "- SPARQL_CONSOLE_URL: ${SPARQL_CONSOLE_URL}"
+echo "- GRAPH_EXPLORER_URL: ${GRAPH_EXPLORER_URL}"
+echo "- FULL_TEXT_SEARCH_DIALECT: ${FULL_TEXT_SEARCH_DIALECT}"
+echo "- NEPTUNE_FTS_ENDPOINT: ${NEPTUNE_FTS_ENDPOINT}"
+
 jq -n \
   --arg endpointUrl "${ENDPOINT_URL}" \
   --arg sparqlConsoleUrl "${SPARQL_CONSOLE_URL}" \
@@ -55,6 +62,6 @@ jq -n \
     "neptune": {
       "ftsEndpoint": $ftsEndpoint
     }
-  }' > /app/dist/blueprint/browser/config.json
+  }' > /app/config.json
 
 exit 0

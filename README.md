@@ -40,6 +40,34 @@ In case you are using the `neptune` dialect you need to provide the OpenSearch e
 }
 ```
 
+## Using Docker
+
+You can use our Docker image to run Blueprint.
+
+```sh
+docker pull ghcr.io/zazuko/blueprint:latest
+```
+
+It will listen on port 80.
+
+The following environment variables can be set:
+
+- `ENDPOINT_URL`: the SPARQL endpoint URL (required)
+- `SPARQL_CONSOLE_URL`: the SPARQL console URL (default placeholder value: `http://example.com/sparql/#query`)
+- `GRAPH_EXPLORER_URL`: the Graph Explorer URL (default placeholder value: `http://example.com/graph-explorer/?resource`)
+- `FULL_TEXT_SEARCH_DIALECT`: the full text search dialect (default value: `fuseki`)
+- `NEPTUNE_FTS_ENDPOINT`: the OpenSearch endpoint for the Neptune dialect (in case you are using `neptune` dialect)
+
+If any of the required environment variables are not set, the container will be started using the development configuration.
+
+You can also mount a custom configuration file to `/app/config.json`.
+
+You should make sure that `ENDPOINT_URL`, `SPARQL_CONSOLE_URL` and `GRAPH_EXPLORER_URL` are reachable from the browser.
+Make sure that `ENDPOINT_URL` is configured to allow CORS requests.
+
+You can use [Trifid](https://github.com/zazuko/trifid) to proxy any SPARQL endpoint and to expose a SPARQL console and Graph Explorer.
+You can also use it to dereference URIs.
+
 ## Development
 
 ### Configuration
