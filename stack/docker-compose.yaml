@@ -22,10 +22,14 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-    volumes:
-      - ./blueprint/config.json:/app/config.json:ro
     ports:
       - 8081:80
+    environment:
+      # NOTE: 127.0.0.1 is in the context of the browser (frontend), not the server (backend)
+      - ENDPOINT_URL=http://127.0.0.1:8080/query
+      - SPARQL_CONSOLE_URL=http://127.0.0.1:8080/sparql/#query
+      - GRAPH_EXPLORER_URL=http://127.0.0.1:8080/graph-explorer/?resource
+      - FULL_TEXT_SEARCH_DIALECT=fuseki
 
   trifid:
     image: ghcr.io/zazuko/trifid:v5

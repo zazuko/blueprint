@@ -1,6 +1,0 @@
-{
-  "endpointUrl": "http://127.0.0.1:8080/query",
-  "sparqlConsoleUrl": "http://127.0.0.1:8080/sparql/#query",
-  "graphExplorerUrl": "http://127.0.0.1:8080/graph-explorer/?resource",
-  "fullTextSearchDialect": "fuseki"
-}
