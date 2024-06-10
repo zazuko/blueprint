@@ -87,18 +87,17 @@ You can also use it to dereference URIs.
 
 ### Configuration
 
-Before the Blueprint Angular App starts it fetches the `/config.json`. It will then overwrite the values in `src/environments/environment.development.ts` or `src/environments/environment.ts`. At build time `src/environments/environment.development.ts` will be replaced with the `src/environments/environment.ts` version.
+Before the Blueprint Angular App starts, it fetches the `/config.json`. It will then overwrite the values in `src/environments/environment.development.ts` or `src/environments/environment.ts`. At build time, `src/environments/environment.development.ts` will be replaced with the `src/environments/environment.ts` version.
 
-You can still add configuration parameters to the environment files as usual. Internally the Blueprint app is only using `src/environments/environment.ts`.
+You can still add configuration parameters to the environment files as usual. Internally, the Blueprint app only uses `src/environments/environment.ts`.
 
-### Development server
+### Development Server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-### Proxy for SPARQL - CORS Terror
+### Proxy for SPARQL - CORS Issues
 
-Blueprint is using SPARQL to fetch data from a triple store. For development the configuration parameter `endpointUrl` is `http://localhost:4200/query`. `ng serve` provides a proxy for SPARQL request to the triple store.
-This way CORS is not an issue and it's convenient to develop locally and the SPARQL endpoint can be configured quickly.
+Blueprint uses SPARQL to fetch data from a triple store. For development, the configuration parameter `endpointUrl` is set to `http://localhost:4200/query`. `ng serve` provides a proxy for SPARQL requests to the triple store. This way, CORS is not an issue, and it’s convenient to develop locally with a quickly configurable SPARQL endpoint.
 
 The proxy is configured in `./proxy.conf.json`.
 
@@ -115,9 +114,9 @@ The proxy is configured in `./proxy.conf.json`.
 }
 ```
 
-Note: This proxy is using HTTP/1.1 and therefore a bit slower.
+Note: This proxy uses HTTP/1.1 and is therefore a bit slower.
 
-## Code scaffolding
+## Code Scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
@@ -125,17 +124,17 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+## Running Unit Tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## Running End-to-End Tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+## Further Help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+To get more help on the Angular CLI, use `ng help` or check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ## License
 
