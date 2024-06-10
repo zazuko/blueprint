@@ -14,7 +14,7 @@ RUN sed -i "s/<VERSION>/${VERSION}/" ./projects/blueprint/src/build/build.ts
 RUN npm run build blueprint
 
 # Second step: serve the builded app
-FROM nginx:1.23.4-alpine
+FROM nginx:1.27.0-alpine
 
 RUN mkdir -p /app
 WORKDIR /app
