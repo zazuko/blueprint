@@ -44,7 +44,7 @@ export class FusekiFullTextSearch extends FullTextSearch {
 function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
   return `
   {
-    BIND( <${classMetadata.targetNode}> as ?fluxIri)
+    BIND( <${classMetadata.targetNode.value}> as ?fluxIri)
     BIND( ${classMetadata.searchPriority} as ?searchPriority) 
 
     ?sub a ?fluxIri .
