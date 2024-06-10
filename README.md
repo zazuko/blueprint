@@ -6,6 +6,8 @@
 
 Zazuko Blueprint is the culmination of a decade of experience at Zazuko working with RDF Knowledge Graphs. We understand that for Knowledge Graphs to be truly accessible to domain users, they must align with the context, experience, and expectations of those users. Generic "bubble"-oriented graph browsers often fall short in this regard. Zazuko Blueprint simplifies the creation of customized configurations or hypergraphs on top of your RDF Knowledge Graph, allowing you to focus on the most relevant elements from a high-level domain specialist perspective. You can also tailor generic vocabularies, such as schema.org, to reflect the specific terminology used within your organization or domain.
 
+![blueprint-sam](https://github.com/zazuko/blueprint/assets/583021/81b89afa-e321-46a5-b773-4fe7d6e1c1da)
+
 Recognizing the challenges web developers face when building applications on top of RDF, Zazuko Blueprint minimizes their exposure to RDF, enabling them to create specialized views of domain-specific knowledge with ease. Developers can provide a web component, and we leverage the declarative power of RDF to map the data schema to a highly specific visualization schema without extensive coding.
 
 Zazuko Blueprint has been in development for several years for our customers, and we are now making the code base publicly available. While we currently anticipate our audience to have some knowledge of RDF Knowledge Graphs, Zazuko also offers retainers for assistance with using and working with Zazuko Blueprint. [Contact us](mailto:info@zazuko.com?subject=Blueprint%20Support) to learn more.
