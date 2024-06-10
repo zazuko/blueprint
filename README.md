@@ -1,4 +1,4 @@
-# Blueprint - Enterprise Knowledge Graph Browser
+# Blueprint - Enterprise Knowledge Graph Frontend and Browser
 
 ## Introduction
 
