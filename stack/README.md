@@ -28,7 +28,7 @@ Here is the list of graphs that are used for this demo:
 Once you started the Docker Compose stack, you can run the following command:
 
 ```sh
-docker compose -f docker-compose.data.yaml up add-demo-k8s-data --build
+docker compose --profile add-k8s-demo-data up -d --build
 ```
 
 This will run a job that will import the triples that are in the `demo-data/k8s.ttl` file.
@@ -65,5 +65,5 @@ The `demo-data/k8s.ttl` was was generated that way, using a Kubernetes cluster c
 
 Importing generated triples to the Fuseki triplestore (run one of both):
 
-- for the custom file with your cluster (`volumes/k8s-data/data.ttl`): `docker compose -f docker-compose.data.yaml up add-custom-k8s-data --build`
-- for the demo file (`demo-data/k8s.ttl`): `docker compose -f docker-compose.data.yaml up add-demo-k8s-data --build`
+- for the custom file with your cluster (`volumes/k8s-data/data.ttl`): `docker compose --profile add-k8s-custom-data up -d --build`
+- for the demo file (`demo-data/k8s.ttl`): `docker compose --profile add-k8s-demo-data up -d --build`
