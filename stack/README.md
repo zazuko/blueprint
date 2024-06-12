@@ -31,7 +31,7 @@ Here is how some of the triples were generated, in case you want to generate you
 
 #### Without a Kubernetes cluster
 
-Once you have started the Docker Compose stack, you can run the following command (this is the one that was used in the ):
+Once you have started the Docker Compose stack, you can run the following command (this is the one that was used in the first part already):
 
 ```sh
 docker compose --profile k8s-demo-data up -d --build
@@ -73,6 +73,8 @@ Importing generated triples to the Fuseki triplestore (run one of both):
 
 - for the custom file with your cluster (`volumes/k8s-data/data.ttl`): `docker compose --profile k8s-custom-data up -d --build`
 - for the demo file (`demo-data/k8s.ttl`): `docker compose --profile k8s-demo-data up -d --build`
+
+Running one of the above commands will import the triples into the Fuseki triplestore and removes the previous k8s data, not the other data or any metadata.
 
 ## Reset everything
 
