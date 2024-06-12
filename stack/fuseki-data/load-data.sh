@@ -14,11 +14,13 @@ echo "Loading data to triple store…"
 echo "============================="
 echo ""
 
+ls -alh /app/data/*.ttl
+
 # loop over all .ttl files
 for f in /app/data/*.ttl; do
   graph=$(basename -s .ttl "${f}")
   echo "Loading '${f}' in graph urn:graph:${graph}…"
-  curl -s --fail-with-body -u admin:admin "http://store:3030/blueprint/data?graph=urn:graph:${graph}" --data-binary "@${f}" --header "Content-Type: text/turtle"
+  curl -s -X PUT --fail-with-body -u admin:admin "http://store:3030/blueprint/data?graph=urn:graph:${graph}" --data-binary "@${f}" --header "Content-Type: text/turtle"
   echo ""
 done
 

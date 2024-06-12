@@ -11,6 +11,8 @@ services:
       - ./volumes/fuseki/:/fuseki/databases/
 
   store-data:
+    profiles:
+      - basic-metadata
     build:
       context: ./fuseki-data/
       dockerfile: Dockerfile
@@ -19,6 +21,7 @@ services:
       - ./fuseki-data:/app/data:ro
 
   blueprint:
+    image: ghcr.io/zazuko/blueprint:latest
     build:
       context: ..
       dockerfile: Dockerfile
@@ -46,21 +49,19 @@ services:
     profiles:
       - add-k8s-demo-data
     build:
-      context: ./alpine-curl/
+      context: ./fuseki-data/
       dockerfile: Dockerfile
     restart: "no"
-    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/blueprint/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
     volumes:
-      - ./demo-data/k8s.ttl:/app/data.ttl:ro
+      - ./demo-data/k8s.ttl:/app/data/k8s.ttl:ro
 
   # Add custom k8s data generated locally (will not be in the git history)
   add-custom-k8s-data:
     profiles:
       - add-k8s-custom-data
     build:
-      context: ./alpine-curl/
+      context: ./fuseki-data/
       dockerfile: Dockerfile
     restart: "no"
-    command: 'curl -vvv --fail-with-body -u admin:admin http://store:3030/blueprint/data?graph=urn:graph:k8s --data-binary @data.ttl --header "Content-Type: text/turtle"'
     volumes:
-      - ./volumes/k8s-data/data.ttl:/app/data.ttl:ro
+      - ./volumes/k8s-data/data.ttl:/app/data/k8s.ttl:ro

@@ -1,10 +1,12 @@
 # Docker stack
 
-Run the complete demo stack using the following command:
+To start the stack with a basic Kubernetes + OCI demo dataset, run the following command:
 
 ```sh
-docker compose pull
-docker compose up -d --build
+docker compose \
+  --profile basic-metadata \
+  --profile add-k8s-demo-data \
+  up -d --build
 ```
 
 Here is where each component is exposed:
@@ -14,12 +16,6 @@ Here is where each component is exposed:
 - Trifid: http://127.0.0.1:8080/
 
 ## Generate triples
-
-### Graphs
-
-Here is the list of graphs that are used for this demo:
-
-- Kubernetes + OCI data: `urn:graph:k8s`
 
 ### Kubernetes triples
 
@@ -67,3 +63,14 @@ Importing generated triples to the Fuseki triplestore (run one of both):
 
 - for the custom file with your cluster (`volumes/k8s-data/data.ttl`): `docker compose --profile add-k8s-custom-data up -d --build`
 - for the demo file (`demo-data/k8s.ttl`): `docker compose --profile add-k8s-demo-data up -d --build`
+
+## Reset everything
+
+To reset everything (it will also remove your custom k8s data if any), you can run the following command:
+
+```sh
+docker compose --profile='*' down
+rm -rf ./volumes/
+```
+
+This can be useful if you want to start from scratch and try other kind of data.
