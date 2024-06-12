@@ -1,5 +1,8 @@
 #!/bin/sh
 
+DOWNLOAD_URL="${DOWNLOAD_URL:-}"
+DOWNLOAD_NAME="${DOWNLOAD_NAME:-}"
+
 set -eu
 
 echo "=========================="
@@ -14,11 +17,39 @@ echo "Loading data to triple store…"
 echo "============================="
 echo ""
 
-# loop over all .ttl files
-for f in /app/data/*.ttl; do
-  graph=$(basename -s .ttl "${f}")
-  echo "Loading '${f}' in graph urn:graph:${graph}…"
-  curl -s --fail-with-body -u admin:admin "http://store:3030/blueprint/data?graph=urn:graph:${graph}" --data-binary "@${f}" --header "Content-Type: text/turtle"
+# Make sure the data directory exists
+mkdir -p /app/data
+
+# If DOWNLOAD_URL is set, download the data
+if [ -n "${DOWNLOAD_URL}" ]; then
+  if [ -z "${DOWNLOAD_NAME}" ]; then
+    DOWNLOAD_NAME="data$(date -u +'%Y%m%d%H%M%S').ttl"
+  fi
+
+  echo "Downloading data from '${DOWNLOAD_URL}' as '${DOWNLOAD_NAME}'…"
+  curl -vvv -L -o "/app/data/${DOWNLOAD_NAME}" "${DOWNLOAD_URL}"
+  echo ""
+fi
+
+ls -alh /app/data/*
+
+# Loop over all files in the data directory and load them
+for f in /app/data/*; do
+  filename=$(basename "${f}")
+  ext="${filename##*.}"
+  graph="${filename%.*}"
+  if [ "${ext}" = "ttl" ]; then
+    echo "Loading '${f}' in graph urn:graph:${graph}…"
+    curl -s -X PUT --fail-with-body -u admin:admin "http://store:3030/blueprint/data?graph=urn:graph:${graph}" \
+      --data-binary "@${f}" --header "Content-Type: text/turtle"
+  elif [ "${ext}" = "nt" ]; then
+    echo "Loading '${f}' in graph urn:graph:${graph}…"
+    curl -s -X PUT --fail-with-body -u admin:admin "http://store:3030/blueprint/data?graph=urn:graph:${graph}" \
+      --data-binary "@${f}" --header "Content-Type: application/n-triples"
+  else
+    echo "Skipping '${f}'…"
+    continue
+  fi
   echo ""
 done
 
