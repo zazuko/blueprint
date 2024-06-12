@@ -8,7 +8,7 @@ docker compose \
   up -d --build
 ```
 
-You can also add a basic Kubernetes + OCI demo dataset (see in a next section how to build them), by running the following command:
+You can also add a basic Kubernetes + OCI demo dataset, by running the following command:
 
 ```sh
 docker compose \
@@ -16,6 +16,8 @@ docker compose \
   --profile k8s-demo-data \
   up -d --build
 ```
+
+You will see in a next section how to build this dataset by yourself, in case you want to try with your own Kubernetes cluster.
 
 Here is where each component is exposed:
 
