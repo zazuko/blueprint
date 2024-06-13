@@ -44,7 +44,7 @@
    rdf:type <https://k8s.described.at/Deployment> ;
    rdfs:label "coredns" ;
    <https://k8s.described.at/annotation> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/annotation/deployment.kubernetes.io/revision> ;
-   <https://k8s.described.at/image> <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.9.3> ;
+   <https://k8s.described.at/image> <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.11.1> ;
    <https://k8s.described.at/label> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/label/k8s-app> ;
    <https://k8s.described.at/namespace> <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system> .
 <http://127.0.0.1:8080/k8s/cluster/docker-desktop/namespace/kube-system/deployment/coredns/label/k8s-app>
@@ -55,9 +55,9 @@
    rdf:type <https://k8s.described.at/Annotation> ;
    rdf:value "1" ;
    rdfs:label "deployment.kubernetes.io/revision" .
-<http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.9.3>
+<http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns:v1.11.1>
    rdf:type <https://oci.described.at/Image> ;
-   rdfs:label "registry.k8s.io/coredns/coredns:v1.9.3" ;
+   rdfs:label "registry.k8s.io/coredns/coredns:v1.11.1" ;
    <https://oci.described.at/repository> <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns> .
 <http://127.0.0.1:8080/oci/registry.k8s.io/coredns/coredns>
    rdf:type <https://oci.described.at/Repository> ;
