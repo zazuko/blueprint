@@ -84,4 +84,3 @@ flux:DeploymentAnnotationTableShape a sh:NodeShape ;
         sh:order 20;
     ] ;
 .
-
