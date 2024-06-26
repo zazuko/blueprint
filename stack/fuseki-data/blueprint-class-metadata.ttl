@@ -7,143 +7,52 @@ PREFIX flux: <https://ld.flux.zazuko.com/>
 PREFIX fluxSchema: <https://flux.described.at/>
 PREFIX k8s: <https://k8s.described.at/>
 PREFIX oci: <https://oci.described.at/>
+PREFIX prov:       <http://www.w3.org/ns/prov#>
 
-ex:Repository a rdfs:Class ;
-    rdfs:label "Git Repository" ;
-    rdfs:comment "Repositories in GIT contain a collection of files of various different versions of a Project.";
-.
+<http://making-sense.info/namespaces/ddi/CleanedVariable> a rdfs:Class;
+   rdfs:label "Cleaned variable" ;
+   rdfs:comment "Recoded collected variable" .
 
-flux:GitRepositoryFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode ex:Repository ;
-   rdfs:label "Git Repository" ;
-   rdfs:comment "Repositories in GIT contain a collection of files of various different versions of a Project.";
-   fluxSchema:faIcon "fab fa-git-square" ;
-   fluxSchema:colorIndex 3 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-k8s:Cluster a rdfs:Class ;
-   rdfs:label "Cluster" ;
-   rdfs:comment "K8S Cluster";
-.
-
-flux:ClusterFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:Cluster ;
-   rdfs:label "Cluster" ;
-   rdfs:comment "K8S Cluster";
-   fluxSchema:faIcon "fas fa-microchip" ;
-   fluxSchema:colorIndex 6 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-k8s:Namespace a rdfs:Class ;
-   rdfs:label "K8S Namespace" ;
-   rdfs:comment "In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc)." ;
-.
-
-flux:NamespaceFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:Namespace ;
-   rdfs:label "K8S Namespace" ;
-   rdfs:comment "In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc)." ;
-   fluxSchema:faIcon "fas fa-globe" ;
+flux:CleanedVariableFluxClassInstance a fluxShape:ClassMetadataShape ;
+   sh:targetNode <http://making-sense.info/namespaces/ddi/CleanedVariable> ;
+   rdfs:label "Cleaned variable" ;
+   rdfs:comment "Recoded collected variable" ;
+   fluxSchema:faIcon "fas fa-calculator" ;
    fluxSchema:colorIndex 1 ;
-   fluxSchema:searchPrio 3 ;
-.
+   fluxSchema:searchPrio 1 .
 
-k8s:Ingress a rdfs:Class;
-   rdfs:label "Ingress" ;
-   rdfs:comment "Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource." ;
-.
+<http://making-sense.info/namespaces/ddi/DDIVariable> a rdfs:Class;
+   rdfs:label "Variable" ;
+   rdfs:comment "Collected variable" .
 
-flux:IngressFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:Ingress ;
-   rdfs:label "Ingress" ;
-   rdfs:comment "Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource." ;
-   fluxSchema:faIcon "fas fa-sign-in-alt" ;
-   fluxSchema:colorIndex 5 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-k8s:Host a rdfs:Class ;
-   rdfs:label "Host" ;
-   rdfs:comment "K8S Host" ;
-.
-
-flux:HostFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:Host ;
-   rdfs:label "Host" ;
-   rdfs:comment "K8S Host" ;
-   fluxSchema:faIcon "fas fa-server" ;
+flux:VariableFluxClassInstance a fluxShape:ClassMetadataShape ;
+   sh:targetNode <http://making-sense.info/namespaces/ddi/DDIVariable> ;
+   rdfs:label "Variable" ;
+   rdfs:comment "Collected variable" ;
+   fluxSchema:faIcon "fas fa-subscript" ;
    fluxSchema:colorIndex 2 ;
-   fluxSchema:searchPrio 3 ;
-.
+   fluxSchema:searchPrio 1 .
 
-k8s:Deployment a rdfs:Class ;
-   rdfs:label "Deployment" ;
-   rdfs:comment "K8S Deployments" ;
-.
+<http://making-sense.info/namespaces/ddi/ScriptExecution> a rdfs:Class;
+   rdfs:label "Script execution" ;
+   rdfs:comment "Script ran to calculate the dervied variable" .
 
-flux:DeploymentFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:Deployment ;
-   rdfs:label "Deployment" ;
-   rdfs:comment "K8S Deployments" ;
-   fluxSchema:faIcon "fa-solid fa-puzzle-piece" ;
+flux:ScriptExecutionFluxClassInstance a fluxShape:ClassMetadataShape ;
+   sh:targetNode <http://making-sense.info/namespaces/ddi/ScriptExecution> ;
+   rdfs:label "Script execution" ;
+   rdfs:comment "Script ran to calculate the dervied variable" ;
+   fluxSchema:faIcon "fas fa-screwdriver-wrench" ;
    fluxSchema:colorIndex 3 ;
-   fluxSchema:searchPrio 3 ;
-.
+   fluxSchema:searchPrio 3 .
 
-k8s:StatefulSet a rdfs:Class ;
-   rdfs:label "StatefulSet" ;
-   rdfs:comment "K8S StatefulSets" ;
-.
+prov:SoftwareAgent a rdfs:Class;
+   rdfs:label "Software agent" ;
+   rdfs:comment "Agent running the script execution" .
 
-flux:StatefulSetFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode k8s:StatefulSet ;
-   rdfs:label "StatefulSet" ;
-   rdfs:comment "K8S StatefulSets" ;
-   fluxSchema:faIcon "fas fa-screwdriver" ;
+flux:SoftwareAgentFluxClassInstance a fluxShape:ClassMetadataShape ;
+   sh:targetNode prov:SoftwareAgent  ;
+   rdfs:label "Software agent" ;
+   rdfs:comment "Agent running the script execution";
+   fluxSchema:faIcon "fas fa-gears" ;
    fluxSchema:colorIndex 4 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-oci:Image a rdfs:Class ;
-   rdfs:label "Image" ;
-   rdfs:comment "K8S Images" ;
-.
-
-flux:ImageFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode oci:Image ;
-   rdfs:label "Image" ;
-   rdfs:comment "K8S Images" ;
-   fluxSchema:faIcon "fab fa-docker" ;
-   fluxSchema:colorIndex 5 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-oci:Repository a rdfs:Class ;
-   rdfs:label "OCI Repository" ;
-   rdfs:comment "OCI Repositories" ;
-.
-
-flux:OciRepositoryFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode oci:Repository ;
-   rdfs:label "OCI Repository" ;
-   rdfs:comment "OCI Repositories" ;
-   fluxSchema:faIcon "fas fa-database" ;
-   fluxSchema:colorIndex 6 ;
-   fluxSchema:searchPrio 3 ;
-.
-
-oci:Registry a rdfs:Class ;
-   rdfs:label "OCI Registry" ;
-   rdfs:comment "OCI Registries" ;
-.
-
-flux:RegistryFluxClassInstance a fluxShape:ClassMetadataShape ;
-   sh:targetNode oci:Registry ;
-   rdfs:label "OCI Registry" ;
-   rdfs:comment "OCI Registries" ;
-   fluxSchema:faIcon "fas fa-registered" ;
-   fluxSchema:colorIndex 7 ;
-   fluxSchema:searchPrio 3 ;
-.
+   fluxSchema:searchPrio 4 .
