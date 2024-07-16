@@ -65,16 +65,16 @@ export class QueryBuilderService {
     const inputNode = rdfEnvironment.namedNode(input);
     const metaGraph = rdfEnvironment.clownface({ dataset: metaModel });
 
-    const outLinkDefinitions =  metaGraph
-    .namedNode(inputNode)
-    .out(rdf.typeNamedNode)
-    .in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
+    const outLinkDefinitions = metaGraph
+      .namedNode(inputNode)
+      .out(rdf.typeNamedNode)
+      .in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
 
 
-    const inLinkDefinitions =  metaGraph
-    .namedNode(inputNode)
-    .out(rdf.typeNamedNode)
-    .in(shacl.classNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
+    const inLinkDefinitions = metaGraph
+      .namedNode(inputNode)
+      .out(rdf.typeNamedNode)
+      .in(shacl.classNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
 
     const inputQuery = getInputNodeQuery(inputNode);
     const outgoingLinkQueries = outLinkDefinitions.map(link => getOutgoingLinksQuery(inputNode, link));
@@ -178,8 +178,8 @@ CONSTRUCT {
 class UiLinkDefinition extends ClownfaceObject {
   #arrowSource: string | null | undefined = undefined;
   #arrowTarget: string | null | undefined = undefined;
-  #name : string | undefined = undefined;
-  #propertyPath : string[] | undefined = undefined;
+  #name: string | undefined = undefined;
+  #propertyPath: string[] | undefined = undefined;
 
   constructor(node: GraphPointer) {
     super(node);
@@ -201,35 +201,35 @@ class UiLinkDefinition extends ClownfaceObject {
   }
 
   get propertyPath(): string[] {
-    if(this.#propertyPath == undefined){
+    if (this.#propertyPath == undefined) {
       const paths = this._node.out(shacl.pathNamedNode);
       let path: GraphPointer;
 
-      if(paths.values.length === 0){
+      if (paths.values.length === 0) {
         console.error(`No path found for link <${this._node.value}>`);
         this.#propertyPath = [];
       } else {
-        if(paths.values.length > 1) {
+        if (paths.values.length > 1) {
           console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
         }
         path = paths.toArray()[0];
 
-        if(path.isList()){
+        if (path.isList()) {
           const pathElement = [...path.list()].map(pathElement => this.#getPathElement(pathElement));
           this.#propertyPath = pathElement.includes(null) ? [] : pathElement;
         } else {
           const pathElement = this.#getPathElement(path);
           this.#propertyPath = pathElement === null ? [] : [pathElement];
+        }
       }
     }
-  }
     return this.#propertyPath;
   }
 
   get inversePropertyPath(): string[] {
     const path = this.propertyPath;
-    return path.map(pathElement => { 
-      if (pathElement.startsWith(`^<)`) ) {
+    return path.map(pathElement => {
+      if (pathElement.startsWith(`^<)`)) {
         return pathElement.replace(`^<`, `<`);
       }
       return `^${pathElement}`;
@@ -287,8 +287,8 @@ class UiLinkDefinition extends ClownfaceObject {
       return null;
     }
     if (inversePath.values.length > 1) {
-        console.warn(`Multiple inverse paths found for link <${this._node.value}>. Using the first one.`);
+      console.warn(`Multiple inverse paths found for link <${this._node.value}>. Using the first one.`);
     }
-    return `^<${inversePath[0].value}>`;
+    return `^<${inversePath.values[0]}>`;
   }
 }
