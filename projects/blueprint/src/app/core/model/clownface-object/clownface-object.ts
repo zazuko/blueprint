@@ -18,6 +18,16 @@ export abstract class ClownfaceObject {
         return [...predicateSet];
     }
 
+    static logAsTable(node: GraphPointer): void {
+        console.table([...node.dataset.match(rdfEnvironment.namedNode(node.value))].map(quad => {
+            return {
+                subject: quad.subject.value,
+                predicate: quad.predicate.value,
+                object: quad.object.value
+            }
+        }));
+    }
+
     protected readonly _node: GraphPointer;
 
     /**
@@ -45,5 +55,9 @@ export abstract class ClownfaceObject {
      */
     availablePredicates(): string[] {
         return ClownfaceObject.getPredicatesForNode(this._node);
+    }
+
+    logAsTable(): void {
+        ClownfaceObject.logAsTable(this._node);
     }
 }
