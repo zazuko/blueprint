@@ -55,7 +55,7 @@ export class ViewDataService {
 
     let types: string[] = [];
     // 0. fetch the type of the subject
-    const obs = this.sparql.construct(typeQuery).pipe(
+    const obs = this.sparql.constructWithoutReasoning(typeQuery).pipe(
       switchMap((typeGraph) => {
         dataset.addAll(typeGraph);
 

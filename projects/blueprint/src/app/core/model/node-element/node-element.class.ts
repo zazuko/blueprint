@@ -1,11 +1,9 @@
 import { GraphPointer } from 'clownface';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { rdfs, rdf, shacl, blueprint } from "@blueprint/ontology";
 import { ColorUtil } from '@blueprint/utils';
 import { ClownfaceObject } from '../clownface-object/clownface-object';
-import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-class-metadata';
 
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
 import { Avatar } from '@blueprint/component/avatar/avatar.component';
@@ -33,7 +31,6 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
     private _label: string | null = null;
     private _classLabel: string[] | null = null;
     private _description: string | null = null;
-    private _uiClassMetadata: UiClassMetadata[] | null = null;
     private _avatars: Avatar[] | null = null;
     private _color: string | null = null;
 
@@ -46,39 +43,6 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
         super(node);
     }
 
-    /**
-     * UiMetadata of the node.
-     * 
-     * @readonly
-     * 
-     * @link rdf:type/^sh:targetNode
-     */
-    private get uiClassMetadata(): UiClassMetadata[] {
-        if (this._uiClassMetadata === null) {
-            const uiClassMetadata = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).map(n => new RdfUiClassMetadata(n));
-            if (uiClassMetadata.length === 0) {
-                console.warn(`No UiClassMetadata found for ${this.iri}. This should not happen. There is no icon, color, ... configured for this node. Defaulting to default values.`);
-                const rdfTypes = this._node.out(rdf.typeNamedNode).values;
-                const defaultUiClassMetadatas = rdfTypes.map(rdfType => {
-                    const defaultUIClassMetadata: UiClassMetadata = {
-                        iri: this.iri + '/default/UiMetadata',
-                        targetNode: rdfEnvironment.namedNode(rdfType),
-                        icon: DEFAULT_ICON,
-                        colorIndex: 0,
-                        searchPriority: 0,
-                        label: 'Default',
-                        comment: 'No configuration for this node.',
-                        color: ColorUtil.getColorForIndex(0)
-                    };
-                    return defaultUIClassMetadata;
-                });
-                this._uiClassMetadata = defaultUiClassMetadatas;
-            } else {
-                this._uiClassMetadata = uiClassMetadata;
-            }
-        }
-        return this._uiClassMetadata;
-    }
     /**
      * The label of the node
      * 
@@ -148,6 +112,9 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get avatars(): Avatar[] {
         if (this._avatars === null) {
+            if (this._node.out(blueprint.hasAvatarNamedNode).values.length > 1) {
+                debugger;
+            }
             this._avatars = this._node.out(blueprint.hasAvatarNamedNode).map(avatarNode => {
                 const colorIndex = avatarNode.out(blueprint.colorIndexNamedNode).values[0];
                 return {
@@ -166,7 +133,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get color(): string {
         if (this._color === null) {
-            this._color = this.uiClassMetadata[0].color;
+            this._color = this.avatars[0].color;
         }
         return this._color;
     }

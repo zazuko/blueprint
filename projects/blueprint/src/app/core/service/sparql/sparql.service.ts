@@ -86,6 +86,33 @@ export class SparqlService {
         })
       );
   }
+
+  constructWithoutReasoning(query: string): Observable<Dataset> {
+    const endpoint = environment.endpointUrl;
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/n-triples'
+    });
+
+    const options = {
+      headers,
+      observe: 'response' as const,
+      responseType: 'text' as const
+    };
+
+    const body = new URLSearchParams();
+    body.set('query', query);
+    return this.http.post(endpoint, body.toString(), options)
+      .pipe(
+        map(response => {
+          const parser = new Parser();
+          const quads = parser.parse(response.body);
+          const dataset = rdfEnvironment.dataset(quads);
+          return dataset as unknown as Dataset;
+        })
+      );
+  }
 }
 
 
