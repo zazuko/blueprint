@@ -8,24 +8,17 @@ import { Dataset } from '@rdfjs/types';
 
 import { Parser } from 'n3';
 
-
-import { LibraryConfigurationService } from '../library-configuration/library-configuration.service';
-
 import { SparqlResult, SparqlResultTerm, transformToRecords } from './model/sparql-result-json';
+import { environment } from 'projects/blueprint/src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SparqlService {
   private readonly http = inject(HttpClient);
-  private readonly libraryConfigurationService = inject(LibraryConfigurationService);
 
-  public fullTextSearchDialect: FullTextSearchDialect;
+  public fullTextSearchDialect = environment.fullTextSearchDialect as FullTextSearchDialect;
 
-  constructor() {
-    this.fullTextSearchDialect = this.libraryConfigurationService.fullTextSearchDialect;
-
-  }
 
   /**
    * Execute a SPARQL SELECT query
@@ -34,7 +27,7 @@ export class SparqlService {
    * @returns an observable of the resulting bindings 
    */
   select(query: string): Observable<Record<string, SparqlResultTerm>[]> {
-    const endpoint = this.libraryConfigurationService.endpointUrl;
+    const endpoint = environment.endpointUrl;
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/sparql-results+json'
@@ -63,7 +56,7 @@ export class SparqlService {
    * @returns an observable of the resulting dataset
    */
   construct(query: string): Observable<Dataset> {
-    const endpoint = this.libraryConfigurationService.endpointUrl;
+    const endpoint = environment.endpointUrl;
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',

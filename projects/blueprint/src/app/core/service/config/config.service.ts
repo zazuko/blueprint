@@ -1,15 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
-
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-  private _libraryConfigurationService = inject(LibraryConfigurationService);
   private _httpClient = inject(HttpClient);
   protected static instance = 0;
   private _appConfiguration: FluxConfig = null;
@@ -31,14 +28,7 @@ export class ConfigService {
       environment.graphExplorerUrl = config?.graphExplorerUrl ?? null;
 
       environment.fullTextSearchDialect = config?.fullTextSearchDialect ?? 'stardog';
-      console.log('ConfigService', config?.fullTextSearchDialect);
-
-      this._libraryConfigurationService.endpointUrl = environment.endpointUrl;
-      this._libraryConfigurationService.sparqlConsoleUrl = environment.sparqlConsoleUrl;
-      this._libraryConfigurationService.graphExplorerUrl = environment.graphExplorerUrl;
-      this._libraryConfigurationService.production = environment.production;
-      this._libraryConfigurationService.fullTextSearchDialect = environment.fullTextSearchDialect as "fuseki" | "stardog";
-
+      environment.configurationIri = config?.configurationIri ?? null;
     }))
   }
 
@@ -50,6 +40,7 @@ export class ConfigService {
 }
 
 export type FluxConfig = {
+  readonly configurationIri: string,
   readonly endpointUrl: string,
   readonly sparqlConsoleUrl: string,
   readonly graphExplorerUrl: string,

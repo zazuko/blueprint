@@ -3,8 +3,8 @@ import { inject } from '@angular/core';
 import { HttpRequest, HttpEvent, HttpHandlerFn } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
 import { AuthService } from '@blueprint/service/auth/auth.service';
+import { environment } from 'projects/blueprint/src/environments/environment';
 
 /**
  * An HTTP interceptor that adds basic auth credentials to requests to the library configuration service.
@@ -18,11 +18,10 @@ import { AuthService } from '@blueprint/service/auth/auth.service';
  * @returns An observable of the HTTP event.
  */
 export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<any>> {
-  const libraryConfig = inject(LibraryConfigurationService);
   const authService = inject(AuthService);
   const router = inject(Router);
   // If the request is for the sparql endpoint, add the basic auth credentials.
-  if (req.url.includes(libraryConfig.endpointUrl)) {
+  if (req.url.includes(environment.endpointUrl)) {
     // Create the authorization header by base64-encoding the username and password separated by a colon.
     const credentials = authService.getCredentials();
     const authHeader = `Basic ${btoa(`${credentials ? credentials.username : ''}:${credentials ? credentials.password : ''}`)}`;

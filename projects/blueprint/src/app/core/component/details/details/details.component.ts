@@ -10,10 +10,12 @@ import { CommonModule } from '@angular/common';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../../../environments/environment';
+
 import { DashHostDirective } from '../../../ui-view/ui-view-component/dash-host/dash-host.directive';
 import { DetailsService, ObjectDetails } from '../../../../features/explore/service/detail/details.service';
 import { SelectionService } from '../../../../features/explore/service/selection/selection.service';
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
 import { DashGroupViewerComponent, DashHyperlinkViewerComponent, DashLiteralViewerComponent, DashValueTableViewerComponent } from '@blueprint/component/dash-components';
 import { FluxValueTableViewer, FluxLiteralViewer, FluxHyperlinkViewer, FluxViewerType, FluxGroupViewer } from '../../../../features/explore/flux-viewer/index';
 
@@ -36,8 +38,7 @@ export class DetailsComponent implements OnDestroy, AfterViewInit {
 
   hasGraphExplorer: boolean;
   hasSparqlConsole: boolean;
-  // todo: fix this
-  // details: ObjectDetails = null;
+
   details: ObjectDetails | null = null;
   color = '#000000';
   dataLimitedTo = 0;
@@ -45,9 +46,9 @@ export class DetailsComponent implements OnDestroy, AfterViewInit {
 
   @ViewChild(DashHostDirective, { static: true }) dashHost: DashHostDirective | null = null;
 
-  constructor(private config: LibraryConfigurationService) {
-    this.hasGraphExplorer = this.config.graphExplorerUrl !== null;
-    this.hasSparqlConsole = this.config.sparqlConsoleUrl !== null;
+  constructor() {
+    this.hasGraphExplorer = environment.graphExplorerUrl !== null;
+    this.hasSparqlConsole = environment.sparqlConsoleUrl !== null;
   }
 
   ngAfterViewInit() {
@@ -113,13 +114,13 @@ SELECT * WHERE {
 } 
 `;
 
-    return `${this.config.sparqlConsoleUrl}=${encodeURIComponent(
+    return `${environment.sparqlConsoleUrl}=${encodeURIComponent(
       query
     )}&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fld.flux.zazuko.com%2Fquery&requestMethod=POST&tabTitle=Query+2&headers=%7B%7D&outputFormat=table`;
   }
 
   toGraphExplorer(iri: string): string {
-    return `${this.config.graphExplorerUrl}=${encodeURIComponent(
+    return `${environment.graphExplorerUrl}=${encodeURIComponent(
       iri
     )}`;
   }

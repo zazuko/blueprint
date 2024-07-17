@@ -12,7 +12,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 import { Avatar, AvatarComponent } from '../../../core/component/avatar/avatar.component';
 import { fadeIn } from '@blueprint/animation/fade-in-out/fade-in-out';
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
+import { environment } from 'projects/blueprint/src/environments/environment';
 
 
 @Component({
@@ -32,7 +32,6 @@ export class ExploreHeaderComponent {
   isLoading = input<boolean>(true);
 
   public readonly messageService = inject(MessageService);
-  public readonly config = inject(LibraryConfigurationService);
   public readonly clipboard = inject(Clipboard);
 
   items: MenuItem[] = [
@@ -80,14 +79,14 @@ export class ExploreHeaderComponent {
     } 
     `;
 
-    const url = `${this.config.sparqlConsoleUrl}=${encodeURIComponent(
+    const url = `${environment.sparqlConsoleUrl}=${encodeURIComponent(
       query
     )}&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fld.flux.zazuko.com%2Fquery&requestMethod=POST&tabTitle=Query+2&headers=%7B%7D&outputFormat=table`;
     window.open(url, '_blank');
   }
 
   public openGraphExplorer(): void {
-    const url = `${this.config.graphExplorerUrl}=${encodeURIComponent(this.iri())}`;
+    const url = `${environment.graphExplorerUrl}=${encodeURIComponent(this.iri())}`;
     window.open(url, '_blank');
   }
 
