@@ -5,13 +5,15 @@ import rdfEnvironment from '@zazuko/env';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { rdf, blueprintShape } from '@blueprint/ontology';
 import { RdfUiClassMetadata, UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { UiAppearanceReasonerService } from '../../ui-appearance-reasoner/ui-appearance-reasoner.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiClassMetadataService {
-  private readonly sparqlService = inject(SparqlService);
+  readonly #sparqlService = inject(SparqlService);
+  readonly #uiAppearanceReasonerService = inject(UiAppearanceReasonerService);
 
   private cachedUiClassMetadata$: Observable<UiClassMetadata[]> | null = null;
 
@@ -21,10 +23,13 @@ export class UiClassMetadataService {
    * @returns An Observable return all FluxClassMetadata Entities.
    */
   public getClassMetadata(): Observable<UiClassMetadata[]> {
+    console.log('Getting class metadata');
     if (this.cachedUiClassMetadata$ === null) {
-      this.cachedUiClassMetadata$ = this.sparqlService.construct(this.getClassMetadataSparqlQuery()).pipe(
+      this.cachedUiClassMetadata$ = this.#sparqlService.construct(this.getClassMetadataSparqlQuery()).pipe(
         map(dataset => {
-          return rdfEnvironment.clownface({ dataset }).node(blueprintShape.ClassMetadataShapeNamedNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiClassMetadata(metadataPtr));
+          const uiClassMetadata = rdfEnvironment.clownface({ dataset }).node(blueprintShape.ClassMetadataShapeNamedNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiClassMetadata(metadataPtr));
+          this.#uiAppearanceReasonerService.addLegacyConfiguration(uiClassMetadata);
+          return uiClassMetadata;
         }),
         shareReplay(1)
       );

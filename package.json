@@ -26,6 +26,7 @@
     "@zazuko/env": "^2.2.0",
     "clownface-shacl-path": "^2.1.0",
     "d3": "^7.9.0",
+    "eyereasoner": "^16.15.24",
     "mermaid": "^10.9.1",
     "n3": "^1.17.3",
     "primeicons": "^7.0.0",

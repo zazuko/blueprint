@@ -353,6 +353,33 @@ class BlueprintOntology extends Ontology {
     }
 
     /**
+     * Get the has comment predicate.
+     * 
+     * @readonly
+     */
+    get comment() {
+        return this.namespace('comment').value;
+    }
+
+    /**
+     * Get the prefixed has comment predicate.
+     * 
+     * @readonly
+     */
+    get commentPrefixed() {
+        return `${this.prefix()}:comment`;
+    }
+
+    /**
+     * Get the has comment predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get commentNamedNode(): NamedNode {
+        return this.namespace('comment');
+    }
+
+    /**
      * Get the Table class.
      * 
      * @readonly

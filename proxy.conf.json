@@ -1,8 +1,8 @@
 {
   "/query": {
     "target_1": "https://ld.aws.zazukoians.org/query",
-    "target_2": "https://ld.flux.zazuko.com/query",
-    "target": "http://localhost:8080/query",
+    "target": "https://ld.flux.zazuko.com/query",
+    "target_": "http://localhost:8080/query",
     "target_4": "https://ld.aws.zazukoians.org/query",
     "target_11": "http://127.0.0.1:7200/repositories/edc",
     "headers": {
