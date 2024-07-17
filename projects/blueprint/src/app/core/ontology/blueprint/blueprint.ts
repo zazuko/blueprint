@@ -1320,6 +1320,60 @@ class BlueprintOntology extends Ontology {
         return this.namespace('CompositionLinkResult');
     }
 
+    /**
+     * Get the Avatar class.
+     * 
+     * @readonly
+     */
+    get Avatar(): string {
+        return this.namespace('Avatar').value;
+    }
+
+    /**
+     * Get the prefixed Avatar class.
+     * 
+     * @readonly
+     */
+    get AvatarPrefixed(): string {
+        return `${this.prefix()}:Avatar`;
+    }
+
+    /**
+     * Get the Avatar class as NamedNode.
+     * 
+     * @readonly
+     */
+    get AvatarNamedNode(): NamedNode {
+        return this.namespace('Avatar');
+    }
+
+    /**
+     * Get the hasAvatar predicate.
+     * 
+     * @readonly
+     */
+    get hasAvatar(): string {
+        return this.namespace('hasAvatar').value;
+    }
+
+    /**
+     * Get the prefixed hasAvatar predicate.
+     * 
+     * @readonly
+     */
+    get hasAvatarPrefixed(): string {
+        return `${this.prefix()}:hasAvatar`;
+    }
+
+    /**
+     * Get the hasAvatar predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasAvatarNamedNode(): NamedNode {
+        return this.namespace('hasAvatar');
+    }
+
 }
 
 export const blueprint = new BlueprintOntology();

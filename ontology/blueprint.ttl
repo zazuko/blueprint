@@ -20,6 +20,14 @@
    rdfs:label "has Rule" ;
    rdfs:comment "Has a rule or a collection of rules" ;
    .
+:Avatar a rdfs:Class ;
+   rdfs:label "Avatar" ;
+   rdfs:comment "This is an avatar" ;
+   .
+:hasAvatar a rdf:Predicate ;
+   rdfs:label "has Avatar" ;
+   rdfs:comment "Has an avatar" ;
+   .
 :Child a rdfs:Class ;
    rdfs:label "Child" ;
    rdfs:comment "insert text" ;

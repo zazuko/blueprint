@@ -6,6 +6,7 @@ import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-met
 import { blueprint } from '@blueprint/ontology';
 import { Dataset } from '@zazuko/env/lib/Dataset';
 import rdfEnvironment from '@zazuko/env';
+import { BlankNode } from 'rdf-js';
 
 @Injectable({
   providedIn: 'root'
@@ -32,18 +33,21 @@ export class UiAppearanceReasonerService {
   {
     ?s a <${uiClassMetadata.targetNode.value}> 
   } => {
-    ?s <${blueprint.colorIndex}> ${uiClassMetadata.colorIndex} .
-    ?s <${blueprint.icon}> "${uiClassMetadata.icon}" .
     ?s <${blueprint.searchPriority}> ${uiClassMetadata.searchPriority} .
     ?s <${blueprint.label}> "${uiClassMetadata.label}" .
     ?s <${blueprint.comment}> "${uiClassMetadata.comment}" .
+    ?s <${blueprint.hasAvatar}> [
+      a <${blueprint.Avatar}> ;
+      <${blueprint.icon}> "${uiClassMetadata.icon}" ;
+      <${blueprint.colorIndex}> "${uiClassMetadata.colorIndex}" ;
+    ]  .
+
   } .
   `;
     return n3String;
   }
 
   reason(nTripleString: string): string {
-    console.log(nTripleString);
     const parser = new Parser();
     const resultString = this.#fastSimpleReasoner(rdfEnvironment.dataset(parser.parse(nTripleString)));
     return resultString + nTripleString;
@@ -52,11 +56,40 @@ export class UiAppearanceReasonerService {
   #fastSimpleReasoner(inputDataset: Dataset): string {
     const result = rdfEnvironment.dataset();
     const fastRules = this.reasoningRules.filter(rule => rule.isFastPossible);
+
     fastRules.forEach(rule => {
       const subjects = [...inputDataset.match(null, rule.match[0].predicate, rule.match[0].object)];
       subjects.forEach(subject => {
+        const bNodeMap = new Map<string, Quad[]>();
         rule.implies.forEach(impliesQuad => {
-          result.add(rdfEnvironment.quad(subject.subject, impliesQuad.predicate, impliesQuad.object));
+          if (impliesQuad.subject.termType !== 'BlankNode') {
+            return;
+          }
+          const bNodeId = impliesQuad.subject.value;
+          if (!bNodeMap.has(bNodeId)) {
+            bNodeMap.set(bNodeId, []);
+          }
+          bNodeMap.get(bNodeId).push(impliesQuad);
+        });
+        // iterate over the bNodes and create the quads
+        const bNodeBnodeMap = new Map<string, BlankNode>();
+        bNodeMap.forEach((quads, bNodeId) => {
+          const newBNode = rdfEnvironment.blankNode();
+          bNodeBnodeMap.set(bNodeId, newBNode);
+          quads.forEach(quad => {
+            result.add(rdfEnvironment.quad(newBNode, quad.predicate, quad.object));
+          });
+        });
+
+        rule.implies.forEach(impliesQuad => {
+
+          if (impliesQuad.subject.termType !== 'BlankNode') {
+            if (impliesQuad.object.termType === 'BlankNode') {
+              result.add(rdfEnvironment.quad(subject.subject, impliesQuad.predicate, bNodeBnodeMap.get(impliesQuad.object.value)));
+            } else {
+              result.add(rdfEnvironment.quad(subject.subject, impliesQuad.predicate, impliesQuad.object));
+            }
+          }
         });
       });
     });
@@ -111,11 +144,23 @@ export class UiAppearanceReasonerService {
     }
 
     // check if all impliesQuads have a Variable in the subject and a Literal in the object
+    // or a Variable in the subject and a NamedNode or a Literal in the object
+    // or a Variable in the subject and a NamedNode in the object
     const impliesQuadsWithVariables = impliesQuads.filter(q =>
-      q.subject.termType === 'Variable' &&
-      q.subject.value === matchQuads[0].subject.value &&
-      q.predicate.termType === 'NamedNode' &&
-      q.object.termType === 'Literal'
+      (
+        (q.subject.termType === 'Variable' && q.subject.value === matchQuads[0].subject.value) &&
+        q.predicate.termType === 'NamedNode' &&
+        (q.object.termType === 'Literal' || q.object.termType === 'NamedNode')
+      ) ||
+      (q.subject.termType === 'BlankNode' &&
+        q.predicate.termType === 'NamedNode' &&
+        (q.object.termType === 'Literal' || q.object.termType === 'NamedNode')
+      ) ||
+      (
+        (q.subject.termType === 'Variable' && q.subject.value === matchQuads[0].subject.value) &&
+        q.predicate.termType === 'NamedNode' &&
+        q.object.termType === 'BlankNode'
+      )
     );
 
     if (impliesQuadsWithVariables.length !== impliesQuads.length) {

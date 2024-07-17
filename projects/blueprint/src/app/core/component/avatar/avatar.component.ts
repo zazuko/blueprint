@@ -13,12 +13,10 @@ export class AvatarComponent {
   avatars = input.required<Avatar[]>();
   size = input<'normal' | 'large' | 'xlarge'>('xlarge');
   shape = input<'square' | 'circle'>('circle');
-
 }
 
 
 export interface Avatar {
-  label: string;
   icon: string;
   color: string;
 }

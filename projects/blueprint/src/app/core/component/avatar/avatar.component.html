@@ -7,11 +7,11 @@
     }
 </p-avatarGroup>
 }@else if(avatars().length === 1) {
-@for(avatar of avatars(); track avatar) {
 
-<p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()"
-    [style]="{'background-color': avatar.color}"></p-avatar>
-}
+
+<p-avatar [icon]="avatars()[0].icon" [size]="size()" [shape]="shape()"
+    [style]="{'background-color': avatars()[0].color}"></p-avatar>
+
 } @else {
 <p-avatar [size]="size()"></p-avatar>
 
