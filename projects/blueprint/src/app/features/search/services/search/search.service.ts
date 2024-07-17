@@ -136,8 +136,6 @@ export class SearchService {
           // - count query
           // - search query
           const queries: string[] = [];
-          // metadata query
-          //  queries.push(this.uiClassMetadataService.getClassMetadataSparqlQuery())
           // count total query and count query if needed
           if (pageNumber === 0) {
             queries.push(

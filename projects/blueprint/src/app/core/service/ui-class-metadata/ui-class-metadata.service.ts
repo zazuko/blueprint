@@ -42,9 +42,8 @@ export class UiClassMetadataService {
    * 
    * @returns A SPARQL query sting to fetch this entity graph
    * 
-   * @deprecated
    */
-  public getClassMetadataSparqlQuery(): string {
+  getClassMetadataSparqlQuery(): string {
     return `
 ${blueprintShape.sparqlPrefix()}
 CONSTRUCT {

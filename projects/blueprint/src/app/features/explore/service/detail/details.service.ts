@@ -17,7 +17,7 @@ import {
   FluxViewerType,
 } from '../../flux-viewer/index';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
+
 import { sparqlUtils } from '@blueprint/utils';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { rdf, shacl } from '@blueprint/ontology';
@@ -40,7 +40,6 @@ export interface ObjectDetails {
 })
 export class DetailsService {
   private readonly sparqlService = inject(SparqlService);
-  private readonly uiClassMetadataService = inject(UiClassMetadataService);
 
   public getDetailMetadataSparqlQuery(input: string): string {
     return getDetailsMetaData(input)
@@ -49,9 +48,8 @@ export class DetailsService {
   public query(input: string): Observable<ObjectDetails> {
     const detailQuery = getDetailsMetaData(input);
     const inputQuery = inputNodeQuery(input);
-    const uiMetaDataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
 
-    const sparqlQuery = sparqlUtils.mergeConstruct([detailQuery, inputQuery, uiMetaDataQuery])
+    const sparqlQuery = sparqlUtils.mergeConstruct([detailQuery, inputQuery])
 
     return this.sparqlService.construct(sparqlQuery).pipe(
       map(dataset => {

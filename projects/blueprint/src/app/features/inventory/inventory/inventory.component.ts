@@ -15,13 +15,19 @@ import { HierarchyDefinition } from '../../configuration/topology/service/model/
   standalone: true,
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, ConfigurationCardComponent, TooltipModule],
+  imports: [
+    RouterLink,
+    BreadcrumbPageComponent,
+    HierarchyCardComponent,
+    ConfigurationCardComponent,
+    TooltipModule
+  ],
   animations: [fadeInOut]
 })
 export class InventoryComponent {
-  private readonly hierarchyService = inject(HierarchyService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly loadingIndicatorService = inject(LoadingIndicatorService);
+  readonly #hierarchyService = inject(HierarchyService);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #loadingIndicatorService = inject(LoadingIndicatorService);
 
   public readonly hierarchySignal = signal<HierarchyDefinition[]>([]);
   public readonly showContentSignal = signal<boolean>(false);
@@ -35,21 +41,23 @@ export class InventoryComponent {
   ];
 
   constructor() {
-    this.loadingIndicatorService.loading();
-    this.hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+    this.#loadingIndicatorService.loading();
+    this.#hierarchyService.getAllHierarchies().pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(
       {
         next: hierarchies => {
           this.hierarchySignal.set(hierarchies);
-          this.loadingIndicatorService.done();
+          this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
         },
         error: error => {
           console.error(error);
-          this.loadingIndicatorService.done();
+          this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
         },
         complete: () => {
-          this.loadingIndicatorService.done();
+          this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
         }
       }

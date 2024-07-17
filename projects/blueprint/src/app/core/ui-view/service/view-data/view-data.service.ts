@@ -70,11 +70,10 @@ export class ViewDataService {
 
         const aggregateToAggregateLinkQueries = types.map((type) => this.aggregateService.getCompositionToCompositionLinksForClassQuery(type));
         const aggregateToNodeLinkQueries = types.map((type) => this.aggregateService.getAggregateToNodeLinkForClassQuery(type));
-        //  const uiClassMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
 
         const uiDetailQueries = types.map((type) => this.uiDetailService.getUiDetailForClassQuery(type));
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, /* uiClassMetadataQuery,*/ ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
+        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
 
         return this.sparql.construct(mergedMetaQuery);

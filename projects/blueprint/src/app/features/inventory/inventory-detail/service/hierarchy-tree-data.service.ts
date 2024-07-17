@@ -15,7 +15,7 @@ import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { blueprint, rdf, rdfs } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { labelAlphaSort, sparqlUtils } from '@blueprint/utils';
+import { labelAlphaSort } from '@blueprint/utils';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 
 @Injectable({
@@ -32,8 +32,7 @@ export class HierarchyTreeDataService {
     return this.hierarchyService.getHierarchyByIri(iri).pipe(
       switchMap(hierarchy => {
         const query = this.getQueryFor(hierarchy.rootNode);
-        const metadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([query, metadataQuery]));
+        return this.sparqlService.construct(query);
 
       }),
       map(dataset => {
