@@ -45,6 +45,8 @@ export class ConfigService {
   get config(): FluxConfig {
     return this._appConfiguration;
   }
+
+
 }
 
 export type FluxConfig = {

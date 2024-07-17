@@ -1,5 +1,6 @@
 {
     "$schema": "../../../blueprint-config-schema.json",
+    "configurationIri": "http://ld.zazuko.com/BluprintConfigurationInstance1",
     "endpointUrl": "https://ld.flux.zazuko.com/query",
     "sparqlConsoleUrl": "https://ld.flux.zazuko.com/sparql/#query",
     "graphExplorerUrl": "https://ld.flux.zazuko.com/graph-explorer/?resource",

@@ -1,0 +1,14 @@
+@prefix : <http://example.org/> .
+@prefix bp: <https://blueprint/descried.at/> .
+@prefix schema: <http://schema.org/> .
+
+:benjamin a schema:Person .
+{
+   ?person a schema:Person .
+}
+=> 
+{
+   ?person bp:hasIcon "fas fa-person" ;
+       bp:colorIndex 3 ;
+       bp:searchPriority 3 ;
+} .

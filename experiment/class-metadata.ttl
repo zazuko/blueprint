@@ -1,0 +1,21 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://blueprint.describe.at/> .
+
+:BluprintMetaRules a :BluprintN3RuleCollection ;
+   :hasRule """
+@prefix bp: <https://blueprint/descried.at/> .
+@prefix schema: <http://schema.org/> .
+
+{
+   ?person a schema:Person .
+}
+=> 
+{
+   ?person bp:hasIcon "fas fa-person" ;
+       bp:colorIndex 3 ;
+       bp:searchPriority 3 ;
+} .
+""" ;
+   .

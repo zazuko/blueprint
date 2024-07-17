@@ -4,6 +4,7 @@
 
 export const environment = {
     production: false,
+    configurationIri: 'http://ld.zazuko.com/BluprintConfigurationInstance1', // this will be overwritten by /src/config.json
     endpointUrl: 'http://localhost:4200/query',  // this will be overwritten by /src/config.json
     sparqlConsoleUrl: null, // e.g. yasgui -> will be overwritten by /src/config.json
     graphExplorerUrl: null, // this will be overwritten by /src/config.json

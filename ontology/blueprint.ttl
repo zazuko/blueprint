@@ -1,200 +1,210 @@
-@base <https://blueprint.describe.at/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://blueprint.describe.at/> .
 
 : a owl:Ontology ;
-        rdfs:label "Blueprint Ontology" ;
-        rdfs:comment "This is the Blueprint Ontology" ;
-        owl:imports <http://www.w3.org/2002/07/owl#> ;
-.
-
-
+   rdfs:label "Blueprint Ontology" ;
+   rdfs:comment "This is the Blueprint Ontology" ;
+   owl:imports <http://www.w3.org/2002/07/owl#> ;
+   .
+:Configuration a rdfs:Class ;
+   rdfs:label "Configuration" ;
+   rdfs:comment "This is a configuration for a Blueprint Application" ;
+   .
+:N3RuleCollection a rdfs:Class ;
+   rdfs:label "N3RuleCollection" ;
+   rdfs:comment "This is a collection of N3 rules" ;
+   .
+:hasRule a rdf:Predicate ;
+   rdfs:label "has Rule" ;
+   rdfs:comment "Has a rule or a collection of rules" ;
+   .
 :Child a rdfs:Class ;
-        rdfs:label "Child" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Child" ;
+   rdfs:comment "insert text" ;
+   .
 :Composition a rdfs:Class ;
-        rdfs:label "Composition" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Composition" ;
+   rdfs:comment "insert text" ;
+   .
 :CompositionLinkResult a rdfs:Class ;
-        rdfs:label "CompositionLinkResult" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "CompositionLinkResult" ;
+   rdfs:comment "insert text" ;
+   .
 :CompositionToCompositionLink a rdfs:Class ;
-        rdfs:label "CompositionToCompositionLink" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "CompositionToCompositionLink" ;
+   rdfs:comment "insert text" ;
+   .
 :CompositionToNodeLink a rdfs:Class ;
-        rdfs:label "CompositionToNodeLink" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "CompositionToNodeLink" ;
+   rdfs:comment "insert text" ;
+   .
 :ConnectionPoint a rdfs:Class ;
-        rdfs:label "ConnectionPoint" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "ConnectionPoint" ;
+   rdfs:comment "insert text" ;
+   .
 :Container a rdfs:Class ;
-        rdfs:label "Container" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Container" ;
+   rdfs:comment "insert text" ;
+   .
 :Hierarchy a rdfs:Class ;
-        rdfs:label "Hierarchy" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Hierarchy" ;
+   rdfs:comment "insert text" ;
+   .
 :Link a rdfs:Class ;
-        rdfs:label "Link" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Link" ;
+   rdfs:comment "insert text" ;
+   .
 :Table a rdfs:Class ;
-        rdfs:label "Table" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "Table" ;
+   rdfs:comment "insert text" ;
+   .
 :TreeNode a rdfs:Class ;
-        rdfs:label "TreeNode" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "TreeNode" ;
+   rdfs:comment "insert text" ;
+   .
 :TreeRoot a rdfs:Class ;
-        rdfs:label "TreeRoot" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "TreeRoot" ;
+   rdfs:comment "insert text" ;
+   .
 :UiClassCount a rdfs:Class ;
-        rdfs:label "UiClassCount" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "UiClassCount" ;
+   rdfs:comment "insert text" ;
+   .
 :UiNode a rdfs:Class ;
-        rdfs:label "UiNode" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "UiNode" ;
+   rdfs:comment "insert text" ;
+   .
 :UiSearchResult a rdfs:Class ;
-        rdfs:label "UiSearchResult" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "UiSearchResult" ;
+   rdfs:comment "insert text" ;
+   .
 :UiSearchResultItem a rdfs:Class ;
-        rdfs:label "UiSearchResultItem" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "UiSearchResultItem" ;
+   rdfs:comment "insert text" ;
+   .
 :cell a rdfs:Predicate ;
-        rdfs:label "cell" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "cell" ;
+   rdfs:comment "insert text" ;
+   .
 :child a rdfs:Predicate ;
-        rdfs:label "child" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "child" ;
+   rdfs:comment "insert text" ;
+   .
 :colorIndex a rdfs:Predicate ;
-        rdfs:label "colorIndex" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "colorIndex" ;
+   rdfs:comment "insert text" ;
+   .
 :columnIndex a rdfs:Predicate ;
-        rdfs:label "columnIndex" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "columnIndex" ;
+   rdfs:comment "insert text" ;
+   .
 :count a rdfs:Predicate ;
-        rdfs:label "count" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "count" ;
+   rdfs:comment "insert text" ;
+   .
 :detail a rdfs:Predicate ;
-        rdfs:label "detail" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "detail" ;
+   rdfs:comment "insert text" ;
+   .
 :faIcon a rdfs:Predicate ;
-        rdfs:label "faIcon" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "faIcon" ;
+   rdfs:comment "insert text" ;
+   .
 :hasHeader a rdfs:Predicate ;
-        rdfs:label "hasHeader" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "hasHeader" ;
+   rdfs:comment "insert text" ;
+   .
 :hasRoot a rdfs:Predicate ;
-        rdfs:label "hasRoot" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "hasRoot" ;
+   rdfs:comment "insert text" ;
+   .
 :hasRow a rdfs:Predicate ;
-        rdfs:label "hasRow" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "hasRow" ;
+   rdfs:comment "insert text" ;
+   .
 :hasUiLink a rdfs:Predicate ;
-        rdfs:label "hasUiLink" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "hasUiLink" ;
+   rdfs:comment "insert text" ;
+   .
 :icon a rdfs:Predicate ;
-        rdfs:label "icon" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "icon" ;
+   rdfs:comment "insert text" ;
+   .
 :instance a rdfs:Predicate ;
-        rdfs:label "instance" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "instance" ;
+   rdfs:comment "insert text" ;
+   .
 :inverseLabel a rdfs:Predicate ;
-        rdfs:label "inverseLabel" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "inverseLabel" ;
+   rdfs:comment "insert text" ;
+   .
 :key a rdfs:Predicate ;
-        rdfs:label "key" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "key" ;
+   rdfs:comment "insert text" ;
+   .
 :label a rdfs:Predicate ;
-        rdfs:label "label" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "label" ;
+   rdfs:comment "insert text" ;
+   .
 :link a rdfs:Predicate ;
-        rdfs:label "link" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "link" ;
+   rdfs:comment "insert text" ;
+   .
 :linkLabel a rdfs:Predicate ;
-        rdfs:label "linkLabel" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "linkLabel" ;
+   rdfs:comment "insert text" ;
+   .
 :pageNumber a rdfs:Predicate ;
-        rdfs:label "pageNumber" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "pageNumber" ;
+   rdfs:comment "insert text" ;
+   .
 :pageSize a rdfs:Predicate ;
-        rdfs:label "pageSize" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "pageSize" ;
+   rdfs:comment "insert text" ;
+   .
 :parent a rdfs:Predicate ;
-        rdfs:label "parent" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "parent" ;
+   rdfs:comment "insert text" ;
+   .
 :query a rdfs:Predicate ;
-        rdfs:label "query" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "query" ;
+   rdfs:comment "insert text" ;
+   .
 :result a rdfs:Predicate ;
-        rdfs:label "result" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "result" ;
+   rdfs:comment "insert text" ;
+   .
 :score a rdfs:Predicate ;
-        rdfs:label "score" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "score" ;
+   rdfs:comment "insert text" ;
+   .
 :searchPriority a rdfs:Predicate ;
-        rdfs:label "searchPriority" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "searchPriority" ;
+   rdfs:comment "insert text" ;
+   .
 :showAs a rdfs:Predicate ;
-        rdfs:label "showAs" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "showAs" ;
+   rdfs:comment "insert text" ;
+   .
 :showIn a rdfs:Predicate ;
-        rdfs:label "showIn" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "showIn" ;
+   rdfs:comment "insert text" ;
+   .
 :source a rdfs:Predicate ;
-        rdfs:label "source" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "source" ;
+   rdfs:comment "insert text" ;
+   .
 :target a rdfs:Predicate ;
-        rdfs:label "target" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "target" ;
+   rdfs:comment "insert text" ;
+   .
 :total a rdfs:Predicate ;
-        rdfs:label "total" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "total" ;
+   rdfs:comment "insert text" ;
+   .
 :value a rdfs:Predicate ;
-        rdfs:label "value" ;
-        rdfs:comment "insert text" ;
-.
+   rdfs:label "value" ;
+   rdfs:comment "insert text" ;
+   .

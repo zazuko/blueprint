@@ -6,6 +6,10 @@
         "fullTextSearchDialect"
     ],
     "properties": {
+        "configurationIri": {
+            "type": "string",
+            "format": "uri"
+        },
         "endpointUrl": {
             "type": "string",
             "format": "uri"
