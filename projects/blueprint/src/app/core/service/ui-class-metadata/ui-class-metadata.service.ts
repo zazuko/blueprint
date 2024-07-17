@@ -41,6 +41,8 @@ export class UiClassMetadataService {
    * Get the SPARQL query to fetch the FluxClassMetadataGraph
    * 
    * @returns A SPARQL query sting to fetch this entity graph
+   * 
+   * @deprecated
    */
   public getClassMetadataSparqlQuery(): string {
     return `

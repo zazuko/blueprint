@@ -2,13 +2,14 @@ import { GraphPointer } from 'clownface';
 
 import rdfEnvironment from '@zazuko/env';
 
-import { rdfs, rdf, shacl } from "@blueprint/ontology";
+import { rdfs, rdf, shacl, blueprint } from "@blueprint/ontology";
 import { ColorUtil } from '@blueprint/utils';
 import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-class-metadata';
 
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
 import { Avatar } from '@blueprint/component/avatar/avatar.component';
+import { DEFAULT_COLOR } from '@blueprint/constant/color';
 
 /**
  * Interface for the NodeElement
@@ -147,11 +148,11 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get avatars(): Avatar[] {
         if (this._avatars === null) {
-            this._avatars = this.uiClassMetadata.map(uiMetadata => {
+            this._avatars = this._node.out(blueprint.hasAvatarNamedNode).map(avatarNode => {
+                const colorIndex = avatarNode.out(blueprint.colorIndexNamedNode).values[0];
                 return {
-                    label: uiMetadata.label,
-                    icon: uiMetadata.icon,
-                    color: uiMetadata.color
+                    icon: avatarNode.out(blueprint.iconNamedNode).values[0] ?? DEFAULT_ICON,
+                    color: colorIndex ? ColorUtil.getColorForIndexString(colorIndex) : DEFAULT_COLOR
                 }
             })
         }
