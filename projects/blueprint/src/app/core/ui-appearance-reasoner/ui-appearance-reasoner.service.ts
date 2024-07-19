@@ -57,6 +57,9 @@ export class UiAppearanceReasonerService {
     const result = rdfEnvironment.dataset();
     const fastRules = this.reasoningRules.filter(rule => rule.isFastPossible);
 
+    this.reasoningRules.forEach(rule => {
+      console.log(rule.rule);
+    });
     fastRules.forEach(rule => {
       const subjects = [...inputDataset.match(null, rule.match[0].predicate, rule.match[0].object)];
       subjects.forEach(subject => {
