@@ -3,18 +3,13 @@
 You can start the stack with a full demo dataset:
 
 ```sh
-docker compose \
-  --profile full-demo-dataset \
-  up -d --build
+docker compose --profile full-demo-dataset up -d --build
 ```
 
 You can also add a basic Kubernetes + OCI demo dataset, by running the following command:
 
 ```sh
-docker compose \
-  --profile basic-metadata \
-  --profile k8s-demo-data \
-  up -d --build
+docker compose --profile basic-metadata --profile k8s-demo-data up -d --build
 ```
 
 You will see in a next section how to build this dataset by yourself, in case you want to try with your own Kubernetes cluster.
@@ -64,9 +59,7 @@ To generate triples, you can run the following command within this directory:
 ```sh
 mkdir -p ./volumes/k8s-data/
 
-npx @zazuko/k8s-rdf-exporter@latest \
-  --base-iri=http://127.0.0.1:8080/k8s/ \
-  --base-iri-oci=http://127.0.0.1:8080/oci/ > ./volumes/k8s-data/data.ttl
+npx @zazuko/k8s-rdf-exporter@latest --base-iri=http://127.0.0.1:8080/k8s/ --base-iri-oci=http://127.0.0.1:8080/oci/ > ./volumes/k8s-data/data.ttl
 ```
 
 The `demo-data/k8s.ttl` was generated that way, using a Kubernetes cluster created using Docker Desktop.
