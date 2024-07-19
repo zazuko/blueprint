@@ -136,9 +136,9 @@ In the example are exploring the Ingress. In the blue Box you see the tree "upwa
 
 
 
-# Links between Aggregates
+# Links between Compositions
 
-## Aggregate to Node links 
+## Composition to Node links  
 Now we have defined an Aggregates. Lets say we have defined our Namespace tree as a composition. We can now look "into" the Namespace. But we can also look "at" the Namespace. That means we define links to a Namespace (as the composed one - basically a link to the namespace tree).
 
 Here we go. We define a link between a Namespace and an OCI Image. The link is a CompositionToNodeLink. It means the Namespace is the composed one and the OCI Image is the Node.
@@ -180,3 +180,39 @@ or this in the opposite direction
 ![Link](img/image_namespace.png)
 
 
+# Composition to Composition links
+You can defined Links between two Compositions. 
+Here in this example we have a Business Object that is stored in a Database Schema. The Business Object is the composed one and the Database Schema is the composed one. The link is a CompositionToCompositionLink.
+
+Business Object is a tree definition and the Database Schema is a tree definition. Now we define a link between them.
+
+```turtle
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bp: <https://flux.described.at/>
+PREFIX data: <https://ld.flux.zazuko.com/blueprint/app/>
+PREFIX oci: <https://oci.described.at/>
+PREFIX ea: <http://example.org/ea/>
+PREFIX db: <http://schema.table.org/>
+
+data:BusinessObjectToDatabaseSchemaLink a bp:CompositionToCompositionLink ;
+    sh:targetClass data:BusinessObjectTree ;           # the source tree - Business Object Tree
+    bp:target data:DatabaseSchemaTree ;                # the target tree - Database Schema Tree
+    rdfs:label "Stored in Database Schema" ;
+    bp:inverseLabel "Stores Business Objects" ;
+    sh:property [
+        sh:targetClass ea:Attribute ;                 # define the source connection point - and attribute of the Business Object
+        sh:path ea:assignment ;                       # the path to reach the target connection point
+        sh:class db:Column ;                          # the connection point of the target tree
+    ];
+.
+```
+
+This leads to the following UI.
+
+![Link](img/business_object_db_schema.png)
+
+And the opposite direction.
+
+![Link](img/db_schema_business_object.png)
