@@ -1,15 +1,16 @@
 {
   "name": "blueprint",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "release": "changeset tag"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^18.1.0",
     "@angular/cdk": "^18.1.0",
