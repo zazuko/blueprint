@@ -11,6 +11,15 @@
     "e2e": "ng e2e",
     "release": "changeset tag"
   },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/zazuko/blueprint",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zazuko/blueprint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zazuko/blueprint/issues"
+  },
   "dependencies": {
     "@angular/animations": "^18.1.0",
     "@angular/cdk": "^18.1.0",
