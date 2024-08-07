@@ -48,6 +48,7 @@
     "@angular-eslint/template-parser": "18.1.0",
     "@angular/cli": "^18.1.0",
     "@angular/compiler-cli": "^18.1.0",
+    "@changesets/cli": "^2.27.7",
     "@types/clownface": "^2.0.7",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^20.10.4",
