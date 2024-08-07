@@ -1,5 +1,5 @@
 # First step: build the app
-FROM docker.io/library/node:20 AS builder
+FROM --platform=$BUILDPLATFORM docker.io/library/node:20 AS builder
 
 ARG BUILD_DATE
 ARG COMMIT
