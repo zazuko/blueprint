@@ -16,7 +16,7 @@ export class HierarchyTableService {
   private readonly sparqlService = inject(SparqlService);
 
   getTableForHierarchy(iri: string): Observable<Table> {
-    return this.hierarchyService.getHierarchyByIri(iri).pipe(
+    return this.hierarchyService.getHierarchyDefinitionByIri(iri).pipe(
       switchMap(hierarchy => {
         return this.sparqlService.construct(hierarchy.getDataTableSparqlQuery()).pipe(map(dataset => {
           const cfTable = rdfEnvironment.clownface({ dataset }).node(blueprint.TableNamedNode).in(rdf.typeNamedNode);

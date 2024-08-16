@@ -18,7 +18,7 @@ export class HierarchyService {
     private readonly sparqlService = inject(SparqlService);
     private readonly uiClassMetadataService = inject(UiClassMetadataService);
 
-    getHierarchyByIri(iri: string): Observable<HierarchyDefinition | null> {
+    getHierarchyDefinitionByIri(iri: string): Observable<HierarchyDefinition | null> {
         const classMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = hierarchyByIriQuery(iri);
         return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(

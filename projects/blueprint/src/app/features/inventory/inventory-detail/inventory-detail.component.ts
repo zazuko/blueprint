@@ -130,7 +130,7 @@ export class InventoryDetailComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const id = changes['id']?.currentValue ?? null;
     if (id) {
-      this.#hierarchyService.getHierarchyByIri(id).pipe(
+      this.#hierarchyService.getHierarchyDefinitionByIri(id).pipe(
         takeUntilDestroyed(this.#destroyRef)
       ).subscribe({
         next: hierarchy => {

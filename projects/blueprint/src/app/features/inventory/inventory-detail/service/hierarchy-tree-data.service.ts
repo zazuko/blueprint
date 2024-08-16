@@ -22,18 +22,25 @@ import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-obj
   providedIn: 'root'
 })
 export class HierarchyTreeDataService {
-  private readonly hierarchyService = inject(HierarchyService);
-  private readonly sparqlService = inject(SparqlService);
-  private readonly uiClassMetadataService = inject(UiClassMetadataService);
+  readonly #hierarchyService = inject(HierarchyService);
+  readonly #sparqlService = inject(SparqlService);
+  readonly #uiClassMetadataService = inject(UiClassMetadataService);
 
 
+  /**
+   * 
+   * @param iri the iri of the hierarchy
+   * @returns an Observable of the tree nodes
+   */
   getTreeDataForHierarchy(iri: string): Observable<TreeNode<NodeElement>[]> {
 
-    return this.hierarchyService.getHierarchyByIri(iri).pipe(
+    return this.#hierarchyService.getHierarchyDefinitionByIri(iri).pipe(
       switchMap(hierarchy => {
+        debugger;
         const query = this.getQueryFor(hierarchy.rootNode);
-        const metadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([query, metadataQuery]));
+        console.log(query);
+        const metadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
+        return this.#sparqlService.construct(sparqlUtils.mergeConstruct([query, metadataQuery]));
 
       }),
       map(dataset => {
