@@ -18,19 +18,21 @@ import { HierarchyDefinition } from '../service/model/hierarchy-definition.model
 export class TreeDetailComponent implements OnChanges {
   @Input({ required: true }) id: string = '';
 
-  private readonly hierarchyService = inject(HierarchyService);
-  private readonly loadingIndicator = inject(LoadingIndicatorService);
+  readonly #hierarchyService = inject(HierarchyService);
+  readonly #loadingIndicator = inject(LoadingIndicatorService);
 
-  public hierarchyDefinition = signal<HierarchyDefinition | null | undefined>(undefined);
+  hierarchyDefinition = signal<HierarchyDefinition | null | undefined>(undefined);
 
   hierarchy = computed<TreeNode[]>(() => {
-    if (this.hierarchyDefinition() === null || this.hierarchyDefinition() === undefined) {
+    const hierarchyDefinition = this.hierarchyDefinition();
+    if (!hierarchyDefinition) {
       return [];
     }
-    const rootNode = this.hierarchyDefinition()!.rootNode;
-    if (rootNode === null || rootNode === undefined) {
+    const rootNode = hierarchyDefinition.rootNode;
+    if (!rootNode) {
       return [];
     }
+
     const uiTreeNode = {
       label: rootNode.label,
       expanded: true,
@@ -39,8 +41,10 @@ export class TreeDetailComponent implements OnChanges {
     };
 
     rootNode.children.forEach(child => {
-      this.createChildUiNodeFromTopologyTreeNode(child, uiTreeNode);
+      this.createChildUiNodeFromTopologyTreeNode(child, uiTreeNode, [rootNode.iri]);
     });
+
+    console.log(uiTreeNode);
 
     return [uiTreeNode];
   });
@@ -66,16 +70,16 @@ export class TreeDetailComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const id = changes['id']?.currentValue;
     if (id) {
-      this.loadingIndicator.loading();
-      this.hierarchyService.getHierarchyByIri(id).subscribe((hierarchyDefinition) => {
+      this.#loadingIndicator.loading();
+      this.#hierarchyService.getHierarchyByIri(id).subscribe((hierarchyDefinition) => {
         this.hierarchyDefinition.set(hierarchyDefinition);
-        this.loadingIndicator.done();
+        this.#loadingIndicator.done();
       }
       );
     }
   }
 
-  private createChildUiNodeFromTopologyTreeNode(childNode: HierarchyNode, parentUiNode: TreeNode<HierarchyNode>): TreeNode<HierarchyNode> {
+  private createChildUiNodeFromTopologyTreeNode(childNode: HierarchyNode, parentUiNode: TreeNode<HierarchyNode>, nodeShapeIris: string[]): TreeNode<HierarchyNode> {
 
     const childUiNode = {
       label: childNode.label,
@@ -87,8 +91,13 @@ export class TreeDetailComponent implements OnChanges {
       parentUiNode.children = [];
     }
     parentUiNode.children.push(childUiNode);
+    if (nodeShapeIris.includes(childNode.iri)) {
+      childUiNode.label = `${childUiNode.label} (circular reference)`;
+      return childUiNode;
+    }
+    nodeShapeIris.push(childNode.iri);
     childNode.children.forEach(child => {
-      this.createChildUiNodeFromTopologyTreeNode(child, childUiNode);
+      this.createChildUiNodeFromTopologyTreeNode(child, childUiNode, nodeShapeIris);
     });
     return childUiNode;
   }

@@ -4,7 +4,6 @@ import { rdfs, shacl } from '@blueprint/ontology';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 
 export class HierarchyNode extends ClownfaceObject {
-
     #_children: HierarchyNode[] | null = null;
     #_targetClass: string | null = null;
     #_label: string | null = null;
