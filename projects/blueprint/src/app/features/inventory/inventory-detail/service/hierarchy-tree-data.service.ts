@@ -36,9 +36,7 @@ export class HierarchyTreeDataService {
 
     return this.#hierarchyService.getHierarchyDefinitionByIri(iri).pipe(
       switchMap(hierarchy => {
-        debugger;
         const query = this.getQueryFor(hierarchy.rootNode);
-        console.log(query);
         const metadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         return this.#sparqlService.construct(sparqlUtils.mergeConstruct([query, metadataQuery]));
 
@@ -75,6 +73,7 @@ export class HierarchyTreeDataService {
   private getQueryFor(rootNode: HierarchyNode): string {
     const pathToLeaves = this._pathsToLeaves(rootNode);
 
+    console.log('pathToLeaves', pathToLeaves);
     // iterate over all nodes in the path
     const rdfClassesSet = new Set<string>();
     pathToLeaves.forEach(hierarchyPath => hierarchyPath.forEach(node => rdfClassesSet.add(node.targetClass)));
@@ -155,6 +154,7 @@ export class HierarchyTreeDataService {
   private _pathsToLeaves(node: HierarchyNode, path: HierarchyNode[] = []): HierarchyNode[][] {
     // Add the current node to the path
     path = [...path, node];
+    const nodeShapeIris = path.map(node => node.iri);
 
     // If the node is a leaf, return the path to it
     if (node.children.length === 0) {
@@ -164,7 +164,14 @@ export class HierarchyTreeDataService {
     // If the node is not a leaf, recursively find paths for all children
     let paths: HierarchyNode[][] = [];
     for (const child of node.children) {
-      paths = [...paths, ...this._pathsToLeaves(child, path)];
+      if (nodeShapeIris.includes(child.iri)) {
+        // If the child is already in the path, we have a cycle
+        console.error('Cycle detected in hierarchy', path.map(node => node.iri).join(' -> '));
+        return [path];
+      } else {
+        paths = [...paths, ...this._pathsToLeaves(child, path)];
+
+      }
     }
 
     return paths;

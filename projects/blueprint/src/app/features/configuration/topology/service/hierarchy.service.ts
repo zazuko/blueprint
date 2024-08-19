@@ -15,13 +15,13 @@ import { HierarchyDefinition } from './model/hierarchy-definition.model';
 })
 export class HierarchyService {
 
-    private readonly sparqlService = inject(SparqlService);
-    private readonly uiClassMetadataService = inject(UiClassMetadataService);
+    readonly #sparqlService = inject(SparqlService);
+    readonly #uiClassMetadataService = inject(UiClassMetadataService);
 
     getHierarchyDefinitionByIri(iri: string): Observable<HierarchyDefinition | null> {
-        const classMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
+        const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = hierarchyByIriQuery(iri);
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
+        return this.#sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
                 const hierarchyGraph = rdfEnvironment.clownface({ dataset }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
                 if (hierarchyGraph.values.length !== 1) {
@@ -36,11 +36,11 @@ export class HierarchyService {
     }
 
     getHierarchiesForClass(iri: string): Observable<HierarchyDefinition[]> {
-        const classMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
+        const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = hierarchyForClassQuery(iri);
 
 
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
+        return this.#sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
                 const hierarchyGraph = rdfEnvironment.clownface({ dataset }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
                 const hierarchies = hierarchyGraph.map(hierarchyCfNode => {
@@ -52,10 +52,10 @@ export class HierarchyService {
     }
 
     getAllHierarchies(): Observable<HierarchyDefinition[]> {
-        const classMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
+        const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = getAllHierarchiesQuery();
 
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
+        return this.#sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
                 const hierarchyGraph = rdfEnvironment.clownface({ dataset }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
                 const hierarchies = hierarchyGraph.map(hierarchyCfNode => {
