@@ -12,6 +12,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
     .this-box {
         display: flex;
@@ -22,6 +24,8 @@
         margin-top: 10px;
         margin-bottom: 10px;
         height: 100%;
+        border: 1px dashed lightgrey;
+        border-radius: 5px;
 
         bp-avatar {
             margin-bottom: 10px;
@@ -36,19 +40,8 @@
             align-items: flex-start;
             justify-content: center;
         }
-
-        // a nice dashed lightgrey border with round corners
-        border: 1px dashed lightgrey;
-        border-radius: 5px;
     }
-
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-
 }
-
-
 
 .arrow {
     width: 100px;
@@ -77,15 +70,6 @@
     align-items: center;
     justify-content: stretch;
     width: 100%;
-
-    .text {
-        margin-left: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-    }
-
     // a nice dashed lightgrey border with round corners
     border: 1px dashed lightgrey;
     border-radius: 5px;
@@ -94,6 +78,16 @@
     padding-top: 20px;
     padding-bottom: 20px;
     margin: 10px;
+
+    &.text {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+
 
 
 }
