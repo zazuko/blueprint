@@ -22,6 +22,7 @@ import { HierarchyDefinition } from './service/model/hierarchy-definition.model'
   ]
 })
 export class TopologyComponent implements OnInit {
+
   readonly #messageChannel = inject(MessageChannelService);
   readonly #hierarchyService = inject(HierarchyService);
   readonly #loadingIndicatorService = inject(LoadingIndicatorService);

@@ -12,7 +12,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { GroupTableComponent } from "../../../dev/group-table/group-table.component";
 import { ClusterDiagramComponent } from "../../../dev/cluster-diagram/cluster-diagram.component";
 import { HierarchyTreeDataService } from './service/hierarchy-tree-data.service';
 import { NodeElement } from '../../../core/model/node-element/node-element.class';
@@ -35,7 +34,6 @@ import { labelAlphaSort } from '../../../core/utils/sort-functions';
     AvatarComponent,
     FormsModule,
     NgClass,
-    GroupTableComponent,
     ClusterDiagramComponent,
     ToolbarModule,
     SelectButtonModule,
@@ -89,7 +87,7 @@ export class InventoryDetailComponent implements OnChanges {
       console.error('No definition');
       return [];
     }
-    return definition.contentList
+    return definition.tableOfContents;
   })
   readonly breadcrumbs: Breadcrumb[] = [
     {

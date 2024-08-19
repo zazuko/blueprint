@@ -9,10 +9,10 @@ import { Aggregation } from '@blueprint/service/graph/aggregate/model/aggregatio
 import { HierarchyNode } from './hierarchy-node.model';
 export class HierarchyDefinition extends Aggregation {
 
-    private _label: string | null = null;
-    private _description: string | null = null;
-    private _rootNode: HierarchyNode | null | undefined = undefined;
-    private _avatars: Avatar[] | null = null;
+    #_label: string | null = null;
+    #_description: string | null = null;
+    #_rootNode: HierarchyNode | null | undefined = undefined;
+    #_avatars: Avatar[] | null = null;
 
     /**
      * 
@@ -30,19 +30,19 @@ export class HierarchyDefinition extends Aggregation {
      * @readonly
      */
     get label(): string {
-        if (this._label === null) {
+        if (this.#_label === null) {
             const labels = this._node.out(rdfs.labelNamedNode).values;
             if (labels.length === 0) {
                 console.warn(`Hierarchy ${this._node.value} has no label. Defaulting to ''.`);
-                this._label = '';
+                this.#_label = '';
             } else {
                 if (labels.length > 1) {
                     console.warn(`Hierarchy ${this._node.value} has ${labels.length} labels. Expected 1. Using first label.`);
                 }
-                this._label = labels[0];
+                this.#_label = labels[0];
             }
         }
-        return this._label;
+        return this.#_label;
     }
 
     /**
@@ -51,20 +51,20 @@ export class HierarchyDefinition extends Aggregation {
      * @readonly
      */
     get description(): string {
-        if (this._description === null) {
+        if (this.#_description === null) {
             const comments = this._node.out(rdfs.commentNamedNode).values;
             if (comments.length === 0) {
                 console.warn(`Hierarchy ${this._node.value} has no comment. Defaulting to ''.`);
-                this._description = '';
+                this.#_description = '';
             }
             else if (comments.length > 1) {
                 console.warn(`Hierarchy ${this._node.value} has ${comments.length} comments. Expected 1. Joining comments.`);
-                this._description = comments.join('\n');
+                this.#_description = comments.join('\n');
             } else {
-                this._description = comments[0];
+                this.#_description = comments[0];
             }
         }
-        return this._description;
+        return this.#_description;
     }
 
     /**
@@ -73,9 +73,9 @@ export class HierarchyDefinition extends Aggregation {
      * @readonly
      */
     get avatars(): Avatar[] {
-        if (this._avatars === null) {
+        if (this.#_avatars === null) {
             const uiClassMetadatas = this._node.in(shacl.groupNamedNode).out(shacl.targetClassNamedNode).in(shacl.targetNodeNamedNode).has(rdf.typeNamedNode, blueprintShape.ClassMetadataShapeNamedNode).map(metaNode => new RdfUiClassMetadata(metaNode));
-            this._avatars = uiClassMetadatas.map(uiClassMetadata => {
+            this.#_avatars = uiClassMetadatas.map(uiClassMetadata => {
                 return {
                     label: uiClassMetadata.label,
                     icon: uiClassMetadata.icon,
@@ -84,10 +84,15 @@ export class HierarchyDefinition extends Aggregation {
             });
 
         }
-        return this._avatars;
+        return this.#_avatars;
     }
 
-    get contentList(): ContentItem[] {
+    /** 
+     * The table of contents of the hierarchy.
+     * 
+     * @readonly
+     */
+    get tableOfContents(): ContentItem[] {
         const uiClassMetadatas = this._node.in(shacl.groupNamedNode).out(shacl.targetClassNamedNode).in(shacl.targetNodeNamedNode).has(rdf.typeNamedNode, blueprintShape.ClassMetadataShapeNamedNode).map(metaNode => new RdfUiClassMetadata(metaNode));
         return uiClassMetadatas.map(meta => {
             return {
@@ -102,8 +107,13 @@ export class HierarchyDefinition extends Aggregation {
         });
     }
 
+    /**
+     * The labels of the content items.
+     * 
+     * @readonly
+     */
     get contentLabels(): string[] {
-        return this.contentList.map(item => item.label);
+        return this.tableOfContents.map(item => item.label);
     }
 
     /**
@@ -112,41 +122,19 @@ export class HierarchyDefinition extends Aggregation {
      * @readonly
      */
     get rootNode(): HierarchyNode | null {
-        if (this._rootNode === undefined) {
+        if (this.#_rootNode === undefined) {
             const root = this._node.out(blueprint.hasRootNamedNode);
             if (root.values.length === 1) {
                 const nodeNode = rdfEnvironment.namedNode(root.value);
                 const rootCfNode = rdfEnvironment.clownface({ dataset: this._node.dataset }).node(nodeNode);
-                this._rootNode = new HierarchyNode(rootCfNode);
+                this.#_rootNode = new HierarchyNode(rootCfNode);
             } else {
                 console.warn(`Hierarchy ${this._node.value}> has ${root.values.length} root nodes. Expected 1. Wr do not provide a root node.`);
-                this._rootNode = null;
+                this.#_rootNode = null;
             }
         }
-        return this._rootNode;
-    }
-
-    /**
-     * A tree can be shown as a table if all nodes have exactly one child.
-     * 
-     * @returns {boolean} true if the tree can be shown as a table.
-     */
-    isTable(): boolean {
-        const root = this.rootNode;
-        if (root) {
-            const queue = [root];
-            while (queue.length > 0) {
-                const node = queue.shift();
-                if (node) {
-                    if (node.children.length > 1) {
-                        return false;
-                    }
-                    queue.push(...node.children);
-                }
-            }
-            return true;
-        }
-        return false;
+        console.log(this.#_rootNode);
+        return this.#_rootNode;
     }
 
     /**
@@ -273,85 +261,6 @@ export class HierarchyDefinition extends Aggregation {
             return '';
         }
         return `^<${path.value}>`;
-    }
-
-    getDataTableSparqlQuery(): string {
-        const root = this.rootNode;
-        // Breadth-first (BFS) traversal 
-        const allChildNodes = this._collectAllChildNodes(root);
-
-        const vars = allChildNodes.map((_node, index) => {
-            return `?var_${index}`;
-        }
-        )
-        const constructHead = `
-        ${rdfs.sparqlPrefix()}
-        ${blueprint.sparqlPrefix()}
-        ${shacl.sparqlPrefix()}
-
-        PREFIX data: <http://localhost/data/>
-
-        CONSTRUCT {
-            data:TableInstance a ${blueprint.TablePrefixed} .
-            data:TableInstance ${blueprint.hasHeaderPrefixed} ?header .
-            ?header ?tableP ?metaO .
-            ?header ${blueprint.colorIndexPrefixed} ?columnIndex .
-          
-            ?instance a ?class .
-            ?instance ${rdfs.labelPrefixed} ?label .
-            ?instance ${blueprint.keyPrefixed} ?key .
-          
-            data:TableInstance ${blueprint.hasRowPrefixed} ?row .
-            ?row ${blueprint.cellPrefixed} ${vars.join(', ')} .
-        }
-        `;
-        const classes = allChildNodes.map(node => node.targetClass);
-        const headerBlock = `
-        {
-            VALUES (?columnIndex ?rowClass) {
-                ${classes.map((c, index) => `(${index} <${c}>)`).join('\n')}
-            }
-            ?rowClass ^${shacl.targetNodePrefixed} ?meta .
-             VALUES (?metaP ?tableP) {
-                (${blueprint.colorIndexPrefixed} ${blueprint.colorIndexPrefixed})
-                (${blueprint.faIconPrefixed} ${blueprint.faIconPrefixed})
-                (${rdfs.labelPrefixed} ${blueprint.keyPrefixed})
-            }
-            ?meta  ?metaP ?metaO .
-            BIND (IRI(CONCAT(STR(data:table), "/header", STR(?columnIndex))) AS ?header)
-          }
-        `;
-
-        const allInstanceBlock = `
-        {
-            {
-              SELECT ?instance ?class WHERE {
-                VALUES ?class {
-                    ${classes.map((c) => `<${c}>`).join('\n')}
-                }
-                ?instance a ?class .
-              }
-            }
-            ?instance ${rdfs.labelPrefixed} ?label .
-            ?class ^${shacl.targetNodePrefixed} ?meta .
-            ?meta ${rdfs.labelPrefixed} ?key .
-        }
-        `;
-
-        const tableBlock = `
-        {
-            {
-              SELECT ${vars.join(' ')} WHERE {
-                ${vars.map((variable, index) => {
-            return `${variable} a <${classes[index]}> .\n${(index === 0) ? `` : `# var ${variable}\n ?var_${index - 1} ${allChildNodes[index].pathFromRoot} ${variable} .\n`}`;
-        }).join('\n')}
-              }
-            }
-            BIND (UUID() AS ?row)
-        }
-        `;
-
-        return `${constructHead} WHERE { ${headerBlock} UNION ${allInstanceBlock} UNION ${tableBlock} }`;
     }
 
     // Breadth-first (BFS) traversal 

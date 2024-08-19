@@ -397,6 +397,33 @@ class ShaclOntology extends Ontology {
         return this.namespace('PropertyGroup');
     }
 
+    /**
+     * Get the zeroOrMorePath predicate.
+     * 
+     * @readonly
+     */
+    get zeroOrMorePath(): string {
+        return this.namespace('zeroOrMorePath').value;
+    }
+
+    /**
+     * Get the prefixed zeroOrMorePath predicate.
+     * 
+     * @readonly
+     */
+    get zeroOrMorePathPrefixed(): string {
+        return `${this.prefix()}:zeroOrMorePath`;
+    }
+
+    /**
+     * Get the zeroOrMorePath predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get zeroOrMorePathNamedNode(): NamedNode {
+        return this.namespace('zeroOrMorePath');
+    }
+
 }
 
 export const shacl = new ShaclOntology();

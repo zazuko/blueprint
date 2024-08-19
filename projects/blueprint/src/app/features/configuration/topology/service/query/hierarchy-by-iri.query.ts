@@ -3,7 +3,7 @@ import { blueprint, rdf, rdfs, shacl } from "@blueprint/ontology";
 
 export function hierarchyByIriQuery(iri: string): string {
 
-    return `
+  const query = `
 ${shacl.sparqlPrefix()}
 ${blueprint.sparqlPrefix()}
 ${rdf.sparqlPrefix()}
@@ -14,6 +14,7 @@ ${rdfs.sparqlPrefix()}
     ?shape ?shapeP ?shapeO .
       ?property ?propertyP ?propertyO .
       ?propertyO ${shacl.inversePathPrefixed} ?inversePath .
+      ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
   } WHERE {
       {
           {
@@ -65,8 +66,14 @@ ${rdfs.sparqlPrefix()}
           OPTIONAL {
               ?propertyO ${shacl.inversePathPrefixed} ?inversePath .
           }
+          OPTIONAL {
+              ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+          }
       }
     
   }
   `;
+
+  console.log(query);
+  return query;
 }

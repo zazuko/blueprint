@@ -3,17 +3,17 @@ import * as RDF from '@rdfjs/types';
 import { TopologyPath, TopologyPathElement } from './topology-path.model';
 
 export class TopologyNode {
-    private _label: string;
-    private _comment: string;
+    #_label: string;
+    #_comment: string;
+    #_children: TopologyNode[] = [];
 
     protected _rootNode: TopologyNode | null = null;
-    private _children: TopologyNode[] = [];
     protected _pathToRoot: TopologyPathElement[] = [];
 
     constructor(private rdfClass: RDF.NamedNode, label: string = '', comment: string = '') {
         this._pathToRoot = [];
-        this._label = label;
-        this._comment = comment;
+        this.#_label = label;
+        this.#_comment = comment;
     }
 
     get rdfClassId(): string {
@@ -25,11 +25,11 @@ export class TopologyNode {
     }
 
     get label(): string {
-        return this._label;
+        return this.#_label;
     }
 
     get comment(): string {
-        return this._comment;
+        return this.#_comment;
     }
 
     get rootPath(): TopologyPathElement[] {
@@ -40,8 +40,8 @@ export class TopologyNode {
         const childNode = new TopologyNode(node.rdfClass, node.label, node.comment);
         childNode._pathToRoot = path;
         childNode._rootNode = this;
-        childNode._children = node.children;
-        this._children.push(childNode);
+        childNode.#_children = node.children;
+        this.#_children.push(childNode);
     }
 
     hasNode(classIri: RDF.NamedNode, visited = new Set<string>()): boolean {
@@ -51,7 +51,7 @@ export class TopologyNode {
 
         visited.add(this.rdfClassId);
 
-        for (const child of this._children) {
+        for (const child of this.#_children) {
             if (!visited.has(child.rdfClassId) && child.hasNode(classIri, visited)) {
                 return true;
             }
@@ -67,7 +67,7 @@ export class TopologyNode {
 
         visited.add(this.rdfClassId);
 
-        for (const child of this._children) {
+        for (const child of this.#_children) {
             if (!visited.has(child.rdfClassId)) {
                 const node = child.findNode(classIri, visited);
                 if (node) {
@@ -94,11 +94,11 @@ export class TopologyNode {
     }
 
     get children(): TopologyNode[] {
-        return this._children;
+        return this.#_children;
     }
 
 
     protected set children(nodes: TopologyNode[]) {
-        this._children = nodes;
+        this.#_children = nodes;
     }
 }

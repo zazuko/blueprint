@@ -4,6 +4,8 @@ import { rdfs, shacl } from '@blueprint/ontology';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 
 export class HierarchyNode extends ClownfaceObject {
+
+    // lazy evaluation
     #_children: HierarchyNode[] | null = null;
     #_targetClass: string | null = null;
     #_label: string | null = null;
@@ -79,10 +81,11 @@ export class HierarchyNode extends ClownfaceObject {
         // we have to invert  it because we need the path to the parent node
         if (pathFromParentToThisNode.term.termType === 'BlankNode') {
             const inverse = pathFromParentToThisNode.out(shacl.inversePathNamedNode);
-
+            const zeroOrMorePath = pathFromParentToThisNode.out(shacl.zeroOrMorePathNamedNode);
             if (inverse.values.length === 1) {
                 return `<${inverse.value}>`;
             }
+            console.log(zeroOrMorePath.value);
             console.error(`Expected exactly one inversePath for node ${this.iri}. Found ${inverse.values.length}.`);
             return '';
         }
@@ -104,6 +107,7 @@ export class HierarchyNode extends ClownfaceObject {
             if (inverse.values.length === 1) {
                 return `^<${inverse.value}>`;
             }
+
             console.error(`Expected exactly one inversePath for node ${this.iri}. Found ${inverse.values.length}.`);
             return '';
         }
