@@ -15,17 +15,28 @@ import { HierarchyDefinition } from './service/model/hierarchy-definition.model'
   standalone: true,
   templateUrl: './topology.component.html',
   styleUrl: './topology.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
+  imports: [
+    RouterLink,
+    BreadcrumbPageComponent,
+    ConfigurationCardComponent
+  ]
 })
 export class TopologyComponent implements OnInit {
-  private readonly messageChannel = inject(MessageChannelService);
-
-  private readonly hierarchyService = inject(HierarchyService);
-  private readonly loadingIndicatorService = inject(LoadingIndicatorService);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly #messageChannel = inject(MessageChannelService);
+  readonly #hierarchyService = inject(HierarchyService);
+  readonly #loadingIndicatorService = inject(LoadingIndicatorService);
+  readonly #destroyRef = inject(DestroyRef);
 
   public hierarchiesSignal = signal<HierarchyDefinition[]>([]);
-  public graphSignal = signal<GraphDefinition[]>([{ iri: 'https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree', label: 'Graph', comment: 'Graph' }]);
+  public graphSignal = signal<GraphDefinition[]>(
+    [
+      {
+        iri: 'https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree',
+        label: 'Graph',
+        comment: 'Graph'
+      }
+    ]
+  );
 
   public readonly breadcrumbs: Breadcrumb[] = [
     {
@@ -41,22 +52,22 @@ export class TopologyComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadingIndicatorService.loading();
-    this.hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+    this.#loadingIndicatorService.loading();
+    this.#hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(
       {
         next: (result) => {
           this.hierarchiesSignal.set(result);
-          this.loadingIndicatorService.done();
-          this.messageChannel.debug('Hierarchies loaded. Update UI');
+          this.#loadingIndicatorService.done();
+          this.#messageChannel.debug('Hierarchies loaded. Update UI');
         },
         error: (error) => {
-          this.loadingIndicatorService.done();
-          this.messageChannel.error('Hierarchies load failed', error, 'Check your hierarchy configuration');
+          this.#loadingIndicatorService.done();
+          this.#messageChannel.error('Hierarchies load failed', error, 'Check your hierarchy configuration');
 
         },
         complete: () => {
-          this.loadingIndicatorService.done();
-          this.messageChannel.debug('Hierarchies load completed');
+          this.#loadingIndicatorService.done();
+          this.#messageChannel.debug('Hierarchies load completed');
         }
       });
   }
