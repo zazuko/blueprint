@@ -28,7 +28,6 @@ export class HierarchyDefinition extends Aggregation {
      * The label of the hierarchy.
      * 
      * @readonly
-     * @link rdfs:label
      */
     get label(): string {
         if (this._label === null) {
@@ -50,7 +49,6 @@ export class HierarchyDefinition extends Aggregation {
      * The comment of the hierarchy.
      * 
      * @readonly
-     * @link rdfs:comment
      */
     get description(): string {
         if (this._description === null) {
@@ -73,7 +71,6 @@ export class HierarchyDefinition extends Aggregation {
      * The avatars of the hierarchy.
      * 
      * @readonly
-     * @link blueprint:avatar
      */
     get avatars(): Avatar[] {
         if (this._avatars === null) {

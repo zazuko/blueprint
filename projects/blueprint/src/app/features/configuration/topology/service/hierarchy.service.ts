@@ -21,7 +21,12 @@ export class HierarchyService {
     readonly #sparqlService = inject(SparqlService);
     readonly #uiClassMetadataService = inject(UiClassMetadataService);
 
-
+    /**
+     * Get the hierarchy definition for a specific IRI
+     * 
+     * @param iri Returns the hierarchy definition for this IRI
+     * @returns Observable of the hierarchy definition
+     */
     getHierarchyDefinitionByIri(iri: string): Observable<HierarchyDefinition | null> {
         const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = hierarchyByIriQuery(iri);
@@ -40,6 +45,12 @@ export class HierarchyService {
         );
     }
 
+    /**
+     * Get all hierarchies for a specific class
+     * 
+     * @param iri the class IRI
+     * @returns an Observable of all hierarchies for the class
+     */
     getHierarchiesForClass(iri: string): Observable<HierarchyDefinition[]> {
         const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = hierarchyForClassQuery(iri);
@@ -57,6 +68,11 @@ export class HierarchyService {
         );
     }
 
+    /**
+     * Get all available hierarchies
+     * 
+     * @returns an Observable of all hierarchies
+     */
     getAllHierarchies(): Observable<HierarchyDefinition[]> {
         const classMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
         const hierarchyQuery = allHierarchiesQuery();
@@ -73,11 +89,21 @@ export class HierarchyService {
         );
     }
 
+    /**
+     * Returns the SPARQL query to get all hierarchies
+     * 
+     * @returns SPARQL query to get all hierarchies
+     */
     getAllHierarchiesQuery(): string {
         return allHierarchiesQuery();
     }
 
-
+    /**
+     * Returns the SPARQL query to get the hierarchy for a specific class
+     * 
+     * @param iri The IRI of the class
+     * @returns SPARQL query to get the hierarchy for a specific class
+     */
     getHierarchiesForClassQuery(iri: string): string {
         return hierarchyForClassQuery(iri);
     }
