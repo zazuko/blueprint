@@ -74,6 +74,5 @@ ${rdfs.sparqlPrefix()}
   }
   `;
 
-  console.log(query);
   return query;
 }

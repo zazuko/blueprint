@@ -149,6 +149,7 @@ export class HierarchyDefinition extends Aggregation {
 
 
     getDataSparqlQueryForType(type: string): string {
+        console.log('getDataSparqlQueryForType', type);
         const node = this._node.in(shacl.groupNamedNode).has(shacl.targetClassNamedNode, rdfEnvironment.namedNode(type));
         const nodesToRoot = this._collectNodesToRoot(node);
         const query = nodesToRoot.map((_node, index) => this._queryForNode(index, nodesToRoot)).join(' UNION \n');
@@ -279,6 +280,7 @@ export class HierarchyDefinition extends Aggregation {
 
 
     private _downStreamTeeQuery(typeIri: string, viewIri: string): string {
+        console.log('_downStreamTeeQuery', typeIri, viewIri);
 
         const node = this._node.in(shacl.groupNamedNode).has(shacl.targetClassNamedNode, rdfEnvironment.namedNode(typeIri));
 

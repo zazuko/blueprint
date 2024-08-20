@@ -85,8 +85,11 @@ export class HierarchyNode extends ClownfaceObject {
             if (inverse.values.length === 1) {
                 return `<${inverse.value}>`;
             }
+            if (zeroOrMorePath.values.length === 1) {
+                return `^<${zeroOrMorePath.value}>*`;
+            }
             console.log(zeroOrMorePath.value);
-            console.error(`Expected exactly one inversePath for node ${this.iri}. Found ${inverse.values.length}.`);
+            console.error(`Expected exactly one inversePath for node ${this.iri} or one zeroToMorePath Found ${inverse.values.length}.`);
             return '';
         }
         if (pathFromParentToThisNode.values.length === 1) {
