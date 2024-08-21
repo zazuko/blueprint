@@ -13,6 +13,8 @@ export function allHierarchiesQuery(): string {
         ?property ?propertyP ?propertyO .
         ?propertyO ${shacl.inversePathPrefixed} ?inversePath .
         ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+        ?zeroOrMorePath ${shacl.inversePathPrefixed} ?zeroOrMoreInversePath .
+
     } WHERE {
         {
             {
@@ -66,6 +68,10 @@ export function allHierarchiesQuery(): string {
             }
             OPTIONAL {
                 ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+                OPTIONAL {
+                    ?zeroOrMorePath ${shacl.inversePathPrefixed} ?zeroOrMoreInversePath .
+                }
+
             }
         }
         

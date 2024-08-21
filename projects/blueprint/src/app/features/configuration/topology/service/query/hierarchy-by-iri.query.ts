@@ -15,6 +15,8 @@ ${rdfs.sparqlPrefix()}
       ?property ?propertyP ?propertyO .
       ?propertyO ${shacl.inversePathPrefixed} ?inversePath .
       ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+      ?zeroOrMorePath ${shacl.inversePathPrefixed} ?zeroOrMoreInversePath .
+
   } WHERE {
       {
           {
@@ -67,7 +69,10 @@ ${rdfs.sparqlPrefix()}
               ?propertyO ${shacl.inversePathPrefixed} ?inversePath .
           }
           OPTIONAL {
-              ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+            ?propertyO ${shacl.zeroOrMorePathPrefixed} ?zeroOrMorePath .
+            OPTIONAL {
+              ?zeroOrMorePath ${shacl.inversePathPrefixed} ?zeroOrMoreInversePath .
+            }
           }
       }
     

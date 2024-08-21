@@ -71,7 +71,6 @@ export class HierarchyTreeDataService {
   }
 
   private getQueryFor(rootNode: HierarchyNode): string {
-    console.log('getQueryFor', rootNode);
     const pathToLeaves = this._pathsToLeaves(rootNode);
 
     // iterate over all nodes in the path
@@ -103,7 +102,9 @@ export class HierarchyTreeDataService {
           ?parent_${index} a <${parentClass}> .
           ?child_${index} a <${childClass}> .
 
-          ?child_${index} ${parentPredicate} ?parent_${index}  .\n
+         
+          ${hierarchyNode.isRecursivePath() ? `?recursive_child_${index} ${parentPredicate} ?child_${index}.\n ?child_${index} ${parentPredicate.replace(`*`, '')} ?parent_${index}.\n` : `?child_${index} ${parentPredicate} ?parent_${index}  .\n`}
+          
         `;
 
         return [query];
@@ -128,6 +129,7 @@ export class HierarchyTreeDataService {
       ${queriesForBranches.map((_q, index) => {
       return `
       ?child_${index + 1} a ${blueprint.ChildPrefixed}.\n
+      ?parent_${index + 1} ${blueprint.childPrefixed} ?child_${index + 1}.\n
       ?parent_${index + 1} ${blueprint.childPrefixed} ?child_${index + 1}.\n`;
 
     }).join('\n')}
@@ -147,7 +149,7 @@ export class HierarchyTreeDataService {
       }
     }
     `;
-    console.log(queryHead + queryBody);
+
     return queryHead + queryBody;
   }
 

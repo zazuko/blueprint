@@ -86,9 +86,18 @@ export class HierarchyNode extends ClownfaceObject {
                 return `<${inverse.value}>`;
             }
             if (zeroOrMorePath.values.length === 1) {
+                if (zeroOrMorePath.term.termType === 'BlankNode') {
+                    const inverse = zeroOrMorePath.out(shacl.inversePathNamedNode);
+                    if (inverse.values.length === 1) {
+                        return `<${inverse.value}>*`;
+                    }
+                    console.error(`Expected exactly one inversePath for node ${this.iri} zeroToMorePath. Found ${inverse.values.length}.`);
+
+                    return '';
+                }
                 return `^<${zeroOrMorePath.value}>*`;
             }
-            console.log(zeroOrMorePath.value);
+
             console.error(`Expected exactly one inversePath for node ${this.iri} or one zeroToMorePath Found ${inverse.values.length}.`);
             return '';
         }
@@ -107,8 +116,13 @@ export class HierarchyNode extends ClownfaceObject {
 
         if (path.term.termType === 'BlankNode') {
             const inverse = path.out(shacl.inversePathNamedNode);
+            const zeroOrMorePath = path.out(shacl.zeroOrMorePathNamedNode);
+
             if (inverse.values.length === 1) {
                 return `^<${inverse.value}>`;
+            }
+            if (zeroOrMorePath.values.length === 1) {
+                return `<${zeroOrMorePath.value}>`;
             }
 
             console.error(`Expected exactly one inversePath for node ${this.iri}. Found ${inverse.values.length}.`);
@@ -137,4 +151,12 @@ export class HierarchyNode extends ClownfaceObject {
         return this.#_parent;
     }
 
+
+    isInversePath(): boolean {
+        return this.pathToParent?.startsWith('^');
+    }
+
+    isRecursivePath(): boolean {
+        return this.pathToParent.endsWith('*');
+    }
 }

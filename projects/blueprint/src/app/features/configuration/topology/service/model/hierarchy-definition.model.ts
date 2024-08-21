@@ -133,7 +133,6 @@ export class HierarchyDefinition extends Aggregation {
                 this.#_rootNode = null;
             }
         }
-        console.log(this.#_rootNode);
         return this.#_rootNode;
     }
 
@@ -149,8 +148,8 @@ export class HierarchyDefinition extends Aggregation {
 
 
     getDataSparqlQueryForType(type: string): string {
-        console.log('getDataSparqlQueryForType', type);
         const node = this._node.in(shacl.groupNamedNode).has(shacl.targetClassNamedNode, rdfEnvironment.namedNode(type));
+        console.log(`found ${type}: ${node.values}`);
         const nodesToRoot = this._collectNodesToRoot(node);
         const query = nodesToRoot.map((_node, index) => this._queryForNode(index, nodesToRoot)).join(' UNION \n');
 
@@ -188,7 +187,7 @@ export class HierarchyDefinition extends Aggregation {
     private _queryForNode(index: number, nodesToRoot: AnyPointer[]): string | null {
         if (index === 0) {
             const target = nodesToRoot[index].out(shacl.targetClassNamedNode).value;
-
+            debugger
             return this._elementQuery(index, target);
         }
 
@@ -210,6 +209,7 @@ export class HierarchyDefinition extends Aggregation {
 
 
     private _elementQuery(index: number, targetClassIri: string, propertyPath?: string): string {
+        debugger
         const focusObjectParent1 = propertyPath ? `?subject ${propertyPath} ?parent.\n ?parent rdfs:label ?label.` : '?subject rdfs:label ?label.';
         const focusObjectParent2 = propertyPath ? `?subject ${propertyPath} ?parent.\n ?parent rdf:type ?class.` : '?subject rdf:type ?class.';
         const viewLabelQuery = propertyPath ? `` : '?member rdfs:label ?viewLabel .';
@@ -280,11 +280,11 @@ export class HierarchyDefinition extends Aggregation {
 
 
     private _downStreamTeeQuery(typeIri: string, viewIri: string): string {
-        console.log('_downStreamTeeQuery', typeIri, viewIri);
 
         const node = this._node.in(shacl.groupNamedNode).has(shacl.targetClassNamedNode, rdfEnvironment.namedNode(typeIri));
 
         if (node.values.length !== 1) {
+            debugger
             console.error(`Expected exactly one node for type ${typeIri}. Found ${node.values.length}.`);
             return '';
         }
