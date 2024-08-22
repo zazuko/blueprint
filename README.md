@@ -20,6 +20,12 @@ We plan to provide a configuration frontend in the future. For now, you need to 
 
 The configuration allows you to define various aspects such as what should be visible and what should be hidden, how different entities relate to each other, and many other customizable elements. Please note that the configuration language and style may change before we release version 1.0 of Zazuko Blueprint. Examples and detailed documentation will be added soon to help guide you through the process.
 
+## Demo stack
+
+If you want to quickly try out Zazuko Blueprint, you can take a look at the Docker Compose stack in the [stack](./stack) directory.
+It contains a simple demo dataset with Kubernetes and OCI data, and all the instructions to run it are in the [README](./stack/README.md).
+You will also find instructions on how to generate the triples for the Kubernetes and OCI data for your own Kubernetes cluster.
+
 ## Deployment
 
 ### Standalone
