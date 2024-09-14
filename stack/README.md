@@ -1,6 +1,6 @@
 # Docker stack
 
-You can start the stack with a full demo dataset:
+You can start the stack with a [full demo dataset](https://download.zazukoians.org/blueprint/demo-data.nt):
 
 ```sh
 docker compose --profile full-demo-dataset up -d --build
