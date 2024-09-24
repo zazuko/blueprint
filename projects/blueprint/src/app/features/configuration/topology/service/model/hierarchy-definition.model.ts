@@ -187,7 +187,6 @@ export class HierarchyDefinition extends Aggregation {
     private _queryForNode(index: number, nodesToRoot: AnyPointer[]): string | null {
         if (index === 0) {
             const target = nodesToRoot[index].out(shacl.targetClassNamedNode).value;
-            debugger
             return this._elementQuery(index, target);
         }
 
@@ -209,7 +208,6 @@ export class HierarchyDefinition extends Aggregation {
 
 
     private _elementQuery(index: number, targetClassIri: string, propertyPath?: string): string {
-        debugger
         const focusObjectParent1 = propertyPath ? `?subject ${propertyPath} ?parent.\n ?parent rdfs:label ?label.` : '?subject rdfs:label ?label.';
         const focusObjectParent2 = propertyPath ? `?subject ${propertyPath} ?parent.\n ?parent rdf:type ?class.` : '?subject rdf:type ?class.';
         const viewLabelQuery = propertyPath ? `` : '?member rdfs:label ?viewLabel .';
@@ -284,7 +282,7 @@ export class HierarchyDefinition extends Aggregation {
         const node = this._node.in(shacl.groupNamedNode).has(shacl.targetClassNamedNode, rdfEnvironment.namedNode(typeIri));
 
         if (node.values.length !== 1) {
-            debugger
+
             console.error(`Expected exactly one node for type ${typeIri}. Found ${node.values.length}.`);
             return '';
         }
