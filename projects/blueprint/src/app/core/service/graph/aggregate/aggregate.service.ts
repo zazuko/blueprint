@@ -4,7 +4,6 @@ import { Dataset } from '@rdfjs/types';
 import rdfEnvironment from '@zazuko/env';
 import { CompositionToNodeLink, ICompositionToNodeLink } from './model/composition/composition-to-node-link';
 import { CompositionToCompositionLink, ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
-import { sparqlUtils } from '../../../utils/sparql-utils';
 
 @Injectable({
     providedIn: 'root'
@@ -80,7 +79,6 @@ export class AggregateService {
             const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => new CompositionToNodeLink(link));
             inLinks.push(...links);
         });
-
         const invertedLinks: ICompositionToNodeLink[] = inLinks.map(link => link.invert());
 
         return [...outLinks, ...invertedLinks];
