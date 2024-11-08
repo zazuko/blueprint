@@ -513,6 +513,118 @@ export class AggregateService {
             const pathToTarget = [...path, ...pathToRoot];
 
             const body = pathToTarget.map((pathElement, index) => {
+                const isInversePath = pathElement.path.startsWith('^');
+                const pathString = isInversePath ? pathElement.path.slice(1) : pathElement.path;
+
+                if (index === ((pathToTarget.length - pathToRoot.length) - 1)) {
+                    if (index === (pathToTarget.length - 1)) {
+                        return `
+                        # connector last
+                       ${isInversePath ? `?result ${pathString} ?element_${outerIndex}_${index} .` : `?element_${outerIndex}_${index} ${pathString} ?result .`}
+                       ?result a <${pathElement.targetClassIri}> .
+                       VALUES ?resultP {
+                           ${rdf.typePrefixed}
+                           ${rdfs.labelPrefixed}
+                       }
+                       ?result ?resultP ?resultO .
+                       `;
+                    }
+                    else if (index === 0) {
+                        return `
+                        # connector in the first
+                        ${isInversePath ? `?element_${index + 1} ${pathString} <${subject}> .` : `<${subject}> ${pathString} ?element_${index + 1} .`}
+                        ?element_${index + 1} a <${pathElement.targetClassIri}> .
+                        VALUES ?connectionPointP {
+                            ${rdfs.labelPrefixed}
+                            ${rdf.typePrefixed}
+                        }
+                        ?element_${index + 1} ?connectionPointP ?connectionPointO .
+                        `;
+                    }
+                    return `
+                        # connector in the middle
+                        ${isInversePath ? `?element_${index + 1} ${pathString} ?element_${index} .` : `?element_${index} ${pathString} ?element_${index + 1} .`}
+                        ?element_${index + 1} a <${pathElement.targetClassIri}> .
+                        VALUES ?connectionPointP {
+                            ${rdfs.labelPrefixed}
+                            ${rdf.typePrefixed}
+                        }
+                        ?element_${index + 1} ?connectionPointP ?connectionPointO .
+                        `;
+                }
+                if (index === 0) {
+                    return `
+                    # first path element - form link
+                    <${subject}> a <${pathElement.sourceClassIri}> .
+                    ${isInversePath ? `?element_${index + 1} ${pathString} <${subject}> .` : `<${subject}> ${pathString} ?element_${index + 1} .`}
+                    ?element_${index + 1} a <${pathElement.targetClassIri}> .
+                    `;
+                }
+                if (index === pathToTarget.length - 1) {
+                    // last path element - form composition
+                    return `
+                    # last path element - form composition
+                    ${isInversePath ? `?result ${pathString} ?element_${index} .` : `?element_${index} ${pathString} ?result .`}
+                    ?result a <${pathElement.targetClassIri}> .
+
+                    VALUES ?resultP {
+                        ${rdf.typePrefixed}
+                        ${rdfs.labelPrefixed}
+                    }
+                    ?result ?resultP ?resultO .
+                    `;
+                }
+                return `
+                # middle path element - form composition
+                ${isInversePath ? `?element_${index + 1} ${pathString} ?element_${index} .` : `?element_${index} ${pathString} ?element_${index + 1} .`}
+                ?element_${index + 1} a <${pathElement.targetClassIri}> .
+                `;
+            }).join('\n');
+
+            const query = `
+            ${rdf.sparqlPrefix()}
+            ${rdfs.sparqlPrefix()}
+            ${blueprint.sparqlPrefix()}
+
+            CONSTRUCT {
+                <${link.iri}> ${blueprint.resultPrefixed} <${link.iri}/${outerIndex}> .
+                <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
+                <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
+                <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
+                ?result ?resultP ?resultO .
+                ?element_${pathToTarget.length - pathToRoot.length} ?connectionPointP ?connectionPointO .
+                ?result ${blueprint.targetPrefixed} ?element_${pathToTarget.length - pathToRoot.length} .
+                
+            } WHERE {
+                {
+                    ${body}
+                }
+            }`;
+            return [query];
+
+        });
+        return queries;
+    }
+        const pathFromLink = link.path;
+
+        const queries = pathFromLink.flatMap((path, outerIndex) => {
+            const firstPathElement = path[0];
+            const lastPathElement = path[path.length - 1];
+            const targetNodeClass = lastPathElement.targetClassIri;
+            if (link.sourceNodeIri !== firstPathElement.sourceClassIri) {
+                console.warn(`Link <${link.iri}> has a path that starts with <${firstPathElement.sourceClassIri}> but the source node is <${link.sourceNodeIri}>`);
+                return [];
+            }
+
+            const connectionPoint = link.targetComposition?.connectionPoints.find(connectorNode => connectorNode.targetClassIri === targetNodeClass);
+            if (!connectionPoint) {
+                console.warn(`Link <${link.iri}> has no connection point for <${targetNodeClass}>`);
+                return [];
+            }
+            const pathToRoot = connectionPoint.pathToRoot;
+            const pathToTarget = [...path, ...pathToRoot];
+
+            const body = pathToTarget.map((pathElement, index) => {
                 if (index === ((pathToTarget.length - pathToRoot.length) - 1)) {
                     if (index === (pathToTarget.length - 1)) {
                         return `

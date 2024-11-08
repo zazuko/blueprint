@@ -103,7 +103,22 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      * 
      * @readonly
      */
-    get path(): PathDefinition[][] {
+     get path(): PathDefinition[][] {
+         const path = this._node.out(shacl.propertyNamedNode).map(p => {
+             const targetClass = p.out(shacl.targetClassNamedNode).values[0];
+             const shClass = p.out(shacl.classNamedNode).values[0];
+             const cfPath = p.out(shacl.pathNamedNode).toArray()[0];
+
+             if (cfPath.term.termType === 'NamedNode') {
+                 return [new PathDefinition(targetClass, shClass, `<${cfPath.value}>`)];
+             }
+             if (cfPath.term.termType === 'BlankNode') {
+                 const inversePath = cfPath.out(shacl.inversePathNamedNode).values[0];
+                 return [new PathDefinition(targetClass, shClass, `^<${inversePath}>`)];
+             }
+             console.warn(`no path found for path element: ${p}`);
+             return [] as PathDefinition[];
+         });
         const path = this._node.out(shacl.propertyNamedNode).map(p => {
             const targetClass = p.out(shacl.targetClassNamedNode).values[0];
             const shClass = p.out(shacl.classNamedNode).values[0];
