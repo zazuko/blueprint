@@ -33,7 +33,7 @@
     "@angular/service-worker": "^18.2.11",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@rdfjs/formats": "^4.0.0",
-    "@zazuko/env": "^2.2.0",
+    "@zazuko/env": "2.2.0",
     "clownface-shacl-path": "^2.1.0",
     "d3": "^7.9.0",
     "mermaid": "^10.9.1",
