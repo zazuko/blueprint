@@ -19,7 +19,7 @@ export class PathDefinition {
     }
 
     get path(): string {
-        return this.#pathFragments.join(' ');
+        return this.#pathFragments.join('/');
     }
 
     /**

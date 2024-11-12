@@ -109,7 +109,6 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
             const shClass = p.out(shacl.classNamedNode).values[0];
             const cfPath = p.out(shacl.pathNamedNode).toArray()[0];
             const pathFactory = new OutgoingPathFactory();
-            debugger;
             const path = pathFactory.createPath(cfPath);
             return [new PathDefinition(targetClass, shClass, path.toPathFragments())];
 
