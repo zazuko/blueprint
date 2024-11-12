@@ -8,13 +8,14 @@ import { OutgoingCompositionToNodeLinkFactory } from './factory/composition-to-n
 import { IncomingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/incoming-composition-to-node-link-factory';
 import { compositionToNodeLinksForClassQuery } from './query/composition-to-node-links-for-class.query';
 import { compositionToCompositionLinksForClassQuery } from './query/composition-to-composition-links-for-class.query';
+import { OutgoingCompositionToCompositionLinkFactory } from './factory/composition-to-composition-link-factory/outgoing-composition-to-composition-link-factory';
+import { IncomingCompositionToCompositionLinkFactory } from './factory/composition-to-composition-link-factory/incoming-composition-to-composition-link-factory';
 @Injectable({
     providedIn: 'root'
 })
 export class AggregateService {
 
     constructor() { }
-
 
     /**
      * 
@@ -25,6 +26,11 @@ export class AggregateService {
         return compositionToCompositionLinksForClassQuery(type);
     }
 
+    /**
+     * 
+     * @param type is the rdfs:Class IRI
+     * @returns The SPARQL query to get the links between an aggregate and a node for the given class
+     */
     getAggregateToNodeLinkForClassQuery(type: string): string {
         return compositionToNodeLinksForClassQuery(type);
     }
@@ -39,24 +45,31 @@ export class AggregateService {
     private _extractCompositionToCompositionLinks(linkDataset: Dataset, classIris: string[]): ICompositionToCompositionLink[] {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
-        const outLinks: CompositionToCompositionLink[] = [];
-
+        const outLinks: ICompositionToCompositionLink[] = [];
+        const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
 
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).map(link => new CompositionToCompositionLink(link));
+            const links = linkGraph.namedNode(iri)
+                .in(shacl.targetClassNamedNode)
+                .out(shacl.groupNamedNode)
+                .in(shacl.targetClassNamedNode)
+                .map(link => outLinkFactory.creteLink(link));
             outLinks.push(...links);
         });
 
-        const inLinks: CompositionToCompositionLink[] = [];
+        const inLinks: ICompositionToCompositionLink[] = [];
+        const inLinkFactory = new IncomingCompositionToCompositionLinkFactory();
 
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(blueprint.targetNamedNode).map(link => new CompositionToCompositionLink(link));
+            const links = linkGraph.namedNode(iri)
+                .in(shacl.targetClassNamedNode)
+                .out(shacl.groupNamedNode)
+                .in(blueprint.targetNamedNode)
+                .map(link => inLinkFactory.creteLink(link));
             inLinks.push(...links);
         });
 
-        const invertedLinks: ICompositionToCompositionLink[] = inLinks.map(link => link.invert());
-
-        return [...outLinks, ...invertedLinks];
+        return [...outLinks, ...inLinks];
     }
 
     /**
@@ -69,17 +82,25 @@ export class AggregateService {
     private _extractCompositionToNodeLinks(linkDataset: Dataset, classIris: string[]): ICompositionToNodeLink[] {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
-        const outLinks: CompositionToNodeLink[] = [];
-        const outgoingCompositionToNodeLinkFactory = new OutgoingCompositionToNodeLinkFactory();
+        const outLinks: ICompositionToNodeLink[] = [];
+        const outLinkFactory = new OutgoingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => outgoingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri)
+                .in(shacl.targetClassNamedNode)
+                .out(shacl.groupNamedNode)
+                .in(shacl.targetClassNamedNode)
+                .has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode)
+                .map(link => outLinkFactory.creteLink(link));
             outLinks.push(...links);
         });
 
         const inLinks: ICompositionToNodeLink[] = [];
-        const incomingCompositionToNodeLinkFactory = new IncomingCompositionToNodeLinkFactory();
+        const inLinkFactory = new IncomingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => incomingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri)
+                .in(blueprint.targetNamedNode)
+                .has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode)
+                .map(link => inLinkFactory.creteLink(link));
             inLinks.push(...links);
         });
 
@@ -740,7 +761,6 @@ export class AggregateService {
                     ${body}
                 }
             }`;
-            console.log('%cquery', 'color: red', query);
             return [query];
 
         });
