@@ -45,8 +45,8 @@ export abstract class Aggregation extends ClownfaceObject {
 
 
 /**
- * This calss represents an inner node of an Aggregate.
- * It provides information aobut the target class and the path to the root.
+ * This class represents an inner node of an Aggregate.
+ * It provides information about the target class and the path to the root.
  * 
  * It also provides information if it's a connection point. An connection point
  * is a node that is exposed to the outside and can be connected to other nodes or aggregates.
@@ -122,10 +122,10 @@ export class AggregateMemberNode extends ClownfaceObject {
         if (node.in(blueprint.hasRootNamedNode).values.length > 0) {
             return;
         }
-        const pathElement = node.in(shacl.nodeNamedNode);
-        const cfPath = pathElement.out(shacl.pathNamedNode);
+        const pathElementNodes = node.in(shacl.nodeNamedNode);
+        const cfPath = pathElementNodes.out(shacl.pathNamedNode);
         if (cfPath.values.length !== 1) {
-            console.warn(`PathElement has no path: ${pathElement}`);
+            console.warn(`PathElement has no path: ${pathElementNodes.values}`);
             return;
         }
         if (cfPath.term.termType === 'BlankNode') {
@@ -136,17 +136,17 @@ export class AggregateMemberNode extends ClownfaceObject {
             }
             const inversePath = inversePaths[0];
             path.push(new PathDefinition(node.out(shacl.targetClassNamedNode).value,
-                pathElement.in(shacl.propertyNamedNode).out(shacl.targetClassNamedNode).value,
-                `<${inversePath}>`))
+                pathElementNodes.in(shacl.propertyNamedNode).out(shacl.targetClassNamedNode).value,
+                [`<${inversePath}>`]))
 
         } else {
             path.push(new PathDefinition(
                 node.out(shacl.targetClassNamedNode).value,
-                pathElement.in(shacl.propertyNamedNode).out(shacl.targetClassNamedNode).value,
-                `^<${cfPath.values[0]}>`
+                pathElementNodes.in(shacl.propertyNamedNode).out(shacl.targetClassNamedNode).value,
+                [`^<${cfPath.values[0]}>`]
             ));
         }
-        const nextNodeShape = pathElement.in(shacl.propertyNamedNode);
+        const nextNodeShape = pathElementNodes.in(shacl.propertyNamedNode);
         this._traversePathToRoot((nextNodeShape as GraphPointer), path);
 
     }

@@ -3,6 +3,7 @@ import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-obj
 import { blueprint, rdf, rdfs, shacl } from "@blueprint/ontology";
 import { PathDefinition } from "../path-definition";
 import { Composition } from "../composition";
+import { OutgoingPathFactory } from "projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory";
 
 
 export interface ICompositionToNodeLink {
@@ -16,7 +17,6 @@ export interface ICompositionToNodeLink {
 }
 
 export class CompositionToNodeLink extends ClownfaceObject implements ICompositionToNodeLink {
-
     private _sourceComposition: Composition | null | undefined = undefined;
     private _targetComposition: Composition | null | undefined = undefined;
 
@@ -108,15 +108,11 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
             const targetClass = p.out(shacl.targetClassNamedNode).values[0];
             const shClass = p.out(shacl.classNamedNode).values[0];
             const cfPath = p.out(shacl.pathNamedNode).toArray()[0];
-            if (cfPath.term.termType === 'NamedNode') {
-                return [new PathDefinition(targetClass, shClass, `<${cfPath.value}>`)];
-            }
-            if (cfPath.term.termType === 'BlankNode') {
-                const inversePath = cfPath.out(shacl.inversePathNamedNode).values[0];
-                return [new PathDefinition(targetClass, shClass, `^<${inversePath}>`)];
-            }
-            console.warn(`no path found for path element: ${p}`);
-            return [] as PathDefinition[];
+            const pathFactory = new OutgoingPathFactory();
+            debugger;
+            const path = pathFactory.createPath(cfPath);
+            return [new PathDefinition(targetClass, shClass, path.toPathFragments())];
+
         });
 
         return path;

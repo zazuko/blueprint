@@ -4,7 +4,8 @@ import { Dataset } from '@rdfjs/types';
 import rdfEnvironment from '@zazuko/env';
 import { CompositionToNodeLink, ICompositionToNodeLink } from './model/composition/composition-to-node-link';
 import { CompositionToCompositionLink, ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
-
+import { OutgoingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/outgoing-composition-to-node-link-factory';
+import { IncomingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/incoming-composition-to-node-link-factory';
 @Injectable({
     providedIn: 'root'
 })
@@ -67,21 +68,20 @@ export class AggregateService {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
         const outLinks: CompositionToNodeLink[] = [];
-
+        const outgoingCompositionToNodeLinkFactory = new OutgoingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => new CompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => outgoingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
             outLinks.push(...links);
         });
 
-        const inLinks: CompositionToNodeLink[] = [];
-
+        const inLinks: ICompositionToNodeLink[] = [];
+        const incomingCompositionToNodeLinkFactory = new IncomingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => new CompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => incomingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
             inLinks.push(...links);
         });
-        const invertedLinks: ICompositionToNodeLink[] = inLinks.map(link => link.invert());
 
-        return [...outLinks, ...invertedLinks];
+        return [...outLinks, ...inLinks];
     }
 
     getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
