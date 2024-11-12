@@ -4,7 +4,10 @@ import { Dataset } from '@rdfjs/types';
 import rdfEnvironment from '@zazuko/env';
 import { CompositionToNodeLink, ICompositionToNodeLink } from './model/composition/composition-to-node-link';
 import { CompositionToCompositionLink, ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
-
+import { OutgoingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/outgoing-composition-to-node-link-factory';
+import { IncomingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/incoming-composition-to-node-link-factory';
+import { compositionToNodeLinksForClassQuery } from './query/composition-to-node-links-for-class.query';
+import { compositionToCompositionLinksForClassQuery } from './query/composition-to-composition-links-for-class.query';
 @Injectable({
     providedIn: 'root'
 })
@@ -67,21 +70,20 @@ export class AggregateService {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
         const outLinks: CompositionToNodeLink[] = [];
-
+        const outgoingCompositionToNodeLinkFactory = new OutgoingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => new CompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri).in(shacl.targetClassNamedNode).out(shacl.groupNamedNode).in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => outgoingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
             outLinks.push(...links);
         });
 
-        const inLinks: CompositionToNodeLink[] = [];
-
+        const inLinks: ICompositionToNodeLink[] = [];
+        const incomingCompositionToNodeLinkFactory = new IncomingCompositionToNodeLinkFactory();
         classIris.forEach(iri => {
-            const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => new CompositionToNodeLink(link));
+            const links = linkGraph.namedNode(iri).in(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode).map(link => incomingCompositionToNodeLinkFactory.createCompositionToNodeLink(link));
             inLinks.push(...links);
         });
-        const invertedLinks: ICompositionToNodeLink[] = inLinks.map(link => link.invert());
 
-        return [...outLinks, ...invertedLinks];
+        return [...outLinks, ...inLinks];
     }
 
     getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
@@ -382,7 +384,6 @@ export class AggregateService {
     private _createQueryForRootOfSourceAggregate(link: ICompositionToNodeLink, subject: string): string[] {
         const linkTargetNodeClass = link.targetNodeIri;
         const linkSourceComposition = link.sourceComposition;
-
         if (linkSourceComposition === null) {
             console.warn('No source composition');
             return [];
@@ -416,7 +417,7 @@ export class AggregateService {
                 const path = [...pathFromRoot, ...linkPath];
 
                 const body = path.map((pathElement, index) => {
-                    if (index === pathFromRoot.length - 1) {
+                    if (index === pathFromRoot.length - 1 && pathFromRoot.length != 0) {
                         if (index === 0) {
                             return `
                             <${subject}> a <${pathElement.sourceClassIri}> .
@@ -442,6 +443,23 @@ export class AggregateService {
                     }
 
                     if (index === 0) {
+                        if (pathFromRoot.length === 0) {
+                            return `
+                             # first path element - form link
+                    <${subject}> a <${pathElement.sourceClassIri}> .
+                    <${subject}> ${pathElement.path} ?result .
+                    ?result a <${pathElement.targetClassIri}> .
+                   
+                       VALUES ?resultP {
+                           ${rdf.typePrefixed}
+                           ${rdfs.labelPrefixed}
+                       }
+                       ?result ?resultP ?resultO .
+                       BIND(?result as ?connectionPointO)
+                       BIND(?result as ?element_0_0)
+
+                       `;
+                        }
                         return `
                         <${subject}> a <${pathElement.sourceClassIri}> .
                         <${subject}> ${pathElement.path} ?element_${outerIndex}_${index + 1} .
@@ -510,9 +528,12 @@ export class AggregateService {
             const pathToRoot = connectionPoint.pathToRoot;
             const pathToTarget = [...path, ...pathToRoot];
 
+
             const body = pathToTarget.map((pathElement, index) => {
+                console.log('path to root', pathToRoot.length);
+                console.log('body count', (pathToTarget.length - pathToRoot.length) - 1);
                 if (index === ((pathToTarget.length - pathToRoot.length) - 1)) {
-                    if (index === (pathToTarget.length - 1)) {
+                    if (index === (pathToTarget.length - 1) && pathToRoot.length != 0) {
                         return `
                         # connector last
                        ?element_${outerIndex}_${index} ${pathElement.path} ?result .
@@ -525,6 +546,23 @@ export class AggregateService {
                        `;
                     }
                     else if (index === 0) {
+                        if (pathToRoot.length === 0) {
+                            return `
+                             # first path element - form link
+                    <${subject}> a <${pathElement.sourceClassIri}> .
+                    <${subject}> ${pathElement.path} ?result .
+                    ?result a <${pathElement.targetClassIri}> .
+                   
+                       VALUES ?resultP {
+                           ${rdf.typePrefixed}
+                           ${rdfs.labelPrefixed}
+                       }
+                       ?result ?resultP ?resultO .
+                       BIND(?result as ?connectionPointO)
+                       BIND(?result as ?element_1)
+
+                       `;
+                        }
                         console.log('pathElement connector is first');
                         console.log('pathElement', index);
                         return `
@@ -600,6 +638,7 @@ export class AggregateService {
                     ${body}
                 }
             }`;
+            console.log('%cquery', 'color: red', query);
             return [query];
 
         });
@@ -710,234 +749,4 @@ export class AggregateService {
 }
 
 
-// sparql template functions
-function compositionToCompositionLinksForClassQuery(type: string): string {
-    const query = `
-  ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${rdf.sparqlPrefix()}
-  
-  CONSTRUCT {
-      ?shape ${shacl.groupPrefixed} ?aggregate .
-      ?shape ${shacl.targetClassPrefixed} ?type .
-  
-      ?outgoingLinks ?linkP ?linkO .
-      ?propertyShape ?propertyP ?propertyO .
-      ?path ${shacl.inversePathPrefixed} ?inversePath .
-  
-      ?inShape ${shacl.groupPrefixed} ?inAggregate .
-      ?inShape ${shacl.targetClassPrefixed} ?type.
-  
-      ?incomingLinks ?linkP ?linkO .
-      ?incomingLinks ${rdfs.labelPrefixed} ?inverseLabel .
-
-  } 
-  WHERE {
-      {
-          # outgoing links
-          {
-              SELECT ?outgoingLinks ?aggregate ?shape ?type WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?shape ${shacl.targetClassPrefixed} ?type .
-                  ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
-              }
-          }
-          VALUES ?linkP { 
-              ${shacl.targetClassPrefixed}
-              ${shacl.propertyPrefixed}
-              ${blueprint.targetPrefixed}
-              ${rdfs.labelPrefixed}
-              ${rdf.typePrefixed}
-          }
-          ?outgoingLinks ?linkP ?linkO .
-      } UNION  {
-          # outgoing links sh:property
-          {
-              SELECT ?outgoingLinks WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?shape ${shacl.targetClassPrefixed} ?type .
-                  ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
-              }
-          }
-          
-          ?outgoingLinks ${shacl.propertyPrefixed} ?propertyShape . 
-  
-          VALUES ?propertyP { 
-              ${shacl.targetClassPrefixed}
-              ${shacl.pathPrefixed}
-              ${shacl.classPrefixed}
-              ${shacl.namePrefixed}
-          }
-          ?propertyShape ?propertyP ?propertyO .
-          OPTIONAL {
-              ?propertyShape ${shacl.pathPrefixed} ?path .
-              ?path ${shacl.inversePathPrefixed} ?inversePath .
-          }
-      } UNION {
-          # incoming links
-          {
-              SELECT ?incomingLinks ?inAggregate ?inShape ?type WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?inShape ${shacl.targetClassPrefixed} ?type .
-                  ?inShape ${shacl.groupPrefixed} ?inAggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?incomingLinks ${blueprint.targetPrefixed} ?inAggregate .
-                  ?incomingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
-              }
-          }
-          VALUES ?linkP { 
-            ${shacl.targetClassPrefixed}
-            ${shacl.propertyPrefixed}
-            ${blueprint.targetPrefixed}
-            ${rdf.typePrefixed}
-          }
-          ?incomingLinks ${blueprint.inverseLabelPrefixed} ?inverseLabel .
-          ?incomingLinks ?linkP ?linkO .
-      } UNION {
-             # incoming links sh:property
-          {
-              SELECT ?incomingLinks WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?shape ${shacl.targetClassPrefixed} ?type .
-                  ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?incomingLinks ${blueprint.targetPrefixed} ?aggregate .
-                  ?incomingLinks a  ${blueprint.CompositionToCompositionLinkPrefixed} .
-              }
-          }
-          ?incomingLinks ${shacl.propertyPrefixed} ?propertyShape .
-          VALUES ?propertyP { 
-            ${shacl.targetClassPrefixed}
-            ${shacl.pathPrefixed}
-            ${shacl.classPrefixed}
-            ${shacl.namePrefixed}
-          }
-          ?propertyShape ?propertyP ?propertyO .
-          OPTIONAL {
-            ?propertyShape ${shacl.pathPrefixed} ?path .
-            ?path ${shacl.inversePathPrefixed} ?inversePath .
-          }
-      }
-  }
-  `;
-    return query;
-}
-
-function compositionToNodeLinksForClassQuery(type: string): string {
-    const query = `
-  ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${rdf.sparqlPrefix()}
-  
-  CONSTRUCT {
-    
-      ?outgoingLinks ?linkP ?linkO .
-      ?propertyShape ?propertyP ?propertyO .
-      ?path ${shacl.inversePathPrefixed} ?inversePath .
-  
-      ?inShape ${shacl.groupPrefixed} ?inAggregate .
-      ?inShape ${shacl.targetClassPrefixed} ?type.
-  
-      ?incomingLinks ?linkP ?linkO .
-      ?incomingLinks ${rdfs.labelPrefixed} ?inverseLabel .
-
-  } 
-  WHERE {
-      {
-          # outgoing links - if this side is a A
-          {
-              SELECT ?outgoingLinks ?aggregate ?shape ?type WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?shape ${shacl.targetClassPrefixed} ?type .
-                  ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
-              }
-          }
-          VALUES ?linkP { 
-              ${shacl.targetClassPrefixed}
-              ${shacl.propertyPrefixed}
-              ${blueprint.targetPrefixed}
-              ${rdfs.labelPrefixed}
-              ${rdf.typePrefixed}
-          }
-          ?outgoingLinks ?linkP ?linkO .
-      } UNION  {
-          # outgoing links sh:property
-          {
-              SELECT ?outgoingLinks WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?shape ${shacl.targetClassPrefixed} ?type .
-                  ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
-              }
-          }
-          
-          ?outgoingLinks ${shacl.propertyPrefixed} ?propertyShape . 
-  
-          VALUES ?propertyP { 
-              ${shacl.targetClassPrefixed}
-              ${shacl.pathPrefixed}
-              ${shacl.classPrefixed}
-              ${shacl.namePrefixed}
-          }
-          ?propertyShape ?propertyP ?propertyO .
-          OPTIONAL {
-              ?propertyShape ${shacl.pathPrefixed} ?path .
-              ?path ${shacl.inversePathPrefixed} ?inversePath .
-          }
-      } UNION {
-          # incoming links
-          {
-              SELECT ?incomingLinks ?type WHERE {
-                  BIND (<${type}> AS ?type)
-                  ?incomingLinks ${blueprint.targetPrefixed} ?type .
-                  ?incomingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
-              }
-          }
-          VALUES ?linkP { 
-            ${shacl.targetClassPrefixed}
-            ${shacl.propertyPrefixed}
-            ${blueprint.targetPrefixed}
-            ${rdf.typePrefixed}
-          }
-          ?incomingLinks ${blueprint.inverseLabelPrefixed} ?inverseLabel .
-          ?incomingLinks ?linkP ?linkO .
-      } UNION {
-             # incoming links sh:property
-          {
-              SELECT ?incomingLinks WHERE {
-                BIND (<${type}> AS ?type)
-                ?incomingLinks ${blueprint.targetPrefixed} ?type .
-                ?incomingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
-              }
-          }
-          ?incomingLinks ${shacl.propertyPrefixed} ?propertyShape .
-          VALUES ?propertyP { 
-            ${shacl.targetClassPrefixed}
-            ${shacl.pathPrefixed}
-            ${shacl.classPrefixed}
-            ${shacl.namePrefixed}
-          }
-          ?propertyShape ?propertyP ?propertyO .
-          OPTIONAL {
-            ?propertyShape ${shacl.pathPrefixed} ?path .
-            ?path ${shacl.inversePathPrefixed} ?inversePath .
-          }
-      }
-  }
-  `;
-    return query;
-}
 

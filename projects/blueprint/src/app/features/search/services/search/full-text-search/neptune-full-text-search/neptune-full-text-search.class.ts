@@ -20,11 +20,6 @@ export class NeptuneFullTextSearch extends FullTextSearch {
     }
     ).join(' || ')})` : '';
 
-    console.log('sparqlFilterClause', sparqlFilterTerm);
-    /*  const fluxClassQueries = metadata
-        .map(metaShape => fluxClassSubQuery(metaShape))
-        .join(' UNION');
-  */
     const query = searchQueryWithSearchTerm(
       this._searchContext.searchTerm.toString(),
       sparqlFilterTerm,
@@ -129,7 +124,6 @@ function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageN
   }
   `;
 
-  console.log('searchQueryWithSearchTerm', query);
   return query;
 }
 

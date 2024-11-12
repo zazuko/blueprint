@@ -7,27 +7,19 @@
 export class PathDefinition {
     public readonly sourceClassIri: string;
     public readonly targetClassIri: string;
-    public readonly path: string;
+    #pathFragments: string[];
 
-    constructor(sourceClassIri: string, targetClassIri: string, path: string) {
+    constructor(sourceClassIri: string, targetClassIri: string, pathFragments: string[]) {
         this.sourceClassIri = sourceClassIri;
         this.targetClassIri = targetClassIri;
-        const pathToken1 = path[0];
-        const pathToken2 = path[1];
-
-        if (pathToken1 === '^' && pathToken2 === '<') {
-            this.path = path;
-        } else if (pathToken1 === '<') {
-            this.path = path;
-        } else {
-            console.warn(`PathDefinition: path is not valid. It should start with ^< or <. Path is ${path}. Fix it`);
-            if (pathToken1 === '^') {
-                this.path = `^<${path.substring(1)}>`;
-            } else {
-                this.path = `<${path}>`;
-            }
-
+        if (pathFragments.length === 0) {
+            throw new Error('Path must have at least one fragment');
         }
+        this.#pathFragments = pathFragments;
+    }
+
+    get path(): string {
+        return this.#pathFragments.join('/');
     }
 
     /**
@@ -36,7 +28,12 @@ export class PathDefinition {
      * @returns the inverse of the path
      */
     invert(): PathDefinition {
-        const inversePath = this.path.startsWith('^') ? this.path.substring(1) : `^${this.path}`
+        const inversePath = this.#pathFragments.map(fragment => {
+            if (fragment.startsWith('^')) {
+                return fragment.substring(1);
+            }
+            return `^${fragment}`;
+        }).reverse();
         return new PathDefinition(this.targetClassIri, this.sourceClassIri, inversePath);
     }
 }
