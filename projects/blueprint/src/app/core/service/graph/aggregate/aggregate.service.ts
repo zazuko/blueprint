@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { Dataset } from '@rdfjs/types';
 import rdfEnvironment from '@zazuko/env';
-import { CompositionToNodeLink, ICompositionToNodeLink } from './model/composition/composition-to-node-link';
-import { CompositionToCompositionLink, ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
+import { ICompositionToNodeLink } from './model/composition/composition-to-node-link';
+import { ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
 import { OutgoingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/outgoing-composition-to-node-link-factory';
 import { IncomingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/incoming-composition-to-node-link-factory';
 import { compositionToNodeLinksForClassQuery } from './query/composition-to-node-links-for-class.query';
@@ -84,6 +84,7 @@ export class AggregateService {
 
         const outLinks: ICompositionToNodeLink[] = [];
         const outLinkFactory = new OutgoingCompositionToNodeLinkFactory();
+
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)
@@ -96,6 +97,7 @@ export class AggregateService {
 
         const inLinks: ICompositionToNodeLink[] = [];
         const inLinkFactory = new IncomingCompositionToNodeLinkFactory();
+
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(blueprint.targetNamedNode)
@@ -110,10 +112,10 @@ export class AggregateService {
     getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
         const links = this._extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
 
-
         const queries = links.flatMap(link => {
             const sourceComposition = link.sourceComposition;
             const targetComposition = link.targetComposition;
+
             if (sourceComposition === null || targetComposition === null) {
                 console.warn('No source or target composition');
                 return [];
