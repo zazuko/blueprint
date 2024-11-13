@@ -10,9 +10,9 @@ import { compositionToNodeLinksForClassQuery } from './query/composition-to-node
 import { compositionToCompositionLinksForClassQuery } from './query/composition-to-composition-links-for-class.query';
 import { OutgoingCompositionToCompositionLinkFactory } from './factory/composition-to-composition-link-factory/outgoing-composition-to-composition-link-factory';
 import { IncomingCompositionToCompositionLinkFactory } from './factory/composition-to-composition-link-factory/incoming-composition-to-composition-link-factory';
-import { RootOfSourceAggregateStrategy } from './strategy/composition-to-node/root-of-source-aggregate-strategy';
-import { CompositionToNodeLinkStrategy } from './strategy/composition-to-node/composition-to-node-link-strategy';
-import { ConnectionPointOfSourceStrategy } from './strategy/composition-to-node/connection-point-of-source-strategy';
+import { CompositionToNodeRootStrategy } from './strategy/composition-to-node/composition-to-node-root-strategy-strategy';
+import { CompositionToNodeQueryStrategy } from './strategy/composition-to-node/composition-to-node-query-strategy';
+import { CompositionToNodeConnectionPointStrategy } from './strategy/composition-to-node/composition-to-node-connection-point-strategy';
 import { TargetNodeStrategy } from './strategy/composition-to-node/target-node-strategy';
 @Injectable({
     providedIn: 'root'
@@ -46,7 +46,7 @@ export class AggregateService {
      * @param classIris the rdf:Class iris
      * @returns Links between aggregates for the given classes. With the right direction and labels (incoming links are inverted)
      */
-    private _extractCompositionToCompositionLinks(linkDataset: Dataset, classIris: string[]): ICompositionToCompositionLink[] {
+    #extractCompositionToCompositionLinks(linkDataset: Dataset, classIris: string[]): ICompositionToCompositionLink[] {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
         const outLinks: ICompositionToCompositionLink[] = [];
@@ -83,7 +83,7 @@ export class AggregateService {
      * @param classIris the rdf:Class iris
      * @returns Links between aggregates and nodes for the given classes. With the right direction and labels (incoming links are inverted)
      */
-    private _extractCompositionToNodeLinks(linkDataset: Dataset, classIris: string[]): ICompositionToNodeLink[] {
+    #extractCompositionToNodeLinks(linkDataset: Dataset, classIris: string[]): ICompositionToNodeLink[] {
         const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
 
         const outLinks: ICompositionToNodeLink[] = [];
@@ -113,8 +113,16 @@ export class AggregateService {
         return [...outLinks, ...inLinks];
     }
 
+    /**
+     * This method creates the SPARQL queries to get the links between aggregates for the given classes based on the given subject.
+     * 
+     * @param viewGraphMetadata The dataset containing the links
+     * @param classIris all Class IRIs of the current subject
+     * @param subject the subject IRI
+     * @returns An array of SPARQL queries to get the links between an composition and another composition for the given classes
+     */
     getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
-        const links = this._extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
+        const links = this.#extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
 
         const queries = links.flatMap(link => {
             const sourceComposition = link.sourceComposition;
@@ -349,17 +357,28 @@ export class AggregateService {
 
     }
 
+    /**
+     * This method creates the SPARQL queries to get "neighbor" of the given subject based on the given classes and
+     * the links between them.
+     * 
+     * @param viewGraphMetadata The dataset containing the links
+     * @param classIris all Class IRIs of the current subject
+     * @param subject the subject IRI
+     * @returns An array of SPARQL queries to get the links between an aggregate and a node for the given classes
+     */
     getCompositionToNodeLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
-        const links = this._extractCompositionToNodeLinks(viewGraphMetadata, classIris);
+        const links = this.#extractCompositionToNodeLinks(viewGraphMetadata, classIris);
 
-        const strategies: CompositionToNodeLinkStrategy[] = [
-            new RootOfSourceAggregateStrategy(),
-            new ConnectionPointOfSourceStrategy(),
+        // strategies to create the queries
+        const strategies: CompositionToNodeQueryStrategy[] = [
+            new CompositionToNodeRootStrategy(),
+            new CompositionToNodeConnectionPointStrategy(),
             new TargetNodeStrategy()
         ];
+
         const queries = strategies.flatMap(strategy => {
-            const filteredLinks = strategy.filter(links, classIris);
-            return filteredLinks.flatMap(link => strategy.createQuery(link, subject));
+            const flitteredLinksForTheCurrentStrategy = strategy.filter(links, classIris);
+            return flitteredLinksForTheCurrentStrategy.flatMap(link => strategy.createQuery(link, subject));
         });
 
         return [...queries];

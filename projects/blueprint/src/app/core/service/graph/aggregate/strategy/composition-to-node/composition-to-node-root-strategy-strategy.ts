@@ -1,13 +1,13 @@
 import { blueprint, rdf, rdfs } from "@blueprint/ontology";
 import { ICompositionToNodeLink } from "../../model/composition/composition-to-node-link";
-import { CompositionToNodeLinkStrategy } from "./composition-to-node-link-strategy";
+import { CompositionToNodeQueryStrategy } from "./composition-to-node-query-strategy";
 
 /**
- * RootOfSourceAggregateStrategy
+ * CompositionToNodeRootStrategy
  * The subject class is the root of the source composition. That means we are on top of the Hierarchy and we link to
  * the target node.
  */
-export class RootOfSourceAggregateStrategy extends CompositionToNodeLinkStrategy {
+export class CompositionToNodeRootStrategy extends CompositionToNodeQueryStrategy {
     filter(links: ICompositionToNodeLink[], classIris: string[]): ICompositionToNodeLink[] {
         return links.filter(link => {
             const sourceComposition = link.sourceComposition;
@@ -20,7 +20,7 @@ export class RootOfSourceAggregateStrategy extends CompositionToNodeLinkStrategy
     }
 
     createQuery(link: ICompositionToNodeLink, subject: string): string[] {
-        console.log('%cRootOfSourceAggregateStrategy query', 'color: red');
+        console.log('%cCompositionToNodeRootStrategy query', 'color: red');
         return this.#createQueryForRootOfSourceAggregate(link, subject);
     }
 

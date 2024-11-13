@@ -1,10 +1,10 @@
 import { blueprint, rdf, rdfs } from "@blueprint/ontology";
 import { ICompositionToNodeLink } from "../../model/composition/composition-to-node-link";
-import { CompositionToNodeLinkStrategy } from "./composition-to-node-link-strategy";
+import { CompositionToNodeQueryStrategy } from "./composition-to-node-query-strategy";
 
 /**
  */
-export class TargetNodeStrategy implements CompositionToNodeLinkStrategy {
+export class TargetNodeStrategy implements CompositionToNodeQueryStrategy {
     filter(links: ICompositionToNodeLink[], classIris: string[]): ICompositionToNodeLink[] {
         return links.filter(link => {
             if (!link.sourceNodeIri) {

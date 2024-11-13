@@ -1,13 +1,13 @@
 import { blueprint, rdf, rdfs } from "@blueprint/ontology";
 import { ICompositionToNodeLink } from "../../model/composition/composition-to-node-link";
-import { CompositionToNodeLinkStrategy } from "./composition-to-node-link-strategy";
+import { CompositionToNodeQueryStrategy } from "./composition-to-node-query-strategy";
 
 /**
  * ConnectionPointOfSourceStrategy
  * The subject class is a connection point of the source composition. That means we are in the middle of the Hierarchy and we link to
  * the target node.
  */
-export class ConnectionPointOfSourceStrategy implements CompositionToNodeLinkStrategy {
+export class CompositionToNodeConnectionPointStrategy implements CompositionToNodeQueryStrategy {
     filter(links: ICompositionToNodeLink[], classIris: string[]): ICompositionToNodeLink[] {
         return links.filter(link => {
             const sourceComposition = link.sourceComposition;
