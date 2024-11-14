@@ -5,6 +5,7 @@ import { LibraryConfigurationService } from '@blueprint/service/library-configur
 
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import {FullTextSearchDialectName} from "@blueprint/service/sparql/sparql.service";
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +38,7 @@ export class ConfigService {
       this._libraryConfigurationService.sparqlConsoleUrl = environment.sparqlConsoleUrl;
       this._libraryConfigurationService.graphExplorerUrl = environment.graphExplorerUrl;
       this._libraryConfigurationService.production = environment.production;
-      this._libraryConfigurationService.fullTextSearchDialect = environment.fullTextSearchDialect as "fuseki" | "stardog";
+      this._libraryConfigurationService.fullTextSearchDialect = environment.fullTextSearchDialect;
 
     }))
   }
@@ -51,5 +52,5 @@ export type FluxConfig = {
   readonly endpointUrl: string,
   readonly sparqlConsoleUrl: string,
   readonly graphExplorerUrl: string,
-  readonly fullTextSearchDialect: 'fuseki' | 'stardog'
+  readonly fullTextSearchDialect: FullTextSearchDialectName
 }

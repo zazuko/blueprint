@@ -29,9 +29,9 @@ export class SparqlService {
 
   /**
    * Execute a SPARQL SELECT query
-   * 
+   *
    * @param query The SPARQL SELECT query
-   * @returns an observable of the resulting bindings 
+   * @returns an observable of the resulting bindings
    */
   select(query: string): Observable<Record<string, SparqlResultTerm>[]> {
     const endpoint = this.libraryConfigurationService.endpointUrl;
@@ -58,7 +58,7 @@ export class SparqlService {
 
   /**
    * Execute a SPARQL CONSTRUCT query
-   * 
+   *
    * @param query The SPARQL CONSTRUCT query
    * @returns an observable of the resulting dataset
    */
@@ -97,3 +97,5 @@ export enum FullTextSearchDialect {
   NEPTUNE = 'neptune',
   GRAPHDB = 'graphdb'
 }
+
+export type FullTextSearchDialectName = FullTextSearchDialect[keyof FullTextSearchDialect];
