@@ -1,13 +1,13 @@
 /* This file was automatically generated. Do not edit by hand. */
 
-export default ({ factory }: { factory: import('rdf-js').DataFactory }): import('rdf-js').Quad[] => {
+export default ({ factory }: { factory: import('@rdfjs/types').DataFactory }): import('rdf-js').Quad[] => {
   const f = factory
   const ns1 = 'https://ld.flux.zazuko.com/shapes/metadata/'
   const ns2 = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   const ns3 = 'http://www.w3.org/ns/shacl#'
   const ns4 = 'http://www.w3.org/2000/01/rdf-schema#'
   const ns5 = 'http://www.w3.org/2001/XMLSchema#'
-  const blankNodes: import('rdf-js').BlankNode[] = []
+  const blankNodes: import('@rdfjs/types').BlankNode[] = []
   for (let i = 0; i < 0; i++) {
     blankNodes.push(f.blankNode())
   }
