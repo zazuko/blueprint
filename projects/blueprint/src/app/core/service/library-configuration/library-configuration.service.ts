@@ -22,7 +22,7 @@ export class LibraryConfigurationService {
     return this.configuration.fullTextSearchDialect;
   }
 
-  set fullTextSearchDialect(value: 'fuseki' | 'stardog' | 'neptune' | 'graphdb') {
+  set fullTextSearchDialect(value: FullTextSearchDialect) {
     switch (value) {
       case 'fuseki':
         this.configuration.fullTextSearchDialect = FullTextSearchDialect.FUSEKI;
