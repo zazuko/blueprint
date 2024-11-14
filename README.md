@@ -30,7 +30,7 @@ You will also find instructions on how to generate the triples for the Kubernete
 
 ### Standalone
 
-The configuration file of the Angular app itself is located in `./src/config.json`.
+The configuration file of the Angular app itself is located in [config.json](projects/blueprint/src/config.json).
 
 ```json
 {
@@ -95,7 +95,7 @@ You can also use it to dereference URIs.
 
 ### Configuration
 
-Before the Blueprint Angular App starts, it fetches the `/config.json`. It will then overwrite the values in `src/environments/environment.development.ts` or `src/environments/environment.ts`. At build time, `src/environments/environment.development.ts` will be replaced with the `src/environments/environment.ts` version.
+Before the Blueprint Angular App starts, it fetches the `/config.json`. It will then overwrite the values in [environments/environment.development.ts](projects/blueprint/src/environments/environment.development.ts) or [environments/environment.ts](projects/blueprint/src/environments/environment.ts). At build time, `environments/environment.development.ts` will be replaced with the `environments/environment.ts` version.
 
 You can still add configuration parameters to the environment files as usual. Internally, the Blueprint app only uses `src/environments/environment.ts`.
 
