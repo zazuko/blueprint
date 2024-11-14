@@ -97,5 +97,3 @@ export enum FullTextSearchDialect {
   NEPTUNE = 'neptune',
   GRAPHDB = 'graphdb'
 }
-
-export type FullTextSearchDialectName = FullTextSearchDialect[keyof FullTextSearchDialect];

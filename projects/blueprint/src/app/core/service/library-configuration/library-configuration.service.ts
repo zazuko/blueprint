@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LibraryConfiguration } from './library-configuration.model';
-import {FullTextSearchDialect, FullTextSearchDialectName} from '../sparql/sparql.service';
+import { FullTextSearchDialect } from '../sparql/sparql.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class LibraryConfigurationService {
     return this.configuration.fullTextSearchDialect;
   }
 
-  set fullTextSearchDialect(value: FullTextSearchDialectName) {
+  set fullTextSearchDialect(value: FullTextSearchDialect) {
     switch (value) {
       case 'fuseki':
         this.configuration.fullTextSearchDialect = FullTextSearchDialect.FUSEKI;

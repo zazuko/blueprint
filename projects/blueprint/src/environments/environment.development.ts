@@ -2,14 +2,14 @@
 // `ng build --configuration production` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { FullTextSearchDialectName } from "@blueprint/service/sparql/sparql.service";
+import { FullTextSearchDialect } from "@blueprint/service/sparql/sparql.service";
 
 export const environment = {
     production: false,
     endpointUrl: 'http://localhost:4200/query',  // this will be overwritten by /src/config.json
     sparqlConsoleUrl: null, // e.g. yasgui -> will be overwritten by /src/config.json
     graphExplorerUrl: null, // this will be overwritten by /src/config.json
-    fullTextSearchDialect: 'neptune' as FullTextSearchDialectName, // this will be overwritten by /src/config.json
+    fullTextSearchDialect: 'neptune' as FullTextSearchDialect, // this will be overwritten by /src/config.json
     neptune: {
         ftsEndpoint: "https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
     } // this will be overwritten by /src/config.json// this will be overwritten by /src/config.json
