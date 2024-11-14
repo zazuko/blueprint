@@ -67,6 +67,7 @@ export class HierarchyService {
     }
 
     getAllHierarchiesQuery(): string {
+        console.log('%cgetAllHierarchiesQuery', 'color: red');
         return getAllHierarchiesQuery();
     }
 
@@ -121,7 +122,9 @@ ${rdfs.sparqlPrefix()}
             ${shacl.propertyPrefixed}
             ${rdf.typePrefixed}
           }
-          ?shape ?shapeP ?shapeO .
+          OPTIONAL {
+            ?shape ?shapeP ?shapeO .
+          }
       } UNION
       {
           {
@@ -148,9 +151,9 @@ ${rdfs.sparqlPrefix()}
 }
 
 function hierarchyForClassQuery(iri: string): string {
+    console.log('%chierarchyForClassQuery', 'color: red', iri);
 
-
-    return `
+    const query = `
 ${shacl.sparqlPrefix()}
 ${blueprint.sparqlPrefix()}
 ${rdf.sparqlPrefix()}
@@ -197,7 +200,9 @@ ${rdfs.sparqlPrefix()}
               ${shacl.propertyPrefixed}
               ${rdf.typePrefixed}
           }
-          ?shape ?shapeP ?shapeO .
+          OPTIONAL {
+            ?shape ?shapeP ?shapeO .
+          }
       } UNION
       {
           {
@@ -224,6 +229,9 @@ ${rdfs.sparqlPrefix()}
     
   }
   `;
+    console.log('%chierarchyForClassQuery', 'color: red', query);
+
+    return query;
 }
 
 function getAllHierarchiesQuery(): string {
@@ -269,7 +277,9 @@ function getAllHierarchiesQuery(): string {
                 ${shacl.propertyPrefixed}
                 ${rdf.typePrefixed}
             }
+            OPTIONAL {
             ?shape ?shapeP ?shapeO .
+            }
         } UNION
         {
             {

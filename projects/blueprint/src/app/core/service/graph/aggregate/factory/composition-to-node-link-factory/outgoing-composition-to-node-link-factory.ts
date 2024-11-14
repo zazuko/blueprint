@@ -4,7 +4,7 @@ import { CompositionToNodeLinkFactory } from "./composition-to-node-link-factory
 
 export class OutgoingCompositionToNodeLinkFactory extends CompositionToNodeLinkFactory {
 
-    createCompositionToNodeLink(node: GraphPointer): CompositionToNodeLink {
+    creteLink(node: GraphPointer): CompositionToNodeLink {
         return new CompositionToNodeLink(node);
     }
 }
