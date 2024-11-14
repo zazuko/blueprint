@@ -14,6 +14,8 @@ import { CompositionToNodeRootStrategy } from './strategy/composition-to-node/co
 import { CompositionToNodeQueryStrategy } from './strategy/composition-to-node/composition-to-node-query-strategy';
 import { CompositionToNodeConnectionPointStrategy } from './strategy/composition-to-node/composition-to-node-connection-point-strategy';
 import { TargetNodeStrategy } from './strategy/composition-to-node/target-node-strategy';
+import { CompositionToCompositionQueryStrategy } from './strategy/composition-to-compostion/composition-to-composition-query-strategy';
+import { CompositionToCompositionRootOfSourceStrategy } from './strategy/composition-to-compostion/composition-to-composition-root-of-source-strategy';
 @Injectable({
     providedIn: 'root'
 })
@@ -51,12 +53,13 @@ export class AggregateService {
 
         const outLinks: ICompositionToCompositionLink[] = [];
         const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
-
+        console.log(blueprint.CompositionToCompositionLinkNamedNode.value);
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)
                 .out(shacl.groupNamedNode)
                 .in(shacl.targetClassNamedNode)
+                .has(rdf.typeNamedNode, blueprint.CompositionToCompositionLinkNamedNode)
                 .map(link => outLinkFactory.creteLink(link));
             outLinks.push(...links);
         });
@@ -69,6 +72,7 @@ export class AggregateService {
                 .in(shacl.targetClassNamedNode)
                 .out(shacl.groupNamedNode)
                 .in(blueprint.targetNamedNode)
+                .has(rdf.typeNamedNode, blueprint.CompositionToCompositionLinkNamedNode)
                 .map(link => inLinkFactory.creteLink(link));
             inLinks.push(...links);
         });
@@ -123,6 +127,19 @@ export class AggregateService {
      */
     getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
+        console.log('%cComposition links', 'color: magenta', links.length);
+
+        // strategies to create the queries
+        const strategies: CompositionToCompositionQueryStrategy[] = [
+            new CompositionToCompositionRootOfSourceStrategy(),
+        ];
+
+        const newQueries = strategies.flatMap(strategy => {
+            const flitteredLinksForTheCurrentStrategy = strategy.filter(links, classIris);
+            return flitteredLinksForTheCurrentStrategy.flatMap(link => strategy.createQuery(link, subject));
+        });
+        console.log(newQueries.join('\n\n\n\n'));
+
 
         const queries = links.flatMap(link => {
             const sourceComposition = link.sourceComposition;
@@ -368,6 +385,7 @@ export class AggregateService {
      */
     getCompositionToNodeLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToNodeLinks(viewGraphMetadata, classIris);
+        console.log('%cNode links', 'color: magenta', links.length);
 
         // strategies to create the queries
         const strategies: CompositionToNodeQueryStrategy[] = [

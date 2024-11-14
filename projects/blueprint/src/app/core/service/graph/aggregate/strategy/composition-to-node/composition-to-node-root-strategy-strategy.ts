@@ -20,7 +20,7 @@ export class CompositionToNodeRootStrategy extends CompositionToNodeQueryStrateg
     }
 
     createQuery(link: ICompositionToNodeLink, subject: string): string[] {
-        console.log('%cCompositionToNodeRootStrategy query', 'color: red');
+        console.log('%cCompositionToNodeRootStrategy query', 'color: red', link.label);
         return this.#createQueryForRootOfSourceAggregate(link, subject);
     }
 
