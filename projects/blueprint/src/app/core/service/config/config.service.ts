@@ -31,7 +31,7 @@ export class ConfigService {
       environment.sparqlConsoleUrl = config?.sparqlConsoleUrl ?? null;
       environment.graphExplorerUrl = config?.graphExplorerUrl ?? null;
 
-      environment.fullTextSearchDialect = config?.fullTextSearchDialect ?? 'stardog';
+      environment.fullTextSearchDialect = config?.fullTextSearchDialect ?? FullTextSearchDialect.STARDOG;
       console.log('ConfigService', config?.fullTextSearchDialect);
 
       this._libraryConfigurationService.endpointUrl = environment.endpointUrl;
