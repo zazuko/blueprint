@@ -46,4 +46,21 @@ export abstract class ClownfaceObject {
     availablePredicates(): string[] {
         return ClownfaceObject.getPredicatesForNode(this._node);
     }
+
+    /**
+     * Log Table
+     * 
+     * This is a debug function to log this node to the console as a table.
+     */
+    logTable() {
+        const spo = [...this._node.dataset.match(rdfEnvironment.namedNode(this.iri))].map(quad => {
+            return {
+                subject: quad.subject.value,
+                predicate: quad.predicate.value,
+                object: quad.object.value,
+            }
+        });
+        console.table(spo);
+    }
+
 }
