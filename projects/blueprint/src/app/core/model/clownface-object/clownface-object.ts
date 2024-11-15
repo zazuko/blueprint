@@ -18,6 +18,17 @@ export abstract class ClownfaceObject {
         return [...predicateSet];
     }
 
+    static logNodeAsTable(node: GraphPointer) {
+        const spo = [...node.dataset.match(node.term)].map(quad => {
+            return {
+                subject: quad.subject.value,
+                predicate: quad.predicate.value,
+                object: quad.object.value,
+            }
+        });
+        console.table(spo);
+    }
+
     protected readonly _node: GraphPointer;
 
     /**
@@ -53,14 +64,7 @@ export abstract class ClownfaceObject {
      * This is a debug function to log this node to the console as a table.
      */
     logTable() {
-        const spo = [...this._node.dataset.match(rdfEnvironment.namedNode(this.iri))].map(quad => {
-            return {
-                subject: quad.subject.value,
-                predicate: quad.predicate.value,
-                object: quad.object.value,
-            }
-        });
-        console.table(spo);
+        return ClownfaceObject.logNodeAsTable(this._node);
     }
 
 }

@@ -17,13 +17,12 @@ export interface ICompositionToNodeLink {
 }
 
 export class CompositionToNodeLink extends ClownfaceObject implements ICompositionToNodeLink {
-    private _sourceComposition: Composition | null | undefined = undefined;
-    private _targetComposition: Composition | null | undefined = undefined;
+    #sourceComposition: Composition | null | undefined = undefined;
+    #targetComposition: Composition | null | undefined = undefined;
 
-    private _sourceNodeIri: string | null | undefined = undefined;
-    private _targetNodeIri: string | null | undefined = undefined;
-
-    private _label: string | null = null;
+    #sourceNodeIri: string | null | undefined = undefined;
+    #targetNodeIri: string | null | undefined = undefined;
+    #label: string | null = null;
 
 
     constructor(node: GraphPointer) {
@@ -36,21 +35,21 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      * @readonly
      */
     get sourceComposition(): Composition | null {
-        if (this._sourceComposition === undefined) {
+        if (this.#sourceComposition === undefined) {
 
             const sourceCompositions = this._node.out(shacl.targetClassNamedNode).map(p => new Composition(p));
 
             if (sourceCompositions.length === 0) {
-                this._sourceComposition = null;
+                this.#sourceComposition = null;
             } else {
                 if (sourceCompositions.length > 1) {
                     console.warn(`AggregateLink has more than one source Composition: <${this._node.value}>. Using the first one.`);
                 }
-                this._sourceComposition = sourceCompositions[0];
+                this.#sourceComposition = sourceCompositions[0];
             }
         }
 
-        return this._sourceComposition;
+        return this.#sourceComposition;
     }
 
     /**
@@ -60,42 +59,42 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      * @readonly
      */
     get targetComposition(): Composition | null {
-        if (this._targetComposition === undefined) {
+        if (this.#targetComposition === undefined) {
             const targetCompositions = this._node.out(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionNamedNode).map(p => new Composition(p));
 
             if (targetCompositions.length === 0) {
-                this._targetComposition = null;
+                this.#targetComposition = null;
             } else {
                 if (targetCompositions.length > 1) {
                     console.warn(`AggregateLink has more than one Composition <${this._node.value}>. Using the first one.`);
                 }
-                this._targetComposition = targetCompositions[0];
+                this.#targetComposition = targetCompositions[0];
             }
         }
 
-        return this._targetComposition;
+        return this.#targetComposition;
     }
 
     /**
-     * The label of the link. If the link is incomming the label is showing the bp:inverseLabel. 
+     * The label of the link. If the link is incoming the label is showing the bp:inverseLabel. 
      * This is done while fetching the data (SPARQL construct). 
      * 
      * @readonly
      */
     get label(): string {
-        if (this._label === null) {
+        if (this.#label === null) {
             const labels = this._node.out(rdfs.labelNamedNode).values;
             if (labels.length === 0) {
                 console.warn(`AggregateLink has no label: ${this._node.value}. Using "" as label.`);
-                this._label = '';
+                this.#label = '';
             } else {
                 if (labels.length > 1) {
                     console.warn(`AggregateLink has more than one label: ${labels}. Joining them with a space.`);
                 }
-                this._label = labels.join(' ');
+                this.#label = labels.join(' ');
             }
         }
-        return this._label;
+        return this.#label;
     }
 
     /**
@@ -123,18 +122,18 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      * @readonly
      */
     get sourceNodeIri(): string | null {
-        if (this._sourceNodeIri === undefined) {
+        if (this.#sourceNodeIri === undefined) {
             const sourceIris = this._node.out(blueprint.sourceNamedNode).values;
             if (sourceIris.length === 0) {
-                this._sourceNodeIri = null;
+                this.#sourceNodeIri = null;
             } else {
                 if (sourceIris.length > 1) {
                     console.warn(`AggregateLink has more than one sourceNodeIri: ${sourceIris}. Using the first one.`);
                 }
-                this._sourceNodeIri = sourceIris[0];
+                this.#sourceNodeIri = sourceIris[0];
             }
         }
-        return this._sourceNodeIri;
+        return this.#sourceNodeIri;
     }
 
     /**
@@ -143,18 +142,18 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      * @readonly
      */
     get targetNodeIri(): string | null {
-        if (this._targetNodeIri === undefined) {
+        if (this.#targetNodeIri === undefined) {
             const targetIris = this._node.out(blueprint.targetNamedNode).values;
             if (targetIris.length === 0) {
-                this._targetNodeIri = null;
+                this.#targetNodeIri = null;
             } else {
                 if (targetIris.length > 1) {
                     console.warn(`AggregateLink has more than one targetNodeIri: ${targetIris}. Using the first one.`);
                 }
-                this._targetNodeIri = targetIris[0];
+                this.#targetNodeIri = targetIris[0];
             }
         }
-        return this._targetNodeIri;
+        return this.#targetNodeIri;
     }
 
     invert(): ICompositionToNodeLink {

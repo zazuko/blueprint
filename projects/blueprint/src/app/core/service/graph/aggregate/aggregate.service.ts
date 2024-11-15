@@ -103,6 +103,7 @@ export class AggregateService {
             outLinks.push(...links);
         });
 
+
         const inLinks: ICompositionToNodeLink[] = [];
         const inLinkFactory = new IncomingCompositionToNodeLinkFactory();
 
