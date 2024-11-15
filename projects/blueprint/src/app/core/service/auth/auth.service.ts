@@ -6,33 +6,39 @@ const localStorageAuthKey = 'com.zazuko.blueprint.bp-auth';
   providedIn: 'root',
 })
 export class AuthService {
-  private credentials: Credentials | null = null;
+  #credentials: Credentials | null = null;
 
   constructor() {
-    const credentials = this.readSessionStorage();
+    // this will only happen when the user is reloading the page
+    const credentials = this.#readSessionStorage();
     if (credentials !== null) {
-      this.credentials = credentials;
+      this.#credentials = credentials;
     }
   }
 
   public isAuthenticated(): boolean {
-    return this.credentials !== null;
+    return this.#credentials !== null;
   }
 
   public getCredentials(): Credentials | null {
-    return this.credentials;
+    return this.#credentials;
   }
 
   public updateCredentials(credentials: Credentials | null) {
-    this.credentials = credentials;
+    this.#credentials = credentials;
     if (credentials === null) {
-      this.removeSessionStorage();
+      this.#removeSessionStorage();
     } else {
-      this.writeSessionStorage();
+      this.#writeSessionStorage();
     }
   }
 
-  private readSessionStorage(): Credentials | null {
+  public clear() {
+    this.#credentials = null;
+    this.#removeSessionStorage();
+  }
+
+  #readSessionStorage(): Credentials | null {
     const sessionStorageData = sessionStorage.getItem(localStorageAuthKey);
     if (sessionStorageData === null) {
       return null;
@@ -51,23 +57,17 @@ export class AuthService {
     };
   }
 
-  private writeSessionStorage() {
-    if (this.credentials === null) {
-      this.readSessionStorage();
+  #writeSessionStorage() {
+    if (this.#credentials === null) {
+      this.#readSessionStorage();
     }
     sessionStorage.setItem(localStorageAuthKey, JSON.stringify({
-      username: this.credentials.username,
-      password: this.credentials.password
+      username: this.#credentials.username,
+      password: this.#credentials.password
     }));
   }
 
-
-
-  public signOut() {
-    this.readSessionStorage();
-  }
-
-  private removeSessionStorage() {
+  #removeSessionStorage() {
     sessionStorage.removeItem(localStorageAuthKey);
   }
 }

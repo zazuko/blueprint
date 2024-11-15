@@ -6,37 +6,33 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 
-
 import { AuthService } from '@blueprint/service/auth/auth.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
-import { LogoComponent } from "../core/layout/logo/logo.component";
 import { BrandLogoComponent } from "../core/layout/brand-logo/brand-logo.component";
 import { MessageChannelService } from '../core/service/message-channel/message-channel.service';
-
 
 @Component({
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   imports: [
-    ReactiveFormsModule,
-    LogoComponent,
+    ReactiveFormsModule, //
     InputTextModule,
     ButtonModule,
     BrandLogoComponent
   ]
 })
 export class LoginComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
+  readonly #destroyRef = inject(DestroyRef);
 
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+  readonly #router = inject(Router);
+  readonly #route = inject(ActivatedRoute);
 
-  private readonly messageChannel = inject(MessageChannelService);
+  readonly #messageChannel = inject(MessageChannelService);
 
-  private readonly authService = inject(AuthService);
-  private readonly sparqlService = inject(SparqlService);
+  readonly #authService = inject(AuthService);
+  readonly #sparqlService = inject(SparqlService);
 
   loginForm = new FormGroup({
     username: new FormControl<string>('', [Validators.required]),
@@ -47,12 +43,15 @@ export class LoginComponent implements OnInit {
   returnUrl = '';
 
   ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['search']);
+    if (this.#authService.isAuthenticated()) {
+      this.#router.navigate(['search']);
       return;
     }
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.loginForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.errorMessage = '');
+    this.returnUrl = this.#route.snapshot.queryParams['returnUrl'] || '/';
+
+    this.loginForm.valueChanges.pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(() => this.errorMessage = '');
   }
 
   onSubmit(): void {
@@ -60,20 +59,21 @@ export class LoginComponent implements OnInit {
       username: this.loginForm.controls.username.value ?? '',
       password: this.loginForm.controls.password.value ?? ''
     };
-    this.authService.updateCredentials(credentials);
+    this.#authService.updateCredentials(credentials);
 
-    this.sparqlService
+    this.#sparqlService
       .select('SELECT * WHERE { ?s ?p ?o . } LIMIT 1')
       .subscribe({
         next: () => {
-          this.messageChannel.debug('Login successful');
-          this.router.navigateByUrl(this.returnUrl);
+          this.#messageChannel.debug('Login successful');
+          this.#router.navigateByUrl(this.returnUrl);
         },
         error: () => {
           this.errorMessage = 'Wrong username or password';
-          this.messageChannel.debug('Wrong username or password');
+          this.#authService.clear();
+          this.#messageChannel.debug('Wrong username or password');
         },
-        complete: () => this.messageChannel.debug('Login Test SPARQL Query completed')
+        complete: () => this.#messageChannel.debug('Login Test SPARQL Query completed')
 
       }
       );
