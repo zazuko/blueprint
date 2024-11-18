@@ -5,14 +5,67 @@ import rdfEnvironment from '@zazuko/env';
 
 import { Ontology } from '../ontology';
 
-class BlueprintOntology extends Ontology {
+type BlueprintTerms =
+  'query'
+  | 'icon'
+  | 'UISearchResult'
+  | 'ns'
+  | 'faIcon'
+  | 'colorIndex'
+  | 'detail'
+  | 'showAs'
+  | 'label'
+  | 'Table'
+  | 'hasHeader'
+  | 'columnIndex'
+  | 'value'
+  | 'key'
+  | 'hasRow'
+  | 'cell'
+  | 'instance'
+  | 'child'
+  | 'Child'
+  | 'Hierarchy'
+  | 'linkLabel'
+  | 'hasRoot'
+  | 'showIn'
+  | 'searchPrio'
+  | 'TreeNode'
+  | 'score'
+  | 'count'
+  | 'result'
+  | 'pageSize'
+  | 'pageNumber'
+  | 'total'
+  | 'TreeRoot'
+  | 'UiClassCount'
+  | 'UiSearchResult'
+  | 'UiSearchResultItem'
+  | 'parent'
+  | 'hasUiLink'
+  | 'Link'
+  | 'link'
+  | 'UiNode'
+  | 'Container'
+  | 'Composition'
+  | 'CompositionToCompositionLink'
+  | 'CompositionToNodeLink'
+  | 'source'
+  | 'target'
+  | 'CompositionLinkResult'
+  | 'inverseLabel'
+  | 'ConnectionPoint'
+
+export const ns = rdfEnvironment.namespace<BlueprintTerms>('https://flux.described.at/');
+
+class BlueprintOntology extends Ontology<BlueprintTerms> {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('https://flux.described.at/'));
+      super(ns);
     }
 
-    get namespace(): NamespaceBuilder<string> {
-        return this._namespace;
+  get namespace(): NamespaceBuilder<BlueprintTerms> {
+    return ns
     }
 
     prefix(): string {
@@ -29,7 +82,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the icon predicate.
-     * 
+     *
      * @readonly
      */
     get icon(): string {
@@ -38,7 +91,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed icon predicate.
-     * 
+     *
      * @readonly
      */
     get iconPrefixed(): string {
@@ -56,18 +109,18 @@ class BlueprintOntology extends Ontology {
     /**
      * Get the faIcon predicate.
      * @deprecated use {@link getIconPrefixed} or {@link getIcon} instead
-     * 
+     *
      * @readonly
      */
     get faIcon(): string {
         return this.namespace('faIcon').value;
     }
 
-    /** 
+    /**
      * Get the prefixed faIcon predicate.
-     * 
+     *
      * @deprecated use {@link getIconPrefixed} or {@link getIcon} instead
-     * 
+     *
      * @readonly
     */
     get faIconPrefixed(): string {
@@ -76,9 +129,9 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the faIcon predicate as NamedNode.
-     * 
+     *
      * @deprecated use {@link getIconPrefixed} or {@link getIcon} instead
-     * 
+     *
      * @readonly
      */
     get faIconNamedNode(): NamedNode {
@@ -87,7 +140,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * get the prefixed icon predicate
-     * 
+     *
      * @readonly
      */
     get colorIndex(): string {
@@ -96,7 +149,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * get the prefixed icon predicate
-     * 
+     *
      * @readonly
      */
     get colorIndexPrefixed(): string {
@@ -105,7 +158,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the colorIndex predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get colorIndexNamedNode(): NamedNode {
@@ -121,7 +174,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed search priority predicate.
-     * 
+     *
      * @readonly
      */
     get searchPriorityPrefixed(): string {
@@ -130,7 +183,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the search priority predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get searchPriorityNamedNode(): NamedNode {
@@ -139,7 +192,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * @deprecated i think we don't need it anymore
-     * 
+     *
      * @readonly
      */
     get showIn() {
@@ -148,7 +201,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * @deprecated i think we don't need it anymore
-     * 
+     *
      * @readonly
      */
     get showInPrefixed() {
@@ -157,7 +210,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * @deprecated i think we don't need it anymore
-     * 
+     *
      * @readonly
      */
     get showInNamedNode(): NamedNode {
@@ -166,7 +219,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has root predicate.
-     * 
+     *
      * @readonly
      */
     get hasRoot() {
@@ -175,7 +228,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed has root predicate.
-     * 
+     *
      * @readonly
      */
     get hasRootPrefixed() {
@@ -184,7 +237,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has root predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get hasRootNamedNode(): NamedNode {
@@ -193,7 +246,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has showAs predicate.
-     * 
+     *
      * @readonly
      */
     get showAs() {
@@ -202,7 +255,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed has showAs predicate.
-     * 
+     *
      * @readonly
      */
     get showAsPrefixed() {
@@ -212,7 +265,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has showAs predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get showAsNamedNode(): NamedNode {
@@ -221,7 +274,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has detail predicate.
-     * 
+     *
      * @readonly
      */
     get detail() {
@@ -235,7 +288,7 @@ class BlueprintOntology extends Ontology {
         return `${this.prefix()}:detail`;
     }
 
-    /** 
+    /**
      * Get the has detail predicate as NamedNode.
      */
     get detailNamedNode(): NamedNode {
@@ -244,7 +297,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has value predicate.
-     * 
+     *
      * @readonly
      */
     get value() {
@@ -253,7 +306,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed has value predicate.
-     * 
+     *
      * @readonly
      */
     get valuePrefixed() {
@@ -262,7 +315,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has value predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get valueNamedNode(): NamedNode {
@@ -272,7 +325,7 @@ class BlueprintOntology extends Ontology {
     // class
     /**
      * Get the Hierarchy class.
-     * 
+     *
      * @readonly
      */
     get Hierarchy() {
@@ -281,7 +334,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Hierarchy class.
-     * 
+     *
      * @readonly
      */
     get HierarchyPrefixed() {
@@ -290,7 +343,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Hierarchy class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get HierarchyNamedNode(): NamedNode {
@@ -300,7 +353,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get linkLabel predicate.
-     * 
+     *
      * @readonly
      */
     get linkLabel() {
@@ -309,7 +362,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed linkLabel predicate.
-     * 
+     *
      * @readonly
      */
     get linkLabelPrefixed() {
@@ -318,7 +371,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the linkLabel predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get linkLabelNamedNode(): NamedNode {
@@ -327,7 +380,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has label predicate.
-     * 
+     *
      * @readonly
      */
     get label() {
@@ -336,7 +389,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed has label predicate.
-     * 
+     *
      * @readonly
      */
     get labelPrefixed() {
@@ -345,7 +398,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the has label predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get labelNamedNode(): NamedNode {
@@ -354,7 +407,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Table class.
-     * 
+     *
      * @readonly
      */
     get Table() {
@@ -363,7 +416,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Table class.
-     * 
+     *
      * @readonly
      */
     get TablePrefixed() {
@@ -372,7 +425,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Table class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get TableNamedNode(): NamedNode {
@@ -381,7 +434,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasHeader predicate.
-     * 
+     *
      * @readonly
      */
     get hasHeader() {
@@ -390,7 +443,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed hasHeader predicate.
-     * 
+     *
      * @readonly
      */
     get hasHeaderPrefixed() {
@@ -399,7 +452,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasHeader predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get hasHeaderNamedNode(): NamedNode {
@@ -408,7 +461,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the columnIndex predicate.
-     * 
+     *
      * @readonly
      */
     get columnIndex(): string {
@@ -417,7 +470,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed columnIndex predicate.
-     * 
+     *
      * @readonly
      */
     get columnIndexPrefixed(): string {
@@ -426,7 +479,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the columnIndex predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get columnIndexNamedNode(): NamedNode {
@@ -435,7 +488,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the key predicate.
-     * 
+     *
      * @readonly
      */
     get key(): string {
@@ -444,7 +497,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed key predicate.
-     * 
+     *
      * @readonly
      */
     get keyPrefixed(): string {
@@ -453,7 +506,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the key predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get keyNamedNode(): NamedNode {
@@ -462,7 +515,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasRow predicate.
-     * 
+     *
      * @readonly
      */
     get hasRow(): string {
@@ -471,7 +524,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed hasRow predicate.
-     * 
+     *
      * @readonly
      */
     get hasRowPrefixed(): string {
@@ -480,7 +533,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasRow predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get hasRowNamedNode(): NamedNode {
@@ -489,7 +542,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the cell predicate.
-     * 
+     *
      * @readonly
      */
     get cell(): string {
@@ -498,7 +551,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed cell predicate.
-     * 
+     *
      * @readonly
      */
     get cellPrefixed(): string {
@@ -507,7 +560,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the cell predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get cellNamedNode(): NamedNode {
@@ -516,7 +569,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the instance predicate.
-     * 
+     *
      * @readonly
      */
     get instance(): string {
@@ -525,7 +578,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed instance predicate.
-     * 
+     *
      * @readonly
      */
     get instancePrefixed(): string {
@@ -534,7 +587,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the instance predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get instanceNamedNode(): NamedNode {
@@ -543,7 +596,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the child predicate.
-     * 
+     *
      * @readonly
      */
     get child(): string {
@@ -552,7 +605,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed child predicate.
-     * 
+     *
      * @readonly
      */
     get childPrefixed(): string {
@@ -561,7 +614,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the child predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get childNamedNode(): NamedNode {
@@ -577,7 +630,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Child class.
-     * 
+     *
      * @readonly
      */
     get ChildPrefixed(): string {
@@ -586,7 +639,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Child class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get ChildNamedNode(): NamedNode {
@@ -602,7 +655,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed TreeNode class.
-     * 
+     *
      * @readonly
      */
     get TreeNodePrefixed(): string {
@@ -611,7 +664,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the TreeNode class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get TreeNodeNamedNode(): NamedNode {
@@ -620,7 +673,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the TreeRoot class.
-     * 
+     *
      * @readonly
      */
     get TreeRoot(): string {
@@ -629,7 +682,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed TreeRoot class.
-     * 
+     *
      * @readonly
      */
     get TreeRootPrefixed(): string {
@@ -638,7 +691,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the TreeRoot class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get TreeRootNamedNode(): NamedNode {
@@ -647,7 +700,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the score predicate.
-     * 
+     *
      * @readonly
      */
     get score(): string {
@@ -656,7 +709,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed score predicate.
-     * 
+     *
      * @readonly
      */
     get scorePrefixed(): string {
@@ -665,7 +718,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the score predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get scoreNamedNode(): NamedNode {
@@ -674,7 +727,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the count predicate.
-     * 
+     *
      * @readonly
      */
     get count(): string {
@@ -683,7 +736,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed count predicate.
-     * 
+     *
      * @readonly
      */
     get countPrefixed(): string {
@@ -692,7 +745,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the count predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get countNamedNode(): NamedNode {
@@ -701,7 +754,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the result predicate.
-     * 
+     *
      * @readonly
      */
     get result(): string {
@@ -710,7 +763,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed result predicate.
-     * 
+     *
      * @readonly
      */
     get resultPrefixed(): string {
@@ -719,7 +772,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the result predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get resultNamedNode(): NamedNode {
@@ -728,7 +781,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the pageSize predicate.
-     * 
+     *
      * @readonly
      */
     get pageSize(): string {
@@ -737,7 +790,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed pageSize predicate.
-     * 
+     *
      * @readonly
      */
     get pageSizePrefixed(): string {
@@ -746,7 +799,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the pageSize predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get pageSizeNamedNode(): NamedNode {
@@ -755,7 +808,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the pageNumber predicate.
-     * 
+     *
      * @readonly
      */
     get pageNumber(): string {
@@ -764,7 +817,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed pageNumber predicate.
-     * 
+     *
      * @readonly
      */
     get pageNumberPrefixed(): string {
@@ -773,7 +826,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the pageNumber predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get pageNumberNamedNode(): NamedNode {
@@ -782,7 +835,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the total predicate.
-     * 
+     *
      * @readonly
      */
     get total(): string {
@@ -791,7 +844,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed total predicate.
-     * 
+     *
      * @readonly
      */
     get totalPrefixed(): string {
@@ -800,7 +853,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the total predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get totalNamedNode(): NamedNode {
@@ -809,7 +862,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the query predicate.
-     * 
+     *
      * @readonly
      */
     get query(): string {
@@ -818,7 +871,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed query predicate.
-     * 
+     *
      * @readonly
      */
     get queryPrefixed(): string {
@@ -827,7 +880,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the query predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get queryNamedNode(): NamedNode {
@@ -836,7 +889,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiClassCount class.
-     * 
+     *
      * @readonly
      */
     get UiClassCount(): string {
@@ -845,7 +898,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed UiClassCount class.
-     * 
+     *
      * @readonly
      */
     get UiClassCountPrefixed(): string {
@@ -854,7 +907,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiClassCount class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get UiClassCountNamedNode(): NamedNode {
@@ -863,7 +916,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiSearchResult class.
-     * 
+     *
      * @readonly
      */
     get UiSearchResult(): string {
@@ -872,7 +925,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed UiSearchResult class.
-     * 
+     *
      * @readonly
      */
     get UiSearchResultPrefixed(): string {
@@ -881,7 +934,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiSearchResult class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get UiSearchResultNamedNode(): NamedNode {
@@ -890,7 +943,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiSearchResultItem class.
-     * 
+     *
      * @readonly
      */
     get UiSearchResultItem(): string {
@@ -899,7 +952,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed UiSearchResultItem class.
-     * 
+     *
      * @readonly
      */
     get UiSearchResultItemPrefixed(): string {
@@ -908,7 +961,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiSearchResultItem class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get UiSearchResultItemNamedNode(): NamedNode {
@@ -917,7 +970,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the parent predicate.
-     * 
+     *
      * @readonly
      */
     get parent(): string {
@@ -926,7 +979,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed parent predicate.
-     * 
+     *
      * @readonly
      */
     get parentPrefixed(): string {
@@ -935,7 +988,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the parent predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get parentNamedNode(): NamedNode {
@@ -944,7 +997,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasUiLink predicate.
-     * 
+     *
      * @readonly
      */
     get hasUiLink(): string {
@@ -953,7 +1006,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed hasUiLink predicate.
-     * 
+     *
      * @readonly
      */
     get hasUiLinkPrefixed(): string {
@@ -962,7 +1015,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the hasUiLink predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get hasUiLinkNamedNode(): NamedNode {
@@ -971,7 +1024,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Link class.
-     * 
+     *
      * @readonly
      */
     get Link(): string {
@@ -980,7 +1033,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Link class.
-     * 
+     *
      * @readonly
      */
     get LinkPrefixed(): string {
@@ -989,7 +1042,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Link class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get LinkNamedNode(): NamedNode {
@@ -998,7 +1051,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the link predicate.
-     * 
+     *
      * @readonly
      */
     get link(): string {
@@ -1007,7 +1060,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed link predicate.
-     * 
+     *
      * @readonly
      */
     get linkPrefixed(): string {
@@ -1016,7 +1069,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the link predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get linkNamedNode(): NamedNode {
@@ -1025,7 +1078,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiNode class.
-     * 
+     *
      * @readonly
      */
     get UiNode(): string {
@@ -1034,7 +1087,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed UiNode class.
-     * 
+     *
      * @readonly
      */
     get UiNodePrefixed(): string {
@@ -1043,7 +1096,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the UiNode class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get UiNodeNamedNode(): NamedNode {
@@ -1052,7 +1105,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get Container class.
-     * 
+     *
      * @readonly
      */
     get Container(): string {
@@ -1061,7 +1114,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Container class.
-     * 
+     *
      * @readonly
      */
     get ContainerPrefixed(): string {
@@ -1070,7 +1123,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Container class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get ContainerNamedNode(): NamedNode {
@@ -1079,7 +1132,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Composition class.
-     * 
+     *
      * @readonly
      */
     get Composition(): string {
@@ -1088,7 +1141,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed Composition class.
-     * 
+     *
      * @readonly
      */
     get CompositionPrefixed(): string {
@@ -1097,7 +1150,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the Composition class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get CompositionNamedNode(): NamedNode {
@@ -1106,7 +1159,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionToCompositionLink class.
-     * 
+     *
      * @readonly
      */
     get CompositionToCompositionLink(): string {
@@ -1115,7 +1168,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed CompositionToCompositionLink class.
-     * 
+     *
      * @readonly
      */
     get CompositionToCompositionLinkPrefixed(): string {
@@ -1124,7 +1177,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionToCompositionLink class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get CompositionToCompositionLinkNamedNode(): NamedNode {
@@ -1133,7 +1186,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionToNodeLink class.
-     * 
+     *
      * @readonly
      */
     get CompositionToNodeLink(): string {
@@ -1142,7 +1195,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed CompositionToNodeLink class.
-     * 
+     *
      * @readonly
      */
     get CompositionToNodeLinkPrefixed(): string {
@@ -1151,7 +1204,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionToNodeLink class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get CompositionToNodeLinkNamedNode(): NamedNode {
@@ -1160,7 +1213,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the source predicate.
-     * 
+     *
      * @readonly
      */
     get source(): string {
@@ -1169,7 +1222,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed source predicate.
-     * 
+     *
      * @readonly
      */
     get sourcePrefixed(): string {
@@ -1178,7 +1231,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the source predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get sourceNamedNode(): NamedNode {
@@ -1187,7 +1240,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the target predicate.
-     * 
+     *
      * @readonly
      */
     get target(): string {
@@ -1196,7 +1249,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed target predicate.
-     * 
+     *
      * @readonly
      */
     get targetPrefixed(): string {
@@ -1205,7 +1258,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the target predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get targetNamedNode(): NamedNode {
@@ -1214,7 +1267,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the inverseLabel predicate.
-     * 
+     *
      * @readonly
      */
     get inverseLabel(): string {
@@ -1223,7 +1276,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed inverseLabel predicate.
-     * 
+     *
      * @readonly
      */
     get inverseLabelPrefixed(): string {
@@ -1232,7 +1285,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the inverseLabel predicate as NamedNode.
-     * 
+     *
      * @readonly
      */
     get inverseLabelNamedNode(): NamedNode {
@@ -1241,7 +1294,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the ConnectionPoint class.
-     * 
+     *
      * @readonly
      */
     get ConnectionPoint(): string {
@@ -1250,7 +1303,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed ConnectionPoint class.
-     * 
+     *
      * @readonly
      */
     get ConnectionPointPrefixed(): string {
@@ -1259,7 +1312,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the ConnectionPoint class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get ConnectionPointNamedNode(): NamedNode {
@@ -1268,7 +1321,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionLinkResult class.
-     * 
+     *
      * @readonly
      */
     get CompositionLinkResult(): string {
@@ -1277,7 +1330,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the prefixed CompositionLinkResult class.
-     * 
+     *
      * @readonly
      */
     get CompositionLinkResultPrefixed(): string {
@@ -1286,7 +1339,7 @@ class BlueprintOntology extends Ontology {
 
     /**
      * Get the CompositionLinkResult class as NamedNode.
-     * 
+     *
      * @readonly
      */
     get CompositionLinkResultNamedNode(): NamedNode {
