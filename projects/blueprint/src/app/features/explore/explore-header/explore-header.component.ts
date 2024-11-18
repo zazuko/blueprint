@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -8,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem, MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
+import { RippleModule } from 'primeng/ripple';
 
 
 import { Avatar, AvatarComponent } from '../../../core/component/avatar/avatar.component';
@@ -20,12 +21,12 @@ import { LibraryConfigurationService } from '@blueprint/service/library-configur
   standalone: true,
   templateUrl: './explore-header.component.html',
   styleUrls: ['./explore-header.component.scss'],
-  imports: [CommonModule, MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule],
+  imports: [CommonModule, MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
   animations: [fadeIn],
   providers: [MessageService]
 })
 export class ExploreHeaderComponent {
-  iri = input<string>('');
+  iri = input.required<string>();
   subjectLabel = input.required<string>();
   subjectClassLabel = input.required<string>();
   avatars = input.required<Avatar[]>();
@@ -35,35 +36,43 @@ export class ExploreHeaderComponent {
   public readonly config = inject(LibraryConfigurationService);
   public readonly clipboard = inject(Clipboard);
 
-  get items(): MenuItem[] {
+
+  items = computed<MenuItem[]>(() => {
+    const iri = this.iri();
     return [
       {
         label: 'Copy IRI',
         icon: 'pi pi-copy',
         command: () => {
           this.copyIri();
-        }
+        },
+        tabindex: '-1',
       },
       {
         label: 'Dereference',
         icon: 'pi pi-link',
-        url: this.iri(),
-        target: '_blank'
+        url: iri,
+        target: '_blank',
+        tabindex: '-1',
       },
       {
         label: 'SPARQL',
         icon: 'pi pi-share-alt',
         url: this.sparqlConsoleUrl(),
-        target: '_blank'
+        target: '_blank',
+        visible: this.config.sparqlConsoleUrl !== null,
+        tabindex: '-1',
       },
       {
         label: 'Graph Explorer',
         icon: 'pi pi-compass',
         url: this.graphExplorerUrl(),
-        target: '_blank'
+        target: '_blank',
+        tabindex: '-1',
       }
     ]
-  }
+  });
+
 
   public copyIri(): void {
     this.clipboard.copy(this.iri());
