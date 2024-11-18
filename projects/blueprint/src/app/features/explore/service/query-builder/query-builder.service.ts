@@ -14,6 +14,8 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 import { sparqlUtils } from '@blueprint/utils';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
+import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
 
 
 @Injectable({
@@ -26,6 +28,7 @@ export class QueryBuilderService {
 
   /**
   * Builds a SPARQL query based on the input string.
+  * 
   * @param input The input string to build the query from.
   * @returns An Observable that emits a Dataset containing the results of the query.
   */
@@ -36,10 +39,10 @@ export class QueryBuilderService {
     const uiMetaDataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
     const linkMetaDataQuery = this.uiLinkMetadataService.getLinkMetadataSparqlQueryForNode(input);
     // Merge the UI and link metadata queries into a single query
-    const uiMetaDatalinkMetaDataQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, linkMetaDataQuery]);
+    const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, linkMetaDataQuery]);
 
     // Execute the merged query to retrieve link metadata
-    return this.sparqlService.construct(uiMetaDatalinkMetaDataQuery).pipe(
+    return this.sparqlService.construct(mergedQuery).pipe(
       switchMap(linkMetaDataset => {
         // Add the link metadata to the RDF dataset
         dataset.addAll(linkMetaDataset);
@@ -77,8 +80,10 @@ export class QueryBuilderService {
       .in(shacl.classNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
 
     const inputQuery = getInputNodeQuery(inputNode);
-    const outgoingLinkQueries = outLinkDefinitions.map(link => getOutgoingLinksQuery(inputNode, link));
-    const incomingLinkQueries = inLinkDefinitions.map(link => getIncomingLinksQuery(inputNode, link));
+
+
+    const outgoingLinkQueries = outLinkDefinitions.filter(link => link.propertyPath !== null).map(link => getOutgoingLinksQuery(inputNode, link));
+    const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinksQuery(inputNode, link));
 
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.uiClassMetadataService.getClassMetadataSparqlQuery()])
     return query;
@@ -179,7 +184,8 @@ class UiLinkDefinition extends ClownfaceObject {
   #arrowSource: string | null | undefined = undefined;
   #arrowTarget: string | null | undefined = undefined;
   #name: string | undefined = undefined;
-  #propertyPath: string[] | undefined = undefined;
+  #propertyPath: string | null | undefined = undefined;
+  #inversePropertyPath: string | null | undefined = undefined;
 
   constructor(node: GraphPointer) {
     super(node);
@@ -200,40 +206,43 @@ class UiLinkDefinition extends ClownfaceObject {
     return this.#name;
   }
 
-  get propertyPath(): string[] {
+  get propertyPath(): string | null {
     if (this.#propertyPath == undefined) {
       const paths = this._node.out(shacl.pathNamedNode);
-      let path: GraphPointer;
+      const pathFactory = new OutgoingPathFactory();
+      const propertyPaths = paths.map(path => pathFactory.createPath(path));
 
-      if (paths.values.length === 0) {
+      if (propertyPaths.length === 0) {
         console.error(`No path found for link <${this._node.value}>`);
-        this.#propertyPath = [];
-      } else {
-        if (paths.values.length > 1) {
-          console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
-        }
-        path = paths.toArray()[0];
-
-        if (path.isList()) {
-          const pathElement = [...path.list()].map(pathElement => this.#getPathElement(pathElement));
-          this.#propertyPath = pathElement.includes(null) ? [] : pathElement;
-        } else {
-          const pathElement = this.#getPathElement(path);
-          this.#propertyPath = pathElement === null ? [] : [pathElement];
-        }
+        this.#propertyPath = null;
+        return this.#propertyPath;
       }
+
+      if (propertyPaths.length > 1) {
+        console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
+      }
+      this.#propertyPath = propertyPaths[0].toPropertyPath();
     }
     return this.#propertyPath;
   }
 
-  get inversePropertyPath(): string[] {
-    const path = this.propertyPath;
-    return path.map(pathElement => {
-      if (pathElement.startsWith(`^<)`)) {
-        return pathElement.replace(`^<`, `<`);
+  get inversePropertyPath(): string | null {
+    if (this.#inversePropertyPath === undefined) {
+      const paths = this._node.out(shacl.pathNamedNode);
+      const pathFactory = new IncomingPathFactory();
+      const propertyPaths = paths.map(path => pathFactory.createPath(path));
+      if (propertyPaths.length === 0) {
+        console.error(`No path found for link <${this._node.value}>`);
+        this.#inversePropertyPath = null;
+        return this.#inversePropertyPath;
       }
-      return `^${pathElement}`;
-    });
+
+      if (propertyPaths.length > 1) {
+        console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
+      }
+      this.#inversePropertyPath = propertyPaths[0].toPropertyPath();
+    }
+    return this.#inversePropertyPath;
   }
 
   get arrowSource(): string | null {
@@ -268,27 +277,4 @@ class UiLinkDefinition extends ClownfaceObject {
     return this.#arrowTarget;
   }
 
-  #getPathElement(node: GraphPointer): string | null {
-    if (node.term.termType === 'NamedNode') {
-      return `<${node.value}>`;
-    }
-    if (node.term.termType === 'BlankNode') {
-      const inversePath = this.#getInversePathElement(node);
-      return inversePath;
-    }
-    console.error(`Invalid path element found for link <${this._node.value}>`);
-    return null;
-  }
-
-  #getInversePathElement(node: GraphPointer): string | null {
-    const inversePath = node.out(shacl.inversePathNamedNode);
-    if (inversePath.values.length === 0) {
-      console.error(`No inverse path found for link <${this._node.value}>`);
-      return null;
-    }
-    if (inversePath.values.length > 1) {
-      console.warn(`Multiple inverse paths found for link <${this._node.value}>. Using the first one.`);
-    }
-    return `^<${inversePath.values[0]}>`;
-  }
 }
