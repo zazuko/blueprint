@@ -8,10 +8,10 @@ import { shacl } from '@blueprint/ontology';
  */
 export class UiLinkMetadata extends ClownfaceObject {
 
-    private _destination: string | null = null;
-    private _source: string | null = null;
-    private _path: MultiPointer | null = null;
-    private _label: string | null = null;
+    #destination: string | null = null;
+    #source: string | null = null;
+    #path: MultiPointer | null = null;
+    #label: string | null = null;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -24,16 +24,16 @@ export class UiLinkMetadata extends ClownfaceObject {
      * @link shacl:class
      */
     public get destination(): string {
-        if (this._destination === null) {
+        if (this.#destination === null) {
             const destinationNodeIris = this._node.out(shacl.classNamedNode).values;
             if (destinationNodeIris.length === 0) {
                 console.warn(`UiLinkMetadata.destination is undefined for ${this._node.value}.`);
             } else if (destinationNodeIris.length > 1) {
                 console.warn(`UiLinkMetadata.destination has multiple values for ${this._node.value}. Using the first one.`);
             }
-            this._destination = destinationNodeIris[0] ?? '';
+            this.#destination = destinationNodeIris[0] ?? '';
         }
-        return this._destination;
+        return this.#destination;
     }
 
     /**
@@ -43,16 +43,16 @@ export class UiLinkMetadata extends ClownfaceObject {
      * @link shacl:targetClass
      */
     public get source(): string {
-        if (this._source === null) {
+        if (this.#source === null) {
             const sourceNodeIris = this._node.out(shacl.targetClassNamedNode).values;
             if (sourceNodeIris.length === 0) {
                 console.warn(`UiLinkMetadata.source is undefined for ${this._node.value}.`);
             } else if (sourceNodeIris.length > 1) {
                 console.warn(`UiLinkMetadata.source has multiple values for ${this._node.value}. Using the first one.`);
             }
-            this._source = sourceNodeIris[0] ?? '';
+            this.#source = sourceNodeIris[0] ?? '';
         }
-        return this._source;
+        return this.#source;
     }
 
     /**
@@ -62,16 +62,16 @@ export class UiLinkMetadata extends ClownfaceObject {
      * @link shacl:path
      */
     public get path(): MultiPointer {
-        if (this._path === null) {
+        if (this.#path === null) {
             const pathNode = this._node.out(shacl.pathNamedNode);
             if (pathNode.values.length === 0) {
                 console.warn(`UiLinkMetadata.path is undefined for ${this._node.value}.`);
             } else if (pathNode.values.length > 1) {
                 console.warn(`UiLinkMetadata.path has multiple values for ${this._node.value}. Using the first one.`);
             }
-            this._path = pathNode.toArray()[0];
+            this.#path = pathNode.toArray()[0];
         }
-        return this._path;
+        return this.#path;
     }
 
     /**
@@ -81,20 +81,20 @@ export class UiLinkMetadata extends ClownfaceObject {
      * @link shacl:name
      */
     public get label(): string {
-        if (this._label === null) {
+        if (this.#label === null) {
             const labels = this._node.out(shacl.nameNamedNode).values;
             if (labels.length === 0) {
                 console.warn(`UiLinkMetadata.label is undefined for ${this._node.value}. Using an empty string.`);
-                this._label = '';
-                return this._label;
+                this.#label = '';
+                return this.#label;
             } else if (labels.length > 1) {
                 console.warn(`UiLinkMetadata.label has multiple values for ${this._node.value}. Joining them with a space.`);
-                this._label = labels.join(' ');
+                this.#label = labels.join(' ');
             } else {
-                this._label = labels[0];
+                this.#label = labels[0];
             }
         }
-        return this._label;
+        return this.#label;
     }
 
 }

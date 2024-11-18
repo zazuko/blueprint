@@ -5,7 +5,6 @@ import { PathDefinition } from "../path-definition";
 import { Composition } from "../composition";
 import { OutgoingPathFactory } from "projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory";
 
-
 export interface ICompositionToNodeLink {
     iri: string;
     sourceComposition: Composition | null;
@@ -106,10 +105,20 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
         const path = this._node.out(shacl.propertyNamedNode).map(p => {
             const targetClass = p.out(shacl.targetClassNamedNode).values[0];
             const shClass = p.out(shacl.classNamedNode).values[0];
-            const cfPath = p.out(shacl.pathNamedNode).toArray()[0];
+
             const pathFactory = new OutgoingPathFactory();
-            const path = pathFactory.createPath(cfPath);
-            return [new PathDefinition(targetClass, shClass, path.toPathFragments())];
+
+            const pathStrategy = p.out(shacl.pathNamedNode).map(p => pathFactory.createPath(p));
+
+            if (pathStrategy.length === 0) {
+                console.warn(`AggregateLink has no path: ${this._node.value}. Using empty path.`);
+                return [];
+            }
+            if (pathStrategy.length > 1) {
+                console.warn(`AggregateLink has more than one path: ${pathStrategy}. Using the first one.`);
+            }
+
+            return [new PathDefinition(targetClass, shClass, pathStrategy[0].toPathFragments())];
 
         });
 
