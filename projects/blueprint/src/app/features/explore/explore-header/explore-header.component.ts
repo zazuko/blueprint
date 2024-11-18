@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import {Component, inject, input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -35,64 +35,68 @@ export class ExploreHeaderComponent {
   public readonly config = inject(LibraryConfigurationService);
   public readonly clipboard = inject(Clipboard);
 
-  items: MenuItem[] = [
-    {
-      label: 'Copy IRI',
-      icon: 'pi pi-copy',
-      command: () => {
-        this.copyIri();
+  get items(): MenuItem[] {
+    return [
+      {
+        label: 'Copy IRI',
+        icon: 'pi pi-copy',
+        command: () => {
+          this.copyIri();
+        }
+      },
+      {
+        label: 'Dereference',
+        icon: 'pi pi-link',
+        url: this.iri(),
+        target: '_blank'
+      },
+      {
+        label: 'SPARQL',
+        icon: 'pi pi-share-alt',
+        url: this.sparqlConsoleUrl(),
+        target: '_blank'
+      },
+      {
+        label: 'Graph Explorer',
+        icon: 'pi pi-compass',
+        url: this.graphExplorerUrl(),
+        target: '_blank'
       }
-    },
-    {
-      label: 'Dereference',
-      icon: 'pi pi-link',
-      command: () => {
-        this.openDereference();
-      }
-    },
-    {
-      label: 'SPARQL',
-      icon: 'pi pi-share-alt',
-      command: () => {
-        this.openSparqlConsole();
-      }
-    },
-    {
-      label: 'Graph Explorer',
-      icon: 'pi pi-compass',
-      command: () => {
-        this.openGraphExplorer();
-      }
-    }
-  ];
+    ]
+  }
 
   public copyIri(): void {
     this.clipboard.copy(this.iri());
   }
 
-  public openSparqlConsole(): void {
+  public sparqlConsoleUrl(): string {
     const query = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        
+
     SELECT * WHERE {
       <${this.iri()}> ?p ?o .
-    } 
+    }
     `;
 
-    const url = `${this.config.sparqlConsoleUrl}=${encodeURIComponent(
+    const params = new URLSearchParams({
+      contentTypeConstruct: 'text/turtle',
+      contentTypeSelect: 'application/sparql-results+json',
+      endpoint: this.config.endpointUrl,
+      outputFormat: 'table',
+      requestMethod: 'POST',
       query
-    )}&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fld.flux.zazuko.com%2Fquery&requestMethod=POST&tabTitle=Query+2&headers=%7B%7D&outputFormat=table`;
-    window.open(url, '_blank');
+    });
+    const url = new URL(this.config.sparqlConsoleUrl);
+    url.hash = '#' + params.toString();
+
+    return url.toString()
   }
 
-  public openGraphExplorer(): void {
-    const url = `${this.config.graphExplorerUrl}=${encodeURIComponent(this.iri())}`;
-    window.open(url, '_blank');
-  }
-
-  public openDereference(): void {
-    window.open(this.iri(), '_blank');
+  public graphExplorerUrl(): string {
+    const url = new URL(this.config.graphExplorerUrl);
+    url.searchParams.set('resource', this.iri());
+    return url.toString()
   }
 }
 
