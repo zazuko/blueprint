@@ -5,60 +5,60 @@ import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-obj
 
 export class HierarchyNode extends ClownfaceObject {
 
-    #_children: HierarchyNode[] | null = null;
-    #_targetClass: string | null = null;
-    #_label: string | null = null;
-    #_classLabel: string | null = null;
-    #_parent: HierarchyNode | null | undefined = undefined;
+    #children: HierarchyNode[] | null = null;
+    #targetClass: string | null = null;
+    #label: string | null = null;
+    #classLabel: string | null = null;
+    #parent: HierarchyNode | null | undefined = undefined;
 
     constructor(cfNode: GraphPointer) {
         super(cfNode);
     }
 
     get label(): string {
-        if (this.#_label === null) {
-            this.#_label = this._node.out(rdfs.labelNamedNode).value ?? '';
+        if (this.#label === null) {
+            this.#label = this._node.out(rdfs.labelNamedNode).value ?? '';
         }
-        return this.#_label;
+        return this.#label;
     }
 
     get children(): HierarchyNode[] {
-        if (this.#_children === null) {
-            this.#_children = this._node.out(shacl.propertyNamedNode).out(shacl.nodeNamedNode).map(childNode => new HierarchyNode(childNode));
+        if (this.#children === null) {
+            this.#children = this._node.out(shacl.propertyNamedNode).out(shacl.nodeNamedNode).map(childNode => new HierarchyNode(childNode));
         }
-        return this.#_children;
+        return this.#children;
     }
 
     get targetClass(): string {
-        if (this.#_targetClass === null) {
+        if (this.#targetClass === null) {
             const targetClasses = this._node.out(shacl.targetClassNamedNode).values;
             if (targetClasses.length === 0) {
                 console.warn(`No targetClass found for node ${this.iri}. Use an empty string.`);
-                this.#_targetClass = '';
+                this.#targetClass = '';
             } else {
                 if (targetClasses.length > 1) {
                     console.warn(`Expected exactly one targetClass for node ${this.iri}. Found ${targetClasses.length}. Use the first one.`);
                 }
-                this.#_targetClass = targetClasses[0];
+                this.#targetClass = targetClasses[0];
             }
         }
-        return this.#_targetClass;
+        return this.#targetClass;
     }
 
     get classLabel(): string {
-        if (this.#_classLabel === null) {
+        if (this.#classLabel === null) {
             const classLabels = this._node.out(shacl.targetClassNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
             if (classLabels.length === 0) {
                 console.warn(`No classLabel found for node ${this.iri}. Use an empty string.`);
-                this.#_classLabel = '';
+                this.#classLabel = '';
             } else {
                 if (classLabels.length > 1) {
                     console.warn(`Expected exactly one classLabel for node ${this.iri}. Found ${classLabels.length}. Use the first one.`);
                 }
-                this.#_classLabel = classLabels[0];
+                this.#classLabel = classLabels[0];
             }
         }
-        return this.#_classLabel;
+        return this.#classLabel;
     }
 
     get pathToParent(): string | null {
@@ -100,6 +100,7 @@ export class HierarchyNode extends ClownfaceObject {
             return '';
         }
 
+
         if (path.term.termType === 'BlankNode') {
             const inverse = path.out(shacl.inversePathNamedNode);
             if (inverse.values.length === 1) {
@@ -117,18 +118,20 @@ export class HierarchyNode extends ClownfaceObject {
 
 
     get parent(): HierarchyNode | null {
-        if (this.#_parent === undefined) {
+        if (this.#parent === undefined) {
             const parent = this._node.in(shacl.nodeNamedNode).in(shacl.propertyNamedNode);
             if (parent.values.length === 0) {
-                this.#_parent = null;
+                this.#parent = null;
             } else {
                 if (parent.values.length > 1) {
                     console.warn(`Expected exactly one parent for node ${this.iri}. Found ${parent.values.length}. Use the first one.`);
                 }
-                this.#_parent = new HierarchyNode(parent.toArray()[0]);
+                this.#parent = new HierarchyNode(parent.toArray()[0]);
             }
         }
-        return this.#_parent;
+        return this.#parent;
     }
+
+
 
 }
