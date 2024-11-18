@@ -26,7 +26,23 @@
     </div>
     <div>
         <p-toast></p-toast>
-        <p-menu #menu [model]="items" [popup]="true"></p-menu>
+        <p-menu #menu [model]="items()" [popup]="true">
+            <ng-template pTemplate="item" let-item>
+                @if(item.url) {
+                <a pRipple [href]="item.url" target="_blank" class="p-menuitem-link" [tabIndex]="item.tabIndex">
+                    <span class="p-menuitem-icon" [class]="item.icon"></span>
+                    <span class="ml-2">{{ item.label }}</span>
+                </a>
+                } @else {
+                <a pRipple class="flex align-items-center p-menuitem-link" (click)="item.command"
+                    [tabindex]="item.tabindex" (keyup.enter)="item.command">
+                    <span class="p-menuitem-icon" [class]="item.icon"></span>
+                    <span class="ml-2">{{ item.label }}</span>
+                </a>
+                }
+            </ng-template>
+
+        </p-menu>
         <p-button icon="pi pi-ellipsis-v" (click)="menu.toggle($event)" [rounded]="true" [outlined]="true"></p-button>
     </div>
 

@@ -103,27 +103,6 @@ export class DetailsComponent implements OnDestroy, AfterViewInit {
       });
   }
 
-  toSparqlQuery(iri: string): string {
-    const query = `
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    
-SELECT * WHERE {
-  <${iri}> ?p ?o .
-} 
-`;
-
-    return `${this.config.sparqlConsoleUrl}=${encodeURIComponent(
-      query
-    )}&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fld.flux.zazuko.com%2Fquery&requestMethod=POST&tabTitle=Query+2&headers=%7B%7D&outputFormat=table`;
-  }
-
-  toGraphExplorer(iri: string): string {
-    return `${this.config.graphExplorerUrl}=${encodeURIComponent(
-      iri
-    )}`;
-  }
-
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
