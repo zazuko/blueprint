@@ -14,9 +14,10 @@ import { StardogFullTextSearch } from './full-text-search/stardog-full-text-sear
 import { FusekiFullTextSearch } from './full-text-search/fuseki-full-text-search/fuseki-full-text-search.class';
 import { NeptuneFullTextSearch } from './full-text-search/neptune-full-text-search/neptune-full-text-search.class';
 import { GraphDBFullTextSearch } from './full-text-search/graphdb-full-text-search/graphdb-full-text-search.class';
+import { RegexSearch } from "./full-text-search/regex-search/regex-search.class";
 import { blueprint, rdf } from '@blueprint/ontology';
 
-import { FullTextSearchDialect, SparqlService } from '@blueprint/service/sparql/sparql.service';
+import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from '@blueprint/utils';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
@@ -94,7 +95,7 @@ export class SearchService {
 
   /**
    * Fetch a new page for this search
-   * 
+   *
    * @param pageNumber new page to fetch
    * @returns Observable<Dataset> with the dataset containing the new results
    */
@@ -112,17 +113,20 @@ export class SearchService {
           let ftsProvider: FusekiFullTextSearch | StardogFullTextSearch | NeptuneFullTextSearch | GraphDBFullTextSearch;
 
           switch (this.sparqlService.fullTextSearchDialect) {
-            case FullTextSearchDialect.FUSEKI:
+            case 'fuseki':
               ftsProvider = new FusekiFullTextSearch(this.searchContext);
               break;
-            case FullTextSearchDialect.NEPTUNE:
+            case 'neptune':
               ftsProvider = new NeptuneFullTextSearch(this.searchContext);
               break;
-            case FullTextSearchDialect.GRAPHDB:
+            case 'graphdb':
               ftsProvider = new GraphDBFullTextSearch(this.searchContext);
               break;
-            default:
+            case 'stardog':
               ftsProvider = new StardogFullTextSearch(this.searchContext);
+              break;
+            default:
+              ftsProvider = new RegexSearch(this.searchContext);
               break;
           }
 
