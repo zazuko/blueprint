@@ -18,10 +18,10 @@ function classSubQuery(classMetadata: UiClassMetadata) {
 
     ?sub a ?fluxIri .
     ?sub ?l ?label .
-    ?l ${rdfs.subPropertyOf}* ${rdfs.label} .
+    ?l ${rdfs.subPropertyOf} ${rdfs.label} .
     OPTIONAL {
       ?sub ?c ?comment .
-      ?c ${rdfs.subPropertyOf}* ${rdfs.comment} .
+      ?c ${rdfs.subPropertyOf} ${rdfs.comment} .
     }
   }`;
 }

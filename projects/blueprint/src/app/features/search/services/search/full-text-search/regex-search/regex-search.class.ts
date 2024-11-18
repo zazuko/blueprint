@@ -99,11 +99,11 @@ export class RegexSearch extends FullTextSearch {
         return sparql`
             ?sub ?p ?text .
             {
-              ?p rdfs:subPropertyOf* ${rdfs.label} .
+              ?p rdfs:subPropertyOf ${rdfs.label} .
             }
             UNION
             {
-              ?p rdfs:subPropertyOf* ${rdfs.comment} .
+              ?p rdfs:subPropertyOf ${rdfs.comment} .
             }
             FILTER regex(?text, "${input}", "i") .
         `
