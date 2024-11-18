@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LibraryConfiguration } from './library-configuration.model';
-import { FullTextSearchDialect } from '../sparql/sparql.service';
+import {Dialects, FullTextSearchDialect} from '../sparql/sparql.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,30 +14,20 @@ export class LibraryConfigurationService {
       sparqlConsoleUrl: null,
       graphExplorerUrl: null,
       endpointUrl: 'http://localhost:4200/query',
-      fullTextSearchDialect: FullTextSearchDialect.STARDOG
     }
   }
 
-  get fullTextSearchDialect(): FullTextSearchDialect {
+  get fullTextSearchDialect(): FullTextSearchDialect | undefined {
     return this.configuration.fullTextSearchDialect;
   }
 
-  set fullTextSearchDialect(value: FullTextSearchDialect) {
-    switch (value) {
-      case 'fuseki':
-        this.configuration.fullTextSearchDialect = FullTextSearchDialect.FUSEKI;
-        break;
-      case 'stardog':
-        this.configuration.fullTextSearchDialect = FullTextSearchDialect.STARDOG;
-        break;
-      case 'neptune':
-        this.configuration.fullTextSearchDialect = FullTextSearchDialect.NEPTUNE;
-        break;
-      case 'graphdb':
-          this.configuration.fullTextSearchDialect = FullTextSearchDialect.GRAPHDB;
-          break;
-      default:
-        throw new Error('Invalid fullTextSearchDialect');
+  set fullTextSearchDialect(value: FullTextSearchDialect | undefined) {
+    if(!value) {
+      this.configuration.fullTextSearchDialect = undefined
+    } else if(Dialects.includes(value)) {
+      this.configuration.fullTextSearchDialect = value;
+    } else {
+      throw new Error('Invalid fullTextSearchDialect');
     }
   }
 

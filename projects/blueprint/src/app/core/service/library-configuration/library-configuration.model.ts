@@ -5,5 +5,5 @@ export interface LibraryConfiguration {
     endpointUrl: string,
     sparqlConsoleUrl: null | string,
     graphExplorerUrl: null | string,
-    fullTextSearchDialect: FullTextSearchDialect
+    fullTextSearchDialect?: FullTextSearchDialect
 }

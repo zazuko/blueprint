@@ -20,7 +20,7 @@ export class SparqlService {
   private readonly http = inject(HttpClient);
   private readonly libraryConfigurationService = inject(LibraryConfigurationService);
 
-  public fullTextSearchDialect: FullTextSearchDialect;
+  public fullTextSearchDialect: FullTextSearchDialect | undefined;
 
   constructor() {
     this.fullTextSearchDialect = this.libraryConfigurationService.fullTextSearchDialect;
@@ -90,10 +90,5 @@ export class SparqlService {
   }
 }
 
-
-export enum FullTextSearchDialect {
-  FUSEKI = 'fuseki',
-  STARDOG = 'stardog',
-  NEPTUNE = 'neptune',
-  GRAPHDB = 'graphdb'
-}
+export const Dialects = ['fuseki', 'stardog' ,'neptune' , 'graphdb'] as const;
+export type FullTextSearchDialect = typeof Dialects[number];
