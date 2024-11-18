@@ -16,9 +16,9 @@ export interface ICompositionToCompositionLink {
 
 export class CompositionToCompositionLink extends ClownfaceObject implements ICompositionToCompositionLink {
 
-    private _sourceComposition: Composition | null | undefined = undefined;
-    private _targetComposition: Composition | null | undefined = undefined;
-    private _label: string | null = null;
+    #sourceComposition: Composition | null | undefined = undefined;
+    #targetComposition: Composition | null | undefined = undefined;
+    #label: string | null = null;
 
 
     constructor(node: GraphPointer) {
@@ -26,53 +26,53 @@ export class CompositionToCompositionLink extends ClownfaceObject implements ICo
     }
 
     get sourceComposition(): Composition | null {
-        if (this._sourceComposition === undefined) {
+        if (this.#sourceComposition === undefined) {
 
             const sourceCompositions = this._node.out(shacl.targetClassNamedNode).map(p => new Composition(p));
 
             if (sourceCompositions.length === 0) {
                 console.warn(`AggregateLink has no sourceIri: ${this._node.value}`);
-                this._sourceComposition = null;
+                this.#sourceComposition = null;
             } else {
                 if (sourceCompositions.length > 1) {
                     console.warn(`AggregateLink has more than one source composition: ${this._node.value}. Using the first one.`);
                 }
-                this._sourceComposition = sourceCompositions[0];
+                this.#sourceComposition = sourceCompositions[0];
             }
         }
-        return this._sourceComposition;
+        return this.#sourceComposition;
     }
 
     get targetComposition(): Composition | null {
-        if (this._targetComposition === undefined) {
+        if (this.#targetComposition === undefined) {
             const targetCompositions = this._node.out(blueprint.targetNamedNode).map(n => new Composition(n));
             if (targetCompositions.length === 0) {
                 console.warn(`AggregateLink has no sourceIri: ${this._node.value}`);
-                this._targetComposition = null;
+                this.#targetComposition = null;
             } else {
                 if (targetCompositions.length > 1) {
                     console.warn(`AggregateLink has more than one target compositions: ${this._node.value}. Using the first one.`);
                 }
-                this._targetComposition = targetCompositions[0];
+                this.#targetComposition = targetCompositions[0];
             }
         }
-        return this._targetComposition;
+        return this.#targetComposition;
     }
 
     get label(): string {
-        if (this._label === null) {
+        if (this.#label === null) {
             const labels = this._node.out(rdfs.labelNamedNode).values;
             if (labels.length === 0) {
                 console.warn(`AggregateLink has no label: ${this._node.value}. Using "" as label.`);
-                this._label = '';
+                this.#label = '';
             } else {
                 if (labels.length > 1) {
                     console.warn(`AggregateLink has more than one label: ${labels}. Joining them with a space.`);
                 }
-                this._label = labels.join(' ');
+                this.#label = labels.join(' ');
             }
         }
-        return this._label;
+        return this.#label;
     }
 
     get path(): PathDefinition[][] {
