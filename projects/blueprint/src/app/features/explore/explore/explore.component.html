@@ -9,6 +9,7 @@
 
 
   @if(currentPageView() === PageView.Details) {
+  <bp-widget-grid [widgets]="widgets()" />
 
   <div class="subject-view" @fadeIn>
 
@@ -22,6 +23,7 @@
     </div>
     }
     }
+
 
     <div class="view-container">
       <bp-comment [text]="subjectComment()" />
@@ -59,9 +61,9 @@
     }
     <div class="view-container">
 
-      @defer (when uiView.length > 0) {
+      @defer (when uiView().length > 0) {
       <div class="view-container" @fade>
-        @for( view of uiView; track view.iri) {
+        @for( view of uiView(); track view.iri) {
         <bp-ui-view style="flex-grow: 1" [uiView]="view" (nodeSelected)="selectByIri($event)" />
         }
       </div>
@@ -73,6 +75,7 @@
       }
     </div>
   </div>
+
   }
   <!-- graph view: content is moved away if not shown-->
   <div class="graph" [ngClass]="currentPageView() === PageView.Graph ? '' : 'weg'">

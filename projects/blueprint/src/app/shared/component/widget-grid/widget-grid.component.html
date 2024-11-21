@@ -1,0 +1,5 @@
+<div class="widget-container">
+    @for(w of internalWidgets(); track w.id) {
+    <bp-widget [widget]="w" (changed)="updateWidget(w.id, $event)" />
+    }
+</div>

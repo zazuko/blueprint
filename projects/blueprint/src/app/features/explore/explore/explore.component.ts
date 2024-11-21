@@ -6,6 +6,7 @@ import {
   signal,
   DestroyRef,
   AfterViewInit,
+  computed,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
@@ -46,6 +47,9 @@ import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
+import { WidgetGridComponent } from "../../../shared/component/widget-grid/widget-grid.component";
+import { Widget } from '../../../shared/component/widget/model/widget.model';
+import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 
 
 // create an enum about page views we have Views, Graph and Nearby
@@ -77,7 +81,8 @@ enum PageView {
     AggregateRelationComponent,
     TooltipModule,
     JsonPipe,
-    CommentComponent
+    CommentComponent,
+    WidgetGridComponent
   ]
 })
 export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -112,7 +117,39 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   public PageView: typeof PageView = PageView;
 
 
-  uiView: UiView[] = [];
+  uiView = signal<UiView[]>([]);
+
+  widgets = computed<Widget[]>(() => {
+    for (const uiView of this.uiView()) {
+      for (const viewContainer of uiView.viewContainer) {
+        for (const comp of viewContainer.viewComponent) {
+          console.log('-------- definition ------');
+
+          console.log('comp', comp.componentDefinition.iri);
+          console.log('comp', comp.componentDefinition.label);
+          console.log('comp', comp.componentDefinition.comment);
+          console.log('comp', comp.componentDefinition.sparqlQuery);
+
+          console.log('------ --------');
+          console.log('comp', ClownfaceObject.logNodeAsTable(comp.componentData));
+
+
+
+        }
+
+
+      }
+    }
+    return this.uiView().map((view) => {
+      return {
+        id: view.iri,
+        label: 'widget',
+        view: view,
+        rows: 2
+      };
+    });
+
+  });
   uiHierarchy: UiHierarchyView[] = [];
   term: string;
   subjectLabel = signal<string>('');
@@ -214,9 +251,9 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
           });
           this.subjectAvatars.set(avatarArray);
           // 
-          this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
+          this.uiView.set(cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view)));
 
-          this.uiView.length === 0 ? this.graphOpenState.set(true) : this.graphOpenState.set(false);
+          this.uiView().length === 0 ? this.graphOpenState.set(true) : this.graphOpenState.set(false);
 
 
 
@@ -294,4 +331,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
         this.currentPageView.set(PageView.Details);
     }
   }
+
+
 }

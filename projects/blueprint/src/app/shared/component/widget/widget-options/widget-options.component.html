@@ -1,0 +1,11 @@
+<p-button class="close-button" icon="pi pi-times" [rounded]="true" [text]="true" (click)="showOptions.set(false)" />
+
+<div>
+    Width <p-selectButton [options]="columnOptions" [ngModel]="width() ?? 1" [multiple]="false" [allowEmpty]="false"
+        optionLabel="name" optionValue="value" (onChange)="widthChanged($event)" />
+
+</div>
+<div>
+    Height <p-selectButton [options]="rowOptions" [ngModel]="height() ?? 1" [multiple]="false" [allowEmpty]="false"
+        optionLabel="name" optionValue="value" (onChange)="heightChanged($event)" />
+</div>
