@@ -10,10 +10,9 @@ import { LoadingIndicatorService } from '../../../../core/component/loading-indi
 import { HierarchyDefinition } from '../service/model/hierarchy-definition.model';
 
 @Component({
-  standalone: true,
-  templateUrl: './tree-detail.component.html',
-  styleUrl: './tree-detail.component.scss',
-  imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule]
+    templateUrl: './tree-detail.component.html',
+    styleUrl: './tree-detail.component.scss',
+    imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule]
 })
 export class TreeDetailComponent implements OnChanges {
   @Input({ required: true }) id: string = '';

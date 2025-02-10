@@ -18,14 +18,13 @@ import { DashGroupViewerComponent, DashHyperlinkViewerComponent, DashLiteralView
 import { FluxValueTableViewer, FluxLiteralViewer, FluxHyperlinkViewer, FluxViewerType, FluxGroupViewer } from '../../../../features/explore/flux-viewer/index';
 
 @Component({
-  standalone: true,
-  selector: 'bp-details',
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss'],
-  imports: [
-    CommonModule,
-    DashHostDirective
-  ]
+    selector: 'bp-details',
+    templateUrl: './details.component.html',
+    styleUrls: ['./details.component.scss'],
+    imports: [
+        CommonModule,
+        DashHostDirective
+    ]
 })
 export class DetailsComponent implements OnDestroy, AfterViewInit {
   private readonly detailsService = inject(DetailsService);

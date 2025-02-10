@@ -36,17 +36,16 @@ import { SearchFilter } from '../model/search-filter.model';
 'src/shapes/entity/flux-search-result-entity/flux-search-model/entity/ui-class-count-entity/ui-class-count.entity';
 
 @Component({
-  standalone: true,
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    FilterPanelComponent,
-    SearchResultListComponent,
-    InputTextModule,
-    FormsModule,
-  ]
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        FilterPanelComponent,
+        SearchResultListComponent,
+        InputTextModule,
+        FormsModule,
+    ]
 })
 export class SearchComponent implements OnInit, OnDestroy {
   private readonly filterService = inject(ActiveFiltersService);

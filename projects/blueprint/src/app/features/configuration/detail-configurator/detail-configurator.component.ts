@@ -17,11 +17,10 @@ import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-met
 import { labelAlphaSort } from '@blueprint/utils';
 
 @Component({
-  selector: 'bp-detail-configurator',
-  standalone: true,
-  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent, FormsModule, InputTextModule],
-  templateUrl: './detail-configurator.component.html',
-  styleUrl: './detail-configurator.component.scss'
+    selector: 'bp-detail-configurator',
+    imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent, FormsModule, InputTextModule],
+    templateUrl: './detail-configurator.component.html',
+    styleUrl: './detail-configurator.component.scss'
 })
 export class DetailConfiguratorComponent {
 

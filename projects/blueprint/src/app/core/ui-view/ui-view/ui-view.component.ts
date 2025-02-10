@@ -4,13 +4,11 @@ import { UiView, UiViewContainer } from '../model/ui-view.model';
 import { UiViewComponentComponent } from "../ui-view-component/ui-view-component.component";
 
 @Component({
-  selector: 'bp-ui-view',
-  standalone: true,
-  templateUrl: './ui-view.component.html',
-  styleUrls: ['./ui-view.component.scss'],
-  imports: [CommonModule, UiViewComponentComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
-
+    selector: 'bp-ui-view',
+    templateUrl: './ui-view.component.html',
+    styleUrls: ['./ui-view.component.scss'],
+    imports: [CommonModule, UiViewComponentComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiViewComponent implements OnChanges {
   @Input({ required: true }) uiView: UiView;

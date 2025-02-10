@@ -2,11 +2,10 @@ import { NgClass, NgStyle } from '@angular/common';
 import { Component, computed, inject, input, ChangeDetectorRef } from '@angular/core';
 
 @Component({
-  selector: 'bp-filter-item',
-  standalone: true,
-  imports: [NgStyle, NgClass],
-  templateUrl: './filter-item.component.html',
-  styleUrl: './filter-item.component.scss'
+    selector: 'bp-filter-item',
+    imports: [NgStyle, NgClass],
+    templateUrl: './filter-item.component.html',
+    styleUrl: './filter-item.component.scss'
 })
 export class FilterItemComponent {
   color = input.required<string>();

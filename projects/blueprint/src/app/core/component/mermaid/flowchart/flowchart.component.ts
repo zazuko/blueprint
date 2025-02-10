@@ -2,11 +2,10 @@ import { Component, DestroyRef, ElementRef, effect, inject, signal, viewChild } 
 import { MermaidService } from '../service/mermaid/mermaid.service';
 
 @Component({
-  selector: 'bp-flowchart',
-  standalone: true,
-  imports: [],
-  templateUrl: './flowchart.component.html',
-  styleUrl: './flowchart.component.scss'
+    selector: 'bp-flowchart',
+    imports: [],
+    templateUrl: './flowchart.component.html',
+    styleUrl: './flowchart.component.scss'
 })
 export class FlowchartComponent {
   private readonly mermaidElementRefSignal = viewChild<ElementRef>(`mermaid`);

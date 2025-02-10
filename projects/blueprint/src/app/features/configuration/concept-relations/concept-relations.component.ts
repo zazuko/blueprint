@@ -18,11 +18,10 @@ import { combineLinkWithSameSourceAndTarget } from '../../explore/service/graph/
 
 
 @Component({
-  selector: 'bp-concept-relations',
-  standalone: true,
-  templateUrl: './concept-relations.component.html',
-  styleUrl: './concept-relations.component.scss',
-  imports: [CommonModule, GraphComponent, BreadcrumbPageComponent]
+    selector: 'bp-concept-relations',
+    templateUrl: './concept-relations.component.html',
+    styleUrl: './concept-relations.component.scss',
+    imports: [CommonModule, GraphComponent, BreadcrumbPageComponent]
 })
 export class ConceptRelationsComponent implements OnInit {
   private readonly classMetadataService = inject(UiClassMetadataService);

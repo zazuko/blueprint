@@ -8,11 +8,10 @@ import { TableModule } from 'primeng/table';
 
 
 @Component({
-  selector: 'bp-database-table',
-  standalone: true,
-  templateUrl: './database-table.component.html',
-  styleUrls: ['./database-table.component.scss'],
-  imports: [CommonModule, DatabaseSettingsListComponent, TableModule]
+    selector: 'bp-database-table',
+    templateUrl: './database-table.component.html',
+    styleUrls: ['./database-table.component.scss'],
+    imports: [CommonModule, DatabaseSettingsListComponent, TableModule]
 })
 export class DatabaseTableComponent {
   @Input() table: DatabaseTable | null = null;

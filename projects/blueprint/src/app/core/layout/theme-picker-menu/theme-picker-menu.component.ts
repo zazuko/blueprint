@@ -26,11 +26,10 @@ const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [
 ];
 
 @Component({
-  selector: 'bp-theme-picker-menu',
-  standalone: true,
-  templateUrl: './theme-picker-menu.component.html',
-  styleUrl: './theme-picker-menu.component.scss',
-  imports: [NavMenuItemComponent, ThemePickerMenuItemComponent]
+    selector: 'bp-theme-picker-menu',
+    templateUrl: './theme-picker-menu.component.html',
+    styleUrl: './theme-picker-menu.component.scss',
+    imports: [NavMenuItemComponent, ThemePickerMenuItemComponent]
 })
 export class ThemePickerMenuComponent {
   private readonly themeManager = inject(ThemeManager);

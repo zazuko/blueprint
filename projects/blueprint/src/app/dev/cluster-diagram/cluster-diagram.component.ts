@@ -8,11 +8,10 @@ import { NgStyle } from '@angular/common';
 import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
 
 @Component({
-  selector: 'bp-cluster-diagram',
-  standalone: true,
-  imports: [NgStyle, AvatarComponent, PanelModule, TooltipModule],
-  templateUrl: './cluster-diagram.component.html',
-  styleUrl: './cluster-diagram.component.scss'
+    selector: 'bp-cluster-diagram',
+    imports: [NgStyle, AvatarComponent, PanelModule, TooltipModule],
+    templateUrl: './cluster-diagram.component.html',
+    styleUrl: './cluster-diagram.component.scss'
 })
 export class ClusterDiagramComponent implements OnChanges {
   @Input({ required: true }) data: TreeNode<NodeElement> | null = null;

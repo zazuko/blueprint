@@ -13,15 +13,14 @@ import { BrandLogoComponent } from "../core/layout/brand-logo/brand-logo.compone
 import { MessageChannelService } from '../core/service/message-channel/message-channel.service';
 
 @Component({
-  standalone: true,
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  imports: [
-    ReactiveFormsModule, //
-    InputTextModule,
-    ButtonModule,
-    BrandLogoComponent
-  ]
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    imports: [
+        ReactiveFormsModule, //
+        InputTextModule,
+        ButtonModule,
+        BrandLogoComponent
+    ]
 })
 export class LoginComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);

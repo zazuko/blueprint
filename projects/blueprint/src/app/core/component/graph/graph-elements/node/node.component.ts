@@ -4,12 +4,11 @@ import { GraphNode } from '../../model/graph-node.model';
 import { NgClass } from '@angular/common';
 
 @Component({
-  standalone: true,
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'g[bp-node]',
-  templateUrl: './node.component.svg',
-  styleUrls: ['./node.component.scss'],
-  imports: [NgClass]
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'g[bp-node]',
+    templateUrl: './node.component.svg',
+    styleUrls: ['./node.component.scss'],
+    imports: [NgClass]
 })
 export class NodeComponent {
   @Input({ required: true }) node: GraphNode;

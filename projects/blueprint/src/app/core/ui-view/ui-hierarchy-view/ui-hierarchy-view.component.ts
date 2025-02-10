@@ -3,11 +3,10 @@ import { HierarchyComponent, HierarchyElement } from '../view-component-library/
 import { UiHierarchyView } from './model/ui-hierarchy-view';
 
 @Component({
-  selector: 'bp-ui-hierarchy-view',
-  standalone: true,
-  imports: [HierarchyComponent],
-  templateUrl: './ui-hierarchy-view.component.html',
-  styleUrl: './ui-hierarchy-view.component.scss'
+    selector: 'bp-ui-hierarchy-view',
+    imports: [HierarchyComponent],
+    templateUrl: './ui-hierarchy-view.component.html',
+    styleUrl: './ui-hierarchy-view.component.scss'
 })
 export class UiHierarchyViewComponent {
   hierarchyView = input.required<UiHierarchyView>();

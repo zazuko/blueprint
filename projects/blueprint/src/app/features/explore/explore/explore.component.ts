@@ -58,27 +58,26 @@ enum PageView {
 }
 
 @Component({
-  standalone: true,
-  templateUrl: './explore.component.html',
-  styleUrls: ['./explore.component.scss'],
-  animations: [fadeInOut, fadeIn],
-  imports: [
-    CommonModule,
-    RouterModule,
-    ExploreHeaderComponent,
-    UiViewComponent,
-    GraphComponent,
-    ExploreHeaderComponent,
-    NeighborNodesComponent,
-    UiHierarchyViewComponent,
-    TabMenuModule,
-    LiteralViewComponent,
-    DetailsComponent,
-    AggregateRelationComponent,
-    TooltipModule,
-    JsonPipe,
-    CommentComponent
-  ]
+    templateUrl: './explore.component.html',
+    styleUrls: ['./explore.component.scss'],
+    animations: [fadeInOut, fadeIn],
+    imports: [
+        CommonModule,
+        RouterModule,
+        ExploreHeaderComponent,
+        UiViewComponent,
+        GraphComponent,
+        ExploreHeaderComponent,
+        NeighborNodesComponent,
+        UiHierarchyViewComponent,
+        TabMenuModule,
+        LiteralViewComponent,
+        DetailsComponent,
+        AggregateRelationComponent,
+        TooltipModule,
+        JsonPipe,
+        CommentComponent
+    ]
 })
 export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly route = inject(ActivatedRoute);

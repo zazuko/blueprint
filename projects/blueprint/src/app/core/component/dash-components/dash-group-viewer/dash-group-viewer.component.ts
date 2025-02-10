@@ -21,11 +21,10 @@ import { DashHostDirective } from '../../../ui-view/ui-view-component/dash-host/
 import { InfoSectionComponent } from '@blueprint/component/info-section';
 
 @Component({
-  standalone: true,
-  selector: 'bp-dash-group-viewer',
-  templateUrl: './dash-group-viewer.component.html',
-  styleUrls: ['./dash-group-viewer.component.less'],
-  imports: [InfoSectionComponent, DashHostDirective, CommonModule]
+    selector: 'bp-dash-group-viewer',
+    templateUrl: './dash-group-viewer.component.html',
+    styleUrls: ['./dash-group-viewer.component.less'],
+    imports: [InfoSectionComponent, DashHostDirective, CommonModule]
 })
 /**
  * The purpose of this component is to display a group of child 

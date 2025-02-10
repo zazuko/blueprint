@@ -6,11 +6,10 @@ import { LoadingIndicatorService } from './service/loading-indicator.service';
 
 
 @Component({
-  selector: 'bp-loading-indicator',
-  standalone: true,
-  imports: [ProgressBarModule],
-  templateUrl: './loading-indicator.component.html',
-  styleUrl: './loading-indicator.component.scss'
+    selector: 'bp-loading-indicator',
+    imports: [ProgressBarModule],
+    templateUrl: './loading-indicator.component.html',
+    styleUrl: './loading-indicator.component.scss'
 })
 export class LoadingIndicatorComponent {
   public readonly loadingIndicatorService = inject(LoadingIndicatorService);

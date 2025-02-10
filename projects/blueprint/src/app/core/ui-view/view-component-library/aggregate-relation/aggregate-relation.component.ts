@@ -8,11 +8,10 @@ import { TooltipModule } from 'primeng/tooltip';
 
 
 @Component({
-  selector: 'bp-aggregate-relation',
-  standalone: true,
-  templateUrl: './aggregate-relation.component.html',
-  styleUrl: './aggregate-relation.component.scss',
-  imports: [AvatarComponent, NgStyle, TooltipModule]
+    selector: 'bp-aggregate-relation',
+    templateUrl: './aggregate-relation.component.html',
+    styleUrl: './aggregate-relation.component.scss',
+    imports: [AvatarComponent, NgStyle, TooltipModule]
 })
 export class AggregateRelationComponent {
   relation = input.required<CompositionNodeElement[]>();

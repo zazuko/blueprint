@@ -15,11 +15,10 @@ import { FluxLiteralViewer } from 'projects/blueprint/src/app/features/explore/f
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
 @Component({
-  standalone: true,
-  selector: 'bp-dash-literal-viewer',
-  templateUrl: './dash-literal-viewer.component.html',
-  styleUrls: ['./dash-literal-viewer.component.less'],
-  imports: [CommonModule, InfoSectionComponent]
+    selector: 'bp-dash-literal-viewer',
+    templateUrl: './dash-literal-viewer.component.html',
+    styleUrls: ['./dash-literal-viewer.component.less'],
+    imports: [CommonModule, InfoSectionComponent]
 })
 export class DashLiteralViewerComponent implements OnInit, OnDestroy {
   @Input() viewer: FluxLiteralViewer = null;

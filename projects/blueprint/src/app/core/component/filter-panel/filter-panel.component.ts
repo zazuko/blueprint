@@ -21,13 +21,12 @@ import { SearchFilter } from '../../../features/search/model/search-filter.model
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 
 @Component({
-  standalone: true,
-  selector: 'bp-filter-panel',
-  templateUrl: './filter-panel.component.html',
-  styleUrls: ['./filter-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: fadeInOut,
-  imports: [FormsModule, CheckboxModule, FilterItemComponent]
+    selector: 'bp-filter-panel',
+    templateUrl: './filter-panel.component.html',
+    styleUrls: ['./filter-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: fadeInOut,
+    imports: [FormsModule, CheckboxModule, FilterItemComponent]
 })
 export class FilterPanelComponent implements OnChanges, OnDestroy {
   filtersChange = output<SearchFilter[]>();

@@ -5,15 +5,14 @@ import { CardModule } from 'primeng/card';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
-  selector: 'bp-comment',
-  standalone: true,
-  imports: [
-    NgStyle,
-    ScrollPanelModule,
-    CardModule
-  ],
-  templateUrl: './comment.component.html',
-  styleUrl: './comment.component.scss'
+    selector: 'bp-comment',
+    imports: [
+        NgStyle,
+        ScrollPanelModule,
+        CardModule
+    ],
+    templateUrl: './comment.component.html',
+    styleUrl: './comment.component.scss'
 })
 export class CommentComponent {
   text = input<string | null | undefined>(undefined);

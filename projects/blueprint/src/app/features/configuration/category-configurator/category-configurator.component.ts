@@ -9,11 +9,10 @@ import { CategoryService } from './service/category.service';
 import { CategoryTreeNodeComponent } from './category-tree-node/category-tree-node.component';
 
 @Component({
-  selector: 'bp-category-configurator',
-  standalone: true,
-  imports: [NgStyle, NgTemplateOutlet, BreadcrumbPageComponent, TreeModule, CategoryTreeNodeComponent],
-  templateUrl: './category-configurator.component.html',
-  styleUrl: './category-configurator.component.scss'
+    selector: 'bp-category-configurator',
+    imports: [NgStyle, NgTemplateOutlet, BreadcrumbPageComponent, TreeModule, CategoryTreeNodeComponent],
+    templateUrl: './category-configurator.component.html',
+    styleUrl: './category-configurator.component.scss'
 })
 export class CategoryConfiguratorComponent {
   private readonly _categoryService = inject(CategoryService);

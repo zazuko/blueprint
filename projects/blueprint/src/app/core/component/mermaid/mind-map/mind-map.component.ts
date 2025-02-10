@@ -97,11 +97,10 @@ CONSTRUCT {
 
 
 @Component({
-  selector: 'bp-mind-map',
-  standalone: true,
-  imports: [],
-  templateUrl: './mind-map.component.html',
-  styleUrl: './mind-map.component.scss',
+    selector: 'bp-mind-map',
+    imports: [],
+    templateUrl: './mind-map.component.html',
+    styleUrl: './mind-map.component.scss'
 })
 export class MindMapComponent implements OnDestroy {
   selected = output<string>();
