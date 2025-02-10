@@ -1,0 +1,22 @@
+<p-table [columns]="columns()" [value]="computedData().rows" [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true"
+    [scrollHeight]="'flex'">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            @for(col of columns; track col) {
+            <th>
+                {{ col.header }}
+            </th>
+            }
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            @for(col of columns; track col.field) {
+
+            <td>
+                {{ rowData[col.field] }}
+            </td>
+            }
+        </tr>
+    </ng-template>
+</p-table>

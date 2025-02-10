@@ -1,0 +1,29 @@
+@prefix blueprint: <https://flux.described.at/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+blueprint:AppDashboard a blueprint:Dashboard ;
+   sh:targetClass <https://flux.described.at/zazuko/ontology/Application> ;
+   blueprint:hasWidget blueprint:AppWidget1 ;
+   .
+blueprint:AppWidget1 a blueprint:Widget ;
+   blueprint:hasRowSpan 4 ;
+   blueprint:hasColSpan 4 ;
+   blueprint:index 1 ;
+   blueprint:hasComponent blueprint:CountComponent ;
+   blueprint:hasSparqlQueryTemplate """
+CONSTRUCT {
+    ??result blueprint:count ?count ;
+        a ?type .
+    } WHERE {
+        {
+            SELECT ((COUNT ?user) as ?count) WHERE {
+                ??subject <https://flux.described.at/zazuko/ontology/hasUser> ?user .
+            }
+        } UNION {
+            SELECT ?type WHERE {
+                ??subject a ?type .
+            } LIMIT 1
+        }
+    } .
+   """ ;
+   .

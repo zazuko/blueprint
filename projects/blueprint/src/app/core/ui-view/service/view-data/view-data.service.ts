@@ -18,7 +18,8 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from '@blueprint/utils';
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
-
+import { DashboardService } from 'projects/blueprint/src/app/shared/component/dashboard/dashboard.service';
+import { Dashboard } from 'projects/blueprint/src/app/shared/component/dashboard/dashboard.class';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,6 +37,8 @@ export class ViewDataService {
   private readonly hierarchyService = inject(HierarchyService);
   private readonly uiDetailService = inject(UiDetailService);
   private readonly aggregateService = inject(AggregateService);
+
+  readonly #dashboardService = inject(DashboardService);
 
   getViewForSubject(subject: NamedNode): Observable<Dataset> {
     const dataset = rdfEnvironment.dataset();
@@ -63,7 +66,7 @@ export class ViewDataService {
         const typeCfGraph = rdfEnvironment.clownface({ dataset: typeGraph, term: subject });
         types = typeCfGraph.out(rdf.typeNamedNode).values;
 
-
+        const dashboardQuery = this.#dashboardService.dashboardForInstanceQuery(subject);
         const viewMetaQueries = types.map((type) => this.viewMetadata.getViewConfigForClassQuery(rdfEnvironment.namedNode(type)));
 
         const hierarchyQueries = this.hierarchyService.getAllHierarchiesQuery();
@@ -74,14 +77,21 @@ export class ViewDataService {
 
         const uiDetailQueries = types.map((type) => this.uiDetailService.getUiDetailForClassQuery(type));
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
-
+        const mergedMetaQuery = sparqlUtils.mergeConstruct([dashboardQuery, ...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
         return this.sparql.construct(mergedMetaQuery);
       }),
       switchMap((viewGraphMetadata) => {
         dataset.addAll(viewGraphMetadata);
-
+        /* 0 */
+        const dashboards = rdfEnvironment.clownface({ dataset: viewGraphMetadata }).node(blueprint.DashboardNamedNode).in(rdf.typeNamedNode).map(dashboardNode => { return new Dashboard(dashboardNode) });
+        const widgetQueries = dashboards.map(dashboard => {
+          return dashboard.widgets.map(widget => {
+            return widget.createQueryForInstance(subject);
+          });
+        }
+        ).flat();
+        console.log(widgetQueries[0]);
         /* 1. get detail config */
         const uiDetails = this.uiDetailService.extractUiDetails(viewGraphMetadata);
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject.value));
@@ -197,7 +207,7 @@ export class ViewDataService {
 
 
         // add default query
-        const queries = [...viewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
+        const queries = [...widgetQueries, ...viewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
         const mergedQuery = sparqlUtils.mergeConstruct(queries);

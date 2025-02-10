@@ -488,6 +488,33 @@ class BlueprintOntology extends Ontology {
     }
 
     /**
+     * Get the hasColumn predicate.
+     * 
+     * @readonly
+     */
+    get hasColumn(): string {
+        return this.namespace('hasColumn').value;
+    }
+
+    /**
+     * Get the prefixed hasColumn predicate.
+     * 
+     * @readonly    
+     */
+    get hasColumnPrefixed(): string {
+        return `${this.prefix()}:hasColumn`;
+    }
+
+    /**
+     * Get the hasColumn predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasColumnNamedNode(): NamedNode {
+        return this.namespace('hasColumn');
+    }
+
+    /**
      * Get the cell predicate.
      * 
      * @readonly
@@ -1293,6 +1320,194 @@ class BlueprintOntology extends Ontology {
         return this.namespace('CompositionLinkResult');
     }
 
+    /**
+     * Get the Dashboard class.
+     * 
+     * @readonly
+     */
+    get Dashboard(): string {
+        return this.namespace('Dashboard').value;
+    }
+
+    /**
+     * Get the prefixed Dashboard class.
+     * 
+     * @readonly
+     */
+    get DashboardPrefixed(): string {
+        return `${this.prefix()}:Dashboard`;
+    }
+
+    /**
+     * Get the Dashboard class as NamedNode.
+     * 
+     * @readonly
+     */
+    get DashboardNamedNode(): NamedNode {
+        return this.namespace('Dashboard');
+    }
+
+    /**
+     * Get the hasWidget predicate.
+     * 
+     * @readonly
+     */
+    get hasWidget(): string {
+        return this.namespace('hasWidget').value;
+    }
+
+    /**
+     * Get the prefixed hasWidget predicate.
+     * 
+     * @readonly
+     */
+    get hasWidgetPrefixed(): string {
+        return `${this.prefix()}:hasWidget`;
+    }
+
+    /**
+     * Get the hasWidget predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasWidgetNamedNode(): NamedNode {
+        return this.namespace('hasWidget');
+    }
+
+    /**
+     * Get the hasRowSpan predicate.
+     * 
+     * @readonly
+     */
+    get hasRowSpan(): string {
+        return this.namespace('hasRowSpan').value;
+    }
+
+    /**
+     * Get the prefixed hasRowSpan predicate.
+     * 
+     * @readonly
+     */
+    get hasRowSpanPrefixed(): string {
+        return `${this.prefix()}:hasRowSpan`;
+    }
+
+    /**
+     * Get the hasRowSpan predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasRowSpanNamedNode(): NamedNode {
+        return this.namespace('hasRowSpan');
+    }
+
+    /**
+     * Get the hasColumnSpan predicate.
+     * 
+     * @readonly
+     */
+    get hasColumnSpan(): string {
+        return this.namespace('hasColumnSpan').value;
+    }
+
+    /**
+     * Get the prefixed hasColumnSpan predicate.
+     * 
+     * @readonly
+     */
+    get hasColumnSpanPrefixed(): string {
+        return `${this.prefix()}:hasColumnSpan`;
+    }
+
+    /**
+     * Get the hasColumnSpan predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasColumnSpanNamedNode(): NamedNode {
+        return this.namespace('hasColumnSpan');
+    }
+
+    /**
+     * Get the index predicate.
+     * 
+     * @readonly
+     */
+    get index(): string {
+        return this.namespace('index').value;
+    }
+
+    /**
+     * Get the prefixed index predicate.
+     * 
+     * @readonly
+     */
+    get indexPrefixed(): string {
+        return `${this.prefix()}:index`;
+    }
+
+    /**
+     * Get the index predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get indexNamedNode(): NamedNode {
+        return this.namespace('index');
+    }
+
+    /**
+     * Get the hasComponent predicate.
+     * 
+     * @readonly
+     */
+    get hasComponent(): string {
+        return this.namespace('hasComponent').value;
+    }
+
+    /**
+     * Get the prefixed hasComponent predicate.
+     * 
+     * @readonly
+     */
+    get hasComponentPrefixed(): string {
+        return `${this.prefix()}:hasComponent`;
+    }
+
+    /**
+     * Get the hasComponent predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasComponentNamedNode(): NamedNode {
+        return this.namespace('hasComponent');
+    }
+
+    /**
+     * Get the hasSparqlQueryTemplate predicate.
+     * 
+     * @readonly
+     */
+    get hasSparqlQueryTemplate(): string {
+        return this.namespace('hasSparqlQueryTemplate').value;
+    }
+
+    /**
+     * Get the prefixed hasSparqlQueryTemplate predicate.
+     * 
+     * @readonly
+     */
+    get hasSparqlQueryTemplatePrefixed(): string {
+        return `${this.prefix()}:hasSparqlQueryTemplate`;
+    }
+
+    /**
+     * Get the hasSparqlQueryTemplate predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasSparqlQueryTemplateNamedNode(): NamedNode {
+        return this.namespace('hasSparqlQueryTemplate');
+    }
 }
 
 export const blueprint = new BlueprintOntology();

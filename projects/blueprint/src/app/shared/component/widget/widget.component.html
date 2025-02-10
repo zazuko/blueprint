@@ -1,12 +1,19 @@
 <div class="container">
-    <p-button class="settings-button" icon="pi pi-cog" [rounded]="true" [text]="true" (click)="showOptions.set(true)" />
 
-    <ng-container [ngComponentOutlet]="viewComponent"
-        [ngComponentOutletInputs]="{uiView: widget().view}"></ng-container>
 
+    <!-- <p-button class="settings-button" icon="pi pi-arrows-alt" [rounded]="true" [text]="true"
+        (click)="showOptions.set(true)" />-->
+
+    @if(viewComponent()) {
+    <ng-container [ngComponentOutlet]="viewComponent()" [ngComponentOutletInputs]="{data: widget().data}" />
+    }@else {
+    empty
+    }
     @if(showOptions()) {
-    <bp-widget-options [height]="widget().rows" [width]="widget().columns" [(showOptions)]="showOptions"
+    <bp-widget-options [height]="widget().rowSpan" [width]="widget().columnSpan" [(showOptions)]="showOptions"
         (changed)="emitChange($event)" />
     }
+
+
 
 </div>

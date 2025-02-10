@@ -6,10 +6,9 @@ import {
   signal,
   DestroyRef,
   AfterViewInit,
-  computed,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
@@ -49,7 +48,9 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
 import { WidgetGridComponent } from "../../../shared/component/widget-grid/widget-grid.component";
 import { Widget } from '../../../shared/component/widget/model/widget.model';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+
+import { UiWidgetRegistryService } from '../../../shared/component/ui-widget/service/ui-widget-registry.service';
+import { Dashboard } from '../../../shared/component/dashboard/dashboard.class';
 
 
 // create an enum about page views we have Views, Graph and Nearby
@@ -80,7 +81,6 @@ enum PageView {
     DetailsComponent,
     AggregateRelationComponent,
     TooltipModule,
-    JsonPipe,
     CommentComponent,
     WidgetGridComponent
   ]
@@ -116,40 +116,13 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public PageView: typeof PageView = PageView;
 
-
+  widgetRegistry = inject(UiWidgetRegistryService)
   uiView = signal<UiView[]>([]);
 
-  widgets = computed<Widget[]>(() => {
-    for (const uiView of this.uiView()) {
-      for (const viewContainer of uiView.viewContainer) {
-        for (const comp of viewContainer.viewComponent) {
-          console.log('-------- definition ------');
-
-          console.log('comp', comp.componentDefinition.iri);
-          console.log('comp', comp.componentDefinition.label);
-          console.log('comp', comp.componentDefinition.comment);
-          console.log('comp', comp.componentDefinition.sparqlQuery);
-
-          console.log('------ --------');
-          console.log('comp', ClownfaceObject.logNodeAsTable(comp.componentData));
+  widgets = signal<Widget[]>([]);
 
 
 
-        }
-
-
-      }
-    }
-    return this.uiView().map((view) => {
-      return {
-        id: view.iri,
-        label: 'widget',
-        view: view,
-        rows: 2
-      };
-    });
-
-  });
   uiHierarchy: UiHierarchyView[] = [];
   term: string;
   subjectLabel = signal<string>('');
@@ -222,6 +195,18 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       {
         next: (viewGraph) => {
+          const dashboards = rdfEnvironment.clownface({ dataset: viewGraph, term: blueprint.DashboardNamedNode }).in(rdf.typeNamedNode).map((node) => new Dashboard(node));
+          if (dashboards.length > 1) {
+            console.warn('More than one dashboard found for this subject. Using the first one.');
+          }
+          if (dashboards.length > 0) {
+            const dashboard = dashboards[0];
+            dashboard.logTable();
+            dashboard.widgets[0]?.logTable();
+            this.widgets.set(dashboard.widgets.sort((a, b) => a.index - b.index));
+          } else {
+            this.widgets.set([]);
+          }
           const cfViewGraph = rdfEnvironment.clownface({ dataset: viewGraph, term: nileaUi.UiViewNamedNode });
 
           // ---- composition link result

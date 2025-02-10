@@ -37,12 +37,12 @@ export class WidgetOptionsComponent {
   ];
 
   widthChanged(event: SelectButtonChangeEvent) {
-    this.changed.emit({ columns: event.value });
+    this.changed.emit({ columnSpan: event.value });
 
   }
 
   heightChanged(event: SelectButtonChangeEvent) {
-    this.changed.emit({ rows: event.value });
+    this.changed.emit({ rowSpan: event.value });
   }
 }
 
