@@ -34,16 +34,15 @@ import { GraphLink } from '../model/graph-link.model';
 import { ColorUtil } from '@blueprint/utils';
 
 @Component({
-    selector: 'bp-graph',
-    templateUrl: './graph.component.html',
-    styleUrl: './graph.component.scss',
-    imports: [
-        ArrowComponent,
-        NodeComponent,
-        LinkPanelComponent,
-        DraggableDirective,
-        ButtonModule
-    ]
+  selector: 'bp-graph',
+  templateUrl: './graph.component.html',
+  styleUrl: './graph.component.scss',
+  imports: [
+    ArrowComponent,
+    NodeComponent,
+    DraggableDirective,
+    ButtonModule
+  ]
 })
 export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   @Input() graph: Graph = null;

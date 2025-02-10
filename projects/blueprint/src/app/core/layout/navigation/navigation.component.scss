@@ -28,11 +28,6 @@
 
 .bp-mobile-nav-bar {
     display: none;
-
-    @include mq.for-phone-only {
-        display: flex;
-    }
-
     gap: 0.75rem;
     backdrop-filter: blur(16px);
     background-color: color-mix(in srgb, var(--page-background) 70%, transparent);
@@ -43,9 +38,12 @@
     padding-inline: var(--layout-padding);
     border-block-end: 1px solid var(--septenary-contrast);
     box-sizing: border-box;
-
     transform: translateY(0);
     transition: transform 0.3s ease-out 0.6s;
+
+    @include mq.for-phone-only {
+        display: flex;
+    }
 
     &:has(+ .bp-nav-primary--open) {
         transform: translateY(-100%);
@@ -75,6 +73,8 @@
     padding-block-start: 1rem;
     padding-block-end: 2rem;
     box-sizing: border-box;
+    // Add a subtle border for the home page
+    border-block-end: 1px solid var(--septenary-contrast);
 
     // div containing mobile close button and bp-nav_top
     >div {
@@ -112,8 +112,6 @@
         padding-block: 0;
     }
 
-    // Add a subtle border for the home page
-    border-block-end: 1px solid var(--septenary-contrast);
 
     @include mq.for-tablet-up {
         border-inline-end: 1px solid var(--septenary-contrast);

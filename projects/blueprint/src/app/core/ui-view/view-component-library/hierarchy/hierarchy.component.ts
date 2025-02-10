@@ -1,13 +1,12 @@
-import { NgClass, NgStyle } from '@angular/common';
 import { Component, Input, output } from '@angular/core';
 import { AvatarComponent } from '../../../component/avatar/avatar.component';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
-    selector: 'bp-hierarchy',
-    imports: [NgClass, NgStyle, AvatarComponent, TooltipModule],
-    templateUrl: './hierarchy.component.html',
-    styleUrl: './hierarchy.component.scss'
+  selector: 'bp-hierarchy',
+  imports: [AvatarComponent, TooltipModule],
+  templateUrl: './hierarchy.component.html',
+  styleUrl: './hierarchy.component.scss'
 })
 export class HierarchyComponent {
   @Input() hierarchy: HierarchyElement[] = [];

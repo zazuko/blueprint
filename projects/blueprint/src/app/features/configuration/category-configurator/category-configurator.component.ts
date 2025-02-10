@@ -1,5 +1,4 @@
 import { Component, WritableSignal, inject, signal } from '@angular/core';
-import { NgStyle, NgTemplateOutlet } from '@angular/common';
 import { BreadcrumbPageComponent } from '../../../core/page/breadcrumb-page/breadcrumb-page.component';
 import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { SkosConcept } from './model/skos.model';
@@ -9,10 +8,10 @@ import { CategoryService } from './service/category.service';
 import { CategoryTreeNodeComponent } from './category-tree-node/category-tree-node.component';
 
 @Component({
-    selector: 'bp-category-configurator',
-    imports: [NgStyle, NgTemplateOutlet, BreadcrumbPageComponent, TreeModule, CategoryTreeNodeComponent],
-    templateUrl: './category-configurator.component.html',
-    styleUrl: './category-configurator.component.scss'
+  selector: 'bp-category-configurator',
+  imports: [BreadcrumbPageComponent, TreeModule, CategoryTreeNodeComponent],
+  templateUrl: './category-configurator.component.html',
+  styleUrl: './category-configurator.component.scss'
 })
 export class CategoryConfiguratorComponent {
   private readonly _categoryService = inject(CategoryService);

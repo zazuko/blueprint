@@ -8,7 +8,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
@@ -58,26 +58,25 @@ enum PageView {
 }
 
 @Component({
-    templateUrl: './explore.component.html',
-    styleUrls: ['./explore.component.scss'],
-    animations: [fadeInOut, fadeIn],
-    imports: [
-        CommonModule,
-        RouterModule,
-        ExploreHeaderComponent,
-        UiViewComponent,
-        GraphComponent,
-        ExploreHeaderComponent,
-        NeighborNodesComponent,
-        UiHierarchyViewComponent,
-        TabMenuModule,
-        LiteralViewComponent,
-        DetailsComponent,
-        AggregateRelationComponent,
-        TooltipModule,
-        JsonPipe,
-        CommentComponent
-    ]
+  templateUrl: './explore.component.html',
+  styleUrls: ['./explore.component.scss'],
+  animations: [fadeInOut, fadeIn],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ExploreHeaderComponent,
+    UiViewComponent,
+    GraphComponent,
+    ExploreHeaderComponent,
+    NeighborNodesComponent,
+    UiHierarchyViewComponent,
+    TabMenuModule,
+    LiteralViewComponent,
+    DetailsComponent,
+    AggregateRelationComponent,
+    TooltipModule,
+    CommentComponent
+  ]
 })
 export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly route = inject(ActivatedRoute);

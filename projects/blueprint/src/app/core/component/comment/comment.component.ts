@@ -1,18 +1,16 @@
-import { NgStyle } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
 import { CardModule } from 'primeng/card';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
-    selector: 'bp-comment',
-    imports: [
-        NgStyle,
-        ScrollPanelModule,
-        CardModule
-    ],
-    templateUrl: './comment.component.html',
-    styleUrl: './comment.component.scss'
+  selector: 'bp-comment',
+  imports: [
+    ScrollPanelModule,
+    CardModule
+  ],
+  templateUrl: './comment.component.html',
+  styleUrl: './comment.component.scss'
 })
 export class CommentComponent {
   text = input<string | null | undefined>(undefined);

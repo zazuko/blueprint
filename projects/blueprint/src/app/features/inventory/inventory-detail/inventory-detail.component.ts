@@ -27,21 +27,19 @@ import { ContentItem, HierarchyDefinition } from '../../configuration/topology/s
 import { labelAlphaSort } from '../../../core/utils/sort-functions';
 
 @Component({
-    templateUrl: './inventory-detail.component.html',
-    styleUrl: './inventory-detail.component.scss',
-    imports: [
-        BreadcrumbPageComponent,
-        AvatarComponent,
-        FormsModule,
-        NgClass,
-        GroupTableComponent,
-        ClusterDiagramComponent,
-        ToolbarModule,
-        SelectButtonModule,
-        TreeModule,
-        InputTextModule,
-    ],
-    animations: [fadeInOut]
+  templateUrl: './inventory-detail.component.html',
+  styleUrl: './inventory-detail.component.scss',
+  imports: [
+    BreadcrumbPageComponent,
+    AvatarComponent,
+    FormsModule,
+    ClusterDiagramComponent,
+    ToolbarModule,
+    SelectButtonModule,
+    TreeModule,
+    InputTextModule,
+  ],
+  animations: [fadeInOut]
 })
 export class InventoryDetailComponent implements OnChanges {
   @Input({ required: true }) public id: string | null = null;

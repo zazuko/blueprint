@@ -38,22 +38,19 @@ const NAVIGATION_ITEMS: NavigationMenuItem[] = [
 ];
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'div.bp-nav',
-    templateUrl: './navigation.component.html',
-    styleUrls: ['./navigation.component.scss', './nav-item.scss'],
-    imports: [
-        CommonModule,
-        RouterLink,
-        CdkMenu,
-        CdkMenuItem,
-        CdkMenuTrigger,
-        ThemePickerMenuComponent,
-        MobileLogoButtonComponent,
-        BrandLogoComponent,
-        NavMenuItemComponent,
-        OverlayPanelModule
-    ]
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'div.bp-nav',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.scss', './nav-item.scss'],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ThemePickerMenuComponent,
+    MobileLogoButtonComponent,
+    BrandLogoComponent,
+    NavMenuItemComponent,
+    OverlayPanelModule
+  ]
 })
 export class NavigationComponent {
   private readonly navigationState = inject(NavigationState);

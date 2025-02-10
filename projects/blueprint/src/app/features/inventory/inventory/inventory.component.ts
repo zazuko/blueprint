@@ -12,10 +12,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 
 @Component({
-    templateUrl: './inventory.component.html',
-    styleUrl: './inventory.component.scss',
-    imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, ConfigurationCardComponent, TooltipModule],
-    animations: [fadeInOut]
+  templateUrl: './inventory.component.html',
+  styleUrl: './inventory.component.scss',
+  imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, TooltipModule],
+  animations: [fadeInOut]
 })
 export class InventoryComponent {
   private readonly hierarchyService = inject(HierarchyService);
