@@ -13,8 +13,6 @@
         flex-direction: column;
     }
 
-
-
     // If navs are open, render a blurry background over content
     &:has(.bp-nav-secondary--open),
     &:has(.bp-nav-primary--open) {
@@ -56,4 +54,5 @@
 
 .bp-nav {
     z-index: 10;
+    background-color: light-dark(white, color(srgb 0.0588455 0.0588679 0.0664821 / 0.7), );
 }

@@ -1,8 +1,4 @@
-@use 'styles/colors';
-@use 'styles/button';
-@use 'styles/typography';
 @use 'styles/media-queries' as mq;
-
 @import "primeicons/primeicons.css";
 
 //// fonts
@@ -57,15 +53,23 @@
 // layout sizes
 :root {
   --nav-panel-left-width: 85px;
+  --surface-card: #ffffff;
+  --border-radius: 6px;
+  --surface-border: #dfe7ef;
+}
 
+.bp-dark-mode {
+  --surface-card: #1f2937;
+  --surface-border: rgba(255, 255, 255, 0.1);
 }
 
 //................................................................................
 body {
-  // primeng theme
-  background-color: var(--surface-ground);
-
   margin: 0;
+
+  // primeng theme
+  //  background-color: var(--surface-ground);
+  //  font-family: 'Inter Tight';
 
   // scrollbar
   /* Works on Chrome, Edge, and Safari */
@@ -87,25 +91,10 @@ body {
   }
 }
 
-.bp-dark-mode {
-  color-scheme: dark;
-}
-
-
-
-// include
-
-html {
-  scroll-behavior: smooth;
-}
-
-
-
 .theme-select {
   margin-left: 50px;
   margin-top: 20px;
   padding: none !important;
-  background-color: var(--page-background);
 
   &:before {
     content: none;
@@ -115,10 +104,25 @@ html {
     content: none;
   }
 
-  .p-overlaypanel-content {}
 
   @include mq.for-tablet {
     margin-left: 0;
     margin-top: 44px;
   }
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: light-dark(rgb(249, 250, 251), rgb(17, 24, 39));
 }

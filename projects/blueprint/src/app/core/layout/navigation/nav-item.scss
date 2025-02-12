@@ -1,7 +1,6 @@
 @use '../../../../styles/media-queries' as mq;
 
 .bp-nav-item {
-    color: var(--quaternary-contrast);
     position: relative;
 
     @include mq.for-phone-only {
@@ -22,8 +21,6 @@
         top: 0;
         left: 0;
         width: 2px;
-        // TODO: Make this gradient if the page is currently active, and black if child page active
-        background-color: var(--primary-contrast);
         opacity: 0;
         transform: scale(0.9);
         transform-origin: center;
@@ -96,12 +93,12 @@
 
         a,
         .bp-nav-button {
-            fill: var(--primary-contrast);
+            fill: light-dark(black, white);
         }
 
         span,
         abbr {
-            color: var(--primary-contrast);
+            color: light-dark(black, white);
         }
 
         i {

@@ -63,9 +63,12 @@ export class ThemeManager {
     if (theme === 'dark') {
       documentClassList.add(DARK_MODE_CLASS_NAME);
       documentClassList.remove(LIGHT_MODE_CLASS_NAME);
+      this.document.documentElement.style.colorScheme = 'dark';
     } else {
       documentClassList.add(LIGHT_MODE_CLASS_NAME);
       documentClassList.remove(DARK_MODE_CLASS_NAME);
+      this.document.documentElement.style.colorScheme = 'light';
+
     }
     this.switchPrimeNgTheme(theme);
 

@@ -1,7 +1,6 @@
 @use '../../../../../styles/media-queries.scss' as mq;
 
 $color-transition: color 0.3s ease;
-$hover-color: var(--primary-contrast);
 $color: var(--quaternary-contrast);
 
 .item {
@@ -14,12 +13,15 @@ $color: var(--quaternary-contrast);
 
 
     i {
+        color: light-dark(oklch(0.5484 0.023 304.99), oklch(0.709 0.015 304.04));
         transition: $color-transition;
     }
 
     .label {
         font-size: 13px;
+        color: light-dark(oklch(0.5484 0.023 304.99), oklch(0.709 0.015 304.04));
         transition: $color-transition;
+        font-weight: 400;
 
     }
 
@@ -40,7 +42,14 @@ $color: var(--quaternary-contrast);
 
 
 .item:hover {
-    color: $hover-color;
+    i {
+        color: light-dark(black, white);
+    }
+
+    .label {
+        color: light-dark(black, white);
+    }
+
     transition: $color-transition;
     cursor: pointer;
 }
@@ -48,5 +57,11 @@ $color: var(--quaternary-contrast);
 
 
 .active {
-    color: $hover-color !important;
+    i {
+        color: light-dark(black, white) !important;
+    }
+
+    .label {
+        color: light-dark(black, white) !important;
+    }
 }

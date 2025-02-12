@@ -11,6 +11,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigService } from './core/service/config/config.service';
 import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.function';
 
+import { providePrimeNG } from 'primeng/config';
+import { AppTheme } from './app-theme';
+
+
 
 function initializeAppFactory(configService: ConfigService): () => void {
     return () => configService.fetchConfig()
@@ -29,7 +33,15 @@ export const appConfig: ApplicationConfig = {
             useFactory: initializeAppFactory,
             deps: [ConfigService],
             multi: true
-        }
+        },
 
+        providePrimeNG({
+            theme: {
+                preset: AppTheme,
+                options: {
+                    darkModeSelector: '.bp-dark-mode',
+                }
+            }
+        })
     ],
 };
