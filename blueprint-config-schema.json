@@ -27,6 +27,9 @@
                 "graphdb"
             ]
         },
+        "skipAuthentication": {
+            "type": "boolean"
+        },
         "neptune": {
             "type": "object",
             "properties": {

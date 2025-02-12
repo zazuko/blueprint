@@ -12,7 +12,8 @@ export const environment = {
     fullTextSearchDialect: 'neptune' as FullTextSearchDialect, // this will be overwritten by /src/config.json
     neptune: {
         ftsEndpoint: "https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
-    } // this will be overwritten by /src/config.json// this will be overwritten by /src/config.json
+    }, // this will be overwritten by /src/config.json// this will be overwritten by /src/config.json
+    skipAuthentication: true
 };
 
 /*
