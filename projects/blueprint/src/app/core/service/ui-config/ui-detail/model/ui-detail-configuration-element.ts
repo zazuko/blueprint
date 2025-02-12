@@ -1,5 +1,6 @@
 import { GraphPointer } from "clownface";
 import { rdfs, blueprint, shacl } from "@blueprint/ontology";
+import { NamedNode } from "@rdfjs/types";
 
 export interface UiDetailConfigurationElement {
     renderLiteralAs: LiteralRenderType;
@@ -67,28 +68,30 @@ export class RdfDetailConfigurationElement implements UiDetailConfigurationEleme
         return this._order;
     }
 
-    getSparqlDetailQueryForSubject(subjectIri: string): string {
+    getSparqlDetailQueryForSubject(subjectNode: NamedNode): string {
         const path = this._node.out(shacl.pathNamedNode).value;
         const label = this.label;
         const iri = this.iri;
         const order = this.order;
         const rendererIri = this._node.out(blueprint.showAsNamedNode).value;
 
-        return `
+        const sparqlQueryForUiDetails = `
         ${blueprint.sparqlPrefix()}
         ${rdfs.sparqlPrefix()}
         ${shacl.sparqlPrefix()}
 
         CONSTRUCT {
-            <${subjectIri}> ${blueprint.detailPrefixed} <${iri}> .
+            <${subjectNode.value}> ${blueprint.detailPrefixed} <${iri}> .
             <${iri}> ${rdfs.labelPrefixed} "${label}" .
             <${iri}> ${shacl.orderPrefixed} ${order} .
             <${iri}> ${blueprint.showAsPrefixed} <${rendererIri}> .
             <${iri}> ${blueprint.valuePrefixed} ?literal .
         } WHERE {
-            <${subjectIri}> <${path}> ?literal .
+            <${subjectNode.value}> <${path}> ?literal .
         }
         `;
+
+        return sparqlQueryForUiDetails;
     }
 }
 

@@ -65,12 +65,8 @@ export interface UiViewContainer {
  * a Typescript Object and an RDF Graph.
  */
 export class RdfUiViewContainer extends ClownfaceObject implements UiViewContainer {
-
     private _viewComponents: UiViewComponent[] | null = null;
-    private _iri: string | null = null;
     private _order: number | null = null;
-    private _label: string | null = null;
-    private _comment: string | null = null;
 
     /**
      * The node is a Clownface graph pointer that points to the UiViewContainer in the RDF graph.
