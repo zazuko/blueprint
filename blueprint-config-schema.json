@@ -24,7 +24,8 @@
                 "stardog",
                 "fuseki",
                 "neptune",
-                "graphdb"
+                "graphdb",
+                "qlever"
             ]
         },
         "skipAuthentication": {

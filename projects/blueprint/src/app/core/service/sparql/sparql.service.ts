@@ -95,5 +95,6 @@ export enum FullTextSearchDialect {
   FUSEKI = 'fuseki',
   STARDOG = 'stardog',
   NEPTUNE = 'neptune',
-  GRAPHDB = 'graphdb'
+  GRAPHDB = 'graphdb',
+  QLEVER = 'qlever'
 }
