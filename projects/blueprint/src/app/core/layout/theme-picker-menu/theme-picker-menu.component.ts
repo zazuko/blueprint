@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Theme, ThemeManager } from '../../service/theme-manager/theme-manager.service';
-import { NavigationMenuItem, NavMenuItemComponent } from '../navigation/nav-menu-item/nav-menu-item.component';
+import { NavigationMenuItem } from '../navigation/nav-menu-item/nav-menu-item.component';
 import { ThemePickerMenuItemComponent } from "./theme-picker-menu-item/theme-picker-menu-item.component";
 
 
@@ -27,10 +27,9 @@ const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [
 
 @Component({
   selector: 'bp-theme-picker-menu',
-  standalone: true,
   templateUrl: './theme-picker-menu.component.html',
   styleUrl: './theme-picker-menu.component.scss',
-  imports: [NavMenuItemComponent, ThemePickerMenuItemComponent]
+  imports: [ThemePickerMenuItemComponent]
 })
 export class ThemePickerMenuComponent {
   private readonly themeManager = inject(ThemeManager);

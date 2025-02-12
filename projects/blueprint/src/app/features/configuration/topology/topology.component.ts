@@ -11,11 +11,10 @@ import { HierarchyDefinition } from './service/model/hierarchy-definition.model'
 
 
 @Component({
-  selector: 'bp-topology',
-  standalone: true,
-  templateUrl: './topology.component.html',
-  styleUrl: './topology.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
+    selector: 'bp-topology',
+    templateUrl: './topology.component.html',
+    styleUrl: './topology.component.scss',
+    imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
 })
 export class TopologyComponent implements OnInit {
   private readonly messageChannel = inject(MessageChannelService);

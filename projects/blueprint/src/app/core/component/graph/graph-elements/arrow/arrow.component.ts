@@ -13,13 +13,12 @@ import { MultiLinkLabels } from '../model/multi-link-labels.model';
 import { GraphLink } from '../../model/graph-link.model';
 
 @Component({
-  standalone: true,
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'g[bp-arrow]',
-  templateUrl: './arrow.component.svg',
-  styleUrls: ['./arrow.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule]
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'g[bp-arrow]',
+    templateUrl: './arrow.component.svg',
+    styleUrls: ['./arrow.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule]
 })
 export class ArrowComponent implements OnChanges {
   @Input() x1: number;

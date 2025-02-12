@@ -1,11 +1,13 @@
 line {
-  stroke: var(--quaternary-contrast);
+  stroke: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
   stroke-opacity: 0.6;
 }
 
 path {
-  stroke: var(--quaternary-contrast);
-  fill: var(--quaternary-contrast);
+  stroke: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
+
+  fill: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
+
   stroke-opacity: 0.6;
 }
 
@@ -18,5 +20,5 @@ path {
 }
 
 tspan {
-  fill: var(--primary-contrast);
+  fill: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
 }

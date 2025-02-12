@@ -20,11 +20,10 @@ import { LoadingIndicatorService } from '@blueprint/component/loading-indicator/
 
 
 @Component({
-  selector: 'bp-class-detail-configurator',
-  standalone: true,
-  templateUrl: './class-detail-configurator.component.html',
-  styleUrl: './class-detail-configurator.component.scss',
-  imports: [BreadcrumbPageComponent, AvatarComponent, DragDropModule]
+    selector: 'bp-class-detail-configurator',
+    templateUrl: './class-detail-configurator.component.html',
+    styleUrl: './class-detail-configurator.component.scss',
+    imports: [BreadcrumbPageComponent, AvatarComponent, DragDropModule]
 })
 export class ClassDetailConfiguratorComponent implements OnChanges {
   @Input({ required: true }) id: string;

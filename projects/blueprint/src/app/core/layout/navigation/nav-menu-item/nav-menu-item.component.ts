@@ -2,11 +2,10 @@ import { NgClass } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 
 @Component({
-  selector: 'bp-nav-menu-item',
-  standalone: true,
-  imports: [NgClass],
-  templateUrl: './nav-menu-item.component.html',
-  styleUrl: './nav-menu-item.component.scss'
+    selector: 'bp-nav-menu-item',
+    imports: [NgClass],
+    templateUrl: './nav-menu-item.component.html',
+    styleUrl: './nav-menu-item.component.scss'
 })
 export class NavMenuItemComponent {
   item = input.required<NavigationMenuItem>();

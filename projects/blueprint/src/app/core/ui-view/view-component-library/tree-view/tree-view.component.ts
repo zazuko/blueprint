@@ -5,11 +5,10 @@ import { TreeModule, TreeNodeSelectEvent } from 'primeng/tree';
 import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
 
 @Component({
-  selector: 'bp-tree-view',
-  standalone: true,
-  imports: [TreeModule, AvatarComponent],
-  templateUrl: './tree-view.component.html',
-  styleUrl: './tree-view.component.scss'
+    selector: 'bp-tree-view',
+    imports: [TreeModule, AvatarComponent],
+    templateUrl: './tree-view.component.html',
+    styleUrl: './tree-view.component.scss'
 })
 export class TreeViewComponent {
   data = input.required<TreeNode<NodeElement>[]>();

@@ -34,14 +34,12 @@ import { GraphLink } from '../model/graph-link.model';
 import { ColorUtil } from '@blueprint/utils';
 
 @Component({
-  standalone: true,
   selector: 'bp-graph',
   templateUrl: './graph.component.html',
   styleUrl: './graph.component.scss',
   imports: [
     ArrowComponent,
     NodeComponent,
-    LinkPanelComponent,
     DraggableDirective,
     ButtonModule
   ]

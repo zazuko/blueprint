@@ -8,7 +8,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
@@ -58,7 +58,6 @@ enum PageView {
 }
 
 @Component({
-  standalone: true,
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
   animations: [fadeInOut, fadeIn],
@@ -76,7 +75,6 @@ enum PageView {
     DetailsComponent,
     AggregateRelationComponent,
     TooltipModule,
-    JsonPipe,
     CommentComponent
   ]
 })

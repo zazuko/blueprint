@@ -31,49 +31,8 @@
               "projects/blueprint/src/config.json"
             ],
             "styles": [
-              "node_modules/primeng/resources/primeng.min.css",
               "projects/blueprint/src/styles.scss",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-              {
-                "input": "projects/blueprint/src/theme/lara-dark-blue.scss",
-                "bundleName": "blueprint-dark-blue",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-dark-purple.scss",
-                "bundleName": "blueprint-dark-purple",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-light-blue.scss",
-                "bundleName": "blueprint-light-blue",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-light-purple.scss",
-                "bundleName": "blueprint-light-purple",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-dark-indigo.scss",
-                "bundleName": "blueprint-dark-indigo",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-dark-teal.scss",
-                "bundleName": "blueprint-dark-teal",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-light-indigo.scss",
-                "bundleName": "blueprint-light-indigo",
-                "inject": false
-              },
-              {
-                "input": "projects/blueprint/src/theme/lara-light-teal.scss",
-                "bundleName": "blueprint-light-teal",
-                "inject": false
-              }
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": []
           },

@@ -4,11 +4,10 @@ import { Table } from '../../features/inventory/inventory-detail/service/hierarc
 
 
 @Component({
-  selector: 'bp-group-table',
-  standalone: true,
-  imports: [TableModule],
-  templateUrl: './group-table.component.html',
-  styleUrl: './group-table.component.scss'
+    selector: 'bp-group-table',
+    imports: [TableModule],
+    templateUrl: './group-table.component.html',
+    styleUrl: './group-table.component.scss'
 })
 export class GroupTableComponent implements OnChanges {
   @Input() data: Table | null = null;

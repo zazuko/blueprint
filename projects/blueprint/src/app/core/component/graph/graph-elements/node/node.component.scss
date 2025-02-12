@@ -2,7 +2,6 @@
   cursor: pointer;
   stroke-width: 0;
   --transition: fill-opacity 1.2s ease;
-  // fill-opacity: 0.2;
   fill-opacity: 1;
 
   &--selected {
@@ -13,10 +12,8 @@
 }
 
 .mouse-event-capture {
-  //  fill: white;
-  //  stroke: white;
   opacity: 1;
-  fill: var(--octonary-contrast);
+  fill: light-dark(rgb(249, 250, 251), rgb(17, 24, 39));
   stroke-opacity: 0;
   stroke-width: 40;
 }
@@ -59,8 +56,8 @@
   text-overflow: ellipsis;
   font-size: 12pt;
   line-height: 25px;
-  color: var(--primary-contrast);
-  fill: var(--primary-contrast);
+  color: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
+  fill: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
 
   .node-label-type,
   .node-label-icon {
@@ -72,6 +69,3 @@
 .node-label-bg {
   --background-color: rgba(255, 255, 255, 0.5);
 }
-
-//.node-group {
-//}

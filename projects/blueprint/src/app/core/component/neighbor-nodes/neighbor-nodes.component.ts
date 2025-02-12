@@ -8,14 +8,13 @@ import { ColorUtil } from '../../utils/color-util';
 
 
 @Component({
-  selector: 'bp-neighbor-nodes',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './neighbor-nodes.component.html',
-  styleUrl: './neighbor-nodes.component.scss',
-  animations: [
-    fadeInOut
-  ]
+    selector: 'bp-neighbor-nodes',
+    imports: [CommonModule],
+    templateUrl: './neighbor-nodes.component.html',
+    styleUrl: './neighbor-nodes.component.scss',
+    animations: [
+        fadeInOut
+    ]
 })
 export class NeighborNodesComponent implements OnChanges {
 

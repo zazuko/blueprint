@@ -19,6 +19,8 @@ import { Subject, Observable } from 'rxjs';
 import { takeUntil, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
@@ -36,7 +38,6 @@ import { SearchFilter } from '../model/search-filter.model';
 'src/shapes/entity/flux-search-result-entity/flux-search-model/entity/ui-class-count-entity/ui-class-count.entity';
 
 @Component({
-  standalone: true,
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +46,8 @@ import { SearchFilter } from '../model/search-filter.model';
     FilterPanelComponent,
     SearchResultListComponent,
     InputTextModule,
+    IconFieldModule,
+    InputIconModule,
     FormsModule,
   ]
 })

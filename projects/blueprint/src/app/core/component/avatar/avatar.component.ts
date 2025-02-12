@@ -4,7 +4,6 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 
 @Component({
   selector: 'bp-avatar',
-  standalone: true,
   imports: [AvatarModule, AvatarGroupModule],
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss'
@@ -15,7 +14,6 @@ export class AvatarComponent {
   shape = input<'square' | 'circle'>('circle');
 
 }
-
 
 export interface Avatar {
   label: string;

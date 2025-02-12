@@ -12,10 +12,9 @@ import { TooltipModule } from 'primeng/tooltip';
 import { HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 
 @Component({
-  standalone: true,
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, ConfigurationCardComponent, TooltipModule],
+  imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, TooltipModule],
   animations: [fadeInOut]
 })
 export class InventoryComponent {

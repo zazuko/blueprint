@@ -27,15 +27,12 @@ import { ContentItem, HierarchyDefinition } from '../../configuration/topology/s
 import { labelAlphaSort } from '../../../core/utils/sort-functions';
 
 @Component({
-  standalone: true,
   templateUrl: './inventory-detail.component.html',
   styleUrl: './inventory-detail.component.scss',
   imports: [
     BreadcrumbPageComponent,
     AvatarComponent,
     FormsModule,
-    NgClass,
-    GroupTableComponent,
     ClusterDiagramComponent,
     ToolbarModule,
     SelectButtonModule,

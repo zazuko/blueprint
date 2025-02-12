@@ -16,11 +16,10 @@ import { FluxValueTableViewer } from 'projects/blueprint/src/app/features/explor
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
 @Component({
-  standalone: true,
-  selector: 'bp-dash-value-table-viewer',
-  templateUrl: './dash-value-table-viewer.component.html',
-  styleUrls: ['./dash-value-table-viewer.component.scss'],
-  imports: [InfoSectionComponent, TableModule]
+    selector: 'bp-dash-value-table-viewer',
+    templateUrl: './dash-value-table-viewer.component.html',
+    styleUrls: ['./dash-value-table-viewer.component.scss'],
+    imports: [InfoSectionComponent, TableModule]
 })
 export class DashValueTableViewerComponent implements OnInit, OnDestroy {
   @Input() viewer: FluxValueTableViewer = null;

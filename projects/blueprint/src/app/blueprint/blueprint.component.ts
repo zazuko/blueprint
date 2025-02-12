@@ -4,11 +4,10 @@ import { NavigationComponent } from '../core/layout/navigation/navigation.compon
 import { LoadingIndicatorComponent } from "../core/component/loading-indicator/loading-indicator.component";
 
 @Component({
-  selector: 'bp-blueprint',
-  standalone: true,
-  templateUrl: './blueprint.component.html',
-  styleUrl: './blueprint.component.scss',
-  imports: [RouterOutlet, NavigationComponent, LoadingIndicatorComponent]
+    selector: 'bp-blueprint',
+    templateUrl: './blueprint.component.html',
+    styleUrl: './blueprint.component.scss',
+    imports: [RouterOutlet, NavigationComponent, LoadingIndicatorComponent]
 })
 export class BlueprintComponent {
 

@@ -1,4 +1,3 @@
-import { NgStyle } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
 import { CardModule } from 'primeng/card';
@@ -6,9 +5,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
   selector: 'bp-comment',
-  standalone: true,
   imports: [
-    NgStyle,
     ScrollPanelModule,
     CardModule
   ],

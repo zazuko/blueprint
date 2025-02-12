@@ -9,8 +9,7 @@ import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
 
 @Component({
   selector: 'bp-cluster-diagram',
-  standalone: true,
-  imports: [NgStyle, AvatarComponent, PanelModule, TooltipModule],
+  imports: [AvatarComponent, PanelModule, TooltipModule],
   templateUrl: './cluster-diagram.component.html',
   styleUrl: './cluster-diagram.component.scss'
 })

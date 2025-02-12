@@ -13,11 +13,10 @@ import { InfoSectionComponent } from '@blueprint/component/info-section';
 import { FluxHyperlinkViewer } from 'projects/blueprint/src/app/features/explore/flux-viewer';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 @Component({
-  standalone: true,
-  selector: 'bp-dash-hyperlink-viewer',
-  templateUrl: './dash-hyperlink-viewer.component.html',
-  styleUrls: ['./dash-hyperlink-viewer.component.less'],
-  imports: [InfoSectionComponent]
+    selector: 'bp-dash-hyperlink-viewer',
+    templateUrl: './dash-hyperlink-viewer.component.html',
+    styleUrls: ['./dash-hyperlink-viewer.component.less'],
+    imports: [InfoSectionComponent]
 })
 export class DashHyperlinkViewerComponent implements OnInit, OnDestroy {
   @Input() viewer: FluxHyperlinkViewer | null = null;

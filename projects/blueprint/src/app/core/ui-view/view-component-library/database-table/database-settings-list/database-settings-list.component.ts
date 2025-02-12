@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { ChipModule } from 'primeng/chip';
+
 import { DatabaseColumnSettings } from '../model/database.model';
-import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'bp-database-settings-list',
-  standalone: true,
-  imports: [NgStyle, ChipModule, DatabaseSettingsListComponent],
+  imports: [ChipModule,],
   templateUrl: './database-settings-list.component.html',
   styleUrls: ['./database-settings-list.component.scss']
 })

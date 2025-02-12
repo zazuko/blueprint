@@ -1,11 +1,10 @@
 <div class="content">
 
   <div class="search-input">
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
       <input type="text" pInputText [ngModel]="searchTerm()" (ngModelChange)="onSearchInput($event)" />
-    </span>
-
+    </p-iconfield>
     <span>{{ resultCount() }} Results
     </span>
   </div>

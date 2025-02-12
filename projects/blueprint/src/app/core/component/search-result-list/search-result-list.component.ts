@@ -6,12 +6,11 @@ import { SearchResultItem } from '@blueprint/model/search-result-item/search-res
 import { fadeInOut } from '@blueprint/animation/index';
 
 @Component({
-  selector: 'bp-search-result-list',
-  standalone: true,
-  templateUrl: './search-result-list.component.html',
-  styleUrl: './search-result-list.component.scss',
-  imports: [CommonModule, SearchResultItemComponent, ButtonModule],
-  animations: [fadeInOut]
+    selector: 'bp-search-result-list',
+    templateUrl: './search-result-list.component.html',
+    styleUrl: './search-result-list.component.scss',
+    imports: [CommonModule, SearchResultItemComponent, ButtonModule],
+    animations: [fadeInOut]
 })
 export class SearchResultListComponent {
 

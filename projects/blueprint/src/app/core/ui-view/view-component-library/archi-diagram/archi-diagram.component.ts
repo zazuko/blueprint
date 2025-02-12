@@ -6,11 +6,10 @@ import { ArchimateApplication, ArchimateDataFlow } from './model/archimate-data-
 
 
 @Component({
-  selector: 'bp-archi-diagram',
-  standalone: true,
-  imports: [TooltipModule],
-  templateUrl: './archi-diagram.component.html',
-  styleUrl: './archi-diagram.component.scss'
+    selector: 'bp-archi-diagram',
+    imports: [TooltipModule],
+    templateUrl: './archi-diagram.component.html',
+    styleUrl: './archi-diagram.component.scss'
 })
 export class ArchiDiagramComponent {
   incomingFlows = input.required<ArchimateDataFlow[]>();
