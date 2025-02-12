@@ -58,7 +58,8 @@ $archimate-box-color: rgb(192, 253, 254);
     width: 100%;
 
     .stroke {
-        border-bottom: 1px dashed var(--primary-contrast);
+        border-bottom: 1px dashed;
+        border-color: light-dark(var(--surface-800), var(--surface-200));
         height: 1px;
         flex-shrink: 1;
         min-width: 90px;
@@ -70,7 +71,8 @@ $archimate-box-color: rgb(192, 253, 254);
         height: 0;
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent;
-        border-left: 10px solid var(--primary-contrast);
+        border-left: 10px solid;
+        border-left-color: light-dark(var(--surface-800), var(--surface-200));
         flex-grow: 0;
     }
 
@@ -145,7 +147,7 @@ $archimate-box-color: rgb(192, 253, 254);
 }
 
 .label {
-    color: var(--quaternary-contrast);
+    color: light-dark(var(--surface-800), var(--surface-200));
     margin-left: 10px;
     margin-right: 20px;
     max-width: 200px;
