@@ -2,6 +2,7 @@ import { GraphPointer } from 'clownface';
 
 import { rdfs, nileaUi } from '@blueprint/ontology';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { NamedNode } from '@rdfjs/types';
 
 /**
  * This class represents a RdfUiView.
@@ -130,6 +131,7 @@ export interface UiViewComponent {
      * The data of the UiViewComponent.
      */
     componentData?: GraphPointer;
+
 }
 
 /**
@@ -194,9 +196,11 @@ export class RdfUiViewComponent extends ClownfaceObject implements UiViewCompone
  */
 export interface UiViewComponentDefinition {
     iri: string;
+    componentIri: string;
     label: string;
     comment: string;
     sparqlQuery: string;
+
 }
 
 /**
@@ -208,7 +212,7 @@ export class RdfUiViewComponentDefinition extends ClownfaceObject implements UiV
     private _label: string | null = null;
     private _comment: string | null = null;
     private _sparqlQuery: string | null = null;
-
+    private _componentIri: string | null = null;
     /**
      * The node is a Clownface graph pointer that points to the UiViewComponentDefinition in the RDF graph.
      * @param node The node that represents the UiViewComponentDefinition in the RDF graph.
@@ -226,6 +230,20 @@ export class RdfUiViewComponentDefinition extends ClownfaceObject implements UiV
             this._label = this._node.out(rdfs.labelNamedNode).value ?? '';
         }
         return this._label
+    }
+
+    /**
+     * The iri of the UiViewComponentDefinition.
+     * @returns The iri of the UiViewComponent
+     */
+    get componentIri(): string {
+        if (this._componentIri === null) {
+            this._componentIri = this._node.in(nileaUi.hasComponentDefinitionNamedNode).value ?? '';
+            if (this._componentIri === '') {
+                throw new Error(`The UiComponentDefinition <${this.iri}> has no component iri.`);
+            }
+        }
+        return this._componentIri;
     }
 
     /**
@@ -250,6 +268,24 @@ export class RdfUiViewComponentDefinition extends ClownfaceObject implements UiV
         return this._sparqlQuery;
     }
 
+    /**
+     * Generate SPARQL query for Subject
+     * @param subjectNode The subject NamedNode
+     * @returns SPARQL query for the subject
+     */
+    public generateSparqlQueryForSubject(subjectNode: NamedNode): string {
+        let query = this.sparqlQuery;
+        query = this.#replaceSubjectWithBind(query, subjectNode);
+        return query;
+    }
+
+
+
+    #replaceSubjectWithBind(query, subjectNode: NamedNode): string {
+        const queryWithSubjectBind = this.sparqlQuery.replaceAll('# bind_?subject', `BIND (<${subjectNode.value}> as ?subject)`);
+        const queryWithComponentIriBind = queryWithSubjectBind.replaceAll('# bind_?componentIri', `BIND (<${this.componentIri}> as ?componentIri)`);
+        return queryWithComponentIriBind;
+    };
 }
 
 

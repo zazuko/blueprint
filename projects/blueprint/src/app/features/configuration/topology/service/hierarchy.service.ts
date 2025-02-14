@@ -67,7 +67,6 @@ export class HierarchyService {
     }
 
     getAllHierarchiesQuery(): string {
-        console.log('%cgetAllHierarchiesQuery', 'color: red');
         return getAllHierarchiesQuery();
     }
 

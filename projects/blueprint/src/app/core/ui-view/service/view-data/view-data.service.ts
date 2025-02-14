@@ -6,7 +6,7 @@ import rdfEnvironment from '@zazuko/env';
 import { Dataset, NamedNode } from '@rdfjs/types';
 
 import { ViewMetadata } from '../view-metadata/view-metadata.service';
-import { RdfUiView, UiView } from '../../model/ui-view.model';
+import { RdfUiView, RdfUiViewComponentDefinition, UiView } from '../../model/ui-view.model';
 
 import { HierarchyService } from 'projects/blueprint/src/app/features/configuration/topology/service/hierarchy.service';
 import { MessageChannelService } from '../../../service/message-channel/message-channel.service';
@@ -30,12 +30,12 @@ import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configu
 export class ViewDataService {
   readonly #messageChannel = inject(MessageChannelService);
 
-  private readonly uiClassMetadataService = inject(UiClassMetadataService);
-  private readonly sparql = inject(SparqlService);
-  private readonly viewMetadata = inject(ViewMetadata);
-  private readonly hierarchyService = inject(HierarchyService);
-  private readonly uiDetailService = inject(UiDetailService);
-  private readonly aggregateService = inject(AggregateService);
+  readonly #uiClassMetadataService = inject(UiClassMetadataService);
+  readonly #sparql = inject(SparqlService);
+  readonly #viewMetadata = inject(ViewMetadata);
+  readonly #hierarchyService = inject(HierarchyService);
+  readonly #uiDetailService = inject(UiDetailService);
+  readonly #aggregateService = inject(AggregateService);
 
   getViewForSubject(subject: NamedNode): Observable<Dataset> {
     const dataset = rdfEnvironment.dataset();
@@ -55,7 +55,7 @@ export class ViewDataService {
 
     let types: string[] = [];
     // 0. fetch the type of the subject
-    const obs = this.sparql.construct(typeQuery).pipe(
+    const obs = this.#sparql.construct(typeQuery).pipe(
       switchMap((typeGraph) => {
         dataset.addAll(typeGraph);
 
@@ -63,25 +63,25 @@ export class ViewDataService {
         const typeCfGraph = rdfEnvironment.clownface({ dataset: typeGraph, term: subject });
         types = typeCfGraph.out(rdf.typeNamedNode).values;
 
-        const viewMetaQueries = types.map((type) => this.viewMetadata.getViewConfigForClassQuery(rdfEnvironment.namedNode(type)));
+        const viewMetaQueries = types.map((type) => this.#viewMetadata.getViewConfigForClassQuery(rdfEnvironment.namedNode(type)));
 
-        const hierarchyQueries = this.hierarchyService.getAllHierarchiesQuery();
+        const hierarchyQueries = this.#hierarchyService.getAllHierarchiesQuery();
 
-        const aggregateToAggregateLinkQueries = types.map((type) => this.aggregateService.getCompositionToCompositionLinksForClassQuery(type));
-        const aggregateToNodeLinkQueries = types.map((type) => this.aggregateService.getAggregateToNodeLinkForClassQuery(type));
-        const uiClassMetadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
+        const aggregateToAggregateLinkQueries = types.map((type) => this.#aggregateService.getCompositionToCompositionLinksForClassQuery(type));
+        const aggregateToNodeLinkQueries = types.map((type) => this.#aggregateService.getAggregateToNodeLinkForClassQuery(type));
+        const uiClassMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
 
-        const uiDetailQueries = types.map((type) => this.uiDetailService.getUiDetailForClassQuery(type));
+        const uiDetailQueries = types.map((type) => this.#uiDetailService.getUiDetailForClassQuery(type));
 
         const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
-        return this.sparql.construct(mergedMetaQuery);
+        return this.#sparql.construct(mergedMetaQuery);
       }),
       switchMap((viewGraphMetadata) => {
         dataset.addAll(viewGraphMetadata);
 
         /* 1. get detail config */
-        const uiDetails = this.uiDetailService.extractUiDetails(viewGraphMetadata);
+        const uiDetails = this.#uiDetailService.extractUiDetails(viewGraphMetadata);
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject));
 
         /* 2. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
@@ -90,6 +90,11 @@ export class ViewDataService {
           const uiView = new RdfUiView(view);
           return uiView;
         });
+        const uiViewQueries = uiViews.flatMap((uiView) => uiView.viewContainer.flatMap(container => container.viewComponent.flatMap(component => {
+          const query = (component.componentDefinition as RdfUiViewComponentDefinition).generateSparqlQueryForSubject(subject);
+          return query;
+        })));
+
 
         // 2.1 get the hierarchy definitions
         const hierarchyGraph = rdfEnvironment.clownface({ dataset: viewGraphMetadata }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
@@ -98,55 +103,58 @@ export class ViewDataService {
           return classesInHierarchy.some(c => types.includes(c));
 
         });
-        console.log('hierarchyDefinitions', hierarchyDefinitions.map(h => h.iri));
 
-        const implicitViewsFromHierarchies: UiView[] = [];
-
-        /* const implicitViewsFromHierarchies: UiView[] = hierarchyDefinitions.flatMap((hierarchyDefinition, index) => {
- 
-           const sparqlTemplates = types.map((type, index) => hierarchyDefinition.getViewQuerySparqlTemplate(type, hierarchyDefinition.iri + '/view/' + index + "-" + index)).filter(template => template.length > 0);
-           if (sparqlTemplates.length === 0) {
-             return [];
-           }
- 
-           const views: UiView[] = sparqlTemplates.map((sparqlTemplate, i) => {
-             const view: UiView = {
-               iri: hierarchyDefinition.iri + '/view/' + i + "-" + index,
-               viewContainer: [
-                 {
-                   iri: `${hierarchyDefinition.iri}/viewContainer/${i}-${index}`,
-                   order: index,
-                   viewComponent: [
-                     {
-                       iri: `${hierarchyDefinition.iri}/viewComponent/${i}-${index}`,
-                       componentDefinition: {
-                         iri: `${nileaUi.namespace[''].value}/TreeViewDefinition/${i}-${index}`,
-                         comment: '',
-                         label: hierarchyDefinition.label,
-                         sparqlQuery: sparqlTemplate,
-                       },
-                     }],
-                 }
-               ]
-             };
-             return view;
-           });
-           return views;
-         });
-         */
+        const hierarchyViews: UiView[] = [];
+        const implicitViewsFromHierarchies: UiView[] = hierarchyDefinitions.flatMap((hierarchyDefinition, index) => {
+          const sparqlTemplates = types.map((type, index) => hierarchyDefinition.getViewQuerySparqlTemplate(type, hierarchyDefinition.iri + '/view/' + index + "-" + index)).filter(template => template.length > 0);
+          if (sparqlTemplates.length === 0) {
+            return [];
+          }
+          const views: UiView[] = sparqlTemplates.map((sparqlTemplate, i) => {
+            const view: UiView = {
+              iri: hierarchyDefinition.iri + '/view/' + i + "-" + index,
+              viewContainer: [
+                {
+                  iri: `${hierarchyDefinition.iri}/viewContainer/${i}-${index}`,
+                  order: index,
+                  viewComponent: [
+                    {
+                      iri: `${hierarchyDefinition.iri}/viewComponent/${i}-${index}`,
+                      componentDefinition: {
+                        iri: `${nileaUi.namespace[''].value}/TreeViewDefinition/${i}-${index}`,
+                        componentIri: `${nileaUi.namespace[''].value}/TreeViewComponent/${i}-${index}`,
+                        comment: '',
+                        label: hierarchyDefinition.label,
+                        sparqlQuery: sparqlTemplate,
+                      },
+                    }],
+                }
+              ]
+            };
+            return view;
+          });
+          return views;
+        });
 
 
-        uiViews.push(...implicitViewsFromHierarchies);
-        console.log(uiViews.map(v => v.iri));
 
-        const hierarchyQueries = [];
-        /*
+        hierarchyViews.push(...implicitViewsFromHierarchies);
+
+
         const hierarchyQueries = hierarchyDefinitions.flatMap(hierarchyDefinition => {
-          const queries = types.map(type => hierarchyDefinition.getDataSparqlQueryForType(type));
+          const queries = types.map(type => {
+            const query = hierarchyDefinition.getDataSparqlQueryForType(type);
+            const queryWithSubject = query.replaceAll(/(SELECT\s+.*?)\?subject\s*(?=.*WHERE)/gi, "$1") // Remove ?subject from SELECT
+              .replaceAll(/\?subject/g, `<${subject.value}>`);
+            const queryWithComponentIri = queryWithSubject.replaceAll(/(SELECT\s+.*?)\?componentIri\s*(?=.*WHERE)/gi, "$1") // Remove ?subject from SELECT
+              .replaceAll(/\?componentIri/g, `<${hierarchyDefinition.iri}>`);
+            return queryWithComponentIri;
+          });
+
           return queries;
         }
         );
-        */
+
 
 
         // 2.2 get the aggregate link to aggregate link queries
@@ -160,15 +168,14 @@ export class ViewDataService {
         //  const viewQueries = [];
 
 
-        const viewQueries = uiViews.map(uiView => {
+        const hierarchyViewQueries = hierarchyViews.map(uiView => {
           return uiView.viewContainer.map(viewContainer => {
             const viewComponents = viewContainer.viewComponent;
             const sparqlQueries = viewComponents.map(viewComponent => {
-              console.log('viewComponent', viewComponent.componentDefinition.sparqlQuery);
               // update query with subject
-              const queryWithSubject = viewComponent.componentDefinition.sparqlQuery.replaceAll('?subject ', `<${subject.value}> `)
-                .replaceAll('?subject;', `<${subject.value}>;`)
-                .replaceAll('?subject.', `<${subject.value}>.`);
+              const queryWithSubject = viewComponent.componentDefinition.sparqlQuery
+                .replaceAll(/(SELECT\s+.*?)\?subject\s*(?=.*WHERE)/gi, "$1") // Remove ?subject from SELECT
+                .replaceAll(/\?subject/g, `<${subject.value}>`);
               // update query with componentIri
               const queryWithComponentIri = queryWithSubject.replaceAll('?componentIri ', `<${viewComponent.iri}> `);
               // update query with componentDataIri
@@ -180,56 +187,19 @@ export class ViewDataService {
           }).flat();
         }).flat();
 
-        console.log(viewQueries[0]);
-        // generate values clause
-
-        const valuesVariables: string[] = [];
-
-        // to this but for the viewQueries and the hierarchyQueries
-        const numberOfQueries = viewQueries.length + hierarchyQueries.length;
-
-        for (let index = 0; index < numberOfQueries; index++) {
-          valuesVariables.push(`?${index}_subject`);
-          valuesVariables.push(`?${index}_componentIri`);
-          valuesVariables.push(`?${index}_componentDataIri`);
-        }
-        const values: string[] = [];
-
-        uiViews.forEach(uiView => {
-          uiView.viewContainer.forEach(viewContainer => {
-            viewContainer.viewComponent.forEach(component => {
-              values.push(`<${subject.value}>`);
-              values.push(`<${component.iri}>`);
-              values.push(`<${component.iri}/data>`);
-            });
-          });
-        });
-        hierarchyDefinitions.forEach(hierarchyDefinition => {
-          values.push(`<${subject.value}>`);
-          values.push(`<${hierarchyDefinition.iri}>`);
-          values.push(`<${hierarchyDefinition.iri}/not_used>`);
-        }
-        );
-
-        let valuesClause = '';
-        if (values.length > 0) {
-          valuesClause = `\nVALUES (${valuesVariables.join(' ')}) {\n  (${values.join(' ')})\n}`;
-
-        }
-        // done values clause
-
 
         // add default query
-        const queries = [...viewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
+        const queries = [...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
         const mergedQuery = sparqlUtils.mergeConstruct(queries);
 
-        return this.sparql.construct(mergedQuery + valuesClause);
+        return this.#sparql.construct(mergedQuery);
       }
       ),
       map((viewGraph) => {
         dataset.addAll(viewGraph);
+
         /* 3. all the query results are collected in one dataset. It contains the data for the component and the UiView definition graph */
         return dataset as unknown as Dataset;
       }
