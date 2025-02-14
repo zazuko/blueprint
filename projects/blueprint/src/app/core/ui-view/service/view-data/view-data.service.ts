@@ -158,12 +158,14 @@ export class ViewDataService {
 
 
         // 2.2 get the aggregate link to aggregate link queries
-        const compositionToCompositionQueries = [];
         const compositionToNodeLinkQueries = [];
-        /*
-        const compositionToCompositionQueries = this.aggregateService.getCompositionToCompositionLinkQueries(viewGraphMetadata, types, subject.value);
-        const compositionToNodeLinkQueries = this.aggregateService.getCompositionToNodeLinkQueries(viewGraphMetadata, types, subject.value);
-*/
+
+        const compositionToCompositionQueries = this.#aggregateService.getCompositionToCompositionLinkQueries(viewGraphMetadata, types, subject.value);
+        compositionToCompositionQueries.forEach(query => {
+          console.log(query);
+        });
+        //   const compositionToNodeLinkQueries = this.aggregateService.getCompositionToNodeLinkQueries(viewGraphMetadata, types, subject.value);
+
         /* 3. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
         //  const viewQueries = [];
 
