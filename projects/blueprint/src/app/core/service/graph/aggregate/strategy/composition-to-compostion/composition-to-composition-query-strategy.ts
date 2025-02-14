@@ -2,6 +2,6 @@ import { ICompositionToCompositionLink } from "../../model/composition/compositi
 
 export abstract class CompositionToCompositionQueryStrategy {
     abstract filter(links: ICompositionToCompositionLink[], classIris: string[]): ICompositionToCompositionLink[];
-    abstract createQuery(link: ICompositionToCompositionLink, subject: string): string[];
+    abstract createQuery(link: ICompositionToCompositionLink, subjectIri: string): string[];
 }
 

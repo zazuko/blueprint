@@ -67,7 +67,7 @@ export class SparqlService {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/n-triples'
+      'Accept': 'text/turtle'
     });
 
     const options = {
@@ -95,5 +95,6 @@ export enum FullTextSearchDialect {
   FUSEKI = 'fuseki',
   STARDOG = 'stardog',
   NEPTUNE = 'neptune',
-  GRAPHDB = 'graphdb'
+  GRAPHDB = 'graphdb',
+  QLEVER = 'qlever'
 }

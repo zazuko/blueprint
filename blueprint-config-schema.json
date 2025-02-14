@@ -24,8 +24,12 @@
                 "stardog",
                 "fuseki",
                 "neptune",
-                "graphdb"
+                "graphdb",
+                "qlever"
             ]
+        },
+        "skipAuthentication": {
+            "type": "boolean"
         },
         "neptune": {
             "type": "object",

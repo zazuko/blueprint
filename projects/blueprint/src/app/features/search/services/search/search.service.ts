@@ -14,6 +14,9 @@ import { StardogFullTextSearch } from './full-text-search/stardog-full-text-sear
 import { FusekiFullTextSearch } from './full-text-search/fuseki-full-text-search/fuseki-full-text-search.class';
 import { NeptuneFullTextSearch } from './full-text-search/neptune-full-text-search/neptune-full-text-search.class';
 import { GraphDBFullTextSearch } from './full-text-search/graphdb-full-text-search/graphdb-full-text-search.class';
+import { QleverFullTextSearch } from './full-text-search/qlever-full-text-search/qlever-full-text-search.class';
+
+
 import { blueprint, rdf } from '@blueprint/ontology';
 
 import { FullTextSearchDialect, SparqlService } from '@blueprint/service/sparql/sparql.service';
@@ -109,9 +112,12 @@ export class SearchService {
           // create full text search provider
           console.log('fullTextSearchDialect', this.sparqlService.fullTextSearchDialect);
 
-          let ftsProvider: FusekiFullTextSearch | StardogFullTextSearch | NeptuneFullTextSearch | GraphDBFullTextSearch;
+          let ftsProvider: FusekiFullTextSearch | StardogFullTextSearch | NeptuneFullTextSearch | GraphDBFullTextSearch | QleverFullTextSearch;
 
           switch (this.sparqlService.fullTextSearchDialect) {
+            case FullTextSearchDialect.QLEVER:
+              ftsProvider = new QleverFullTextSearch(this.searchContext);
+              break;
             case FullTextSearchDialect.FUSEKI:
               ftsProvider = new FusekiFullTextSearch(this.searchContext);
               break;

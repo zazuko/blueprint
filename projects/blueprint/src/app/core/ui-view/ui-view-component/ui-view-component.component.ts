@@ -21,11 +21,11 @@ import { archimateDiagramOntology } from '../view-component-library/archi-diagra
 import { outputToObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { labelAlphaSort } from '../../utils/sort-functions';
 @Component({
-    selector: 'bp-ui-view-component',
-    imports: [CommonModule, DashHostDirective],
-    templateUrl: './ui-view-component.component.html',
-    styleUrls: ['./ui-view-component.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'bp-ui-view-component',
+  imports: [CommonModule, DashHostDirective],
+  templateUrl: './ui-view-component.component.html',
+  styleUrls: ['./ui-view-component.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiViewComponentComponent {
   readonly uiViewComponent = input.required<UiViewComponent>();
@@ -47,7 +47,6 @@ export class UiViewComponentComponent {
       }
       viewContainerRef.clear();
       const componentKind = uiViewComponent.componentDefinition.iri;
-
       switch (componentKind) {
         case `${nileaUi.namespace[''].value}ApplicationArchimateContextDiagramDefinition`:
           this._setupArchimateDiagram(viewContainerRef, uiViewComponent);

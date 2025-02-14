@@ -24,6 +24,9 @@ export class LibraryConfigurationService {
 
   set fullTextSearchDialect(value: FullTextSearchDialect) {
     switch (value) {
+      case 'qlever':
+        this.configuration.fullTextSearchDialect = FullTextSearchDialect.QLEVER;
+        break;
       case 'fuseki':
         this.configuration.fullTextSearchDialect = FullTextSearchDialect.FUSEKI;
         break;
@@ -34,8 +37,8 @@ export class LibraryConfigurationService {
         this.configuration.fullTextSearchDialect = FullTextSearchDialect.NEPTUNE;
         break;
       case 'graphdb':
-          this.configuration.fullTextSearchDialect = FullTextSearchDialect.GRAPHDB;
-          break;
+        this.configuration.fullTextSearchDialect = FullTextSearchDialect.GRAPHDB;
+        break;
       default:
         throw new Error('Invalid fullTextSearchDialect');
     }

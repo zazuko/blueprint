@@ -190,22 +190,16 @@ export class AggregateService {
                                 return `
                                 <${subject}> a <${pathElement.sourceClassIri}> .
                                 <${subject}> ${pathElement.path} ?element_${outerIndex}_${index + 1} .
-                                VALUES ?connectionPointP {
-                                    ${rdfs.labelPrefixed}
-                                    ${rdf.typePrefixed}
-                                }
-                                ?element_${outerIndex}_${index + 1} ?connectionPointP ?connectionPointO .
+                                ?element_${outerIndex}_${index + 1}  ${rdfs.labelPrefixed} ?connectionPointL .
+                                ?element_${outerIndex}_${index + 1}  ${rdf.typePrefixed} ?connectionPointT .
                                 ?element_${outerIndex}_${index + 1} a <${pathElement.targetClassIri}> .
                                 `;
                             } else {
                                 return `
                                 ?element_${outerIndex}_${index} ${pathElement.path} ?element_${outerIndex}_${index + 1} .
                                 ?element_${outerIndex}_${index + 1} a <${pathElement.targetClassIri}> .
-                                VALUES ?connectionPointP {
-                                    ${rdfs.labelPrefixed}
-                                    ${rdf.typePrefixed}
-                                }
-                                ?element_${outerIndex}_${index + 1} ?connectionPointP ?connectionPointO .
+                                ?element_${outerIndex}_${index + 1} ${rdfs.labelPrefixed} ?connectionPointL .
+                                ?element_${outerIndex}_${index + 1} ${rdf.typePrefixed} ?connectionPointT .
                                 `;
                             }
                         }
@@ -221,17 +215,15 @@ export class AggregateService {
                                 return `
                                 ?element_${outerIndex}_${index} ${pathElement.path} ?result .
                                 ?result a <${pathElement.targetClassIri}> .
-                                VALUES ?resultP {
-                                    ${rdf.typePrefixed}
-                                    ${rdfs.labelPrefixed}
-                                }
-                                ?result ?resultP ?resultO .
+                                ?result ${rdf.typePrefixed} ?resultT .
+                                ?result ${rdfs.labelPrefixed} ?resultL .
                                 `;
                             }
                             return `
                             ?element_${outerIndex}_${index} ${pathElement.path} ?element_${outerIndex}_${index + 1} .
                             ?element_${outerIndex}_${index + 1} a <${pathElement.targetClassIri}> .
-                            ?element_${outerIndex}_${index + 1} ?connectionPointP ?connectionPointODest .
+                            ?element_${outerIndex}_${index + 1} ${rdfs.labelPrefixed} ?connectionPointODestL .
+                            ?element_${outerIndex}_${index + 1} ${rdf.typePrefixed} ?connectionPointODestT .
                           `;
 
 
@@ -240,11 +232,8 @@ export class AggregateService {
                             return `
                                 ?element_${outerIndex}_${index} ${pathElement.path} ?result .
                                 ?result a <${pathElement.targetClassIri}> .
-                                VALUES ?resultP {
-                                    ${rdf.typePrefixed}
-                                    ${rdfs.labelPrefixed}
-                                }
-                                ?result ?resultP ?resultO .
+                                ?result ${rdf.typePrefixed} ?resultT .
+                                ?result ${rdfs.labelPrefixed} ?resultL .
                                 `;
                         }
                         return `
@@ -265,12 +254,15 @@ export class AggregateService {
                             <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
                             <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
                             <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
-                            ?result ?resultP ?resultO .
-                            ?element_${outerIndex}_${pathFromRootSource.length} ?connectionPointP ?connectionPointO .
+                            ?result ${rdf.typePrefixed} ?resultT .
+                            ?result ${rdfs.labelPrefixed} ?resultL .
+                            ?element_${outerIndex}_${pathFromRootSource.length} ${rdfs.labelPrefixed} ?connectionPointL .
+                            ?element_${outerIndex}_${pathFromRootSource.length} ${rdf.typePrefixed} ?connectionPointT .
                             ?element_${outerIndex}_${pathFromRootSource.length} a ${blueprint.ConnectionPointPrefixed} .
                             ?result ${blueprint.sourcePrefixed} ?element_${outerIndex}_${pathFromRootSource.length} . 
                             ?element_${outerIndex}_${pathFromRootSource.length} ${blueprint.targetPrefixed} ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} . 
-                            ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} ?connectionPointP ?connectionPointODest .
+                            ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} ${rdfs.labelPrefixed} ?connectionPointODestL .
+                            ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} ${rdf.typePrefixed} ?connectionPointODestT .
                             ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} a ${blueprint.ConnectionPointPrefixed} .
                         } WHERE {
                             ${body}
@@ -313,13 +305,9 @@ export class AggregateService {
                         if (index === 0) {
                             // first element of path
                             return `
-                                <${subject}> a <${pathElement.sourceClassIri}> .
                                 <${subject}> ${pathElement.path} ?element_${outerIndex}_${index + 1} .
-                                VALUES ?connectionPointP {
-                                    ${rdfs.labelPrefixed}
-                                    ${rdf.typePrefixed}
-                                }
-                                ?element_${outerIndex}_${index + 1} ?connectionPointP ?connectionPointO .
+                                ?element_${outerIndex}_${index + 1} ${rdfs.labelPrefixed} ?connectionPointL .
+                                ?element_${outerIndex}_${index + 1} ${rdf.typePrefixed} ?connectionPointT .
                                 ?element_${outerIndex}_${index + 1} a <${pathElement.targetClassIri}> .
                                 `;
                         }
@@ -328,11 +316,8 @@ export class AggregateService {
                             return `
                                 ?element_${outerIndex}_${index} ${pathElement.path} ?result .
                                 ?result a <${pathElement.targetClassIri}> .
-                                VALUES ?resultP {
-                                    ${rdf.typePrefixed}
-                                    ${rdfs.labelPrefixed}
-                                }
-                                ?result ?resultP ?resultO .
+                                ?result  ${rdf.typePrefixed} ?resultT .
+                                ?result  ${rdfs.labelPrefixed} ?resultL .
                                 `;
                         }
                         return `
@@ -353,8 +338,10 @@ export class AggregateService {
                             <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
                             <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
                             <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
-                            ?result ?resultP ?resultO .
-                            ?element_${outerIndex}_1 ?connectionPointP ?connectionPointO .
+                            ?result ${rdf.typePrefixed} ?resultT .
+                            ?result ${rdfs.labelPrefixed} ?resultL .
+                            ?element_${outerIndex}_1 ${rdf.typePrefixed} ?connectionPointT .
+                            ?element_${outerIndex}_1 ${rdfs.labelPrefixed} ?connectionPointL .
                             ?element_${outerIndex}_1 a ${blueprint.ConnectionPointPrefixed} .
                             ?result ${blueprint.targetPrefixed} ?element_${outerIndex}_1 . 
 
@@ -405,6 +392,5 @@ export class AggregateService {
 
 
 }
-
 
 

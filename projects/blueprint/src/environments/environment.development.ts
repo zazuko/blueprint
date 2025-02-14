@@ -6,13 +6,14 @@ import { FullTextSearchDialect } from "@blueprint/service/sparql/sparql.service"
 
 export const environment = {
     production: false,
-    endpointUrl: 'http://localhost:4200/query',  // this will be overwritten by /src/config.json
+    endpointUrl: 'http://127.0.0.1:7001',  // this will be overwritten by /src/config.json
     sparqlConsoleUrl: null, // e.g. yasgui -> will be overwritten by /src/config.json
     graphExplorerUrl: null, // this will be overwritten by /src/config.json
     fullTextSearchDialect: 'neptune' as FullTextSearchDialect, // this will be overwritten by /src/config.json
     neptune: {
         ftsEndpoint: "https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
-    } // this will be overwritten by /src/config.json// this will be overwritten by /src/config.json
+    }, // this will be overwritten by /src/config.json// this will be overwritten by /src/config.json
+    skipAuthentication: true
 };
 
 /*

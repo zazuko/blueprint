@@ -16,7 +16,7 @@ import {
 } from '@angular/router';
 
 import { Subject, Observable } from 'rxjs';
-import { takeUntil, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil, map, debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -90,6 +90,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchTermSubject.pipe(
       takeUntil(this.destroy$),
       debounceTime(400),
+      map(term => {
+        if (term.length > 3 || term.length === 0) {
+          return term;
+        }
+        else {
+          console.log('Search term must be at least 3 characters long');
+          console.log('Search term is currently ' + term.length + ' characters long');
+          console.log('Search term is currently ' + term);
+          return '';
+        }
+      }),
       distinctUntilChanged()
     )
       .subscribe(term => {
