@@ -8,11 +8,15 @@
         <p-toolbar>
 
             <div class="p-toolbar-group-start">
-                <span class="p-input-icon-left">
-                    <i class="pi pi-filter"></i>
+
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-filter" />
                     <input type="text" pInputText [ngModel]="filterTerm()"
                         (ngModelChange)="onFilterInputChanged($event)" />
-                </span>
+                </p-iconfield>
+
+
+
 
             </div>
             <div class="p-toolbar-group-end">

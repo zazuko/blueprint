@@ -21,6 +21,10 @@ import { FormsModule } from '@angular/forms';
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { MessageChannelService } from '../../../core/service/message-channel/message-channel.service';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+
 import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
 import { fadeInOut } from '@blueprint/animation/index';
 import { ContentItem, HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
@@ -38,6 +42,8 @@ import { labelAlphaSort } from '../../../core/utils/sort-functions';
     SelectButtonModule,
     TreeModule,
     InputTextModule,
+    InputIconModule,
+    IconFieldModule
   ],
   animations: [fadeInOut]
 })

@@ -53,13 +53,16 @@
 // layout sizes
 :root {
   --nav-panel-left-width: 85px;
-  --surface-card: #ffffff;
+  //  --surface-card: #ffffff;
+  --surcace-card: var(--p-content-background);
+
   --border-radius: 6px;
   --surface-border: #dfe7ef;
 }
 
 .bp-dark-mode {
-  --surface-card: #1f2937;
+  // --surface-card: #1f2937;
+  --surface-card: var(--p-content-background);
   --surface-border: rgba(255, 255, 255, 0.1);
 }
 
