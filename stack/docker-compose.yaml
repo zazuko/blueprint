@@ -1,6 +1,11 @@
 services:
   store:
     image: ghcr.io/zazuko/fuseki-geosparql:v3
+    profiles:
+      - basic-metadata
+      - k8s-demo-data
+      - k8s-custom-data
+      - full-demo-dataset
     ports:
       - 3030:3030
     environment:
@@ -11,11 +16,14 @@ services:
       - ./volumes/fuseki/:/fuseki/databases/
 
   store-data:
-    profiles:
-      - basic-metadata
     build:
       context: ./fuseki-data/
       dockerfile: Dockerfile
+    profiles:
+      - basic-metadata
+      - k8s-demo-data
+      - k8s-custom-data
+      - full-demo-dataset
     restart: "no"
     volumes:
       - ./fuseki-data:/app/data:ro
@@ -25,6 +33,11 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
+    profiles:
+      - basic-metadata
+      - k8s-demo-data
+      - k8s-custom-data
+      - full-demo-dataset
     ports:
       - 8081:80
     environment:
@@ -36,6 +49,11 @@ services:
 
   trifid:
     image: ghcr.io/zazuko/trifid:v5
+    profiles:
+      - basic-metadata
+      - k8s-demo-data
+      - k8s-custom-data
+      - full-demo-dataset
     ports:
       - 8080:8080
     environment:
@@ -46,33 +64,33 @@ services:
 
   # Add k8s demo data (for those who don't have a Kubernetes cluster)
   add-demo-k8s-data:
-    profiles:
-      - k8s-demo-data
     build:
       context: ./fuseki-data/
       dockerfile: Dockerfile
+    profiles:
+      - k8s-demo-data
     restart: "no"
     volumes:
       - ./demo-data/k8s.ttl:/app/data/k8s.ttl:ro
 
   # Add custom k8s data generated locally (will not be in the git history)
   add-custom-k8s-data:
-    profiles:
-      - k8s-custom-data
     build:
       context: ./fuseki-data/
       dockerfile: Dockerfile
+    profiles:
+      - k8s-custom-data
     restart: "no"
     volumes:
       - ./volumes/k8s-data/data.ttl:/app/data/k8s.ttl:ro
 
   # Add demo dataset (will not be in the git history)
   add-demo-dataset:
-    profiles:
-      - full-demo-dataset
     build:
       context: ./fuseki-data/
       dockerfile: Dockerfile
+    profiles:
+      - full-demo-dataset
     restart: "no"
     environment:
       - DOWNLOAD_URL=https://download.zazukoians.org/blueprint/demo-data.nt
