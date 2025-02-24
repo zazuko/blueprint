@@ -100,27 +100,37 @@ services:
   # QLEVER SPECIFIC PART #
   ########################
   qlever-server:
-    image: ghcr.io/zazukoians/qlever-server:v0.5.6
+    image: ghcr.io/zazukoians/qlever-server:v0.5.7
+    user: 65534:0
     profiles:
       - qlever
     environment:
-      QLEVER_DATA_NAME: olympics
-      QLEVER_DATA_GET_DATA_CMD: curl -sLo olympics.zip https://github.com/wallscope/olympics-rdf/raw/master/data/olympics-nt-nodup.zip && unzip -q -o olympics.zip && rm olympics.zip
-      QLEVER_DATA_DESCRIPTION: 120 Years of Olympics, data from https://github.com/wallscope/olympics-rdf
+      QLEVER_DATA_NAME: blueprint
+      QLEVER_DATA_GET_DATA_CMD: true
+      QLEVER_DATA_DESCRIPTION: Blueprint dataset
+      QLEVER_DATA_FORMAT: ttl
       QLEVER_DATA_TEXT_DESCRIPTION: All literals, search with FILTER CONTAINS(?var, "...")
-      QLEVER_INDEX_INPUT_FILES: olympics.nt
-      QLEVER_INDEX_CAT_INPUT_FILES: cat olympics.nt
+      QLEVER_INDEX_INPUT_FILES: "*.ttl"
+      QLEVER_INDEX_CAT_INPUT_FILES: cat *.ttl
+      QLEVER_INDEX_TEXT_INDEX: from_literals
       QLEVER_INDEX_SETTINGS_JSON: '{ "ascii-prefixes-only": false, "num-triples-per-batch": 100000 }'
       # QLEVER_SERVER_ENDPOINT: http://example.com:7001
       QLEVER_SERVER_HOST_NAME: 127.0.0.1
       QLEVER_SERVER_PORT: 7001
-      QLEVER_SERVER_ACCESS_TOKEN: olympics_7643543846_Zs6nw7yi3Z9m
+      QLEVER_SERVER_ACCESS_TOKEN: super_secret_token
       QLEVER_SERVER_MEMORY_FOR_QUERIES: 5G
       QLEVER_SERVER_CACHE_MAX_SIZE: 2G
       QLEVER_SERVER_TIMEOUT: 30s
       QLEVER_RUNTIME_SYSTEM: native
-      QLEVER_UI_UI_CONFIG: olympics
+      QLEVER_UI_UI_CONFIG: blueprint
       QLEVER_UI_UI_PORT: 7002
+      START_STOP_ON_ERROR: "false"
+      SHOULD_INDEX: "true"
+    volumes:
+      - ./demo-data/k8s.ttl:/data/k8s.ttl:ro
+      - ./fuseki-data/blueprint-class-metadata.ttl:/data/blueprint-class-metadata.ttl:ro
+      - ./fuseki-data/blueprint-detail-metadata.ttl:/data/blueprint-detail-metadata.ttl:ro
+      - ./fuseki-data/blueprint-link-metadata.ttl:/data/blueprint-link-metadata.ttl:ro
 
   qlever-blueprint:
     image: ghcr.io/zazuko/blueprint:latest
@@ -147,3 +157,5 @@ services:
     environment:
       - DATASET_BASE_URL=""
       - SPARQL_ENDPOINT_URL=http://qlever-server:7001/
+      - SPARQL_ENDPOINT_USERNAME=
+      - SPARQL_ENDPOINT_PASSWORD=

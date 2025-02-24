@@ -7,6 +7,7 @@ PREFIX flux: <https://ld.flux.zazuko.com/>
 PREFIX fluxSchema: <https://flux.described.at/>
 PREFIX k8s: <https://k8s.described.at/>
 PREFIX oci: <https://oci.described.at/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 ex:Repository a rdfs:Class ;
     rdfs:label "Git Repository" ;
