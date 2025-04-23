@@ -1,11 +1,10 @@
 
-import RDF from '@rdfjs/types';
-import rdfEnvironment from '@zazuko/env';
 import { GraphPointer } from 'clownface';
 
 import { blueprint, appLocal } from "@blueprint/ontology";
 import { HierarchyElement } from '../../view-component-library/hierarchy/hierarchy.component';
 import { ColorUtil } from '@blueprint/utils';
+import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 
 export interface UiHierarchyView {
     iri: string;
@@ -22,8 +21,8 @@ export class RdfUiHierarchyView implements UiHierarchyView {
     private _label: string | null = null;
     private _elements: HierarchyElement[] | null = null;
 
-    constructor(node: RDF.NamedNode, dataset: RDF.Dataset) {
-        this._node = rdfEnvironment.clownface({ dataset }).node(node);
+    constructor(node: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
+        this._node = rdfEnvironment.clownface(dataset).node(node);
     }
 
     /**

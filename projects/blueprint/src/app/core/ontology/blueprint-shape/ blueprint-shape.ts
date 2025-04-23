@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { rdfEnvironment, NamespaceBuilder, RdfTypes } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class BlueprintShapeOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('https://ld.flux.zazuko.com/shapes/metadata/'));
+        super(rdfEnvironment.namespace('https://ld.flux.zazuko.com/shapes/metadata/'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -49,7 +47,7 @@ class BlueprintShapeOntology extends Ontology {
      * Get the icon predicate as NamedNode.
      */
 
-    get ClassDetailShapeNamedNode(): NamedNode {
+    get ClassDetailShapeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('ClassDetailShape');
     }
 
@@ -76,7 +74,7 @@ class BlueprintShapeOntology extends Ontology {
      * 
      * @readonly
      */
-    get ClassMetadataShapeNamedNode(): NamedNode {
+    get ClassMetadataShapeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('ClassMetadataShape');
     }
 

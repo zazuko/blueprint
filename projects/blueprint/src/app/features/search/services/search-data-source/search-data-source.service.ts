@@ -11,8 +11,6 @@ import {
   takeUntil,
 } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset } from '@rdfjs/types';
 
 import { SearchQueryParam } from '../../model/search-query-param.model';
 import { SearchService } from '../search/search.service';
@@ -21,6 +19,7 @@ import { blueprint, rdf } from '@blueprint/ontology';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 import { SearchResult } from '@blueprint/model/search-result/search-result';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +36,7 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
   private _dataStream = new BehaviorSubject<SearchResultItem[]>(this._cachedData);
   private _resultCountStream = new BehaviorSubject<number>(0);
   private _loadingStream = new BehaviorSubject<boolean>(false);
-  private _classCountStream = new ReplaySubject<Dataset>();
+  private _classCountStream = new ReplaySubject<RdfTypes.Dataset>();
   private _subscription = new Subscription();
 
   constructor(private searchService: SearchService) {
@@ -51,7 +50,7 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
   get classCount$(): Observable<UiClassCount[]> {
     return this._classCountStream.asObservable().pipe(
       map(dataset => {
-        return rdfEnvironment.clownface({ dataset }).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode))
+        return rdfEnvironment.clownface(dataset).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode))
       })
     );
   }
@@ -116,7 +115,7 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
         : this.searchService.page(page);
 
     searchQuery$.pipe(takeUntil(this._newSearch$)).subscribe((dataset) => {
-      const searchResultGraph = rdfEnvironment.clownface({ dataset });
+      const searchResultGraph = rdfEnvironment.clownface(dataset);
       const searchResultIris = searchResultGraph.out(blueprint.queryNamedNode).values;
       if (searchResultIris.length === 0) {
         console.warn(`Invalid data: SearchResult.query is undefined`);

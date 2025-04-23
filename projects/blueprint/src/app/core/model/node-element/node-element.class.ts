@@ -1,6 +1,5 @@
 import { GraphPointer } from 'clownface';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { rdfs, rdf, shacl } from "@blueprint/ontology";
 import { ColorUtil } from '@blueprint/utils';
@@ -9,6 +8,7 @@ import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-cla
 
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
 import { Avatar } from '@blueprint/component/avatar/avatar.component';
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 /**
  * Interface for the NodeElement
@@ -29,12 +29,12 @@ export interface INodeElement {
  */
 export class NodeElement extends ClownfaceObject implements INodeElement {
 
-    private _label: string | null = null;
-    private _classLabel: string[] | null = null;
-    private _description: string | null = null;
-    private _uiClassMetadata: UiClassMetadata[] | null = null;
-    private _avatars: Avatar[] | null = null;
-    private _color: string | null = null;
+    #label: string | null = null;
+    #classLabel: string[] | null = null;
+    #description: string | null = null;
+    #uiClassMetadata: UiClassMetadata[] | null = null;
+    #avatars: Avatar[] | null = null;
+    #color: string | null = null;
 
     /**
      * Constructor for the NodeElement
@@ -53,7 +53,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * @link rdf:type/^sh:targetNode
      */
     private get uiClassMetadata(): UiClassMetadata[] {
-        if (this._uiClassMetadata === null) {
+        if (this.#uiClassMetadata === null) {
             const uiClassMetadata = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).map(n => new RdfUiClassMetadata(n));
             if (uiClassMetadata.length === 0) {
                 console.warn(`No UiClassMetadata found for ${this.iri}. This should not happen. There is no icon, color, ... configured for this node. Defaulting to default values.`);
@@ -71,12 +71,12 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
                     };
                     return defaultUIClassMetadata;
                 });
-                this._uiClassMetadata = defaultUiClassMetadatas;
+                this.#uiClassMetadata = defaultUiClassMetadatas;
             } else {
-                this._uiClassMetadata = uiClassMetadata;
+                this.#uiClassMetadata = uiClassMetadata;
             }
         }
-        return this._uiClassMetadata;
+        return this.#uiClassMetadata;
     }
     /**
      * The label of the node
@@ -85,20 +85,20 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * @link rdfs:label
      */
     get label(): string {
-        if (this._label === null) {
+        if (this.#label === null) {
             const labels = this._node.out(rdfs.labelNamedNode).values;
             if (labels.length > 1) {
                 console.warn(`Multiple labels for ${this.iri}: ${labels.join(', ')}. Joining them with a comma.`);
-                this._label = labels.join(', ');
+                this.#label = labels.join(', ');
             }
             else if (labels.length === 0) {
                 console.warn(`No label for ${this.iri}. Defaulting to ''`);
-                this._label = '';
+                this.#label = '';
             } else {
-                this._label = labels[0];
+                this.#label = labels[0];
             }
         }
-        return this._label;
+        return this.#label;
     }
 
     /**
@@ -109,15 +109,15 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * 
      */
     get classLabel(): string[] {
-        if (this._classLabel === null) {
+        if (this.#classLabel === null) {
             const labels = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
             if (labels.length === 0) {
                 console.warn(`No class label for ${this.iri}. Defaulting to ''`);
-                this._classLabel = [''];
+                this.#classLabel = [''];
             }
-            this._classLabel = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
+            this.#classLabel = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
         }
-        return this._classLabel;
+        return this.#classLabel;
     }
     /**
      * The description of the element.
@@ -126,18 +126,18 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * @link rdfs:comment
      */
     get description(): string {
-        if (this._description === null) {
+        if (this.#description === null) {
             const comments = this._node.out(rdfs.commentNamedNode).values;
             if (comments.length === 0) {
-                this._description = '';
+                this.#description = '';
             } if (comments.length > 1) {
                 console.warn(`Multiple descriptions for ${this.iri}. Joining them with a comma. This should not happen.`);
-                this._description = comments.join(', ');
+                this.#description = comments.join(', ');
             } else {
-                this._description = comments[0];
+                this.#description = comments[0];
             }
         }
-        return this._description;
+        return this.#description;
     }
 
     /**
@@ -146,8 +146,8 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * @readonly
      */
     get avatars(): Avatar[] {
-        if (this._avatars === null) {
-            this._avatars = this.uiClassMetadata.map(uiMetadata => {
+        if (this.#avatars === null) {
+            this.#avatars = this.uiClassMetadata.map(uiMetadata => {
                 return {
                     label: uiMetadata.label,
                     icon: uiMetadata.icon,
@@ -155,7 +155,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
                 }
             })
         }
-        return this._avatars;
+        return this.#avatars;
     }
 
     /**
@@ -164,10 +164,10 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      * @readonly
      */
     get color(): string {
-        if (this._color === null) {
-            this._color = this.uiClassMetadata[0].color;
+        if (this.#color === null) {
+            this.#color = this.uiClassMetadata[0].color;
         }
-        return this._color;
+        return this.#color;
     }
 
 

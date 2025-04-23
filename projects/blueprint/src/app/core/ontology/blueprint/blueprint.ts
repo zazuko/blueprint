@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { rdfEnvironment, RdfTypes, NamespaceBuilder } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class BlueprintOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('https://flux.described.at/'));
+        super(rdfEnvironment.namespace('https://flux.described.at/'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -49,7 +47,7 @@ class BlueprintOntology extends Ontology {
      * Get the icon predicate as NamedNode.
      */
 
-    get iconNamedNode(): NamedNode {
+    get iconNamedNode(): RdfTypes.NamedNode {
         return this.namespace('icon');
     }
 
@@ -81,7 +79,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get faIconNamedNode(): NamedNode {
+    get faIconNamedNode(): RdfTypes.NamedNode {
         return this.namespace('faIcon');
     }
 
@@ -108,7 +106,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get colorIndexNamedNode(): NamedNode {
+    get colorIndexNamedNode(): RdfTypes.NamedNode {
         return this.namespace('colorIndex');
     }
 
@@ -133,7 +131,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get searchPriorityNamedNode(): NamedNode {
+    get searchPriorityNamedNode(): RdfTypes.NamedNode {
         return this.namespace('searchPrio');
     }
 
@@ -160,7 +158,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get showInNamedNode(): NamedNode {
+    get showInNamedNode(): RdfTypes.NamedNode {
         return this.namespace('showIn');
     }
 
@@ -187,7 +185,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get hasRootNamedNode(): NamedNode {
+    get hasRootNamedNode(): RdfTypes.NamedNode {
         return this.namespace('hasRoot');
     }
 
@@ -215,7 +213,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get showAsNamedNode(): NamedNode {
+    get showAsNamedNode(): RdfTypes.NamedNode {
         return this.namespace('showAs');
     }
 
@@ -238,7 +236,7 @@ class BlueprintOntology extends Ontology {
     /** 
      * Get the has detail predicate as NamedNode.
      */
-    get detailNamedNode(): NamedNode {
+    get detailNamedNode(): RdfTypes.NamedNode {
         return this.namespace('detail');
     }
 
@@ -265,7 +263,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get valueNamedNode(): NamedNode {
+    get valueNamedNode(): RdfTypes.NamedNode {
         return this.namespace('value');
     }
 
@@ -293,7 +291,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get HierarchyNamedNode(): NamedNode {
+    get HierarchyNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Hierarchy');
     }
 
@@ -321,7 +319,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get linkLabelNamedNode(): NamedNode {
+    get linkLabelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('linkLabel');
     }
 
@@ -348,7 +346,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get labelNamedNode(): NamedNode {
+    get labelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('label');
     }
 
@@ -375,7 +373,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get TableNamedNode(): NamedNode {
+    get TableNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Table');
     }
 
@@ -402,7 +400,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get hasHeaderNamedNode(): NamedNode {
+    get hasHeaderNamedNode(): RdfTypes.NamedNode {
         return this.namespace('hasHeader');
     }
 
@@ -429,7 +427,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get columnIndexNamedNode(): NamedNode {
+    get columnIndexNamedNode(): RdfTypes.NamedNode {
         return this.namespace('columnIndex');
     }
 
@@ -456,7 +454,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get keyNamedNode(): NamedNode {
+    get keyNamedNode(): RdfTypes.NamedNode {
         return this.namespace('key');
     }
 
@@ -483,7 +481,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get hasRowNamedNode(): NamedNode {
+    get hasRowNamedNode(): RdfTypes.NamedNode {
         return this.namespace('hasRow');
     }
 
@@ -510,7 +508,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get cellNamedNode(): NamedNode {
+    get cellNamedNode(): RdfTypes.NamedNode {
         return this.namespace('cell');
     }
 
@@ -537,7 +535,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get instanceNamedNode(): NamedNode {
+    get instanceNamedNode(): RdfTypes.NamedNode {
         return this.namespace('instance');
     }
 
@@ -564,7 +562,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get childNamedNode(): NamedNode {
+    get childNamedNode(): RdfTypes.NamedNode {
         return this.namespace('child');
     }
 
@@ -589,7 +587,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get ChildNamedNode(): NamedNode {
+    get ChildNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Child');
     }
 
@@ -614,7 +612,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get TreeNodeNamedNode(): NamedNode {
+    get TreeNodeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('TreeNode');
     }
 
@@ -641,7 +639,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get TreeRootNamedNode(): NamedNode {
+    get TreeRootNamedNode(): RdfTypes.NamedNode {
         return this.namespace('TreeRoot');
     }
 
@@ -668,7 +666,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get scoreNamedNode(): NamedNode {
+    get scoreNamedNode(): RdfTypes.NamedNode {
         return this.namespace('score');
     }
 
@@ -695,7 +693,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get countNamedNode(): NamedNode {
+    get countNamedNode(): RdfTypes.NamedNode {
         return this.namespace('count');
     }
 
@@ -722,7 +720,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get resultNamedNode(): NamedNode {
+    get resultNamedNode(): RdfTypes.NamedNode {
         return this.namespace('result');
     }
 
@@ -749,7 +747,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get pageSizeNamedNode(): NamedNode {
+    get pageSizeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('pageSize');
     }
 
@@ -776,7 +774,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get pageNumberNamedNode(): NamedNode {
+    get pageNumberNamedNode(): RdfTypes.NamedNode {
         return this.namespace('pageNumber');
     }
 
@@ -803,7 +801,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get totalNamedNode(): NamedNode {
+    get totalNamedNode(): RdfTypes.NamedNode {
         return this.namespace('total');
     }
 
@@ -830,7 +828,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get queryNamedNode(): NamedNode {
+    get queryNamedNode(): RdfTypes.NamedNode {
         return this.namespace('query');
     }
 
@@ -857,7 +855,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get UiClassCountNamedNode(): NamedNode {
+    get UiClassCountNamedNode(): RdfTypes.NamedNode {
         return this.namespace('UiClassCount');
     }
 
@@ -884,7 +882,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get UiSearchResultNamedNode(): NamedNode {
+    get UiSearchResultNamedNode(): RdfTypes.NamedNode {
         return this.namespace('UiSearchResult');
     }
 
@@ -911,7 +909,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get UiSearchResultItemNamedNode(): NamedNode {
+    get UiSearchResultItemNamedNode(): RdfTypes.NamedNode {
         return this.namespace('UiSearchResultItem');
     }
 
@@ -938,7 +936,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get parentNamedNode(): NamedNode {
+    get parentNamedNode(): RdfTypes.NamedNode {
         return this.namespace('parent');
     }
 
@@ -965,7 +963,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get hasUiLinkNamedNode(): NamedNode {
+    get hasUiLinkNamedNode(): RdfTypes.NamedNode {
         return this.namespace('hasUiLink');
     }
 
@@ -992,7 +990,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get LinkNamedNode(): NamedNode {
+    get LinkNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Link');
     }
 
@@ -1019,7 +1017,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get linkNamedNode(): NamedNode {
+    get linkNamedNode(): RdfTypes.NamedNode {
         return this.namespace('link');
     }
 
@@ -1046,7 +1044,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get UiNodeNamedNode(): NamedNode {
+    get UiNodeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('UiNode');
     }
 
@@ -1073,7 +1071,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get ContainerNamedNode(): NamedNode {
+    get ContainerNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Container');
     }
 
@@ -1100,7 +1098,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get CompositionNamedNode(): NamedNode {
+    get CompositionNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Composition');
     }
 
@@ -1127,7 +1125,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get CompositionToCompositionLinkNamedNode(): NamedNode {
+    get CompositionToCompositionLinkNamedNode(): RdfTypes.NamedNode {
         return this.namespace('CompositionToCompositionLink');
     }
 
@@ -1154,7 +1152,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get CompositionToNodeLinkNamedNode(): NamedNode {
+    get CompositionToNodeLinkNamedNode(): RdfTypes.NamedNode {
         return this.namespace('CompositionToNodeLink');
     }
 
@@ -1181,7 +1179,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get sourceNamedNode(): NamedNode {
+    get sourceNamedNode(): RdfTypes.NamedNode {
         return this.namespace('source');
     }
 
@@ -1208,7 +1206,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get targetNamedNode(): NamedNode {
+    get targetNamedNode(): RdfTypes.NamedNode {
         return this.namespace('target');
     }
 
@@ -1235,7 +1233,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get inverseLabelNamedNode(): NamedNode {
+    get inverseLabelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('inverseLabel');
     }
 
@@ -1262,7 +1260,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get ConnectionPointNamedNode(): NamedNode {
+    get ConnectionPointNamedNode(): RdfTypes.NamedNode {
         return this.namespace('ConnectionPoint');
     }
 
@@ -1289,7 +1287,7 @@ class BlueprintOntology extends Ontology {
      * 
      * @readonly
      */
-    get CompositionLinkResultNamedNode(): NamedNode {
+    get CompositionLinkResultNamedNode(): RdfTypes.NamedNode {
         return this.namespace('CompositionLinkResult');
     }
 

@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { rdfEnvironment, NamespaceBuilder, RdfTypes } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class AppOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('http://localhost/app/'));
+        super(rdfEnvironment.namespace('http://localhost/app/'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -50,7 +48,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get resultNamedNode(): NamedNode {
+    get resultNamedNode(): RdfTypes.NamedNode {
         return this.namespace('result');
     }
 
@@ -77,7 +75,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get elementNamedNode(): NamedNode {
+    get elementNamedNode(): RdfTypes.NamedNode {
         return this.namespace('element');
     }
 
@@ -104,7 +102,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get iriNamedNode(): NamedNode {
+    get iriNamedNode(): RdfTypes.NamedNode {
         return this.namespace('iri');
     }
 
@@ -131,7 +129,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get classLabelNamedNode(): NamedNode {
+    get classLabelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('classLabel');
     }
 
@@ -158,7 +156,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get labelNamedNode(): NamedNode {
+    get labelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('label');
     }
 
@@ -185,7 +183,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get iconNamedNode(): NamedNode {
+    get iconNamedNode(): RdfTypes.NamedNode {
         return this.namespace('icon');
     }
 
@@ -212,7 +210,7 @@ class AppOntology extends Ontology {
      * 
      * @readonly
      */
-    get colorIndexNamedNode(): NamedNode {
+    get colorIndexNamedNode(): RdfTypes.NamedNode {
         return this.namespace('colorIndex');
     }
 
@@ -240,7 +238,7 @@ class AppOntology extends Ontology {
      * @readonly
      * 
      */
-    get indexNamedNode(): NamedNode {
+    get indexNamedNode(): RdfTypes.NamedNode {
         return this.namespace('index');
     }
 

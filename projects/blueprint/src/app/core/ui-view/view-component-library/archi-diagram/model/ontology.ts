@@ -1,15 +1,11 @@
-import { NamedNode } from "@rdfjs/types";
-import rdfEnvironment from "@zazuko/env";
-
-
-
+import { rdfEnvironment, RdfTypes } from "../../../../rdf/rdf-environment";
 
 export interface ArchimateDiagramOntology {
-    source: NamedNode;
-    target: NamedNode;
-    label: NamedNode;
-    businessObjectsTransported: NamedNode;
-    flowType: NamedNode;
+    source: RdfTypes.NamedNode;
+    target: RdfTypes.NamedNode;
+    label: RdfTypes.NamedNode;
+    businessObjectsTransported: RdfTypes.NamedNode;
+    flowType: RdfTypes.NamedNode;
 }
 
 

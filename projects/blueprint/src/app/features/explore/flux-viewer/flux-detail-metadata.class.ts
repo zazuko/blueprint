@@ -1,10 +1,9 @@
 import { GraphPointer } from 'clownface';
 
-import { Term } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 import { rdf, rdfs, shacl } from '@blueprint/ontology';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
 
 
 const dash = rdfEnvironment.namespace('http://datashapes.org/dash#');
@@ -22,7 +21,7 @@ export class FluxDetailMetadata extends ClownfaceObject {
     return this._node.out(rdf.typeNamedNode)?.value ?? null;
   }
 
-  get viewer(): Term {
+  get viewer(): RdfTypes.Term {
     return this._node.out(dash['viewer'])?.term ?? null;
   }
 

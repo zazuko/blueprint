@@ -4,7 +4,6 @@ import { Observable, map, switchMap } from 'rxjs';
 
 import { TreeNode } from 'primeng/api';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { HierarchyService } from '../../../configuration/topology/service/hierarchy.service';
 import { HierarchyNode } from '../../../configuration/topology/service/model/hierarchy-node.model';
@@ -17,6 +16,7 @@ import { blueprint, rdf, rdfs } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { labelAlphaSort, sparqlUtils } from '@blueprint/utils';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class HierarchyTreeDataService {
 
       }),
       map(dataset => {
-        const graph = rdfEnvironment.clownface({ dataset });
+        const graph = rdfEnvironment.clownface(dataset);
         const treeNodes = graph.has(rdf.typeNamedNode, blueprint.TreeNodeNamedNode).map(x => new CfTreeNode(x));
         const parents = treeNodes.filter(node => node.parent.length === 0);
         const tree = parents.map(parent => graph.namedNode(parent.iri)).map(node => this._buildTree(node));

@@ -1,14 +1,13 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
 import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { Ontology } from '../ontology';
+import { rdfEnvironment, NamespaceBuilder } from '../../rdf/rdf-environment';
 
 class NileaUiOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('https://zazuko.com/nilea/ui/'));
+        super(rdfEnvironment.namespace('https://zazuko.com/nilea/ui/'));
     }
 
     get namespace(): NamespaceBuilder<string> {

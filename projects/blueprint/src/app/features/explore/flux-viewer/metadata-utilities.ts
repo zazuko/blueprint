@@ -5,17 +5,16 @@ import {
 } from 'clownface';
 
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode, Term } from '@rdfjs/types';
 
 import { PathPredicate } from './model/path-predicate.model';
 import { FluxDetailMetadata, FluxDetailViewer, FluxGroupViewer, FluxHyperlinkViewer, FluxLiteralViewer, FluxValueTableViewer, FluxViewer } from 'projects/blueprint/src/app/features/explore/flux-viewer';
 
 import { shacl, rdfs, rdf, blueprint } from '@blueprint/ontology';
+import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
 
 const dash = rdfEnvironment.namespace('http://datashapes.org/dash#');
 
-export function getPaths(graphPointer: MultiPointer): Term[][] {
+export function getPaths(graphPointer: MultiPointer): RdfTypes.Term[][] {
   const pathPointer = graphPointer.out(shacl.pathNamedNode);
   const paths = pathPointer.map((p) => {
     const list = p.list();
@@ -28,7 +27,7 @@ export function getPaths(graphPointer: MultiPointer): Term[][] {
   return paths;
 }
 
-export function prettyPrintPath(path: Term[], graph: GraphPointer): string[] {
+export function prettyPrintPath(path: RdfTypes.Term[], graph: GraphPointer): string[] {
   return path?.map((p) => {
     const nodePointer = graph.node(p);
     if (nodePointer.term && nodePointer.term.termType === 'NamedNode') {
@@ -67,19 +66,19 @@ export function getPathPredicates(cfNode: AnyPointer): PathPredicate[][] {
 
 export class BlueprintGraph {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private cfGraph: AnyPointer<any, Dataset> = null;
+  private cfGraph: AnyPointer<any, RdfTypes.Dataset> = null;
 
-  constructor(dataset: Dataset) {
-    this.cfGraph = rdfEnvironment.clownface({ dataset });
+  constructor(dataset: RdfTypes.Dataset) {
+    this.cfGraph = rdfEnvironment.clownface(dataset);
   }
 
-  getNode(node: NamedNode): FluxUiNode {
+  getNode(node: RdfTypes.NamedNode): FluxUiNode {
     return new FluxUiNode(this.cfGraph.namedNode(node));
   }
 
   getValueFromPath(sourceNode: FluxUiNode, path: PathPredicate[]): string[] {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let pointer: MultiPointer<any, Dataset> = this.cfGraph.namedNode(
+    let pointer: MultiPointer<any, RdfTypes.Dataset> = this.cfGraph.namedNode(
       sourceNode.iri
     );
     path.forEach((pathElement) => {
@@ -96,13 +95,13 @@ export class BlueprintGraph {
 
 export class BlueprintUiMetadataGraph {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private cfMetadataGraph: AnyPointer<any, Dataset> = null;
+  private cfMetadataGraph: AnyPointer<any, RdfTypes.Dataset> = null;
 
-  constructor(dataset: Dataset) {
-    this.cfMetadataGraph = rdfEnvironment.clownface({ dataset });
+  constructor(dataset: RdfTypes.Dataset) {
+    this.cfMetadataGraph = rdfEnvironment.clownface(dataset);
   }
 
-  getNode(node: NamedNode): FluxUiNode {
+  getNode(node: RdfTypes.NamedNode): FluxUiNode {
     return new FluxUiNode(this.cfMetadataGraph.namedNode(node));
   }
 
@@ -117,7 +116,7 @@ export class BlueprintUiMetadataGraph {
         .forEach((detailMeta) =>
           detailNodes.push(
             new FluxDetailMetadata(
-              detailMeta as GraphPointer<NamedNode, Dataset>
+              detailMeta as GraphPointer<RdfTypes.NamedNode, RdfTypes.Dataset>
             )
           )
         );
@@ -171,7 +170,7 @@ export class BlueprintUiMetadataGraph {
       .forEach((detailMeta) =>
         detailNodes.push(
           new FluxDetailMetadata(
-            detailMeta as GraphPointer<NamedNode, Dataset>
+            detailMeta as GraphPointer<RdfTypes.NamedNode, RdfTypes.Dataset>
           )
         )
       );
@@ -219,7 +218,7 @@ export class BlueprintUiMetadataGraph {
 }
 
 export class FluxUiNode {
-  constructor(protected node: GraphPointer<NamedNode, Dataset>) { }
+  constructor(protected node: GraphPointer<RdfTypes.NamedNode, RdfTypes.Dataset>) { }
 
   get iri(): string {
     return this.node.value;

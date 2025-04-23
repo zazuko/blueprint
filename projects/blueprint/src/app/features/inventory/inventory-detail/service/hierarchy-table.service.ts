@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, switchMap } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { blueprint, rdf, rdfs } from '@blueprint/ontology';
 
 import { HierarchyService } from '../../../configuration/topology/service/hierarchy.service';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class HierarchyTableService {
     return this.hierarchyService.getHierarchyByIri(iri).pipe(
       switchMap(hierarchy => {
         return this.sparqlService.construct(hierarchy.getDataTableSparqlQuery()).pipe(map(dataset => {
-          const cfTable = rdfEnvironment.clownface({ dataset }).node(blueprint.TableNamedNode).in(rdf.typeNamedNode);
+          const cfTable = rdfEnvironment.clownface(dataset).node(blueprint.TableNamedNode).in(rdf.typeNamedNode);
           if (cfTable.values.length !== 1) {
             console.error('Expected exactly one table for Registry');
             return {

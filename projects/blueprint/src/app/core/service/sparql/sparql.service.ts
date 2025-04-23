@@ -3,27 +3,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, map } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset } from '@rdfjs/types';
-
-import { Parser } from 'n3';
-
-
 import { LibraryConfigurationService } from '../library-configuration/library-configuration.service';
 
 import { SparqlResult, SparqlResultTerm, transformToRecords } from './model/sparql-result-json';
+
+import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SparqlService {
-  private readonly http = inject(HttpClient);
-  private readonly libraryConfigurationService = inject(LibraryConfigurationService);
+  readonly #http = inject(HttpClient);
+  readonly #libraryConfigurationService = inject(LibraryConfigurationService);
 
   public fullTextSearchDialect: FullTextSearchDialect;
 
   constructor() {
-    this.fullTextSearchDialect = this.libraryConfigurationService.fullTextSearchDialect;
+    this.fullTextSearchDialect = this.#libraryConfigurationService.fullTextSearchDialect;
 
   }
 
@@ -34,7 +30,7 @@ export class SparqlService {
    * @returns an observable of the resulting bindings
    */
   select(query: string): Observable<Record<string, SparqlResultTerm>[]> {
-    const endpoint = this.libraryConfigurationService.endpointUrl;
+    const endpoint = this.#libraryConfigurationService.endpointUrl;
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/sparql-results+json'
@@ -47,7 +43,7 @@ export class SparqlService {
       headers
     };
 
-    return this.http.post<SparqlResult>(endpoint, body.toString(), options)
+    return this.#http.post<SparqlResult>(endpoint, body.toString(), options)
       .pipe(
         map(response => {
           const results = transformToRecords(response);
@@ -62,8 +58,8 @@ export class SparqlService {
    * @param query The SPARQL CONSTRUCT query
    * @returns an observable of the resulting dataset
    */
-  construct(query: string): Observable<Dataset> {
-    const endpoint = this.libraryConfigurationService.endpointUrl;
+  construct(query: string): Observable<RdfTypes.Dataset> {
+    const endpoint = this.#libraryConfigurationService.endpointUrl;
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -78,13 +74,11 @@ export class SparqlService {
 
     const body = new URLSearchParams();
     body.set('query', query);
-    return this.http.post(endpoint, body.toString(), options)
+    return this.#http.post(endpoint, body.toString(), options)
       .pipe(
         map(response => {
-          const parser = new Parser();
-          const quads = parser.parse(response.body);
-          const dataset = rdfEnvironment.dataset(quads);
-          return dataset as unknown as Dataset;
+          const dataset = rdfEnvironment.parseTurtle(response.body);
+          return dataset
         })
       );
   }

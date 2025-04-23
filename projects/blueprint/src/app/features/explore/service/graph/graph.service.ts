@@ -3,8 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode } from '@rdfjs/types';
 
 import { AnyPointer } from 'clownface';
 
@@ -15,6 +13,7 @@ import { GraphNode } from '../../../../core/component/graph/model/graph-node.mod
 import { GraphLink } from '../../../../core/component/graph/model/graph-link.model';
 
 import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 export interface QueryInput {
   nodeIri: string;
@@ -53,7 +52,7 @@ export class GraphService {
     );
   }
 
-  public expandNamedNode(node: NamedNode): void {
+  public expandNamedNode(node: RdfTypes.NamedNode): void {
     this.query(node.value).subscribe({
       next: (graph) => {
         this.graph$.next(graph);
@@ -85,10 +84,10 @@ export class GraphService {
   }
 
   private _extractNodesAndLinks(
-    dataset: Dataset,
-    inputNode: NamedNode
+    dataset: RdfTypes.Dataset,
+    inputNode: RdfTypes.NamedNode
   ): Graph {
-    const linkGraph = rdfEnvironment.clownface({ dataset });
+    const linkGraph = rdfEnvironment.clownface(dataset);
 
     const outgoingNeighborNodes = linkGraph
       .namedNode(inputNode)
@@ -189,67 +188,5 @@ export function combineLinkWithSameSourceAndTarget(
   links: GraphLink[]
 ): GraphLink[] {
   return links;
-  /*
-  const linkMap = new Map<string, GraphLink>();
-
-  links.forEach((link) => {
-    const key = `${link.source.id} ${link.target.id}`;
-    if (linkMap.has(key)) {
-      const existingLink = linkMap.get(key);
-      existingLink.label = `${existingLink.label}\n${link.label}`;
-      linkMap.set(key, existingLink);
-    } else {
-      linkMap.set(key, link);
-    }
-  });
-
-  const linksArray = [...linkMap.values()];
-
-  // find bidirectional links
-  const keys = [...linkMap.keys()].map((key) =>
-    key.split(' ').sort(sortStrings).join(' ')
-  );
-  const linkCountMap = new Map<string, number>();
-  keys.forEach((key) => {
-    if (linkCountMap.has(key)) {
-      linkCountMap.set(key, linkCountMap.get(key) + 1);
-    } else {
-      linkCountMap.set(key, 1);
-    }
-  });
-  const bidirectionalLinkKeys = Array.from(linkCountMap.keys()).filter(
-    (key) => linkCountMap.get(key) > 1
-  );
-
-
-
-  linksArray.forEach((link) => {
-    const sourceId = link.source.id;
-    const targetId = link.target.id;
-    const key = `${sourceId} ${targetId}`;
-    const inverseKey = `${targetId} ${sourceId}`;
-
-    if (bidirectionalLinkKeys.includes(inverseKey)) {
-      const masterLink = linkMap.get(inverseKey);
-      const thisLink = linkMap.get(key);
-      masterLink.label += '\n';
-      masterLink.label += thisLink.label
-        .split('\n')
-        .map((label) => `b_${label}`)
-        .sort(sortStrings)
-        .join('\n');
-      thisLink.label = '';
-      console.log(masterLink.label);
-    } else {
-      const link = linkMap.get(key);
-      link.label = link.label
-        .split('\n')
-        .map((label) => `f_${label}`)
-        .sort(sortStrings)
-        .join('\n');
-    }
-  });
-  return linksArray;
-  */
 }
 

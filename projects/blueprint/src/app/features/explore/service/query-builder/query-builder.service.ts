@@ -3,8 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { map, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode } from '@rdfjs/types';
 
 import { GraphPointer } from 'clownface';
 
@@ -16,6 +14,7 @@ import { sparqlUtils } from '@blueprint/utils';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
 import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 
 @Injectable({
@@ -32,7 +31,7 @@ export class QueryBuilderService {
   * @param input The input string to build the query from.
   * @returns An Observable that emits a Dataset containing the results of the query.
   */
-  public buildQuery(input: string): Observable<Dataset> {
+  public buildQuery(input: string): Observable<RdfTypes.Dataset> {
     const dataset = rdfEnvironment.dataset();
 
     // Get the SPARQL queries for retrieving UI and link metadata
@@ -55,18 +54,18 @@ export class QueryBuilderService {
       map((ds) => {
         // add links and nodes to dataset
         dataset.addAll(ds)
-        return dataset as unknown as Dataset;
+        return dataset;
       }),
     );
   }
 
   private _buildQueryFromMetaModel(
     input: string,
-    metaModel: Dataset
+    metaModel: RdfTypes.Dataset
   ): string {
 
     const inputNode = rdfEnvironment.namedNode(input);
-    const metaGraph = rdfEnvironment.clownface({ dataset: metaModel });
+    const metaGraph = rdfEnvironment.clownface(metaModel);
 
     const outLinkDefinitions = metaGraph
       .namedNode(inputNode)
@@ -91,7 +90,7 @@ export class QueryBuilderService {
 
 }
 
-function getInputNodeQuery(input: NamedNode): string {
+function getInputNodeQuery(input: RdfTypes.NamedNode): string {
   return `
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
@@ -107,7 +106,7 @@ CONSTRUCT {
 `;
 }
 
-function getOutgoingLinksQuery(input: NamedNode, link: UiLinkDefinition): string {
+function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
   return `
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
@@ -142,7 +141,7 @@ CONSTRUCT {
 `;
 }
 
-function getIncomingLinksQuery(input: NamedNode, link: UiLinkDefinition): string {
+function getIncomingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
   return `
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}

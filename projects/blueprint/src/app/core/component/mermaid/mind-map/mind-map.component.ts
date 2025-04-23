@@ -1,12 +1,13 @@
 import { Component, ElementRef, OnDestroy, effect, inject, output, signal, viewChild } from '@angular/core';
 
-import rdfEnvironment from '@zazuko/env';
+
 import { MermaidService } from '../service/mermaid/mermaid.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { rdfs } from '../../../ontology/rdfs/rdfs';
 import { rdf } from '../../../ontology/rdf/rdf';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { rdfEnvironment } from '../../../rdf/rdf-environment';
 
 
 const projectIri = 'https://ld.flux.zazuko.com/project/work-in-progress-34';
@@ -97,10 +98,10 @@ CONSTRUCT {
 
 
 @Component({
-    selector: 'bp-mind-map',
-    imports: [],
-    templateUrl: './mind-map.component.html',
-    styleUrl: './mind-map.component.scss'
+  selector: 'bp-mind-map',
+  imports: [],
+  templateUrl: './mind-map.component.html',
+  styleUrl: './mind-map.component.scss'
 })
 export class MindMapComponent implements OnDestroy {
   selected = output<string>();
@@ -114,19 +115,19 @@ export class MindMapComponent implements OnDestroy {
     this._sparqlService.construct(query).pipe(
       map((result) => {
 
-        const center = rdfEnvironment.clownface({ dataset: result, term: rdfEnvironment.namedNode(projectIri) });
+        const center = rdfEnvironment.clownface(result, rdfEnvironment.namedNode(projectIri));
         const rootLabel = center.out(rdfs.labelNamedNode).values[0] ?? '';
-        const persons: GraphValue[] = rdfEnvironment.clownface({ dataset: result, term: rdfEnvironment.namedNode('https://schema.org/Person') }).in(rdf.typeNamedNode).map(n => {
+        const persons: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('https://schema.org/Person')).in(rdf.typeNamedNode).map(n => {
           const label = n.out(rdfs.labelNamedNode).values.join(', ');
           const iri = n.value;
           return { iri, label };
         });
-        const repositories: GraphValue[] = rdfEnvironment.clownface({ dataset: result, term: rdfEnvironment.namedNode('http://schema.example.org/Repository') }).in(rdf.typeNamedNode).map(n => {
+        const repositories: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('http://schema.example.org/Repository')).in(rdf.typeNamedNode).map(n => {
           const label = n.out(rdfs.labelNamedNode).values.join(', ');
           const iri = n.value;
           return { iri, label };
         });
-        const customer: GraphValue[] = rdfEnvironment.clownface({ dataset: result, term: rdfEnvironment.namedNode('https://schema.org/Organization') }).in(rdf.typeNamedNode).map(n => {
+        const customer: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('https://schema.org/Organization')).in(rdf.typeNamedNode).map(n => {
           const label = n.out(rdfs.labelNamedNode).values.join(', ');
           const iri = n.value;
           return { iri, label };
