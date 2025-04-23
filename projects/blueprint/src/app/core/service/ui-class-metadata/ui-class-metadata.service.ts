@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { rdf, blueprintShape } from '@blueprint/ontology';
 import { RdfUiClassMetadata, UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 
 @Injectable({
@@ -24,7 +24,7 @@ export class UiClassMetadataService {
     if (this.cachedUiClassMetadata$ === null) {
       this.cachedUiClassMetadata$ = this.sparqlService.construct(this.getClassMetadataSparqlQuery()).pipe(
         map(dataset => {
-          return rdfEnvironment.clownface({ dataset }).node(blueprintShape.ClassMetadataShapeNamedNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiClassMetadata(metadataPtr));
+          return rdfEnvironment.clownface(dataset).node(blueprintShape.ClassMetadataShapeNamedNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiClassMetadata(metadataPtr));
         }),
         shareReplay(1)
       );

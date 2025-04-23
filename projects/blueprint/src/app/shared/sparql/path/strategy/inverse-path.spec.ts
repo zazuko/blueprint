@@ -1,9 +1,9 @@
 
 import { shacl } from '@blueprint/ontology';
-import rdfEnvironment from '@zazuko/env';
 
 import { Parser } from 'n3';
 import { InversePath } from './inverse-path';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 const parser = new Parser();
 
@@ -59,9 +59,9 @@ describe('Inverse Path Strategy', () => {
     });
 
     it('InversePath: should transform to SPARQL ', () => {
-        const inverseNodePathDataset = rdfEnvironment.dataset(parser.parse(inversePathTtl));
+        const inverseNodePathDataset = rdfEnvironment.parseTurtle(inversePathTtl);
 
-        const pathGraph = rdfEnvironment.clownface({ dataset: inverseNodePathDataset }).out(shacl.pathNamedNode);
+        const pathGraph = rdfEnvironment.clownface(inverseNodePathDataset).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = new InversePath(path);
             expect(l.toPropertyPath()).toBe('^<http://example.org/prop1>');
@@ -72,17 +72,17 @@ describe('Inverse Path Strategy', () => {
 
 
     it('InversePath: should throw an Exception, when applied to a forward path ', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(simplePathTtl));
+        const ds = rdfEnvironment.parseTurtle(simplePathTtl);
 
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             expect(() => new InversePath(path)).toThrowError(TypeError);
         });
     });
 
     it('InversePath: should throw an Exception, when applied to a list path ', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(listPathTtl));
-        const listPathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathTtl);
+        const listPathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
 
         listPathGraph.forEach(path => {
             expect(() => new InversePath(path)).toThrowError(TypeError);
@@ -90,8 +90,8 @@ describe('Inverse Path Strategy', () => {
     });
 
     it('InversePath: should throw an Exception, when applied to a literal path ', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(literalPathTtl));
-        const literalPathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(literalPathTtl);
+        const literalPathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
 
         literalPathGraph.forEach(path => {
             expect(() => new InversePath(path)).toThrowError(TypeError);

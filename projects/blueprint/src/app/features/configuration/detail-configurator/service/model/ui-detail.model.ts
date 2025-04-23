@@ -1,9 +1,9 @@
 import { rdf, rdfs, shacl } from '@blueprint/ontology';
-import RDF from '@rdfjs/types';
-import rdfEnvironment from '@zazuko/env';
-import { GraphPointer } from 'clownface';
 
-const dash = rdfEnvironment.namespace<string>('http://datashapes.org/dash#');
+import { GraphPointer } from 'clownface';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+
+const dash = rdfEnvironment.namespace('http://datashapes.org/dash#');
 
 
 export enum UiDetailViewerType {
@@ -13,16 +13,16 @@ export enum UiDetailViewerType {
 
 export abstract class UiDetailMetadata {
     protected readonly _clownfaceNode: GraphPointer
-    private readonly _rdfIdentifier: RDF.NamedNode;
+    private readonly _rdfIdentifier: RdfTypes.NamedNode;
 
-    protected constructor(rdfIdentifier: RDF.NamedNode, dataset: RDF.Dataset) {
+    protected constructor(rdfIdentifier: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         this._rdfIdentifier = rdfIdentifier;
-        this._clownfaceNode = rdfEnvironment.clownface({ dataset }).node(rdfIdentifier);
+        this._clownfaceNode = rdfEnvironment.clownface(dataset).node(rdfIdentifier);
     }
 
     public abstract readonly viewerType: UiDetailViewerType;
 
-    get rdfIdentifier(): RDF.NamedNode {
+    get rdfIdentifier(): RdfTypes.NamedNode {
         return this._rdfIdentifier;
     }
 
@@ -37,13 +37,13 @@ export class UiDetailLiteralViewer extends UiDetailMetadata {
     public readonly desperate = 'L'
     public readonly viewerType = UiDetailViewerType.LITERAL;
 
-    constructor(rdfIdentifier: RDF.NamedNode, dataset: RDF.Dataset) {
+    constructor(rdfIdentifier: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         super(rdfIdentifier, dataset);
     }
 
 
 
-    get rdfType(): RDF.Term {
+    get rdfType(): RdfTypes.Term {
         return this._clownfaceNode.out(rdf.typeNamedNode).term;
     }
 
@@ -78,7 +78,7 @@ export class UiDetailLiteralViewer extends UiDetailMetadata {
         return Number(this._clownfaceNode.out(shacl.orderNamedNode).value);
     }
 
-    get rdfClass(): RDF.Term {
+    get rdfClass(): RdfTypes.Term {
         return this._clownfaceNode.out(rdfs['class']).term;
     }
 
@@ -87,7 +87,7 @@ export class UiDetailLiteralViewer extends UiDetailMetadata {
         if (cfGroup.values.length !== 1) {
             return null;
         }
-        return new UiDetailGroupViewer(rdfEnvironment.namedNode(cfGroup.value), this._clownfaceNode.dataset as RDF.Dataset);
+        return new UiDetailGroupViewer(rdfEnvironment.namedNode(cfGroup.value), this._clownfaceNode.dataset as RdfTypes.Dataset);
     }
 
 }
@@ -96,13 +96,13 @@ export class UiDetailGroupViewer extends UiDetailMetadata {
     public readonly desperate = 'G'
     public readonly viewerType = UiDetailViewerType.GROUP;
 
-    constructor(rdfIdentifier: RDF.NamedNode, dataset: RDF.Dataset) {
+    constructor(rdfIdentifier: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         super(rdfIdentifier, dataset);
     }
 
 
 
-    get rdfType(): RDF.Term {
+    get rdfType(): RdfTypes.Term {
         return this._clownfaceNode.out(rdf.typeNamedNode).term;
     }
 
@@ -110,16 +110,16 @@ export class UiDetailGroupViewer extends UiDetailMetadata {
         return Number(this._clownfaceNode.out(shacl.orderNamedNode).value);
     }
 
-    get rdfClass(): RDF.Term {
+    get rdfClass(): RdfTypes.Term {
         return this._clownfaceNode.out(rdfs.ClassNamedNode).term;
     }
 
     get members(): (UiDetailGroupViewer | UiDetailLiteralViewer)[] {
         return this._clownfaceNode.in(shacl.groupNamedNode).map(member => {
             if (member.out(dash['viewer']).term.equals(dash['LiteralViewer'])) {
-                return new UiDetailLiteralViewer(rdfEnvironment.namedNode(member.value), this._clownfaceNode.dataset as RDF.Dataset);
+                return new UiDetailLiteralViewer(rdfEnvironment.namedNode(member.value), this._clownfaceNode.dataset as RdfTypes.Dataset);
             }
-            return new UiDetailGroupViewer(rdfEnvironment.namedNode(member.value), this._clownfaceNode.dataset as RDF.Dataset);
+            return new UiDetailGroupViewer(rdfEnvironment.namedNode(member.value), this._clownfaceNode.dataset as RdfTypes.Dataset);
         });
     }
 
@@ -127,14 +127,14 @@ export class UiDetailGroupViewer extends UiDetailMetadata {
 
 
 export class LiteralViewerCollection {
-    private readonly _dataset: RDF.Dataset;
+    private readonly _dataset: RdfTypes.Dataset;
 
     private _literalViewers: UiDetailLiteralViewer[];
     private _groups: UiDetailGroupViewer[];
 
-    constructor(dataset: RDF.Dataset) {
+    constructor(dataset: RdfTypes.Dataset) {
         this._dataset = dataset;
-        const literalViewerGraph = rdfEnvironment.clownface({ dataset: this._dataset }).node(dash['LiteralViewer']).in(dash['viewer']);
+        const literalViewerGraph = rdfEnvironment.clownface(this._dataset).node(dash['LiteralViewer']).in(dash['viewer']);
         this._literalViewers = literalViewerGraph.map(literalViewer => new UiDetailLiteralViewer(rdfEnvironment.namedNode(literalViewer.value), this._dataset));
 
         const groupIriSet = new Set<string>(literalViewerGraph.out(shacl.groupNamedNode).values);

@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { rdfEnvironment, NamespaceBuilder, RdfTypes } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class RdfsOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('http://www.w3.org/2000/01/rdf-schema#'));
+        super(rdfEnvironment.namespace('http://www.w3.org/2000/01/rdf-schema#'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -49,7 +47,7 @@ class RdfsOntology extends Ontology {
      * Get the label predicate as NamedNode.
      */
 
-    get labelNamedNode(): NamedNode {
+    get labelNamedNode(): RdfTypes.NamedNode {
         return this.namespace('label');
     }
 
@@ -76,7 +74,7 @@ class RdfsOntology extends Ontology {
      * 
      * @readonly
      */
-    get commentNamedNode(): NamedNode {
+    get commentNamedNode(): RdfTypes.NamedNode {
         return this.namespace('comment');
     }
 
@@ -103,7 +101,7 @@ class RdfsOntology extends Ontology {
      * 
      * @readonly
      */
-    get ClassNamedNode(): NamedNode {
+    get ClassNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Class');
     }
 
@@ -130,7 +128,7 @@ class RdfsOntology extends Ontology {
      * 
      * @readonly
      */
-    get subClassOfNamedNode(): NamedNode {
+    get subClassOfNamedNode(): RdfTypes.NamedNode {
         return this.namespace('subClassOf');
     }
 

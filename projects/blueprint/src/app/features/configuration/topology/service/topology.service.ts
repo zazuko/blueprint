@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 import { Injectable } from '@angular/core';
 import { TopologyNode, TreeTopology } from './model/topology.model';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
-import rdfEnvironment from '@zazuko/env';
 
 enum RDF_TYPE {
   DATABASE_SCHEMA = 'http://schema.table.org/DatabaseSchema', // OK

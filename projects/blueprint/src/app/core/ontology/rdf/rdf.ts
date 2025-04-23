@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { rdfEnvironment, NamespaceBuilder, RdfTypes } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class RdfOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('http://www.w3.org/1999/02/22-rdf-syntax-ns#'));
+        super(rdfEnvironment.namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -49,7 +47,7 @@ class RdfOntology extends Ontology {
      * Get the label predicate as NamedNode.
      */
 
-    get typeNamedNode(): NamedNode {
+    get typeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('type');
     }
 
@@ -76,7 +74,7 @@ class RdfOntology extends Ontology {
      * 
      * @readonly
      */
-    get subclassOfNamedNode(): NamedNode {
+    get subclassOfNamedNode(): RdfTypes.NamedNode {
         return this.namespace('subclassOf');
     }
 

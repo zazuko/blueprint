@@ -1,12 +1,10 @@
 
 import { shacl } from '@blueprint/ontology';
-import rdfEnvironment from '@zazuko/env';
 
-import { Parser } from 'n3';
 
 import { ListPath } from './list-path';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
-const parser = new Parser();
 
 const simplePathTtl = `
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -81,8 +79,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath :should transform to SPARQL with a list of one ', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(listPathOneTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathOneTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = new ListPath(path);
             expect(l.toPropertyPath()).toBe('<http://example.org/prop1>');
@@ -93,8 +91,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath :should transform to SPARQL with a list of three', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(listPathThreeTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathThreeTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = new ListPath(path);
             expect(l.toPropertyPath()).toBe('<http://example.org/prop1>/<http://example.org/prop2>/<http://example.org/prop3>');
@@ -105,8 +103,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath :should transform to SPARQL with a list of three with inverse', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(listPathMoreInverseTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathMoreInverseTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = new ListPath(path);
             expect(l.toPropertyPath()).toBe('<http://example.org/prop1>/^<http://example.org/prop2>/<http://example.org/prop3>');
@@ -117,8 +115,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath: should throw an Exception, when applied to a literal path', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(literalPathTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(literalPathTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             expect(() => new ListPath(path)).toThrowError(TypeError);
         });
@@ -126,8 +124,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath: should throw an Exception, when applied to a inverse path', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(inversePathTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(inversePathTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             expect(() => new ListPath(path)).toThrowError(TypeError);
         });
@@ -135,8 +133,8 @@ describe('ListPath Strategy', () => {
     });
 
     it('ListPath: should throw an Exception, when applied to a simple path', () => {
-        const ds = rdfEnvironment.dataset(parser.parse(simplePathTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(simplePathTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             expect(() => new ListPath(path)).toThrowError(TypeError);
         });

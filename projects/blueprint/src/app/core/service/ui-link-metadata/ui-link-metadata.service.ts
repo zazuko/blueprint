@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class UiLinkMetadataService {
     if (this.cachedUiLinkMetadata$ === null) {
       this.cachedUiLinkMetadata$ = this.sparqlService.construct(this.getLinkMetadataSparqlQuery()).pipe(
         map(dataset => {
-          return rdfEnvironment.clownface({ dataset }).node(this.uiLinkNode).in(rdf.typeNamedNode).map(metadataPtr => new UiLinkMetadata(metadataPtr))
+          return rdfEnvironment.clownface(dataset).node(this.uiLinkNode).in(rdf.typeNamedNode).map(metadataPtr => new UiLinkMetadata(metadataPtr))
         }),
         shareReplay(1)
       );

@@ -2,8 +2,6 @@ import { Injectable, inject } from '@angular/core';
 
 import { Observable, map, switchMap } from 'rxjs';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode } from '@rdfjs/types';
 
 import { ViewMetadata } from '../view-metadata/view-metadata.service';
 import { RdfUiView, RdfUiViewComponentDefinition, UiView } from '../../model/ui-view.model';
@@ -18,6 +16,7 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from '@blueprint/utils';
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
+import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +36,7 @@ export class ViewDataService {
   readonly #uiDetailService = inject(UiDetailService);
   readonly #aggregateService = inject(AggregateService);
 
-  getViewForSubject(subject: NamedNode): Observable<Dataset> {
+  getViewForSubject(subject: RdfTypes.NamedNode): Observable<RdfTypes.Dataset> {
     const dataset = rdfEnvironment.dataset();
     const typeQuery = `
     ${shacl.sparqlPrefix()}
@@ -60,7 +59,7 @@ export class ViewDataService {
         dataset.addAll(typeGraph);
 
         /* 1. get the rdf types of the subject and get the UIView and getViewConfigForClassQuery */
-        const typeCfGraph = rdfEnvironment.clownface({ dataset: typeGraph, term: subject });
+        const typeCfGraph = rdfEnvironment.clownface(typeGraph, subject);
         types = typeCfGraph.out(rdf.typeNamedNode).values;
 
         const viewMetaQueries = types.map((type) => this.#viewMetadata.getViewConfigForClassQuery(rdfEnvironment.namedNode(type)));
@@ -85,7 +84,7 @@ export class ViewDataService {
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject));
 
         /* 2. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
-        const viewMetadataGraph = rdfEnvironment.clownface({ dataset: viewGraphMetadata, term: nileaUi.UiViewNamedNode });
+        const viewMetadataGraph = rdfEnvironment.clownface(viewGraphMetadata, nileaUi.UiViewNamedNode);
         const uiViews: UiView[] = viewMetadataGraph.in(rdf.typeNamedNode).map((view) => {
           const uiView = new RdfUiView(view);
           return uiView;
@@ -97,7 +96,7 @@ export class ViewDataService {
 
 
         // 2.1 get the hierarchy definitions
-        const hierarchyGraph = rdfEnvironment.clownface({ dataset: viewGraphMetadata }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+        const hierarchyGraph = rdfEnvironment.clownface(viewGraphMetadata).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
         const hierarchyDefinitions = hierarchyGraph.map(hierarchyCfNode => new HierarchyDefinition(rdfEnvironment.namedNode(hierarchyCfNode.value), viewGraphMetadata)).filter(d => {
           const classesInHierarchy = d.aggregateNodes.map(node => node.targetClassIri);
           return classesInHierarchy.some(c => types.includes(c));
@@ -196,7 +195,7 @@ export class ViewDataService {
         dataset.addAll(viewGraph);
 
         /* 3. all the query results are collected in one dataset. It contains the data for the component and the UiView definition graph */
-        return dataset as unknown as Dataset;
+        return dataset;
       }
       )
 
@@ -211,7 +210,7 @@ export class ViewDataService {
 }
 
 
-function defaultQuery(subject: NamedNode): string {
+function defaultQuery(subject: RdfTypes.NamedNode): string {
   return `
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}

@@ -1,14 +1,12 @@
-import { NamespaceBuilder } from '@rdfjs/namespace';
-import { NamedNode } from '@rdfjs/types';
 
-import rdfEnvironment from '@zazuko/env';
 
+import { NamespaceBuilder, rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
 class ShaclOntology extends Ontology {
 
     constructor() {
-        super(rdfEnvironment.namespace<string>('http://www.w3.org/ns/shacl#'));
+        super(rdfEnvironment.namespace('http://www.w3.org/ns/shacl#'));
     }
 
     get namespace(): NamespaceBuilder<string> {
@@ -49,7 +47,7 @@ class ShaclOntology extends Ontology {
      * Get the path predicate as NamedNode.
      */
 
-    get pathNamedNode(): NamedNode {
+    get pathNamedNode(): RdfTypes.NamedNode {
         return this.namespace('path');
     }
 
@@ -71,7 +69,7 @@ class ShaclOntology extends Ontology {
     /**
      * Get the order predicate as NamedNode.
      */
-    get orderNamedNode(): NamedNode {
+    get orderNamedNode(): RdfTypes.NamedNode {
         return this.namespace('order');
     }
 
@@ -96,7 +94,7 @@ class ShaclOntology extends Ontology {
      * 
      * $@readonly
      */
-    get targetNodeNamedNode(): NamedNode {
+    get targetNodeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('targetNode');
     }
 
@@ -122,7 +120,7 @@ class ShaclOntology extends Ontology {
      * Get the targetClass predicate as NamedNode.
      */
 
-    get targetClassNamedNode(): NamedNode {
+    get targetClassNamedNode(): RdfTypes.NamedNode {
         return this.namespace('targetClass');
     }
 
@@ -149,7 +147,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get groupNamedNode(): NamedNode {
+    get groupNamedNode(): RdfTypes.NamedNode {
         return this.namespace('group');
     }
 
@@ -177,7 +175,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get nodeNamedNode(): NamedNode {
+    get nodeNamedNode(): RdfTypes.NamedNode {
         return this.namespace('node');
     }
 
@@ -204,7 +202,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get inversePathNamedNode(): NamedNode {
+    get inversePathNamedNode(): RdfTypes.NamedNode {
         return this.namespace('inversePath');
     }
 
@@ -231,7 +229,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get propertyNamedNode(): NamedNode {
+    get propertyNamedNode(): RdfTypes.NamedNode {
         return this.namespace('property');
     }
 
@@ -258,7 +256,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get classNamedNode(): NamedNode {
+    get classNamedNode(): RdfTypes.NamedNode {
         return this.namespace('class');
     }
 
@@ -285,7 +283,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get nameNamedNode(): NamedNode {
+    get nameNamedNode(): RdfTypes.NamedNode {
         return this.namespace('name');
     }
 
@@ -312,7 +310,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get nodeKindNamedNode(): NamedNode {
+    get nodeKindNamedNode(): RdfTypes.NamedNode {
         return this.namespace('nodeKind');
     }
 
@@ -339,7 +337,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get LiteralNamedNode(): NamedNode {
+    get LiteralNamedNode(): RdfTypes.NamedNode {
         return this.namespace('Literal');
     }
 
@@ -366,7 +364,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get IRINamedNode(): NamedNode {
+    get IRINamedNode(): RdfTypes.NamedNode {
         return this.namespace('IRI');
     }
 
@@ -393,7 +391,7 @@ class ShaclOntology extends Ontology {
      * 
      * @readonly
      */
-    get PropertyGroupNamedNode(): NamedNode {
+    get PropertyGroupNamedNode(): RdfTypes.NamedNode {
         return this.namespace('PropertyGroup');
     }
 

@@ -1,10 +1,9 @@
 import { GraphPointer } from 'clownface';
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode, Term } from '@rdfjs/types';
 import { rdf } from '@blueprint/ontology';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 
-const Skos = new Map<string, NamedNode>([
+const Skos = new Map<string, RdfTypes.NamedNode>([
     ['prefLabel', rdfEnvironment.namedNode('http://www.w3.org/2004/02/skos/core#prefLabel')],
     ['altLabel', rdfEnvironment.namedNode('http://www.w3.org/2004/02/skos/core#altLabel')],
     ['hiddenLabel', rdfEnvironment.namedNode('http://www.w3.org/2004/02/skos/core#hiddenLabel')],
@@ -38,20 +37,20 @@ export interface Category {
 
 
 export abstract class RdfNode {
-    protected readonly _iri: NamedNode;
-    protected readonly _clownfaceNode: GraphPointer<Term, Dataset>;
+    protected readonly _iri: RdfTypes.NamedNode;
+    protected readonly _clownfaceNode: GraphPointer<RdfTypes.Term, RdfTypes.Dataset>;
 
 
-    constructor(iri: NamedNode, dataset: Dataset) {
+    constructor(iri: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         this._iri = iri;
-        this._clownfaceNode = rdfEnvironment.clownface({ dataset }).node(iri);
+        this._clownfaceNode = rdfEnvironment.clownface(dataset).node(iri);
     }
 
-    get iri(): NamedNode {
+    get iri(): RdfTypes.NamedNode {
         return this._iri;
     }
 
-    get dataset(): Dataset {
+    get dataset(): RdfTypes.Dataset {
         return this._clownfaceNode.dataset;
     }
 
@@ -62,7 +61,7 @@ export abstract class RdfNode {
 
 export class SkosConcept extends RdfNode {
 
-    constructor(iri: NamedNode, dataset: Dataset) {
+    constructor(iri: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         super(iri, dataset);
         this._clownfaceNode.addOut(rdf.typeNamedNode), rdfEnvironment.namedNode('http://www.w3.org/2004/02/skos/core#Concept');
     }
@@ -172,11 +171,11 @@ export class SkosConceptScheme extends RdfNode {
 
     static createEmptyConceptScheme(): SkosConceptScheme {
         const iri = rdfEnvironment.namedNode('http://www.blueprint.org/ontology/CategoryScheme/' + SkosConceptScheme.schemaInstanceCount++ + '/');
-        const dataset = rdfEnvironment.dataset() as unknown as Dataset;
+        const dataset = rdfEnvironment.dataset();
         return new SkosConceptScheme(iri, dataset);
     }
 
-    constructor(iri: NamedNode, dataset: Dataset) {
+    constructor(iri: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
         super(iri, dataset);
         this._clownfaceNode.addOut(rdf.typeNamedNode), rdfEnvironment.namedNode('http://www.w3.org/2004/02/skos/core#ConceptScheme');
     }

@@ -1,5 +1,3 @@
-import RDF from '@rdfjs/types';
-import rdfEnvironment from '@zazuko/env';
 import { AnyPointer } from 'clownface';
 
 import { blueprint, rdfs, rdf, shacl, appLocal, nileaUi, blueprintShape } from '@blueprint/ontology';
@@ -7,6 +5,7 @@ import { Avatar } from '@blueprint/component/avatar/avatar.component';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { Aggregation } from '@blueprint/service/graph/aggregate/model/aggregation';
 import { HierarchyNode } from './hierarchy-node.model';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 export class HierarchyDefinition extends Aggregation {
 
     private _label: string | null = null;
@@ -19,8 +18,8 @@ export class HierarchyDefinition extends Aggregation {
      * @param node The node of the hierarchy. Pointer into the dataset.
      * @param dataset The dataset that contains the hierarchy.
      */
-    constructor(node: RDF.NamedNode, dataset: RDF.Dataset) {
-        const hierarchyGraph = rdfEnvironment.clownface({ dataset }).node(node);
+    constructor(node: RdfTypes.NamedNode, dataset: RdfTypes.Dataset) {
+        const hierarchyGraph = rdfEnvironment.clownface(dataset).node(node);
         super(hierarchyGraph);
     }
 
@@ -119,7 +118,7 @@ export class HierarchyDefinition extends Aggregation {
             const root = this._node.out(blueprint.hasRootNamedNode);
             if (root.values.length === 1) {
                 const nodeNode = rdfEnvironment.namedNode(root.value);
-                const rootCfNode = rdfEnvironment.clownface({ dataset: this._node.dataset }).node(nodeNode);
+                const rootCfNode = rdfEnvironment.clownface(this._node.dataset as RdfTypes.Dataset).node(nodeNode);
                 this._rootNode = new HierarchyNode(rootCfNode);
             } else {
                 console.warn(`Hierarchy ${this._node.value}> has ${root.values.length} root nodes. Expected 1. Wr do not provide a root node.`);

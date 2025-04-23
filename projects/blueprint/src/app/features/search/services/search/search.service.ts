@@ -3,8 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset } from '@rdfjs/types';
 
 import { SearchQueryParam } from '../../model/search-query-param.model';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
@@ -25,6 +23,7 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 import { SearchResult } from '@blueprint/model/search-result/search-result';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 @Injectable({
   providedIn: 'root',
@@ -51,7 +50,7 @@ export class SearchService {
     }
     this._searchSubscription = this.page(searchParams.page).pipe(
       map(dataset => {
-        const resultGraph = rdfEnvironment.clownface({ dataset });
+        const resultGraph = rdfEnvironment.clownface(dataset);
         const searchResultIris = resultGraph.node(blueprint.UiSearchResultNamedNode).in(rdf.typeNamedNode).values;
         if (searchResultIris.length === 0) {
           console.warn(`Invalid data: SearchResult.query is undefined`);
@@ -65,7 +64,7 @@ export class SearchService {
 
         if (searchParams.page === 0) {
           this.totalCount$.next(searchResult.total);
-          const classCounts = rdfEnvironment.clownface({ dataset }).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode));
+          const classCounts = rdfEnvironment.clownface(dataset).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode));
           this.classCount$.next(classCounts);
         }
 
@@ -90,7 +89,7 @@ export class SearchService {
   }
 
 
-  public newSearch(searchParams: SearchQueryParam): Observable<Dataset> {
+  public newSearch(searchParams: SearchQueryParam): Observable<RdfTypes.Dataset> {
     this.searchContext = new SearchContext(searchParams);
     return this.page(0);
   }
@@ -101,7 +100,7 @@ export class SearchService {
    * @param pageNumber new page to fetch
    * @returns Observable<Dataset> with the dataset containing the new results
    */
-  public page(pageNumber: number): Observable<Dataset> {
+  public page(pageNumber: number): Observable<RdfTypes.Dataset> {
     const pageObservable = this.uiClassMetadataService.getClassMetadata()
       .pipe(
         map(classMetadataArray => {

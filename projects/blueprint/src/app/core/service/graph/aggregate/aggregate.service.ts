@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
-import { Dataset } from '@rdfjs/types';
-import rdfEnvironment from '@zazuko/env';
+
+
 import { ICompositionToNodeLink } from './model/composition/composition-to-node-link';
 import { ICompositionToCompositionLink } from './model/composition/composition-to-composition-link';
 import { OutgoingCompositionToNodeLinkFactory } from './factory/composition-to-node-link-factory/outgoing-composition-to-node-link-factory';
@@ -16,6 +16,7 @@ import { CompositionToNodeConnectionPointStrategy } from './strategy/composition
 import { TargetNodeStrategy } from './strategy/composition-to-node/target-node-strategy';
 import { CompositionToCompositionQueryStrategy } from './strategy/composition-to-compostion/composition-to-composition-query-strategy';
 import { CompositionToCompositionRootOfSourceStrategy } from './strategy/composition-to-compostion/composition-to-composition-root-of-source-strategy';
+import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 @Injectable({
     providedIn: 'root'
 })
@@ -48,8 +49,8 @@ export class AggregateService {
      * @param classIris the rdf:Class iris
      * @returns Links between aggregates for the given classes. With the right direction and labels (incoming links are inverted)
      */
-    #extractCompositionToCompositionLinks(linkDataset: Dataset, classIris: string[]): ICompositionToCompositionLink[] {
-        const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
+    #extractCompositionToCompositionLinks(linkDataset: RdfTypes.Dataset, classIris: string[]): ICompositionToCompositionLink[] {
+        const linkGraph = rdfEnvironment.clownface(linkDataset);
 
         const outLinks: ICompositionToCompositionLink[] = [];
         const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
@@ -87,8 +88,8 @@ export class AggregateService {
      * @param classIris the rdf:Class iris
      * @returns Links between aggregates and nodes for the given classes. With the right direction and labels (incoming links are inverted)
      */
-    #extractCompositionToNodeLinks(linkDataset: Dataset, classIris: string[]): ICompositionToNodeLink[] {
-        const linkGraph = rdfEnvironment.clownface({ dataset: linkDataset });
+    #extractCompositionToNodeLinks(linkDataset: RdfTypes.Dataset, classIris: string[]): ICompositionToNodeLink[] {
+        const linkGraph = rdfEnvironment.clownface(linkDataset);
 
         const outLinks: ICompositionToNodeLink[] = [];
         const outLinkFactory = new OutgoingCompositionToNodeLinkFactory();
@@ -126,7 +127,7 @@ export class AggregateService {
      * @param subject the subject IRI
      * @returns An array of SPARQL queries to get the links between an composition and another composition for the given classes
      */
-    getCompositionToCompositionLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
+    getCompositionToCompositionLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
         console.log('%cComposition links', 'color: magenta', links.length);
 
@@ -371,7 +372,7 @@ export class AggregateService {
      * @param subject the subject IRI
      * @returns An array of SPARQL queries to get the links between an aggregate and a node for the given classes
      */
-    getCompositionToNodeLinkQueries(viewGraphMetadata: Dataset, classIris: string[], subject: string): string[] {
+    getCompositionToNodeLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToNodeLinks(viewGraphMetadata, classIris);
         console.log('%cNode links', 'color: magenta', links.length);
 

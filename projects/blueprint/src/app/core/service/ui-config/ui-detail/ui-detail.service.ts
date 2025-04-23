@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { RdfDetailConfigurationElement } from './model/ui-detail-configuration-element';
-import rdfEnvironment from '@zazuko/env';
-import { Dataset } from '@rdfjs/types';
+
 import { RdfDetailElement } from './model/ui-detail-element';
 
 import { blueprint, blueprintShape, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
+import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 
 
 @Injectable({
@@ -36,14 +36,14 @@ export class UiDetailService {
     return getUiDetailForInstanceQuery(instanceIri);
   }
 
-  extractUiDetails(dataset: Dataset) {
-    const detailConfigCfGraph = rdfEnvironment.clownface({ dataset }).node(blueprintShape.ClassDetailShapeNamedNode).in(rdf.typeNamedNode);
+  extractUiDetails(dataset: RdfTypes.Dataset) {
+    const detailConfigCfGraph = rdfEnvironment.clownface(dataset).node(blueprintShape.ClassDetailShapeNamedNode).in(rdf.typeNamedNode);
     return detailConfigCfGraph.map((node) => new RdfDetailConfigurationElement(node));
 
   }
 
-  extractUiDetailComponents(subjectIri: string, dataset: Dataset): RdfDetailElement[] {
-    return rdfEnvironment.clownface({ dataset }).namedNode(subjectIri).out(blueprint.detailNamedNode).map((node) => new RdfDetailElement(node));
+  extractUiDetailComponents(subjectIri: string, dataset: RdfTypes.Dataset): RdfDetailElement[] {
+    return rdfEnvironment.clownface(dataset).namedNode(subjectIri).out(blueprint.detailNamedNode).map((node) => new RdfDetailElement(node));
   }
 
 }

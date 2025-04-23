@@ -3,8 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import rdfEnvironment from '@zazuko/env';
-import { Dataset, NamedNode } from '@rdfjs/types';
 
 import * as sparql from 'rdf-sparql-builder'
 
@@ -23,6 +21,7 @@ import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-
 import { rdf, shacl } from '@blueprint/ontology';
 import { PathPredicate } from '../../flux-viewer/model/path-predicate.model';
 import { BlueprintGraph, BlueprintUiMetadataGraph } from '../../flux-viewer/metadata-utilities';
+import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 
 export interface ObjectDetails {
@@ -55,7 +54,7 @@ export class DetailsService {
 
     return this.sparqlService.construct(sparqlQuery).pipe(
       map(dataset => {
-        const uiMetaDataNode = rdfEnvironment.clownface({ dataset }).namedNode(input).out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).toArray()[0];
+        const uiMetaDataNode = rdfEnvironment.clownface(dataset).namedNode(input).out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).toArray()[0];
         // todo: handel multiple types
         const uiMetaData = new RdfUiClassMetadata(uiMetaDataNode);
         const bpGraph = new BlueprintGraph(dataset);
@@ -77,7 +76,7 @@ export class DetailsService {
 
   public _buildDetailViewersFromMetaModel(
     input: string,
-    metaModel: Dataset
+    metaModel: RdfTypes.Dataset
   ): FluxDetailViewer[] {
     const metaGraph = new BlueprintUiMetadataGraph(metaModel);
     const inputNode = rdfEnvironment.namedNode(input);
@@ -128,7 +127,7 @@ export class DetailsService {
 
   private dashLiteralSparqlBuilder(
     viewer: FluxLiteralViewer,
-    input: NamedNode
+    input: RdfTypes.NamedNode
   ): string {
     const paths = viewer.getPathsPredicates();
 
@@ -198,7 +197,7 @@ export class DetailsService {
 
   private dashHyperLinkSparqlBuilder(
     viewer: FluxHyperlinkViewer,
-    input: NamedNode
+    input: RdfTypes.NamedNode
   ): string {
     const aPaths = viewer.getLiteralPathsPredicates();
     const hrefPaths = viewer.getHrefPathsPredicates();
@@ -332,7 +331,7 @@ export class DetailsService {
 
   private dashGroupSparqlBuilder(
     viewer: FluxGroupViewer,
-    input: NamedNode
+    input: RdfTypes.NamedNode
   ): string {
     viewer.members.forEach((memberViewer) => {
       if (memberViewer.viewerType === FluxViewerType.LiteralViewer) {

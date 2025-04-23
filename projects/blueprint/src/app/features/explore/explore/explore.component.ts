@@ -14,7 +14,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
-import rdfEnvironment from '@zazuko/env';
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
 import { GraphComponent } from '../../../core/component/graph/graph/graph.component';
@@ -46,6 +45,7 @@ import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
+import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
 
 
 // create an enum about page views we have Views, Graph and Nearby
@@ -183,22 +183,22 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       {
         next: (viewGraph) => {
-          const cfViewGraph = rdfEnvironment.clownface({ dataset: viewGraph, term: nileaUi.UiViewNamedNode });
+          const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
 
           // ---- composition link result
           this.compositionLinks.set(cfViewGraph.node(blueprint.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
           this.thisNodeElement.set(cfViewGraph.namedNode(this.subject).map((node) => new NodeElement(node))[0]);
           // ---- composition link result end
 
-          const cfHierarchyGraph = rdfEnvironment.clownface({ dataset: viewGraph }).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+          const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
           const uiDetails = this.uiDetailService.extractUiDetailComponents(this.subject, viewGraph);
           this.uiDetailElementsSignal.set(uiDetails.sort((a, b) => a.order - b.order));
           // make it better 
-          const subjectGraph = rdfEnvironment.clownface({ dataset: viewGraph }).namedNode(this.subject);
+          const subjectGraph = rdfEnvironment.clownface(viewGraph).namedNode(this.subject);
           this.subjectLabel.set(subjectGraph.out(rdfs.labelNamedNode).values.join(', '));
           this.subjectComment.set(subjectGraph.out(rdfs.commentNamedNode).values.join(', '));
 
-          const metaGraph = rdfEnvironment.clownface({ dataset: viewGraph }).namedNode(this.subject).out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
+          const metaGraph = rdfEnvironment.clownface(viewGraph).namedNode(this.subject).out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
 
           this.subjectClassLabel.set(metaGraph.out(rdfs.labelNamedNode).values.join(','));
 

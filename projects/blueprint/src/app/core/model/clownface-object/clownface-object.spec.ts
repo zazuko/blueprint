@@ -1,31 +1,32 @@
+import { GraphPointer } from 'clownface';
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 import { ClownfaceObject } from './clownface-object';
-import e from '@zazuko/env';
 
 const quads = [
-    e.quad(e.namedNode('http://example.com/subject'), e.namedNode('http://example.com/predicate'), e.namedNode('http://example.com/object')),
-    e.quad(e.namedNode('http://example.com/subject'), e.namedNode('http://example.com/predicate'), e.namedNode('http://example.com/object2')),
-    e.quad(e.namedNode('http://example.com/subject'), e.namedNode('http://example.com/predicate2'), e.namedNode('http://example.com/object')),
-    e.quad(e.namedNode('http://example.com/subject'), e.namedNode('http://example.com/predicate2'), e.namedNode('http://example.com/object2')),
-    e.quad(e.namedNode('http://example.com/subject2'), e.namedNode('http://example.com/predicate'), e.namedNode('http://example.com/object')),
-    e.quad(e.namedNode('http://example.com/subject2'), e.namedNode('http://example.com/predicate'), e.namedNode('http://example.com/object2')),
-    e.quad(e.namedNode('http://example.com/subject2'), e.namedNode('http://example.com/predicate2'), e.namedNode('http://example.com/object')),
-    e.quad(e.namedNode('http://example.com/subject2'), e.namedNode('http://example.com/predicate3'), e.namedNode('http://example.com/subject3')),
-    e.quad(e.namedNode('http://example.com/subject2'), e.namedNode('http://example.com/predicate3'), e.namedNode('http://example.com/subject4')),
-    e.quad(e.namedNode('http://example.com/subject3'), e.namedNode('http://example.com/predicate3'), e.namedNode('http://example.com/object2')),
-    e.quad(e.namedNode('http://example.com/subject4'), e.namedNode('http://example.com/predicate3'), e.namedNode('http://example.com/object3')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object2')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object2')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object2')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate3'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject3')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate3'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject4')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject3'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate3'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object2')),
+    rdfEnvironment.quad(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject4'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate3'), rdfEnvironment.namedNode('http://examplrdfEnvironment.com/object3')),
 ];
 
-const dataset = e.dataset(quads);
+const dataset = rdfEnvironment.dataset().addAll(quads);
 
 
 describe('ClownfaceObject', () => {
     it('should get predicates for node', () => {
-        const cfGraphSubject1 = e.clownface({ dataset, term: e.namedNode('http://example.com/subject') });
+        const cfGraphSubject1 = rdfEnvironment.clownface(dataset, rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject')) as GraphPointer;
 
         expect(ClownfaceObject.getPredicatesForNode(cfGraphSubject1).length).toBe(2);
     });
     it('should follow a path and get the right number of predicates', () => {
-        const cfGraphSubject2 = e.clownface({ dataset, term: e.namedNode('http://example.com/subject2') }).out(e.namedNode('http://example.com/predicate3'));
+        const cfGraphSubject2 = rdfEnvironment.clownface(dataset, rdfEnvironment.namedNode('http://examplrdfEnvironment.com/subject2')).out(rdfEnvironment.namedNode('http://examplrdfEnvironment.com/predicate3'));
 
         cfGraphSubject2.forEach(node => {
             expect(ClownfaceObject.getPredicatesForNode(node).length).toBe(1);

@@ -1,12 +1,9 @@
 
 import { shacl } from '@blueprint/ontology';
-import rdfEnvironment from '@zazuko/env';
-
-import { Parser } from 'n3';
 
 import { IncomingPathFactory } from './incoming-path-factory';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
-const parser = new Parser();
 
 const simplePathTtl = `
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -82,8 +79,8 @@ describe('IncomingPathFactory', () => {
 
     it('IncomingPathFactory :should transform to SPARQL with a simple path', () => {
         const factory = new IncomingPathFactory();
-        const simpleNodePathDataset = rdfEnvironment.dataset(parser.parse(simplePathTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: simpleNodePathDataset }).out(shacl.pathNamedNode);
+        const simpleNodePathDataset = rdfEnvironment.parseTurtle(simplePathTtl);
+        const pathGraph = rdfEnvironment.clownface(simpleNodePathDataset).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = factory.createPath(path);
             expect(l.toPropertyPath()).toBe('^<http://example.org/prop1>');
@@ -95,9 +92,9 @@ describe('IncomingPathFactory', () => {
     it('IncomingPathFactory: should transform to SPARQL with an inverse path', () => {
         const factory = new IncomingPathFactory();
 
-        const inverseNodePathDataset = rdfEnvironment.dataset(parser.parse(inversePathTtl));
+        const inverseNodePathDataset = rdfEnvironment.parseTurtle(inversePathTtl);
 
-        const pathGraph = rdfEnvironment.clownface({ dataset: inverseNodePathDataset }).out(shacl.pathNamedNode);
+        const pathGraph = rdfEnvironment.clownface(inverseNodePathDataset).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = factory.createPath(path);
             expect(l.toPropertyPath()).toBe('<http://example.org/prop1>');
@@ -108,8 +105,8 @@ describe('IncomingPathFactory', () => {
 
     it('IncomingPathFactory: should transform to SPARQL with a list of one ', () => {
         const factory = new IncomingPathFactory();
-        const ds = rdfEnvironment.dataset(parser.parse(listPathOneTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathOneTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = factory.createPath(path);
             expect(l.toPropertyPath()).toBe('^<http://example.org/prop1>');
@@ -121,8 +118,8 @@ describe('IncomingPathFactory', () => {
 
     it('IncomingPathFactory: should transform to SPARQL with a list of three', () => {
         const factory = new IncomingPathFactory();
-        const ds = rdfEnvironment.dataset(parser.parse(listPathThreeTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathThreeTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = factory.createPath(path);
             const expectedOutput = ['^<http://example.org/prop1>', '^<http://example.org/prop2>', '^<http://example.org/prop3>'].reverse();
@@ -134,8 +131,8 @@ describe('IncomingPathFactory', () => {
 
     it('IncomingPathFactory: should transform to SPARQL with a list of three with inverse', () => {
         const factory = new IncomingPathFactory();
-        const ds = rdfEnvironment.dataset(parser.parse(listPathMoreInverseTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(listPathMoreInverseTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             const l = factory.createPath(path);
             const expectedOutput = ['^<http://example.org/prop1>', '<http://example.org/prop2>', '^<http://example.org/prop3>'].reverse();
@@ -147,8 +144,8 @@ describe('IncomingPathFactory', () => {
 
     it('IncomingPathFactory: should throw an Exception, when applied to a literal path', () => {
         const factory = new IncomingPathFactory();
-        const ds = rdfEnvironment.dataset(parser.parse(literalPathTtl));
-        const pathGraph = rdfEnvironment.clownface({ dataset: ds }).out(shacl.pathNamedNode);
+        const ds = rdfEnvironment.parseTurtle(literalPathTtl);
+        const pathGraph = rdfEnvironment.clownface(ds).out(shacl.pathNamedNode);
         pathGraph.forEach(path => {
             expect(() => factory.createPath(path)).toThrowError(TypeError);
         });

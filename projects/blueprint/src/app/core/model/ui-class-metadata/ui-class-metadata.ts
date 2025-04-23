@@ -1,5 +1,4 @@
-import rdfEnvironment from '@zazuko/env';
-import { BlankNode, NamedNode } from '@rdfjs/types';
+
 
 import { blueprint, rdfs, shacl } from '@blueprint/ontology';
 
@@ -7,13 +6,14 @@ import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { GraphPointer } from 'clownface';
 import { DEFAULT_COLOR } from '@blueprint/constant/color';
 import { ColorUtil } from '@blueprint/utils';
+import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 
 /**
  * UiClassMetadata Interface
  */
 export interface UiClassMetadata {
     iri: string,
-    targetNode: NamedNode | BlankNode | null;
+    targetNode: RdfTypes.NamedNode | RdfTypes.BlankNode | null;
     icon: string;
     colorIndex: number;
     searchPriority: number;
@@ -26,7 +26,7 @@ export interface UiClassMetadata {
  */
 export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetadata {
 
-    private _targetNode: NamedNode | BlankNode | null = null;
+    private _targetNode: RdfTypes.NamedNode | RdfTypes.BlankNode | null = null;
     private _icon: string | null = null;
     private _colorIndex: number | null = null;
     private _searchPriority: number | null = null;
@@ -44,7 +44,7 @@ export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetada
      * @readonly
      * @link shacl:targetNode
      */
-    public get targetNode(): NamedNode | BlankNode | null {
+    public get targetNode(): RdfTypes.NamedNode | RdfTypes.BlankNode | null {
         if (this._targetNode === null) {
             const targetNodes = this._node.out(shacl.targetNodeNamedNode).terms;
             if (targetNodes.length === 0) {
@@ -89,22 +89,6 @@ export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetada
         return this._icon;
     }
 
-    /**
-     * Flux links aka flux:Link
-  
-    public get link(): FluxUiLinkEntity[] {
-        const nodes = this._getPropertyValueByName('link');
-        return nodes.map(node => {
-            let n: NamedNode | BlankNode;
-            if (node.term.termType === 'NamedNode') {
-                n = rdfEnvironment.namedNode(node.value);
-            } else {
-                n = rdfEnvironment.blankNode(node.value);
-            }
-            return new FluxUiLinkEntity(n, this._dataGraph);
-        });
-    }
-       */
 
     /**
      * Color index

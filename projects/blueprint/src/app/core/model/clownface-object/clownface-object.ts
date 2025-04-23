@@ -1,5 +1,6 @@
-import { GraphPointer } from "clownface";
-import rdfEnvironment from '@zazuko/env';
+import { GraphPointer } from 'clownface';
+
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 /**
  * Base class for all objects that are represented by a node in the RDF graph. It provides some basic functionality to
@@ -18,6 +19,11 @@ export abstract class ClownfaceObject {
         return [...predicateSet];
     }
 
+    /**
+     * Write the node to the console as a table.
+     * 
+     * @param node The clownface GraphPointer
+     */
     static logNodeAsTable(node: GraphPointer) {
         const spo = [...node.dataset.match(node.term)].map(quad => {
             return {
