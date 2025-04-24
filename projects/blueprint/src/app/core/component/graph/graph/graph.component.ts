@@ -26,7 +26,7 @@ import * as cola from 'webcola';
 import { LayoutAdaptor } from './layout-adapter';
 import { MultiLinkLabels } from '../graph-elements/model/multi-link-labels.model';
 import { ArrowComponent, NodeComponent } from '../graph-elements';
-import { LinkPanelComponent } from '../link-panel/link-panel.component';
+
 import { DraggableDirective } from './draggable/draggable.directive';
 import { GraphNode } from '../model/graph-node.model';
 import { Graph } from '../model/graph.model';
@@ -230,21 +230,20 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     layout.jaccardLinkLengths(200, 1);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.start, () => {
-      this.linksSignal.set(this.graph.links);
-      this.nodesSignal.set(this.graph.nodes);
+      this.linksSignal.set(this.graph.links.map(l => l));
+      this.nodesSignal.set(this.graph.nodes.map(n => n));
       this.layoutIsRunning = true;
     });
     layout.on(cola.EventType.tick, () => {
-
-      this.linksSignal.set(this.graph.links);
-      this.nodesSignal.set(this.graph.nodes);
+      this.linksSignal.set(this.graph.links.map(l => l));
+      this.nodesSignal.set(this.graph.nodes.map(n => n));
 
     });
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.end, () => {
 
-      this.linksSignal.set(this.graph.links);
-      this.nodesSignal.set(this.graph.nodes);
+      this.linksSignal.set(this.graph.links.map(l => l));
+      this.nodesSignal.set(this.graph.nodes.map(n => n));
       this.layoutIsRunning = false;
       if (this.layoutQueue.length > 0) {
         // run the next layout
