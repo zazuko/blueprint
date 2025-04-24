@@ -3,13 +3,13 @@
     <div style="display:flex; flex-direction: row; align-items: center;">
         <bp-avatar [avatars]="avatars()" />
         <div>
-            <h1>{{className}}</h1>
-            <div class="small">&lt;{{id}}&gt;</div>
+            <h1>{{className()}}</h1>
+            <div class="small">&lt;{{id()}}&gt;</div>
         </div>
     </div>
 
 
-    <p>Detail configuration for class {{className}}.</p>
+    <p>Detail configuration for class {{className()}}.</p>
 
     <h2>Props</h2>
     <button (click)="getProps()">Get Props</button>

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, signal, computed, output } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, signal, computed, output, input } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
@@ -14,8 +14,8 @@ import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
   styleUrl: './cluster-diagram.component.scss'
 })
 export class ClusterDiagramComponent implements OnChanges {
-  @Input({ required: true }) data: TreeNode<NodeElement> | null = null;
-  @Input() collapsed = true;
+  readonly data = input.required<TreeNode<NodeElement> | null>();
+  readonly collapsed = input(true);
   nodeSelected = output<string>();
 
   treeNodeSignal = signal<TreeNode<NodeElement> | null>(null);

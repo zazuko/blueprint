@@ -4,7 +4,6 @@ import {
   OnInit,
   ElementRef,
   OnDestroy,
-  Input,
   OnChanges,
   SimpleChanges,
   ChangeDetectorRef,
@@ -45,11 +44,11 @@ import { ColorUtil } from '@blueprint/utils';
   ]
 })
 export class GraphComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() graph: Graph = null;
+  readonly graph = input<Graph>(null);
   disableZoomMenu = input<boolean>(false);
   disableNodeMenu = input<boolean>(false);
-  @Input() xOffset = '0';
-  @Input() yOffset = '0';
+  readonly xOffset = input('0');
+  readonly yOffset = input('0');
 
   nodeSelected = output<GraphNode>();
   nodeExpanded = output<GraphNode>();
@@ -124,7 +123,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       }
 
       this.layout = this.createLayout();
-      this.createChart(this.graph);
+      this.createChart(this.graph());
       this.cd.detectChanges();
     });
 
@@ -165,7 +164,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private createChart(graph: Graph): void {
-    if (this.layout && this.graph) {
+    if (this.layout && this.graph()) {
       this.layout.nodes(graph.nodes);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.layout.links(graph.links as any);
@@ -230,20 +229,23 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     layout.jaccardLinkLengths(200, 1);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.start, () => {
-      this.linksSignal.set(this.graph.links.map(l => l));
-      this.nodesSignal.set(this.graph.nodes.map(n => n));
+      const graph = this.graph();
+      this.linksSignal.set(graph.links.map(l => l));
+      this.nodesSignal.set(graph.nodes.map(n => n));
       this.layoutIsRunning = true;
     });
     layout.on(cola.EventType.tick, () => {
-      this.linksSignal.set(this.graph.links.map(l => l));
-      this.nodesSignal.set(this.graph.nodes.map(n => n));
+      const graph = this.graph();
+      this.linksSignal.set(graph.links.map(l => l));
+      this.nodesSignal.set(graph.nodes.map(n => n));
 
     });
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.end, () => {
 
-      this.linksSignal.set(this.graph.links.map(l => l));
-      this.nodesSignal.set(this.graph.nodes.map(n => n));
+      const graphValue = this.graph();
+      this.linksSignal.set(graphValue.links.map(l => l));
+      this.nodesSignal.set(graphValue.nodes.map(n => n));
       this.layoutIsRunning = false;
       if (this.layoutQueue.length > 0) {
         // run the next layout

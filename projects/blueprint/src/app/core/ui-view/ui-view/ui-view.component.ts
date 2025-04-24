@@ -11,6 +11,8 @@ import { UiViewComponentComponent } from "../ui-view-component/ui-view-component
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiViewComponent implements OnChanges {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input({ required: true }) uiView: UiView;
   nodeSelected = output<string>();
 

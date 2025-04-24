@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Breadcrumb } from '../../layout/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbNavigationComponent } from "../../layout/breadcrumb-navigation/breadcrumb-navigation/breadcrumb-navigation.component";
 
@@ -9,5 +9,5 @@ import { BreadcrumbNavigationComponent } from "../../layout/breadcrumb-navigatio
     imports: [BreadcrumbNavigationComponent]
 })
 export class BreadcrumbPageComponent {
-  @Input({ required: true }) breadcrumbs: Breadcrumb[] = [];
+  readonly breadcrumbs = input.required<Breadcrumb[]>();
 }

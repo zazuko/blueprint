@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, Signal, SimpleChanges, computed, signal, output } from '@angular/core';
+import { Component, OnChanges, Signal, SimpleChanges, computed, signal, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { Graph } from '../graph/model/graph.model';
@@ -18,8 +18,8 @@ import { ColorUtil } from '../../utils/color-util';
 })
 export class NeighborNodesComponent implements OnChanges {
 
-  @Input({ required: true }) graph: Graph;
-  @Input({ required: true }) subject: string;
+  readonly graph = input.required<Graph>();
+  readonly subject = input.required<string>();
 
   nodeSelected = output<GraphNode>();
 

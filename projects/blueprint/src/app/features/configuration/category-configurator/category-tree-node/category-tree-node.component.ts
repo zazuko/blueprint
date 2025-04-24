@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SkosConcept } from '../model/skos.model';
 
@@ -9,5 +9,5 @@ import { SkosConcept } from '../model/skos.model';
     styleUrl: './category-tree-node.component.scss'
 })
 export class CategoryTreeNodeComponent {
-  @Input({ required: true }) concept: SkosConcept;
+  readonly concept = input.required<SkosConcept>();
 }

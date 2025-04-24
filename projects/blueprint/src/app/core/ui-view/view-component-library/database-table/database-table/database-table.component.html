@@ -1,7 +1,7 @@
 <!-- a table with name, type settings references and Default Value and Note -->
-@if (table) {
+@if (table()) {
 
-<p-table [value]="table.columns">
+<p-table [value]="table().columns">
     <ng-template pTemplate="header">
         <tr>
             <th>Name</th>

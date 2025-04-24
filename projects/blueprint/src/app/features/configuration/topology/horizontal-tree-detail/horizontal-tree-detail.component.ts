@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, computed, inject, signal } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BreadcrumbPageComponent } from "../../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { Breadcrumb } from 'projects/blueprint/src/app/core/layout/breadcrumb-navigation/model/breadcrumb.model';
@@ -16,7 +16,7 @@ import { HierarchyDefinition } from '../service/model/hierarchy-definition.model
     imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule, TreeModule]
 })
 export class HorizontalTreeDetailComponent implements OnChanges {
-  @Input({ required: true }) id: string = '';
+  readonly id = input.required<string>();
 
   private readonly hierarchyService = inject(HierarchyService);
   private readonly loadingIndicator = inject(LoadingIndicatorService);

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ChipModule } from 'primeng/chip';
 
 import { DatabaseColumnSettings } from '../model/database.model';
@@ -10,5 +10,5 @@ import { DatabaseColumnSettings } from '../model/database.model';
   styleUrls: ['./database-settings-list.component.scss']
 })
 export class DatabaseSettingsListComponent {
-  @Input() list: DatabaseColumnSettings[] = [];
+  readonly list = input<DatabaseColumnSettings[]>([]);
 }

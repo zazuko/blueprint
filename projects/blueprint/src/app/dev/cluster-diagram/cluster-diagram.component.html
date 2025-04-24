@@ -1,5 +1,5 @@
 @if(treeNodeSignal() !== null) {
-<p-panel [toggleable]="true" [collapsed]="collapsed" (collapsedChange)="onCollapsedChange($event)">
+<p-panel [toggleable]="true" [collapsed]="collapsed()" (collapsedChange)="onCollapsedChange($event)">
     <ng-template pTemplate="header">
         <bp-avatar size="normal" [avatars]="treeNodeSignal().data.avatars" />
         <div>

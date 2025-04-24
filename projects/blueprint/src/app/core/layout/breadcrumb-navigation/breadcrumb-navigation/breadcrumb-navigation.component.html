@@ -1,5 +1,5 @@
 <div class="row">
-    @for (breadcrumb of breadcrumbs; track breadcrumb.label) {
+    @for (breadcrumb of breadcrumbs(); track breadcrumb.label) {
     <bp-breadcrumb [breadcrumb]="breadcrumb" />
     @if (!$last) {
     <div class="separator">

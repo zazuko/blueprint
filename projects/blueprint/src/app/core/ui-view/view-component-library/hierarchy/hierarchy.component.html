@@ -1,6 +1,6 @@
 <div class="circle-container">
-    <h3>{{label}}</h3>
-    @for(element of hierarchy; track element.iri ) {
+    <h3>{{label()}}</h3>
+    @for(element of hierarchy(); track element.iri ) {
     <div class="row">
         @if(!$last) {
         <div class="level">

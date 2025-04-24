@@ -1,4 +1,4 @@
-import { Component, signal, computed, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, signal, computed, OnChanges, SimpleChanges, input } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Table } from '../../features/inventory/inventory-detail/service/hierarchy-table.service';
 
@@ -10,7 +10,7 @@ import { Table } from '../../features/inventory/inventory-detail/service/hierarc
     styleUrl: './group-table.component.scss'
 })
 export class GroupTableComponent implements OnChanges {
-  @Input() data: Table | null = null;
+  readonly data = input<Table | null>(null);
 
   tableDataSignal = signal<Table | null>(null)
   groupByField = 'OCI Registry';
@@ -20,14 +20,14 @@ export class GroupTableComponent implements OnChanges {
     if (tableData === null) {
       return [];
     }
-    return this.data.header.map(header => header.label);
+    return this.data().header.map(header => header.label);
   });
   rowsHeaderSignal = computed(() => {
     const tableData = this.tableDataSignal();
     if (tableData === null) {
       return [];
     }
-    return this.data.header;
+    return this.data().header;
   })
 
   ngOnChanges(changes: SimpleChanges): void {
