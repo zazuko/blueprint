@@ -8,7 +8,7 @@ import {
   ConstructQuery,
 } from 'sparqljs';
 
-import rdfEnvironment from '@zazuko/env';
+import rdfEnvironment from '@zazuko/env/web';
 
 class SparqlUtil {
   private _parser: SparqlParser;
