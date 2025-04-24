@@ -15,7 +15,6 @@ import { providePrimeNG } from 'primeng/config';
 import { AppTheme } from './app-theme';
 
 import { environment } from '../environments/environment';
-import { env } from 'process';
 
 function initializeAppFactory(configService: ConfigService): () => void {
     return () => configService.fetchConfig()
