@@ -1,4 +1,4 @@
-import { Component, DestroyRef, Input, OnChanges, SimpleChanges, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnChanges, SimpleChanges, computed, effect, inject, signal, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { map } from 'rxjs';
@@ -26,8 +26,8 @@ import { LoadingIndicatorService } from '@blueprint/component/loading-indicator/
     imports: [BreadcrumbPageComponent, AvatarComponent, DragDropModule]
 })
 export class ClassDetailConfiguratorComponent implements OnChanges {
-  @Input({ required: true }) id: string;
-  @Input({ required: true }) className: string;
+  readonly id = input.required<string>();
+  readonly className = input.required<string>();
 
   private readonly sparqlService = inject(SparqlService);
   private readonly classMetadata = inject(UiClassMetadataService);

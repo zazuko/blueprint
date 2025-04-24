@@ -19,6 +19,8 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
     imports: [InfoSectionComponent]
 })
 export class DashHyperlinkViewerComponent implements OnInit, OnDestroy {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxHyperlinkViewer | null = null;
 
   public data: DashHyperLinkViewerData;

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, Input, OnChanges, SimpleChanges, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -48,7 +48,7 @@ import { labelAlphaSort } from '../../../core/utils/sort-functions';
   animations: [fadeInOut]
 })
 export class InventoryDetailComponent implements OnChanges {
-  @Input({ required: true }) public id: string | null = null;
+  public readonly id = input.required<string | null>();
 
   readonly #destroyRef = inject(DestroyRef);
   readonly #router = inject(Router);

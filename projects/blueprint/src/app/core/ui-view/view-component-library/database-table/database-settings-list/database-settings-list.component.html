@@ -1,4 +1,4 @@
-@for (item of list; track item) {
+@for (item of list(); track item) {
 @if (item.isKey) {
 <p-chip [label]="item.label" icon="pi pi-key"
     [style]="{'background-color': item.isPrimaryKey ? '#ff4081' : item.isKey ? '#03A9F4' : '#009688' }" />

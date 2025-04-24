@@ -1,4 +1,4 @@
-import { Component, Input, output } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchResultItemComponent } from "../search-result-item/search-result-item.component";
 import { ButtonModule } from 'primeng/button';
@@ -6,16 +6,15 @@ import { SearchResultItem } from '@blueprint/model/search-result-item/search-res
 import { fadeInOut } from '@blueprint/animation/index';
 
 @Component({
-    selector: 'bp-search-result-list',
-    templateUrl: './search-result-list.component.html',
-    styleUrl: './search-result-list.component.scss',
-    imports: [CommonModule, SearchResultItemComponent, ButtonModule],
-    animations: [fadeInOut]
+  selector: 'bp-search-result-list',
+  templateUrl: './search-result-list.component.html',
+  styleUrl: './search-result-list.component.scss',
+  imports: [CommonModule, SearchResultItemComponent, ButtonModule],
+  animations: [fadeInOut]
 })
 export class SearchResultListComponent {
-
-  @Input() searchResult: SearchResultItem[] = [];
-  @Input() total = 0;
+  readonly searchResult = input.required<SearchResultItem[]>();
+  readonly total = input.required<number>();
 
   more = output<void>();
   selected = output<SearchResultItem>();

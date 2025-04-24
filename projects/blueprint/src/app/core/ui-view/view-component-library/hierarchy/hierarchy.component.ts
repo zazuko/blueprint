@@ -1,4 +1,4 @@
-import { Component, Input, output } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 import { AvatarComponent } from '../../../component/avatar/avatar.component';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -9,8 +9,8 @@ import { TooltipModule } from 'primeng/tooltip';
   styleUrl: './hierarchy.component.scss'
 })
 export class HierarchyComponent {
-  @Input() hierarchy: HierarchyElement[] = [];
-  @Input() label: string = '';
+  readonly hierarchy = input<HierarchyElement[]>([]);
+  readonly label = input<string>('');
   nodeSelected = output<string>();
 
   emitNodeSelected(iri: string) {

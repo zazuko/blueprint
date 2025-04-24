@@ -1,13 +1,13 @@
 <div class="section">
   <div class="section-heading">
-    @if (icon) {
-<i class="section-icon fa fa-{{ icon }}"></i>
-} {{ heading }}
-    @if (tooltip) {
+    @if (icon()) {
+    <i class="section-icon fa fa-{{ icon() }}"></i>
+    } {{ heading() }}
+    @if (tooltip()) {
 
-      <i #infoicon class="section-info-icon fa fa-info-circle"></i>
-    
-}
+    <i #infoicon class="section-info-icon fa fa-info-circle"></i>
+
+    }
   </div>
   <ng-content></ng-content>
 </div>

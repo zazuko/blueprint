@@ -8,6 +8,7 @@ import {
   computed,
   signal,
   output,
+  input
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -31,8 +32,10 @@ import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 export class FilterPanelComponent implements OnChanges, OnDestroy {
   filtersChange = output<SearchFilter[]>();
 
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() filterItems: SearchFilter[] = [];
-  @Input() classCount: UiClassCount[] = [];
+  readonly classCount = input<UiClassCount[]>([]);
 
   filterItemsSignal = signal<SearchFilter[]>([]);
   classCountSignal = signal<UiClassCount[]>([]);

@@ -21,7 +21,11 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
     imports: [CommonModule, InfoSectionComponent]
 })
 export class DashLiteralViewerComponent implements OnInit, OnDestroy {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxLiteralViewer = null;
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() singleLine = false;
 
   data: DashLiteralViewerData = null;

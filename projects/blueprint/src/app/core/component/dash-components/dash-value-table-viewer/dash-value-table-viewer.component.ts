@@ -22,6 +22,8 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
     imports: [InfoSectionComponent, TableModule]
 })
 export class DashValueTableViewerComponent implements OnInit, OnDestroy {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxValueTableViewer = null;
   data: DashValueTableViewerData = null;
 

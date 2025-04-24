@@ -36,6 +36,8 @@ import { InfoSectionComponent } from '@blueprint/component/info-section';
  * is logged to the console.
  */
 export class DashGroupViewerComponent implements OnInit {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxGroupViewer = null;
 
   @ViewChild(DashHostDirective, { static: true }) dashHost: DashHostDirective;
