@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import {
     provideRouter, withComponentInputBinding, withInMemoryScrolling,
 } from '@angular/router';
@@ -24,6 +24,7 @@ function initializeAppFactory(configService: ConfigService): () => void {
 const dontUseAuth = !environment.skipAuthentication;
 export const appConfig: ApplicationConfig = {
     providers: [
+        provideExperimentalZonelessChangeDetection(),
         provideHttpClient(environment.skipAuthentication ? withInterceptors([]) : withInterceptors([authInterceptor])),
         provideRouter(routes,
             withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),

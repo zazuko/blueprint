@@ -190,7 +190,7 @@ ${customer.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.ir
   }
 
   ngOnDestroy(): void {
-    this.#listenedElements.forEach(e => e.removeAllListeners());
+    this.#listenedElements.forEach(e => (e as any).removeAllListeners());
   }
 }
 
