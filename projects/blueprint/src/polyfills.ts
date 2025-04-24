@@ -50,7 +50,7 @@ import 'zone.js'; // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-(window as any).process = require('process/browser');
+// (window as any).process = require('process/browser');
 
 (window as any).mermaidFunction = function (node: string, componentId: string) {
     console.log("node", node);
