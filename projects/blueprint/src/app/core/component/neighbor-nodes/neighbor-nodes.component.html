@@ -8,15 +8,11 @@
 
     <div>
         <div class="node-list">
-            @for(node of nodeMap().get(key); track node.id) {
+            @for(node of nodeMap().get(key); track node.iri) {
 
-            <div class="node" (click)="emitNodeSelected(node)" @fade>
-                <div class="avatar"
-                    [ngStyle]="{'background-color': colorUtil.getColorForIndex(Number(node.colorIndex))}">
-                    <i [ngClass]="node.icon"></i>
-                </div>
-                <div class="label">{{node.label}}</div>
-            </div>
+            <bp-hierarchy-card [avatars]="node.avatars" [firstLine]="node.label" (click)="emitNodeSelected(node)"
+                [secondLine]="node.classLabel.join()"></bp-hierarchy-card>
+
             }
         </div>
     </div>

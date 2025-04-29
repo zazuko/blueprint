@@ -44,7 +44,7 @@ import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-
 import { fadeInOut, fadeIn } from '@blueprint/animation/index';
 import { AggregateRelationComponent } from "../../../core/ui-view/view-component-library/aggregate-relation/aggregate-relation.component";
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
-import { NodeElement } from '@blueprint/model/node-element/node-element.class';
+import { INodeElement, NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
@@ -233,6 +233,10 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   onNodeSelected(node: GraphNode): void {
     this.expandedNode = node;
     this.selectByIri(node.id);
+  }
+
+  onNodeElementSelected(node: INodeElement): void {
+    this.selectByIri(node.iri);
   }
 
   selectByIri(iri: string): void {

@@ -52,7 +52,7 @@
 
 
   } @else if (routeFragment() === 'Nearby') {
-  <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeSelected($event)" @fadeIn />
+  <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeElementSelected($event)" @fadeIn />
   } @else if (routeFragment() === 'Context') {
 
   <div class="subject-view" @fadeIn>
