@@ -26,9 +26,9 @@
 
   <!-- Bottom section of primary nav -->
   <div class="bottom-items">
-    <p-overlayPanel #op [styleClass]="'theme-select'">
+    <p-popover #op [styleClass]="'theme-select'">
       <bp-theme-picker-menu></bp-theme-picker-menu>
-    </p-overlayPanel>
+    </p-popover>
     <div (click)="op.toggle($event)" tabindex="10" (keyup.enter)="op.toggle($event)">
       @switch (theme()) {
       @case ('light') {
@@ -45,13 +45,3 @@
 
   </div>
 </nav>
-
-<!-- Tablet: Second horizontal nav layer which opens the secondary nav
-     @if (activeRouteItem() === DOCS_ROUTE || activeRouteItem() === REFERENCE_ROUTE) { 
-  <div class="bp-secondary-tablet-bar">
-    <button type="button" (click)="openMobileNav($event)">
-      <mat-icon>menu</mat-icon>
-      <span>Docs</span>
-    </button>
-  </div>
-} -->

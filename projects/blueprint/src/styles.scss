@@ -95,22 +95,22 @@ body {
 }
 
 .theme-select {
-  margin-left: 50px;
-  margin-top: 20px;
+  margin-left: 50px !important;
+  margin-top: 30px !important;
   padding: none !important;
 
   &:before {
-    content: none;
+    content: none !important;
   }
 
   &:after {
-    content: none;
+    content: none !important;
   }
 
 
   @include mq.for-tablet {
-    margin-left: 0;
-    margin-top: 44px;
+    margin-left: 25px !important;
+    margin-top: 44px !important;
   }
 }
 

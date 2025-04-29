@@ -32,13 +32,13 @@ const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [
   imports: [ThemePickerMenuItemComponent]
 })
 export class ThemePickerMenuComponent {
-  private readonly themeManager = inject(ThemeManager);
+  readonly #themeManager = inject(ThemeManager);
 
-  currentTheme = this.themeManager.theme;
+  currentTheme = this.#themeManager.theme;
   menuItems = THEME_PICKER_MENU_ITEMS;
 
   setTheme(theme: Theme): void {
-    this.themeManager.setTheme(theme);
+    this.#themeManager.setTheme(theme);
   }
 
 }
