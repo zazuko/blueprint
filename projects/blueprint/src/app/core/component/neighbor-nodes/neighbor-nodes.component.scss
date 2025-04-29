@@ -24,6 +24,8 @@ $node-width: 6.5em;
     display: flex;
     flex-direction: row;
     overflow-x: auto;
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 
 .node {
@@ -35,6 +37,7 @@ $node-width: 6.5em;
     padding: 1em;
     margin-bottom: 0.5em;
     border-radius: 0.5em;
+   
 
     .avatar {
         display: flex;
