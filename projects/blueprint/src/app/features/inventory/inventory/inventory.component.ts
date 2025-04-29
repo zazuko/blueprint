@@ -7,14 +7,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { fadeInOut } from '@blueprint/animation/index';
 import { HierarchyCardComponent } from './hierarchy-card/hierarchy-card.component';
-import { ConfigurationCardComponent } from '@blueprint/component/configuration-card/configuration-card.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 
 @Component({
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, HierarchyCardComponent, TooltipModule],
+  imports: [
+    RouterLink,
+    BreadcrumbPageComponent,
+    HierarchyCardComponent,
+    TooltipModule
+  ],
   animations: [fadeInOut]
 })
 export class InventoryComponent {
