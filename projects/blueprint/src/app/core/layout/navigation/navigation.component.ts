@@ -2,10 +2,9 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 
-import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
 
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PopoverModule } from 'primeng/popover';
 
 import { NavigationState } from './service/navigation-state.service';
 import { ThemeManager } from '../../service/theme-manager/theme-manager.service';
@@ -49,13 +48,13 @@ const NAVIGATION_ITEMS: NavigationMenuItem[] = [
     MobileLogoButtonComponent,
     BrandLogoComponent,
     NavMenuItemComponent,
-    OverlayPanelModule
+    PopoverModule
   ]
 })
 export class NavigationComponent {
   private readonly navigationState = inject(NavigationState);
-  private readonly themeManager = inject(ThemeManager);
-  private readonly router = inject(Router);
+  readonly #themeManager = inject(ThemeManager);
+  readonly #router = inject(Router);
 
   navigationItems = NAVIGATION_ITEMS;
 
@@ -64,7 +63,7 @@ export class NavigationComponent {
 
 
   activeRouteItem = this.navigationState.primaryActiveRouteItem;
-  theme = this.themeManager.theme;
+  theme = this.#themeManager.theme;
 
 
   openedMenu: MenuType | null = null;
@@ -100,7 +99,7 @@ export class NavigationComponent {
   }
 
   onNavigationItemSelected(item: NavigationMenuItem): void {
-    this.router.navigate([item.route]);
+    this.#router.navigate([item.route]);
   }
 
 }
