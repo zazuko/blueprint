@@ -9,10 +9,12 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+
+import { TabsModule } from 'primeng/tabs';
 
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
@@ -48,15 +50,6 @@ import { CommentComponent } from "../../../core/component/comment/comment.compon
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
 
 
-// create an enum about page views we have Views, Graph and Nearby
-
-enum PageView {
-  Details,
-  Graph,
-  Nearby,
-  Views
-}
-
 @Component({
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
@@ -75,28 +68,28 @@ enum PageView {
     DetailsComponent,
     AggregateRelationComponent,
     TooltipModule,
-    CommentComponent
+    CommentComponent,
+    TabsModule
   ]
 })
 export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly graphService = inject(GraphService);
-  private readonly selectionService = inject(SelectionService);
-  private readonly viewData = inject(ViewDataService);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly #route = inject(ActivatedRoute);
+  readonly #router = inject(Router);
+  readonly #graphService = inject(GraphService);
+  readonly #selectionService = inject(SelectionService);
+  readonly #viewData = inject(ViewDataService);
+  readonly #destroyRef = inject(DestroyRef);
   public readonly loadingIndicatorService = inject(LoadingIndicatorService);
-  private readonly uiDetailService = inject(UiDetailService);
+  readonly #uiDetailService = inject(UiDetailService);
 
   public compositionLinks = signal<CompositionLinkResult[]>([]);
   public thisNodeElement = signal<NodeElement | null>(null);
 
   tabNavItems: MenuItem[] = [
-    { label: 'Information', icon: 'pi pi-info-circle' },
-    { label: 'Context', icon: 'pi pi-sitemap' },
-
-    { label: 'Nearby', icon: 'pi pi-fw pi-calendar' },
-    { label: 'Graph', icon: 'fa-solid fa-circle-nodes' },
+    { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
+    { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
+    { label: 'Nearby', icon: 'pi pi-fw pi-calendar', fragment: 'Nearby' },
+    { label: 'Graph', icon: 'fa-solid fa-circle-nodes', fragment: 'Graph' },
   ];
 
   public activeItem = this.tabNavItems[0];
@@ -104,11 +97,8 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
   subject: string = '';
   graphOpenState = signal(true);
-  currentPageView = signal<PageView>(PageView.Details);
   expandedNode: GraphNode | null = null;
-
-  public PageView: typeof PageView = PageView;
-
+  routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
   uiView: UiView[] = [];
   uiHierarchy: UiHierarchyView[] = [];
@@ -132,16 +122,16 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   linkPanelIsOpen = false;
 
   constructor() {
-    this.routeParamMap$ = this.route.paramMap;
+    this.routeParamMap$ = this.#route.paramMap;
   }
 
   ngOnInit(): void {
 
-    this.graphService.clearGraph();
+    this.#graphService.clearGraph();
 
 
-    this.graphService.graph$.pipe(
-      takeUntilDestroyed(this.destroyRef),
+    this.#graphService.graph$.pipe(
+      takeUntilDestroyed(this.#destroyRef),
       map(graph => {
         if (this.expandedNode !== null) {
           // set the nodes without x and y to the expanded node's x and y. this makes new nodes appear from the expanded node
@@ -169,17 +159,17 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     // fetch the view for the subject on route change
     this.routeParamMap$.pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntilDestroyed(this.#destroyRef),
       tap(() => {
         this.loadingIndicatorService.loading();
       }),
       map((params) => params.get('subject')),
       switchMap((subject) => {
         this.subject = subject;
-        this.graphService.expandNode(subject);
-        return this.viewData.getViewForSubject(rdfEnvironment.namedNode(subject));
+        this.#graphService.expandNode(subject);
+        return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject));
       }),
-      takeUntilDestroyed(this.destroyRef),
+      takeUntilDestroyed(this.#destroyRef),
     ).subscribe(
       {
         next: (viewGraph) => {
@@ -191,7 +181,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
           // ---- composition link result end
 
           const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
-          const uiDetails = this.uiDetailService.extractUiDetailComponents(this.subject, viewGraph);
+          const uiDetails = this.#uiDetailService.extractUiDetailComponents(this.subject, viewGraph);
           this.uiDetailElementsSignal.set(uiDetails.sort((a, b) => a.order - b.order));
           // make it better 
           const subjectGraph = rdfEnvironment.clownface(viewGraph).namedNode(this.subject);
@@ -221,7 +211,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
           this.uiHierarchy = cfHierarchyGraph.map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraph));
 
           this.loadingIndicatorService.done();
-          this.selectionService.setSelectedNode(this.subject);
+          this.#selectionService.setSelectedNode(this.subject);
         },
         error: (error) => {
           console.error('error', error);
@@ -229,15 +219,15 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
+
+
+
   }
 
   ngOnDestroy(): void {
-    this.selectionService.clearSelection();
+    this.#selectionService.clearSelection();
   }
 
-  toggleSidebar(): void {
-    this.expanded = !this.expanded;
-  }
 
   // graph events
   onNodeSelected(node: GraphNode): void {
@@ -246,21 +236,21 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectByIri(iri: string): void {
-    this.selectionService.setSelectedNode(iri);
-    this.router.navigate(['explore', iri]);
+    this.#selectionService.setSelectedNode(iri);
+    this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
   onNodeExpanded(node: GraphNode): void {
     this.expandedNode = node;
     this.loadingIndicatorService.loading();
 
-    this.graphService.expandNode(node.id);
+    this.#graphService.expandNode(node.id);
   }
 
   onNodeFocused(node: GraphNode): void {
-    this.graphService.clearGraph();
+    this.#graphService.clearGraph();
     this.expandedNode = node;
-    this.graphService.expandNode(node.id);
+    this.#graphService.expandNode(node.id);
   }
 
   onMultiLinkSelected(multiLinks: MultiLinkLabels): void {
@@ -270,26 +260,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  showView(view: PageView) {
-    this.currentPageView.set(view);
-  }
 
-  openView(item: MenuItem) {
-    switch (item.label) {
-      case 'Information':
-        this.currentPageView.set(PageView.Details);
-        break;
-      case 'Nearby':
-        this.currentPageView.set(PageView.Nearby);
-        break;
-      case 'Graph':
-        this.currentPageView.set(PageView.Graph);
-        break;
-      case 'Context':
-        this.currentPageView.set(PageView.Views);
-        break;
-      default:
-        this.currentPageView.set(PageView.Details);
-    }
-  }
+
+
 }

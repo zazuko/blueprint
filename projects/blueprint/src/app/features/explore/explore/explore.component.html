@@ -3,13 +3,22 @@
   <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject" [subjectLabel]="subjectLabel()"
     [subjectClassLabel]="subjectClassLabel()" [avatars]="subjectAvatars()" />
 
+  <p-tabs [value]="routeFragment()">
+    <p-tablist>
+      @for(tab of tabNavItems; track tab.label){
+      <p-tab [value]="tab.fragment" routerLinkActive routerLink="./" [fragment]="tab.fragment"
+        class="flex items-center !gap-2 text-inherit">
+        <i [class]="tab.icon"></i>
+        <span>{{ tab.label }}</span>
+      </p-tab>
+      }
+    </p-tablist>
+  </p-tabs>
 
-  <p-tabMenu [model]="tabNavItems" [activeItem]="activeItem" (activeItemChange)="openView($event)" />
 
 
 
-  @if(currentPageView() === PageView.Details) {
-
+  @if(routeFragment() === 'Information') {
   <div class="subject-view" @fadeIn>
 
 
@@ -42,9 +51,9 @@
   </div>
 
 
-  } @else if (currentPageView() === PageView.Nearby) {
+  } @else if (routeFragment() === 'Nearby') {
   <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeSelected($event)" @fadeIn />
-  } @else if (currentPageView() === PageView.Views) {
+  } @else if (routeFragment() === 'Context') {
 
   <div class="subject-view" @fadeIn>
 
@@ -75,7 +84,7 @@
   </div>
   }
   <!-- graph view: content is moved away if not shown-->
-  <div class="graph" [ngClass]="currentPageView() === PageView.Graph ? '' : 'weg'">
+  <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
 
