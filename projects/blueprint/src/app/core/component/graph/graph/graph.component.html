@@ -1,9 +1,10 @@
 <!-- set with and hight to svgHeight and svgWidth-->
-<div class="graph-component" [style.width.px]="svgWidth" [style.height.px]="svgHeight">
+<div class="graph-component" [style.width.px]="svgWidthSignal()" [style.height.px]="svgHeightSignal()">
 
   <!-- the graph svg -->
-  <svg [attr.width]="svgWidth" [attr.height]="svgHeight" [attr.viewBox]="'0 0 ' + svgWidth + ' ' + svgHeight"
-    xmlns="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" class="graph-panel">
+  <svg [attr.width]="svgWidthSignal()" [attr.height]="svgHeightSignal()"
+    [attr.viewBox]="'0 0 ' + svgWidthSignal() + ' ' + svgHeightSignal()" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml" class="graph-panel">
     <g [attr.transform]="'translate(' + xOffset() + ', ' + yOffset() + ')'">
       <g class="zoomable">
         <!-- links -->

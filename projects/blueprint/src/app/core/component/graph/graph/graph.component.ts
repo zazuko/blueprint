@@ -75,8 +75,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   svgWidthSignal = signal(0);
   svgHeightSignal = signal(0);
-  svgWidth = 0;
-  svgHeight = 0;
 
   dragstart = { x: 0, y: 0 };
 
@@ -99,7 +97,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           this.layoutQueue.push(graph);
           this.layout.stop();
         } else {
-          this.createChart(graph);
+          this.#createChart(graph);
         }
       }
     }
@@ -118,7 +116,7 @@ export class GraphComponent implements OnInit, OnDestroy {
         this.layout.stop();
       }
       this.layout = this.#createLayout();
-      this.createChart(this.graph());
+      this.#createChart(this.graph());
     });
 
     this.#resizeObserver = new window.ResizeObserver(() => {
@@ -138,19 +136,16 @@ export class GraphComponent implements OnInit, OnDestroy {
 
     // zoom out 
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
-    // zoom out 
-    // this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
 
   }
 
 
 
-  private createChart(graph: Graph): void {
+  #createChart(graph: Graph): void {
 
-    console.log('%ccreateChart', 'color:orange', graph);
     if (this.layout && this.graph()) {
       this.layout.nodes(graph.nodes);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       this.layout.links(graph.links as any);
       this.layout.start(0, 0, 0, 0, true, false);
     }
@@ -200,16 +195,13 @@ export class GraphComponent implements OnInit, OnDestroy {
       this.layout.links([]);
     }
     // Get the container dimensions
-    const dims =
-      this.#element.parentNode.getBoundingClientRect();
-    this.svgWidthSignal.set(dims.width);
-    this.svgHeightSignal.set(dims.height);
+    const elementDimensions = this.#element.parentNode.getBoundingClientRect();
+    this.svgWidthSignal.set(elementDimensions.width);
+    this.svgHeightSignal.set(elementDimensions.height);
 
-    this.svgWidth = dims.width;
-    this.svgHeight = dims.height;
 
     const layout = new LayoutAdaptor();
-    layout.size([dims.width, dims.height]);
+    layout.size([elementDimensions.width, elementDimensions.height]);
     layout.jaccardLinkLengths(200, 1);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.start, () => {
@@ -234,7 +226,7 @@ export class GraphComponent implements OnInit, OnDestroy {
       if (this.layoutQueue.length > 0) {
         // run the next layout
         const graph = this.layoutQueue.shift();
-        this.createChart(graph);
+        this.#createChart(graph);
       }
     });
 
