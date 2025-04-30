@@ -56,6 +56,7 @@
     "@angular/compiler-cli": "^19.2.8",
     "@changesets/cli": "^2.29.2",
     "@types/clownface": "^2.0.10",
+    "@types/d3": "^7.4.3",
     "@types/jasmine": "~3.10.0",
     "@types/n3": "^1.24.2",
     "@types/node": "^22.14.1",

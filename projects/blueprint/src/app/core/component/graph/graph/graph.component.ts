@@ -1,22 +1,19 @@
-// combined pk ->  <http://data.table.org/Plankton-metadata/Messorte>
 import {
   Component,
   OnInit,
   ElementRef,
   OnDestroy,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectorRef,
-  NgZone,
   inject,
   signal,
   input,
-  output
+  output,
+  DestroyRef,
+  effect
 } from '@angular/core';
 
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 
-import { select, scaleOrdinal, schemeSet2, schemeSet3, zoom, ZoomBehavior } from 'd3';
+import { select, zoom, ZoomBehavior, Selection, BaseType } from 'd3';
 
 import { ButtonModule } from 'primeng/button';
 
@@ -31,6 +28,7 @@ import { GraphNode } from '../model/graph-node.model';
 import { Graph } from '../model/graph.model';
 import { GraphLink } from '../model/graph-link.model';
 import { ColorUtil } from '@blueprint/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'bp-graph',
@@ -43,47 +41,40 @@ import { ColorUtil } from '@blueprint/utils';
     ButtonModule
   ]
 })
-export class GraphComponent implements OnInit, OnChanges, OnDestroy {
+export class GraphComponent implements OnInit, OnDestroy {
   readonly graph = input<Graph>(null);
-  disableZoomMenu = input<boolean>(false);
-  disableNodeMenu = input<boolean>(false);
+  readonly disableZoomMenu = input<boolean>(false);
+  readonly disableNodeMenu = input<boolean>(false);
+
   readonly xOffset = input('0');
   readonly yOffset = input('0');
 
-  nodeSelected = output<GraphNode>();
-  nodeExpanded = output<GraphNode>();
-  nodeFocused = output<GraphNode>();
-  linkSelected = output<string>();
-  multiLinkSelected = output<MultiLinkLabels>();
+  readonly nodeSelected = output<GraphNode>();
+  readonly nodeExpanded = output<GraphNode>();
+  readonly nodeFocused = output<GraphNode>();
+  readonly linkSelected = output<string>();
+  readonly multiLinkSelected = output<MultiLinkLabels>();
 
 
-  private readonly element = inject(ElementRef);
-  private readonly ngZone = inject(NgZone);
-  private readonly cd = inject(ChangeDetectorRef);
+  readonly #element = inject(ElementRef).nativeElement;
+  readonly #destroyRef = inject(DestroyRef);
 
   public linksSignal = signal<GraphLink[]>([]);
   public nodesSignal = signal<GraphNode[]>([]);
 
-  private destroy$ = new Subject<void>();
-
-  private _indexedColorScheme;
-  private _dynamicColorScheme;
-  DEFAULT_QUERY_LIMIT;
 
   public layout: LayoutAdaptor | null = null;
-  private d3zoom;
-  private svg;
-  private zoomLayer;
-  private resizeOb: ResizeObserver;
-  private resizeOb$ = new Subject<void>();
-  private resizeSub: Subscription;
+  private d3zoom; // ZoomBehavior<Element, unknown> | null = null;
+  private svg: Selection<BaseType, unknown, null, undefined> | null = null;
+  private zoomLayer: Selection<BaseType, unknown, null, undefined> | null = null;
+
+  #resizeObserver: ResizeObserver | null = null;
+  #resize$ = new Subject<void>();
 
   pinNodes = true;
 
   svgWidthSignal = signal(0);
   svgHeightSignal = signal(0);
-  svgWidth = 0;
-  svgHeight = 0;
 
   dragstart = { x: 0, y: 0 };
 
@@ -94,22 +85,23 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const newGraph: Graph = changes['graph']?.currentValue;
-    if (newGraph) {
+
+  constructor() {
+    effect(() => {
+      const graph = this.graph();
 
       if (this.layout) {
         this.layout.stop();
 
         if (this.layoutIsRunning) {
-          this.layoutQueue.push(newGraph);
+          this.layoutQueue.push(graph);
           this.layout.stop();
         } else {
-
-          this.createChart(newGraph);
+          this.#createChart(graph);
         }
       }
     }
+    );
   }
 
   ngOnInit(): void {
@@ -117,56 +109,43 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     if (!window.ResizeObserver) {
       throw new Error('please install a polyfill for ResizeObserver');
     }
-    this.resizeSub = this.resizeOb$.subscribe(() => {
+    this.#resize$.pipe(
+      takeUntilDestroyed(this.#destroyRef),
+    ).subscribe(() => {
       if (this.layoutIsRunning) {
         this.layout.stop();
       }
-
-      this.layout = this.createLayout();
-      this.createChart(this.graph());
-      this.cd.detectChanges();
+      this.layout = this.#createLayout();
+      this.#createChart(this.graph());
     });
 
-    this.resizeOb = this.ngZone.runOutsideAngular(
-      () =>
-        new window.ResizeObserver(() => {
-          this.resizeOb$.next();
-        })
-    );
-    this.resizeOb.observe(this.element.nativeElement.parentNode);
+    this.#resizeObserver = new window.ResizeObserver(() => {
+      this.#resize$.next();
+    });
 
-    this.initStaticVisualizationElements();
-    this.layout = this.createLayout();
-    this.d3zoom = this.createZoom();
+    this.#resizeObserver.observe(this.#element.parentNode);
+
+    this.svg = select(this.#element).select('svg');
+    this.zoomLayer = this.svg.select('.zoomable');
+
+    this.layout = this.#createLayout();
+    this.d3zoom = this.#createZoom();
+
+    // this enables the panning of the graph
     this.svg.call(this.d3zoom).on('dblclick.zoom', null);
 
-
-    // zoom out 
-    this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
     // zoom out 
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
 
-    // this.createChart(this._nodes, this._links);
-
   }
 
-  ngOnDestroy(): void {
-    if (this.resizeSub) {
-      this.resizeSub.unsubscribe();
-    }
 
-    if (this.resizeOb) {
-      this.resizeOb.unobserve(this.element.nativeElement);
-    }
 
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  #createChart(graph: Graph): void {
 
-  private createChart(graph: Graph): void {
     if (this.layout && this.graph()) {
       this.layout.nodes(graph.nodes);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       this.layout.links(graph.links as any);
       this.layout.start(0, 0, 0, 0, true, false);
     }
@@ -189,11 +168,11 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     console.log('link selected', link);
   }
 
-  onZoomIn(): void {
+  zoomInOneStep(): void {
     this.svg.transition().call(this.d3zoom.scaleBy, 1.618);
   }
 
-  onZoomOut(): void {
+  zoomOutOneStep(): void {
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
   }
 
@@ -205,8 +184,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     return ColorUtil.getColorForIndex(Number(colorIndex));
   }
 
-  private createLayout(): LayoutAdaptor {
-    if (!this.element.nativeElement.parentNode) {
+  #createLayout(): LayoutAdaptor {
+    if (!this.#element.parentNode) {
       throw new Error('no parent node')
     }
 
@@ -216,16 +195,13 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       this.layout.links([]);
     }
     // Get the container dimensions
-    const dims =
-      this.element.nativeElement.parentNode.getBoundingClientRect();
-    this.svgWidthSignal.set(dims.width);
-    this.svgHeightSignal.set(dims.height);
+    const elementDimensions = this.#element.parentNode.getBoundingClientRect();
+    this.svgWidthSignal.set(elementDimensions.width);
+    this.svgHeightSignal.set(elementDimensions.height);
 
-    this.svgWidth = dims.width;
-    this.svgHeight = dims.height;
 
     const layout = new LayoutAdaptor();
-    layout.size([dims.width, dims.height]);
+    layout.size([elementDimensions.width, elementDimensions.height]);
     layout.jaccardLinkLengths(200, 1);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     layout.on(cola.EventType.start, () => {
@@ -250,7 +226,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       if (this.layoutQueue.length > 0) {
         // run the next layout
         const graph = this.layoutQueue.shift();
-        this.createChart(graph);
+        this.#createChart(graph);
       }
     });
 
@@ -259,52 +235,24 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
   // setup the zoom behavior
 
-  private createZoom(): ZoomBehavior<Element, unknown> {
+  #createZoom(): ZoomBehavior<Element, unknown> {
     // Create a new zoom behavior
     const d3zoom = zoom();
 
-    // Set the zoomable area to the size of the SVG
-    //  this.setZoomExtent(d3zoom);
 
     // Set the minimum and maximum zoom levels
-    this.setZoomScaleExtent(d3zoom);
+    d3zoom.scaleExtent([0.05, 1]);
 
     // Set up an event listener for the 'zoom' event
-    this.setZoomEvent(d3zoom);
+    d3zoom.on('zoom', (event) => {
+      this.zoomLayer.attr('transform', event.transform);
+    });
 
     return d3zoom;
   }
 
-  // Set the zoomable area to the size of the SVG
-  private setZoomExtent(d3zoom: ZoomBehavior<Element, unknown>): void {
-    d3zoom.extent([
-      [0, 0],
-      [this.svgWidth, this.svgHeight],
-    ]);
-  }
 
-  // Set the minimum and maximum zoom levels
-  private setZoomScaleExtent(d3zoom: ZoomBehavior<Element, unknown>): void {
-    d3zoom.scaleExtent([0.05, 1]);
-  }
 
-  // Set up an event listener for the 'zoom' event
-  private setZoomEvent(d3zoom: ZoomBehavior<Element, unknown>): void {
-    d3zoom.on('zoom', (event) => {
-      this.zoomLayer.attr('transform', event.transform);
-    });
-  }
-
-  // end setup the zoom behavior
-
-  initStaticVisualizationElements(): void {
-    this._indexedColorScheme = scaleOrdinal(schemeSet2).domain([
-      ...Array(schemeSet2.length).keys(),
-    ]);
-    this._dynamicColorScheme = scaleOrdinal(schemeSet3);
-    this.svg = select(this.element.nativeElement).select('svg');
-    this.zoomLayer = this.svg.select('.zoomable');
-  }
 
   dragStart(event: DragEvent, node: GraphNode): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -341,5 +289,26 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   onMultiLinkSelected(links: MultiLinkLabels) {
     this.isLinkPanelOpen = true;
     this.multiLinks = links;
+  }
+
+  /**
+   * This method is called when the component is destroyed.
+   * 
+   * It stops the layout and disconnects the resize observer.
+   */
+  ngOnDestroy(): void {
+    if (this.layout) {
+      this.layout.stop();
+      this.layout.nodes([]);
+      this.layout.links([]);
+      this.layout = null;
+    }
+
+    if (this.#resizeObserver) {
+      // stop observing the element
+      this.#resizeObserver.unobserve(this.#element);
+      this.#resizeObserver.disconnect();
+      this.#resizeObserver = null;
+    }
   }
 }
