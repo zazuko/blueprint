@@ -88,7 +88,10 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
 
+
+
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('%cngOnChanges', 'color:cyan', changes);
     const newGraph: Graph = changes['graph']?.currentValue;
     if (newGraph) {
 
@@ -100,7 +103,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
           this.layout.stop();
         } else {
 
-          this.#createChart(newGraph);
+          this.createChart(newGraph);
         }
       }
     }
@@ -118,7 +121,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
         this.layout.stop();
       }
       this.layout = this.#createLayout();
-      this.#createChart(this.graph());
+      this.createChart(this.graph());
     });
 
     this.#resizeObserver = new window.ResizeObserver(() => {
@@ -133,6 +136,12 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     this.layout = this.#createLayout();
     this.d3zoom = this.#createZoom();
 
+    // this enables the panning of the graph
+    this.svg.call(this.d3zoom).on('dblclick.zoom', null);
+
+
+    // zoom out 
+    this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
     // zoom out 
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
 
@@ -140,8 +149,9 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
-  #createChart(graph: Graph): void {
+  private createChart(graph: Graph): void {
 
+    console.log('%ccreateChart', 'color:orange', graph);
     if (this.layout && this.graph()) {
       this.layout.nodes(graph.nodes);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -228,7 +238,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       if (this.layoutQueue.length > 0) {
         // run the next layout
         const graph = this.layoutQueue.shift();
-        this.#createChart(graph);
+        this.createChart(graph);
       }
     });
 
@@ -236,9 +246,12 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // setup the zoom behavior
+
   #createZoom(): ZoomBehavior<Element, unknown> {
     // Create a new zoom behavior
     const d3zoom = zoom();
+
+
     // Set the minimum and maximum zoom levels
     d3zoom.scaleExtent([0.05, 1]);
 
@@ -249,6 +262,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
     return d3zoom;
   }
+
+
 
 
   dragStart(event: DragEvent, node: GraphNode): void {
