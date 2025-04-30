@@ -3,13 +3,12 @@ import {
   OnInit,
   ElementRef,
   OnDestroy,
-  OnChanges,
-  SimpleChanges,
   inject,
   signal,
   input,
   output,
-  DestroyRef
+  DestroyRef,
+  effect
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
@@ -42,7 +41,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ButtonModule
   ]
 })
-export class GraphComponent implements OnInit, OnChanges, OnDestroy {
+export class GraphComponent implements OnInit, OnDestroy {
   readonly graph = input<Graph>(null);
   readonly disableZoomMenu = input<boolean>(false);
   readonly disableNodeMenu = input<boolean>(false);
@@ -89,24 +88,22 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   layoutQueue: Graph[] = [];
 
 
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('%cngOnChanges', 'color:cyan', changes);
-    const newGraph: Graph = changes['graph']?.currentValue;
-    if (newGraph) {
+  constructor() {
+    effect(() => {
+      const graph = this.graph();
 
       if (this.layout) {
         this.layout.stop();
 
         if (this.layoutIsRunning) {
-          this.layoutQueue.push(newGraph);
+          this.layoutQueue.push(graph);
           this.layout.stop();
         } else {
-
-          this.createChart(newGraph);
+          this.createChart(graph);
         }
       }
     }
+    );
   }
 
   ngOnInit(): void {
