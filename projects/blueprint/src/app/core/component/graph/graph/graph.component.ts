@@ -136,11 +136,10 @@ export class GraphComponent implements OnInit, OnDestroy {
     // this enables the panning of the graph
     this.svg.call(this.d3zoom).on('dblclick.zoom', null);
 
-
     // zoom out 
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
     // zoom out 
-    this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
+    // this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
 
   }
 
