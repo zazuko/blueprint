@@ -8,9 +8,10 @@ class _ColorUtil {
   private readonly _numberOfColors = this._colors.length;
 
   constructor() {
-    this._indexedColorScheme = scaleOrdinal(this._colors).domain([
+    const scale = scaleOrdinal(this._colors).domain([
       ...Array(this._colors.length).keys(),
-    ]);
+    ].map(String));
+    this._indexedColorScheme = (colorIndex: number) => scale(String(colorIndex));
   }
 
   getColorForIndex(index: number): string {

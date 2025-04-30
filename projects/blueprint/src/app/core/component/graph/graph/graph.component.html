@@ -33,10 +33,11 @@
 
     <!-- the zoom menu -->
 
-    <p-button icon="pi pi-search-plus" [rounded]="true" [outlined]="true" aria-label="Zoom in" (click)="onZoomIn()" />
+    <p-button icon="pi pi-search-plus" [rounded]="true" [outlined]="true" aria-label="Zoom in"
+      (click)="zoomInOneStep()" />
 
     <p-button icon="pi pi-search-minus" [rounded]="true" [outlined]="true" aria-label="Zoom out"
-      (click)="onZoomOut()" />
+      (click)="zoomOutOneStep()" />
 
     <!-- end zoom menu -->
   </div>
