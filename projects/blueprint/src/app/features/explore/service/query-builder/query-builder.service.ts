@@ -10,11 +10,12 @@ import { rdf, blueprint, shacl, rdfs } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
-import { sparqlUtils } from '@blueprint/utils';
+
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
 import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 
 
 @Injectable({

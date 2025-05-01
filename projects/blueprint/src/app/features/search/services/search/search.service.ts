@@ -18,13 +18,13 @@ import { QleverFullTextSearch } from './full-text-search/qlever-full-text-search
 import { blueprint, rdf } from '@blueprint/ontology';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { sparqlUtils } from '@blueprint/utils';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 import { SearchResult } from '@blueprint/model/search-result/search-result';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 import { ConfigService, FullTextSearchDialect } from '@blueprint/service/config/config.service';
+import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 
 @Injectable({
   providedIn: 'root',

@@ -14,13 +14,13 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
-import { labelAlphaSort } from '@blueprint/utils';
+import { labelAlphaSort } from '../../../core/utils/sort-functions';
 
 @Component({
-    selector: 'bp-detail-configurator',
-    imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent, FormsModule, InputTextModule],
-    templateUrl: './detail-configurator.component.html',
-    styleUrl: './detail-configurator.component.scss'
+  selector: 'bp-detail-configurator',
+  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent, FormsModule, InputTextModule],
+  templateUrl: './detail-configurator.component.html',
+  styleUrl: './detail-configurator.component.scss'
 })
 export class DetailConfiguratorComponent {
 
