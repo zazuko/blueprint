@@ -104,8 +104,10 @@ export class GraphService {
         const neighborNodes = links.filter(link => link.source.iri === currentNode.iri || link.target.iri === currentNode.iri).flatMap(link => [link.source, link.target]).filter(node => node.iri !== currentNode.iri);
         neighborNodes.forEach(node => {
           if (node.x === undefined || node.y === undefined) {
-            node.x = currentX;
-            node.y = currentY;
+            // set the position of the neighbor node to the current node position
+            // to avoid that the link are shown as a loop we move it a bit
+            node.x = currentX - 1;
+            node.y = currentY - 1;
           }
 
         })

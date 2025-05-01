@@ -21,20 +21,15 @@ export interface IUiGraphNode extends INodeElement {
   expanded: boolean;
   showMenu: boolean;
   /**
-   * this is the same as .iri
-   * 
-   * @deprecated
+   * this is the same as .iri but it is needed to support the cola.js interface
    */
   id: string;
 }
 
 
 export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNode {
-  isPinned = false;
-  showPin = false;
-  fixed = 0;
-  expanded = false;
-  showMenu = false;
+
+
   constructor(node: GraphPointer) {
     super(node);
 
@@ -73,6 +68,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     }
     this._node.addOut(blueprint.xNamedNode, rdfEnvironment.literal(`${x}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
+
   set y(y: number) {
     const hasY = this._node.out(blueprint.yNamedNode).value !== undefined;
     if (hasY) {
@@ -80,6 +76,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     }
     this._node.addOut(blueprint.yNamedNode, rdfEnvironment.literal(`${y}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
+
   get x(): number | undefined {
     const x = this._node.out(blueprint.xNamedNode).value;
     if (x === undefined) {
@@ -87,6 +84,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     }
     return Number(x);
   }
+
   get y(): number | undefined {
     const y = this._node.out(blueprint.yNamedNode).value;
     if (y === undefined) {
@@ -95,8 +93,73 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     return Number(y);
   }
 
+  get isPinned(): boolean {
+    const isPinnedString = this._node.out(blueprint.namespace`isPinned`).value;
+    return isPinnedString === 'true' || isPinnedString === '1';
+  }
 
+  set isPinned(isPinned: boolean) {
+    const hasIsPinned = this._node.out(blueprint.namespace`isPinned`).value !== undefined;
+    if (hasIsPinned) {
+      this._node.deleteOut(blueprint.namespace`isPinned`);
+    }
+    this._node.addOut(blueprint.namespace`isPinned`, rdfEnvironment.literal(`${isPinned}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+  }
 
+  get fixed(): number {
+    const fixed = this._node.out(blueprint.namespace`fixed`).value;
+    if (fixed === undefined) {
+      return 0;
+    }
+    return Number(fixed);
+  }
+
+  set fixed(fixed: number) {
+    const hasFixed = this._node.out(blueprint.namespace`fixed`).value !== undefined;
+    if (hasFixed) {
+      this._node.deleteOut(blueprint.namespace`fixed`);
+    }
+    this._node.addOut(blueprint.namespace`fixed`, rdfEnvironment.literal(`${fixed}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
+  }
+
+  get showPin(): boolean {
+    const showPinString = this._node.out(blueprint.namespace`showPin`).value;
+    return showPinString === 'true' || showPinString === '1';
+  }
+
+  set showPin(showPin: boolean) {
+    const hasShowPin = this._node.out(blueprint.namespace`showPin`).value !== undefined;
+    if (hasShowPin) {
+      this._node.deleteOut(blueprint.namespace`showPin`);
+    }
+    this._node.addOut(blueprint.namespace`showPin`, rdfEnvironment.literal(`${showPin}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+  }
+
+  get expanded(): boolean {
+    const expandedString = this._node.out(blueprint.namespace`expanded`).value;
+    return expandedString === 'true' || expandedString === '1';
+  }
+
+  set expanded(expanded: boolean) {
+    const hasExpanded = this._node.out(blueprint.namespace`expanded`).value !== undefined;
+    if (hasExpanded) {
+      this._node.deleteOut(blueprint.namespace`expanded`);
+    }
+    this._node.addOut(blueprint.namespace`expanded`, rdfEnvironment.literal(`${expanded}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+  }
+
+  get showMenu(): boolean {
+    const showMenuString = this._node.out(blueprint.namespace`showMenu`).value;
+    return showMenuString === 'true' || showMenuString === '1';
+  }
+
+  set showMenu(showMenu: boolean) {
+    const hasShowMenu = this._node.out(blueprint.namespace`showMenu`).value !== undefined;
+    if (hasShowMenu) {
+      this._node.deleteOut(blueprint.namespace`showMenu`);
+    }
+    this._node.addOut(blueprint.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+  }
 
 }
 
