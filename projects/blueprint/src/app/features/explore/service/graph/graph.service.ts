@@ -27,14 +27,15 @@ export class GraphService {
 
   #currentDataset = rdfEnvironment.dataset();
 
-
+  // The graph$ observable is used to emit the current graph state.
+  // It is a ReplaySubject with a buffer size of 1, meaning it will emit the last value to new subscribers.
   public graph$ = new ReplaySubject<Graph>(1);
+
   /**
   * Clears the current dataset by resetting the nodes and links.
   * This is useful when the user wants to start a new graph.
   */
   public clearGraph(): void {
-    console.log('%cclear', 'color:red');
     this.#currentDataset = rdfEnvironment.dataset();
     // Reset the nodes and links maps
     this.#linksMap.clear();
@@ -62,7 +63,11 @@ export class GraphService {
   }
 
 
-
+  /**
+   * Create Exapnd SOARQL Query
+   * 
+   * @param expandedNodeIri The IRI of the node to expand.
+   */
   #query(expandedNodeIri: string): Observable<Graph> {
     const data: Graph = {
       nodes: [],
