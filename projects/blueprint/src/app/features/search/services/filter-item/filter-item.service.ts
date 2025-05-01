@@ -1,12 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { labelAlphaSort } from '@blueprint/utils';
 
 import { SearchFilter } from '../../model/search-filter.model';
+import { labelAlphaSort } from 'projects/blueprint/src/app/core/utils/sort-functions';
 
 @Injectable({
   providedIn: 'root',

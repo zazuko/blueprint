@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 
 
 import * as sparql from 'rdf-sparql-builder'
@@ -16,12 +15,12 @@ import {
 } from '../../flux-viewer/index';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { sparqlUtils } from '@blueprint/utils';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { rdf, shacl } from '@blueprint/ontology';
 import { PathPredicate } from '../../flux-viewer/model/path-predicate.model';
 import { BlueprintGraph, BlueprintUiMetadataGraph } from '../../flux-viewer/metadata-utilities';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 
 
 export interface ObjectDetails {

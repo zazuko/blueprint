@@ -11,9 +11,9 @@ import { rdfEnvironment } from '../../rdf/rdf-environment';
   providedIn: 'root'
 })
 export class UiClassMetadataService {
-  private readonly sparqlService = inject(SparqlService);
+  readonly #sparqlService = inject(SparqlService);
 
-  private cachedUiClassMetadata$: Observable<UiClassMetadata[]> | null = null;
+  #cachedUiClassMetadata$: Observable<UiClassMetadata[]> | null = null;
 
   /**
    * Return all FluxClassMetadata Entities. This method caches the result.
@@ -21,15 +21,15 @@ export class UiClassMetadataService {
    * @returns An Observable return all FluxClassMetadata Entities.
    */
   public getClassMetadata(): Observable<UiClassMetadata[]> {
-    if (this.cachedUiClassMetadata$ === null) {
-      this.cachedUiClassMetadata$ = this.sparqlService.construct(this.getClassMetadataSparqlQuery()).pipe(
+    if (this.#cachedUiClassMetadata$ === null) {
+      this.#cachedUiClassMetadata$ = this.#sparqlService.construct(this.getClassMetadataSparqlQuery()).pipe(
         map(dataset => {
           return rdfEnvironment.clownface(dataset).node(blueprintShape.ClassMetadataShapeNamedNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiClassMetadata(metadataPtr));
         }),
         shareReplay(1)
       );
     }
-    return this.cachedUiClassMetadata$;
+    return this.#cachedUiClassMetadata$;
   }
 
   /**

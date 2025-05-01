@@ -23,10 +23,10 @@ import { LayoutAdaptor } from './layout-adapter';
 
 import { DraggableDirective } from './draggable/draggable.directive';
 import { Graph, IUiGraphNode, IUiLink } from '../model/graph.model';
-import { ColorUtil } from '@blueprint/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
 import { NodeComponent } from '../graph-elements/node/node.component';
+import { ColorUtil } from '../../../utils/color-util';
 
 @Component({
   selector: 'bp-graph',
@@ -209,7 +209,6 @@ export class GraphComponent implements OnInit, OnDestroy {
       }
       if (!found) {
         // create a new group
-        console.log('create new group', sourceNode.iri, targetNode.iri);
         disconnectedGroups.push([sourceNode, targetNode]);
       }
     }

@@ -5,8 +5,9 @@ import { blueprint, rdfs, shacl } from '@blueprint/ontology';
 import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { GraphPointer } from 'clownface';
 import { DEFAULT_COLOR } from '@blueprint/constant/color';
-import { ColorUtil } from '@blueprint/utils';
+
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
+import { ColorUtil } from '../../utils/color-util';
 
 /**
  * UiClassMetadata Interface

@@ -11,10 +11,11 @@ import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router'
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
-import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, map, switchMap, tap } from 'rxjs';
 
 import { TabsModule } from 'primeng/tabs';
+import { TooltipModule } from 'primeng/tooltip';
+import { MenuItem } from 'primeng/api';
 
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
@@ -27,26 +28,23 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 import { Avatar } from '../../../core/component/avatar/avatar.component';
 
-import { TabMenuModule } from 'primeng/tabmenu';
-import { MenuItem } from 'primeng/api';
+import { blueprint, nileaUi, rdf, rdfs, shacl } from '@blueprint/ontology';
+import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { DetailsComponent } from '@blueprint/component/details';
+import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
+import { NodeElement } from '@blueprint/model/node-element/node-element.class';
+
 import { UiDetailService } from '../../../core/service/ui-config/ui-detail/ui-detail.service';
 import { UiDetailElement } from '../../../core/service/ui-config/ui-detail/model/ui-detail-element';
 import { LiteralViewComponent } from "../../../core/ui-view/ui-detail-view/literal-view/literal-view.component";
 import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hierarchy-view/model/ui-hierarchy-view';
-import { blueprint, nileaUi, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { GraphService } from '../service/graph/graph.service';
 import { SelectionService } from '../service/selection/selection.service';
-import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
-import { DetailsComponent } from '@blueprint/component/details';
-import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
-import { fadeInOut, fadeIn } from '@blueprint/animation/index';
 import { AggregateRelationComponent } from "../../../core/ui-view/view-component-library/aggregate-relation/aggregate-relation.component";
-import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
-import { NodeElement } from '@blueprint/model/node-element/node-element.class';
-import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
-
+import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
 
 @Component({
   templateUrl: './explore.component.html',
@@ -61,7 +59,6 @@ import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
     ExploreHeaderComponent,
     NeighborNodesComponent,
     UiHierarchyViewComponent,
-    TabMenuModule,
     LiteralViewComponent,
     DetailsComponent,
     AggregateRelationComponent,

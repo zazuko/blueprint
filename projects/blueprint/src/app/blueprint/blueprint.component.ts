@@ -7,7 +7,11 @@ import { LoadingIndicatorComponent } from "../core/component/loading-indicator/l
     selector: 'bp-blueprint',
     templateUrl: './blueprint.component.html',
     styleUrl: './blueprint.component.scss',
-    imports: [RouterOutlet, NavigationComponent, LoadingIndicatorComponent]
+    imports: [
+        RouterOutlet,
+        NavigationComponent,
+        LoadingIndicatorComponent
+    ]
 })
 export class BlueprintComponent {
 

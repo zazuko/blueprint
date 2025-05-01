@@ -3,8 +3,8 @@ import { GraphPointer } from 'clownface';
 
 import { blueprint, appLocal } from "@blueprint/ontology";
 import { HierarchyElement } from '../../view-component-library/hierarchy/hierarchy.component';
-import { ColorUtil } from '@blueprint/utils';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
+import { ColorUtil } from '../../../utils/color-util';
 
 export interface UiHierarchyView {
     iri: string;

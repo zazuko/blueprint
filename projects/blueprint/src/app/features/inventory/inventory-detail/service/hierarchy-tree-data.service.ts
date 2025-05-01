@@ -14,9 +14,10 @@ import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { blueprint, rdf, rdfs } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { labelAlphaSort, sparqlUtils } from '@blueprint/utils';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
+import { labelAlphaSort } from 'projects/blueprint/src/app/core/utils/sort-functions';
 
 @Injectable({
   providedIn: 'root'

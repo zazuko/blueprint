@@ -13,7 +13,7 @@ import { UiDetailService } from '../../../service/ui-config/ui-detail/ui-detail.
 import { blueprint, rdf, rdfs, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { sparqlUtils } from '@blueprint/utils';
+import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
