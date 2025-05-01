@@ -29,12 +29,12 @@
         <p-menu #menu [model]="items()" [popup]="true">
             <ng-template pTemplate="item" let-item>
                 @if(item.url) {
-                <a pRipple [href]="item.url" target="_blank" class="p-menuitem-link" [tabIndex]="item.tabIndex">
+                <a pRipple [href]="item.url" target="_blank" class="p-menu-item-link" [tabIndex]="item.tabIndex">
                     <span class="p-menuitem-icon" [class]="item.icon"></span>
-                    <span class="ml-2">{{ item.label }}</span>
+                    <span class="ml-2"> {{ item.label }}</span>
                 </a>
                 } @else {
-                <a pRipple class="flex align-items-center p-menuitem-link" (click)="item.command"
+                <a pRipple class="flex align-items-center p-menu-item-link" (click)="item.command"
                     [tabindex]="item.tabindex" (keyup.enter)="item.command">
                     <span class="p-menuitem-icon" [class]="item.icon"></span>
                     <span class="ml-2">{{ item.label }}</span>

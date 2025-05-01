@@ -17,12 +17,12 @@ import { LibraryConfigurationService } from '@blueprint/service/library-configur
 
 
 @Component({
-    selector: 'bp-explore-header',
-    templateUrl: './explore-header.component.html',
-    styleUrls: ['./explore-header.component.scss'],
-    imports: [CommonModule, MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
-    animations: [fadeIn],
-    providers: [MessageService]
+  selector: 'bp-explore-header',
+  templateUrl: './explore-header.component.html',
+  styleUrls: ['./explore-header.component.scss'],
+  imports: [CommonModule, MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
+  animations: [fadeIn],
+  providers: [MessageService]
 })
 export class ExploreHeaderComponent {
   iri = input.required<string>();
