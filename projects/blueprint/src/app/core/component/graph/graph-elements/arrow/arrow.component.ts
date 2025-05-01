@@ -6,6 +6,8 @@ import {
   OnChanges,
   SimpleChanges,
   output,
+  input,
+  computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -21,10 +23,12 @@ import { IUiLink, RdfUiLink } from '../../model/graph.model';
   imports: [CommonModule]
 })
 export class ArrowComponent implements OnChanges {
-  @Input() x1: number;
-  @Input() x2: number;
-  @Input() y1: number;
-  @Input() y2: number;
+
+  x1 = input.required<number>();
+  x2 = input.required<number>();
+  y1 = input.required<number>();
+  y2 = input.required<number>();
+
   @Input() link: IUiLink;
 
   multiLinkSelected = output<MultiLinkLabels>();
@@ -32,6 +36,18 @@ export class ArrowComponent implements OnChanges {
   forwardLabels: string[] = [];
   backwardLabels: string[] = [];
   multiLinkTarget: ElementRef;
+
+  calculateLinkLabelTransform = computed<string>(() => {
+    const x1 = this.x1();
+    const x2 = this.x2();
+    const y1 = this.y1();
+    const y2 = this.y2();
+
+    const rotation = x1 >= x2 ? 180 + (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI
+      : (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+
+    return `translate(${0.5 * (x2 + x1)},${0.5 * (y2 + y1)}) rotate(${rotation})`;
+  });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['link']?.currentValue) {
@@ -53,21 +69,14 @@ export class ArrowComponent implements OnChanges {
     }
   }
 
-  calculateLinkLabelTransform(): string {
-    const rotation =
-      this.x1 >= this.x2
-        ? 180 +
-        (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI
-        : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    return `translate(${0.5 * (this.x2 + this.x1)},${0.5 * (this.y2 + this.y1)
-      }) rotate(${rotation})`;
-  }
-
-  calculateLoopLinkLabelTransform(): string {
-    const rotation = -45; //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
+  calculateLoopLinkLabelTransform = computed<string>(() => {
+    const x1 = this.x1();
+    const y1 = this.y1();
+    const rotation = -45;
+    //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
     //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    return `translate(${this.x1},${this.y1}) rotate(${rotation})`;
-  }
+    return `translate(${x1},${y1}) rotate(${rotation})`;
+  });
 
   onMultiLinkSelected(event) {
     event.stopPropagation();
