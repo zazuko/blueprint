@@ -103,9 +103,8 @@ export class GraphService {
         neighborNodes.forEach(node => {
           if (node.x === undefined || node.y === undefined) {
             // set the position of the neighbor node to the current node position
-            // to avoid that the link are shown as a loop we move it a bit
-            node.x = currentX - 1;
-            node.y = currentY - 1;
+            node.x = currentX;
+            node.y = currentY;
           }
 
         })

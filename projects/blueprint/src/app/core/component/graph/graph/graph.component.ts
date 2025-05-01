@@ -20,13 +20,13 @@ import { ButtonModule } from 'primeng/button';
 import * as cola from 'webcola';
 
 import { LayoutAdaptor } from './layout-adapter';
-import { MultiLinkLabels } from '../graph-elements/model/multi-link-labels.model';
-import { ArrowComponent, NodeComponent } from '../graph-elements';
 
 import { DraggableDirective } from './draggable/draggable.directive';
 import { Graph, IUiGraphNode, IUiLink } from '../model/graph.model';
 import { ColorUtil } from '@blueprint/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
+import { NodeComponent } from '../graph-elements/node/node.component';
 
 @Component({
   selector: 'bp-graph',
@@ -51,7 +51,6 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeExpanded = output<IUiGraphNode>();
   readonly nodeFocused = output<IUiGraphNode>();
   readonly linkSelected = output<string>();
-  readonly multiLinkSelected = output<MultiLinkLabels>();
 
 
   readonly #element = inject(ElementRef).nativeElement;
@@ -78,7 +77,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   selectedSubject: string | null;
   isLinkPanelOpen = false;
-  multiLinks: MultiLinkLabels | null = null;
 
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
@@ -282,11 +280,6 @@ export class GraphComponent implements OnInit, OnDestroy {
       node.showPin = node.isPinned;
       node.fixed = node.isPinned ? 1 : 0;
     }
-  }
-
-  onMultiLinkSelected(links: MultiLinkLabels) {
-    this.isLinkPanelOpen = true;
-    this.multiLinks = links;
   }
 
   /**

@@ -23,7 +23,6 @@ import { NeighborNodesComponent } from "../../../core/component/neighbor-nodes/n
 import { UiViewComponent } from '../../../core/ui-view/ui-view/ui-view.component';
 import { ViewDataService } from '../../../core/ui-view/service/view-data/view-data.service';
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
-import { MultiLinkLabels } from '../../../core/component/graph';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 import { Avatar } from '../../../core/component/avatar/avatar.component';
@@ -37,7 +36,7 @@ import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hi
 import { blueprint, nileaUi, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { GraphService } from '../service/graph/graph.service';
 import { SelectionService } from '../service/selection/selection.service';
-import { Graph, IUiGraphNode, RdfUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { DetailsComponent } from '@blueprint/component/details';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { fadeInOut, fadeIn } from '@blueprint/animation/index';
@@ -117,7 +116,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   routeParamMap$: Observable<ParamMap>
   graph$: Observable<Graph>;
 
-  multiLinks: MultiLinkLabels = null;
   linkPanelIsOpen = false;
 
   constructor() {
@@ -255,15 +253,5 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     this.expandedNode = node;
     this.#graphService.expandNode(node.id);
   }
-
-  onMultiLinkSelected(multiLinks: MultiLinkLabels): void {
-    // this.multiLinks = multiLinks;
-    // this.linkPanelIsOpen = true;
-    console.log('onMultiLinkSelected', multiLinks);
-  }
-
-
-
-
 
 }

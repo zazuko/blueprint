@@ -11,7 +11,7 @@
         <g class="link-layer">
           @for(link of linksSignal(); track link) {
           <g bp-arrow [x1]="link.source.x" [y1]="link.source.y" [x2]="link.target.x" [y2]="link.target.y" [link]="link"
-            (multiLinkSelected)="onMultiLinkSelected($event)" (click)="onLinkSelected(link)"></g>
+            (click)="onLinkSelected(link)"></g>
           }
         </g>
         <!-- nodes -->

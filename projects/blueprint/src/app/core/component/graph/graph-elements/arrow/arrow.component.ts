@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  output,
   input,
   computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MultiLinkLabels } from '../model/multi-link-labels.model';
 import { IUiLink } from '../../model/graph.model';
 
 @Component({
@@ -22,20 +16,18 @@ import { IUiLink } from '../../model/graph.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule]
 })
-export class ArrowComponent implements OnChanges {
-
+export class ArrowComponent {
+  // inputs
   x1 = input.required<number>();
   x2 = input.required<number>();
   y1 = input.required<number>();
   y2 = input.required<number>();
+  link = input.required<IUiLink>();
 
-  @Input() link: IUiLink;
-
-  multiLinkSelected = output<MultiLinkLabels>();
-
-  forwardLabels: string[] = [];
-  backwardLabels: string[] = [];
-  multiLinkTarget: ElementRef;
+  isSourceAndTargetSame = computed(() => {
+    const link = this.link();
+    return link.source.iri === link.target.iri;
+  });
 
   calculateLinkLabelTransform = computed<string>(() => {
     const x1 = this.x1();
@@ -49,25 +41,6 @@ export class ArrowComponent implements OnChanges {
     return `translate(${0.5 * (x2 + x1)},${0.5 * (y2 + y1)}) rotate(${rotation})`;
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['link']?.currentValue) {
-      if (
-        changes['link'].currentValue.label.startsWith('f_') ||
-        changes['link'].currentValue.label.startsWith('b_')
-      ) {
-        this.forwardLabels = changes['link'].currentValue.label
-          .split('\n')
-          .filter((label: string) => label.startsWith('f_'))
-          .map((label) => label.replace('f_', ''));
-        this.backwardLabels = changes['link'].currentValue.label
-          .split('\n')
-          .filter((label: string) => label.startsWith('b_'))
-          .map((label) => label.replace('b_', ''));
-      } else {
-        this.forwardLabels = changes['link'].currentValue.label.split('\n');
-      }
-    }
-  }
 
   calculateLoopLinkLabelTransform = computed<string>(() => {
     const x1 = this.x1();
@@ -78,13 +51,4 @@ export class ArrowComponent implements OnChanges {
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
 
-  onMultiLinkSelected(event) {
-    event.stopPropagation();
-    this.multiLinkSelected.emit({
-      backward: this.backwardLabels,
-      forward: this.forwardLabels,
-      source: this.link.source,
-      target: this.link.target,
-    });
-  }
 }
