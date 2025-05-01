@@ -14,17 +14,14 @@ import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/au
 import { providePrimeNG } from 'primeng/config';
 import { AppTheme } from './app-theme';
 
-import { environment } from '../environments/environment';
-
 function initializeAppFactory(configService: ConfigService): () => void {
     return () => configService.fetchConfig()
 }
 
-const dontUseAuth = !environment.skipAuthentication;
 export const appConfig: ApplicationConfig = {
     providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideHttpClient(environment.skipAuthentication ? withInterceptors([]) : withInterceptors([authInterceptor])),
+        provideHttpClient(withInterceptors([authInterceptor])),
         provideRouter(routes,
             withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
             withComponentInputBinding()

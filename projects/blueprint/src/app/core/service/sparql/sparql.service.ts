@@ -3,25 +3,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, map } from 'rxjs';
 
-import { LibraryConfigurationService } from '../library-configuration/library-configuration.service';
-
 import { SparqlResult, SparqlResultTerm, transformToRecords } from './model/sparql-result-json';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
+import { ConfigService } from '../config/config.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SparqlService {
   readonly #http = inject(HttpClient);
-  readonly #libraryConfigurationService = inject(LibraryConfigurationService);
+  readonly #appConfig = inject(ConfigService).getConfiguration();
 
-  public fullTextSearchDialect: FullTextSearchDialect;
-
-  constructor() {
-    this.fullTextSearchDialect = this.#libraryConfigurationService.fullTextSearchDialect;
-
-  }
 
   /**
    * Execute a SPARQL SELECT query
@@ -30,7 +23,7 @@ export class SparqlService {
    * @returns an observable of the resulting bindings
    */
   select(query: string): Observable<Record<string, SparqlResultTerm>[]> {
-    const endpoint = this.#libraryConfigurationService.endpointUrl;
+    const endpoint = this.#appConfig.endpointUrl;
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/sparql-results+json'
@@ -59,7 +52,7 @@ export class SparqlService {
    * @returns an observable of the resulting dataset
    */
   construct(query: string): Observable<RdfTypes.Dataset> {
-    const endpoint = this.#libraryConfigurationService.endpointUrl;
+    const endpoint = this.#appConfig.endpointUrl;
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,13 +75,4 @@ export class SparqlService {
         })
       );
   }
-}
-
-
-export enum FullTextSearchDialect {
-  FUSEKI = 'fuseki',
-  STARDOG = 'stardog',
-  NEPTUNE = 'neptune',
-  GRAPHDB = 'graphdb',
-  QLEVER = 'qlever'
 }
