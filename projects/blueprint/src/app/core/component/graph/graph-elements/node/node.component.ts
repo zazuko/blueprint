@@ -1,17 +1,17 @@
 import { Component, Input, output, input } from '@angular/core';
 
-import { GraphNode } from '../../model/graph-node.model';
 import { NgClass } from '@angular/common';
+import { IUiGraphNode, RdfUiGraphNode } from '../../model/graph.model';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'g[bp-node]',
-    templateUrl: './node.component.svg',
-    styleUrls: ['./node.component.scss'],
-    imports: [NgClass]
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'g[bp-node]',
+  templateUrl: './node.component.svg',
+  styleUrls: ['./node.component.scss'],
+  imports: [NgClass]
 })
 export class NodeComponent {
-  @Input({ required: true }) node: GraphNode;
+  @Input({ required: true }) node: IUiGraphNode;
   @Input({ required: true }) isSelected: boolean;
   @Input({ required: true }) color: string;
   @Input() backgroundColor: string;
@@ -19,9 +19,9 @@ export class NodeComponent {
 
 
 
-  nodeSelected = output<GraphNode>();
-  nodeExpanded = output<GraphNode>();
-  nodeFocused = output<GraphNode>();
+  nodeSelected = output<IUiGraphNode>();
+  nodeExpanded = output<IUiGraphNode>();
+  nodeFocused = output<IUiGraphNode>();
 
   readonly nodeRadius = 50;
   readonly menuCircleRadius = 15;

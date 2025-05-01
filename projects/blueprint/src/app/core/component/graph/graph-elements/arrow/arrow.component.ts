@@ -10,22 +10,22 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { MultiLinkLabels } from '../model/multi-link-labels.model';
-import { GraphLink } from '../../model/graph-link.model';
+import { IUiLink, RdfUiLink } from '../../model/graph.model';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'g[bp-arrow]',
-    templateUrl: './arrow.component.svg',
-    styleUrls: ['./arrow.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule]
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'g[bp-arrow]',
+  templateUrl: './arrow.component.svg',
+  styleUrls: ['./arrow.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule]
 })
 export class ArrowComponent implements OnChanges {
   @Input() x1: number;
   @Input() x2: number;
   @Input() y1: number;
   @Input() y2: number;
-  @Input() link: GraphLink;
+  @Input() link: IUiLink;
 
   multiLinkSelected = output<MultiLinkLabels>();
 

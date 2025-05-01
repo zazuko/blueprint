@@ -11,23 +11,21 @@ import { GraphComponent } from "../../../core/component/graph/graph/graph.compon
 import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
-import { Graph } from '@blueprint/component/graph/model/graph.model';
-import { GraphNode } from '@blueprint/component/graph/model/graph-node.model';
-import { GraphLink } from '@blueprint/component/graph/model/graph-link.model';
+import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
 import { combineLinkWithSameSourceAndTarget } from '../../explore/service/graph/graph.service';
-
+import { Avatar } from '@blueprint/component/avatar/avatar.component';
 
 @Component({
-    selector: 'bp-concept-relations',
-    templateUrl: './concept-relations.component.html',
-    styleUrl: './concept-relations.component.scss',
-    imports: [CommonModule, GraphComponent, BreadcrumbPageComponent]
+  selector: 'bp-concept-relations',
+  templateUrl: './concept-relations.component.html',
+  styleUrl: './concept-relations.component.scss',
+  imports: [CommonModule, GraphComponent, BreadcrumbPageComponent]
 })
 export class ConceptRelationsComponent implements OnInit {
-  private readonly classMetadataService = inject(UiClassMetadataService);
-  private readonly linkMetadataService = inject(UiLinkMetadataService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly loadingIndicatorService = inject(LoadingIndicatorService);
+  readonly #classMetadataService = inject(UiClassMetadataService);
+  readonly #linkMetadataService = inject(UiLinkMetadataService);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #loadingIndicatorService = inject(LoadingIndicatorService);
 
   public readonly breadcrumbs: Breadcrumb[] = [
     {
@@ -45,43 +43,74 @@ export class ConceptRelationsComponent implements OnInit {
 
   ngOnInit(): void {
 
+
     this.graph$ = forkJoin(
       {
-        nodes: this.classMetadataService.getClassMetadata().pipe(tap(() => this.loadingIndicatorService.loading())),
-        links: this.linkMetadataService.getLinkMetadata()
+        nodes: this.#classMetadataService.getClassMetadata().pipe(tap(() => this.#loadingIndicatorService.loading())),
+        links: this.#linkMetadataService.getLinkMetadata()
       }
     ).pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntilDestroyed(this.#destroyRef),
       map(metadata => {
-        const nodeMap = new Map<string, GraphNode>();
+        const nodeMap = new Map<string, IUiGraphNode>();
 
-        const nodes = metadata.nodes.map(nodeMetadata => {
-          const node = {} as GraphNode;
-          node.id = nodeMetadata.targetNode.value;
-          node.label = nodeMetadata.label;
-          node.icon = nodeMetadata.icon;
-          node.colorIndex = nodeMetadata.colorIndex.toString();
-          node.type = '';
-          node.linksLimitedTo = 100;
-          nodeMap.set(node.id, node);
-          return node;
+        metadata.nodes.forEach(nodeMetadata => {
+          if (nodeMap.has(nodeMetadata.targetNode.value)) {
+            return;
+          }
+
+          const avatar: Avatar = {
+            label: nodeMetadata.label,
+            color: nodeMetadata.color,
+            icon: nodeMetadata.icon,
+          };
+
+
+          const node: IUiGraphNode = {
+            iri: nodeMetadata.targetNode.value,
+            id: nodeMetadata.targetNode.value,
+            label: nodeMetadata.label,
+            avatars: [avatar],
+            index: -1,
+            x: 0,
+            y: 0,
+            isPinned: false,
+            showPin: false,
+            fixed: 0,
+            expanded: false,
+            showMenu: false,
+            classLabel: ['Concept'],
+            color: nodeMetadata.color,
+            description: ''
+          };
+          nodeMap.set(node.iri, node);
         });
-        const links: GraphLink[] = [];
+
+
+
+
+        const links: IUiLink[] = [];
         metadata.links.forEach(linkMetadata => {
-          const link = {} as GraphLink;
-          link.id = linkMetadata.iri;
-          link.label = linkMetadata.label;
-          link.source = nodeMap.get(linkMetadata.source);
-          link.target = nodeMap.get(linkMetadata.destination);
+
+          const link: IUiLink = {
+            id: linkMetadata.iri,
+            iri: linkMetadata.iri,
+            label: linkMetadata.label,
+            source: nodeMap.get(linkMetadata.source),
+            target: nodeMap.get(linkMetadata.destination)
+          };
+
           if (link.source && link.target) {
             links.push(link);
           }
         });
-        this.loadingIndicatorService.done();
-        return {
-          nodes,
-          links: combineLinkWithSameSourceAndTarget(links)
-        } as Graph;
+        this.#loadingIndicatorService.done();
+
+        const graph: Graph = {
+          nodes: [...nodeMap.values()],
+          links
+        };
+        return graph
       })
     );
   }

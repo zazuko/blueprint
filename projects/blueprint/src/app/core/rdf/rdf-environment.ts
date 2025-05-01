@@ -71,6 +71,10 @@ class RdfEnvironment {
         return this.#rdfEnv.quad(subject, predicate, object, graph);
     }
 
+    literal(value: string, languageOrDatatype?: string | RdfTypes.NamedNode): RdfTypes.Literal {
+        return this.#rdfEnv.literal(value, languageOrDatatype);
+    }
+
 }
 
 export const rdfEnvironment = new RdfEnvironment();

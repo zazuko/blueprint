@@ -24,9 +24,7 @@ import { MultiLinkLabels } from '../graph-elements/model/multi-link-labels.model
 import { ArrowComponent, NodeComponent } from '../graph-elements';
 
 import { DraggableDirective } from './draggable/draggable.directive';
-import { GraphNode } from '../model/graph-node.model';
-import { Graph } from '../model/graph.model';
-import { GraphLink } from '../model/graph-link.model';
+import { Graph, IUiGraphNode, IUiLink } from '../model/graph.model';
 import { ColorUtil } from '@blueprint/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -49,9 +47,9 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly xOffset = input('0');
   readonly yOffset = input('0');
 
-  readonly nodeSelected = output<GraphNode>();
-  readonly nodeExpanded = output<GraphNode>();
-  readonly nodeFocused = output<GraphNode>();
+  readonly nodeSelected = output<IUiGraphNode>();
+  readonly nodeExpanded = output<IUiGraphNode>();
+  readonly nodeFocused = output<IUiGraphNode>();
   readonly linkSelected = output<string>();
   readonly multiLinkSelected = output<MultiLinkLabels>();
 
@@ -59,8 +57,8 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
-  public linksSignal = signal<GraphLink[]>([]);
-  public nodesSignal = signal<GraphNode[]>([]);
+  public linksSignal = signal<IUiLink[]>([]);
+  public nodesSignal = signal<IUiGraphNode[]>([]);
 
 
   public layout: LayoutAdaptor | null = null;
@@ -151,20 +149,20 @@ export class GraphComponent implements OnInit, OnDestroy {
     }
   }
 
-  emitNodeSelected(node: GraphNode): void {
+  emitNodeSelected(node: IUiGraphNode): void {
     this.selectedSubject = node.id;
     this.nodeSelected.emit(node);
   }
 
-  emitNodeExpanded(node: GraphNode): void {
+  emitNodeExpanded(node: IUiGraphNode): void {
     this.nodeExpanded.emit(node);
   }
 
-  emitNodeFocused(node: GraphNode): void {
+  emitNodeFocused(node: IUiGraphNode): void {
     this.nodeFocused.emit(node);
   }
 
-  onLinkSelected(link: GraphLink): void {
+  onLinkSelected(link: IUiLink): void {
     console.log('link selected', link);
   }
 
@@ -254,21 +252,21 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 
 
-  dragStart(event: DragEvent, node: GraphNode): void {
+  dragStart(event: DragEvent, node: IUiGraphNode): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cola.Layout.dragStart(node as any);
     this.dragstart.x = event.x;
     this.dragstart.y = event.y;
   }
 
-  drag(event: DragEvent, node: GraphNode): void {
+  drag(event: DragEvent, node: IUiGraphNode): void {
     //  event.stopPropagation();
     this.layout.resume();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cola.Layout.drag(node as any, event);
   }
 
-  dragEnd(event: DragEvent, node: GraphNode): void {
+  dragEnd(event: DragEvent, node: IUiGraphNode): void {
     //   event.stopPropagation();
     cola.Layout.dragEnd(node);
     // only change the fixed/unfixed flag when the node is dragged a certain distance,

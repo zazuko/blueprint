@@ -17,10 +17,10 @@
             <i [ngClass]="node.showPin ? 'fa-map-pin' : ''" class="fa fa-fw"></i>
           </div>
           <div class="node-label-icon">
-            <i [ngClass]="node.icon"></i>
+            <i [ngClass]="node.avatars[0].icon"></i>
           </div>
-          <div class="node-label-title"> {{ node.label }}</div>
-          <div class="node-label-type">{{ node.type }}</div>
+          <div class="node-label-title">{{ node.label }}</div>
+          <div class="node-label-type">{{ node.classLabel.join(', ') }}</div>
         </div>
       </div>
     </foreignObject>

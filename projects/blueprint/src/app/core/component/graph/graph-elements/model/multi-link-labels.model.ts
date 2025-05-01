@@ -1,8 +1,8 @@
-import { GraphNode } from "../../model/graph-node.model";
+import { IUiGraphNode } from "../../model/graph.model";
 
 export interface MultiLinkLabels {
   backward: string[];
   forward: string[];
-  source: GraphNode;
-  target: GraphNode;
+  source: IUiGraphNode;
+  target: IUiGraphNode;
 }
