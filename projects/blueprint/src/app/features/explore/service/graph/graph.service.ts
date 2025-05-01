@@ -26,7 +26,6 @@ export class GraphService {
 
   #currentDataset = rdfEnvironment.dataset();
 
-  undoDatasetBuffer: RdfTypes.Dataset[] = [];
 
   public graph$ = new ReplaySubject<Graph>(1);
   /**
@@ -44,8 +43,13 @@ export class GraphService {
     this.graph$.next({ nodes: [], links: [] });
   }
 
+  /**
+   * This method is used to expand a node in the graph. It fetches thee neighbors of the node and adds them to the graph.
+   * 
+   * @param iri The IRI of the node to expand.
+   */
   public expandNode(iri: string): void {
-    this.query(iri).subscribe({
+    this.#query(iri).subscribe({
       next: (graph) => {
         this.graph$.next(graph);
       },
@@ -56,19 +60,9 @@ export class GraphService {
     );
   }
 
-  public expandNamedNode(node: RdfTypes.NamedNode): void {
-    this.query(node.value).subscribe({
-      next: (graph) => {
-        this.graph$.next(graph);
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    }
-    );
-  }
 
-  public query(input: string): Observable<Graph> {
+
+  #query(input: string): Observable<Graph> {
     const data: Graph = {
       nodes: [],
       links: [],
@@ -98,10 +92,3 @@ export class GraphService {
   }
 
 }
-
-export function combineLinkWithSameSourceAndTarget(
-  links: RdfUiLink[]
-): RdfUiLink[] {
-  return links;
-}
-

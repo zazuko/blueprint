@@ -12,7 +12,6 @@ import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/brea
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
-import { combineLinkWithSameSourceAndTarget } from '../../explore/service/graph/graph.service';
 import { Avatar } from '@blueprint/component/avatar/avatar.component';
 
 @Component({
