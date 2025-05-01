@@ -1,34 +1,30 @@
-import { scaleOrdinal } from 'd3';
 import { COLORS, DEFAULT_COLOR } from '@blueprint/constant/color';
 
 class _ColorUtil {
-  private readonly _colors = COLORS;
-  private readonly _undefColor = DEFAULT_COLOR;
-  private readonly _indexedColorScheme: (colorIndex: number) => string;
-  private readonly _numberOfColors = this._colors.length;
+  readonly #colors = COLORS;
+  readonly #undefinedColor = DEFAULT_COLOR;
 
-  constructor() {
-    const scale = scaleOrdinal(this._colors).domain([
-      ...Array(this._colors.length).keys(),
-    ].map(String));
-    this._indexedColorScheme = (colorIndex: number) => scale(String(colorIndex));
-  }
 
   getColorForIndex(index: number): string {
-    if (index && +index >= 0) {
-      return this._indexedColorScheme(+index % this._numberOfColors);
+    // retun the color for the index
+    if (index > this.#colors.length - 1) {
+      return this.#undefinedColor;
     }
-    return this._undefColor;
+
+    if (index < 0) {
+      return this.#undefinedColor;
+    }
+    return this.#colors[index];
+
   }
 
   getColorForIndexString(stringIndex: string): string {
     const index = Number(stringIndex);
-    if (index && +index >= 0) {
-      return this._indexedColorScheme(+index % this._numberOfColors);
+    if (isNaN(index)) {
+      return this.#undefinedColor;
     }
-    return this._undefColor;
+    return this.getColorForIndex(index);
   }
-
 
 }
 

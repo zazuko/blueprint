@@ -40,7 +40,7 @@ import { NodeComponent } from '../graph-elements/node/node.component';
   ]
 })
 export class GraphComponent implements OnInit, OnDestroy {
-  readonly graph = input<Graph>(null);
+  readonly graph = input.required<Graph>();
   readonly disableZoomMenu = input<boolean>(false);
   readonly disableNodeMenu = input<boolean>(false);
 
