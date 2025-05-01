@@ -10,6 +10,7 @@ import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/gra
 
 import { blueprint, rdf } from '@blueprint/ontology';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { assert } from 'console';
 
 export interface QueryInput {
   nodeIri: string;
@@ -62,28 +63,50 @@ export class GraphService {
 
 
 
-  #query(input: string): Observable<Graph> {
+  #query(expandedNodeIri: string): Observable<Graph> {
     const data: Graph = {
       nodes: [],
       links: [],
     };
-    if (input.length === 0) {
+    if (expandedNodeIri.length === 0) {
       return of(data);
     }
-    return this.#queryBuilder.buildQuery(input).pipe(
+    return this.#queryBuilder.buildQuery(expandedNodeIri).pipe(
       map((dataset) => {
         this.#currentDataset.addAll(dataset);
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
-        const nodeElement = cfGraph.node(blueprint.UiNodeNamedNode).in(rdf.typeNamedNode).map((n, i) => {
-          const newNode = new RdfUiGraphNode(n);
-          return newNode;
-        });
 
+        const nodes = cfGraph.node(blueprint.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
         const links = cfGraph.in(blueprint.linkNamedNode).map(n => new RdfUiLink(n));
 
+        // find the expanded (current) node
+        const currentNode = nodes.find(node => node.iri === expandedNodeIri);
+        console.assert(currentNode !== undefined, 'Current node should be defined');
+
+
+        // node position
+        // if the current node does not have a position, set it to (0, 0)
+        if (currentNode.x === undefined || currentNode.y === undefined) {
+          currentNode.x = 0;
+          currentNode.y = 0;
+        }
+
+        const currentX = currentNode.x;
+        const currentY = currentNode.y;
+
+        // set the postion of the neighbors to the current node position if they do not have a position
+        // this makes the new expanded nodes appear in the same position as the current node
+        const neighborNodes = links.filter(link => link.source.iri === currentNode.iri || link.target.iri === currentNode.iri).flatMap(link => [link.source, link.target]).filter(node => node.iri !== currentNode.iri);
+        neighborNodes.forEach(node => {
+          if (node.x === undefined || node.y === undefined) {
+            node.x = currentX;
+            node.y = currentY;
+          }
+
+        })
 
         const linksAndNodes: Graph = {
-          nodes: nodeElement,
+          nodes: nodes,
           links: links
         };
         return linksAndNodes;

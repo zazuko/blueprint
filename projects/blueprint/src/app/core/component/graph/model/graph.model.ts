@@ -64,7 +64,6 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
       this._node.deleteOut(blueprint.indexNamedNode);
     }
     this._node.addOut(blueprint.indexNamedNode, rdfEnvironment.literal(`${index}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
-    this.logTable();
   }
 
   set x(x: number) {
@@ -81,17 +80,17 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     }
     this._node.addOut(blueprint.yNamedNode, rdfEnvironment.literal(`${y}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
-  get x(): number {
+  get x(): number | undefined {
     const x = this._node.out(blueprint.xNamedNode).value;
     if (x === undefined) {
-      return -1;
+      return undefined;
     }
     return Number(x);
   }
-  get y(): number {
+  get y(): number | undefined {
     const y = this._node.out(blueprint.yNamedNode).value;
     if (y === undefined) {
-      return -1;
+      return undefined;
     }
     return Number(y);
   }
