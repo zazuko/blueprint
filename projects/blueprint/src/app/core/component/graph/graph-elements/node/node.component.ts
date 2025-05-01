@@ -1,7 +1,7 @@
 import { Component, Input, output, input } from '@angular/core';
-
 import { NgClass } from '@angular/common';
-import { IUiGraphNode, RdfUiGraphNode } from '../../model/graph.model';
+
+import { IUiGraphNode } from '../../model/graph.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,34 +11,36 @@ import { IUiGraphNode, RdfUiGraphNode } from '../../model/graph.model';
   imports: [NgClass]
 })
 export class NodeComponent {
-  @Input({ required: true }) node: IUiGraphNode;
-  @Input({ required: true }) isSelected: boolean;
-  @Input({ required: true }) color: string;
-  @Input() backgroundColor: string;
-  disableMenu = input<boolean>(true);
+  // inputs
+  readonly node = input.required<IUiGraphNode>();
+  readonly isSelected = input.required<boolean>();
+  readonly color = input.required<string>();
+  readonly disableMenu = input<boolean>(true);
 
-
-
+  // outputs
   nodeSelected = output<IUiGraphNode>();
   nodeExpanded = output<IUiGraphNode>();
   nodeFocused = output<IUiGraphNode>();
 
+
+  // constants
   readonly nodeRadius = 50;
   readonly menuCircleRadius = 15;
 
+
   emitNodeSelected(event: Event) {
     event.stopPropagation();
-    this.nodeSelected.emit(this.node);
+    this.nodeSelected.emit(this.node());
   }
 
   emitNodeExpanded(event: Event): void {
     event.stopPropagation();
-    this.nodeExpanded.emit(this.node);
+    this.nodeExpanded.emit(this.node());
   }
 
   emitNodeFocused(event: Event): void {
     event.stopPropagation();
-    this.nodeFocused.emit(this.node);
+    this.nodeFocused.emit(this.node());
   }
 
   stopPropagation(event: Event): void {

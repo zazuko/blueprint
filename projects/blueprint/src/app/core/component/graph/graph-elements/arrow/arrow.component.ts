@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { MultiLinkLabels } from '../model/multi-link-labels.model';
-import { IUiLink, RdfUiLink } from '../../model/graph.model';
+import { IUiLink } from '../../model/graph.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
