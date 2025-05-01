@@ -1,40 +1,35 @@
 import {
   Component,
-  OnDestroy,
   AfterViewInit,
-  ViewChild,
   ChangeDetectorRef,
   inject,
+  viewChild,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { DashHostDirective } from '../../../ui-view/ui-view-component/dash-host/dash-host.directive';
 import { DetailsService, ObjectDetails } from '../../../../features/explore/service/detail/details.service';
 import { SelectionService } from '../../../../features/explore/service/selection/selection.service';
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
 import { DashGroupViewerComponent, DashHyperlinkViewerComponent, DashLiteralViewerComponent, DashValueTableViewerComponent } from '@blueprint/component/dash-components';
 import { FluxValueTableViewer, FluxLiteralViewer, FluxHyperlinkViewer, FluxViewerType, FluxGroupViewer } from '../../../../features/explore/flux-viewer/index';
 
 @Component({
-    selector: 'bp-details',
-    templateUrl: './details.component.html',
-    styleUrls: ['./details.component.scss'],
-    imports: [
-        CommonModule,
-        DashHostDirective
-    ]
+  selector: 'bp-details',
+  templateUrl: './details.component.html',
+  styleUrls: ['./details.component.scss'],
+  imports: [
+    CommonModule,
+    DashHostDirective
+  ]
 })
-export class DetailsComponent implements OnDestroy, AfterViewInit {
-  private readonly detailsService = inject(DetailsService);
-  private readonly selectionService = inject(SelectionService);
-  private readonly changeDetectionRef = inject(ChangeDetectorRef);
+export class DetailsComponent implements AfterViewInit {
+  readonly #detailsService = inject(DetailsService);
+  readonly #selectionService = inject(SelectionService);
+  readonly #changeDetectionRef = inject(ChangeDetectorRef);
+  readonly #destroyRef = inject(DestroyRef);
 
-  private destroy$ = new Subject<void>();
-
-  hasGraphExplorer: boolean;
-  hasSparqlConsole: boolean;
   // todo: fix this
   // details: ObjectDetails = null;
   details: ObjectDetails | null = null;
@@ -42,30 +37,23 @@ export class DetailsComponent implements OnDestroy, AfterViewInit {
   dataLimitedTo = 0;
 
 
-  @ViewChild(DashHostDirective, { static: true }) dashHost: DashHostDirective | null = null;
-
-  constructor(private config: LibraryConfigurationService) {
-    this.hasGraphExplorer = this.config.graphExplorerUrl !== null;
-    this.hasSparqlConsole = this.config.sparqlConsoleUrl !== null;
-  }
+  dashHostComponent = viewChild(DashHostDirective);
 
   ngAfterViewInit() {
-    this.selectionService.selectedNode$
-      .pipe(takeUntil(this.destroy$))
+    this.#selectionService.selectedNode$
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((selectedNode) => {
 
-
-
-        this.detailsService
+        this.#detailsService
           .query(selectedNode)
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.#destroyRef))
           .subscribe((objectDetails) => {
             this.dataLimitedTo = 0;
             this.details = objectDetails;
             this.color = this.details.color;
 
-            this.changeDetectionRef.markForCheck();
-            const viewContainerRef = this.dashHost?.viewContainerRef;
+            this.#changeDetectionRef.markForCheck();
+            const viewContainerRef = this.dashHostComponent().viewContainerRef;
             if (!viewContainerRef) {
               console.log('DetailComponent: dashHost directive not found');
               return;
@@ -102,8 +90,5 @@ export class DetailsComponent implements OnDestroy, AfterViewInit {
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 }
