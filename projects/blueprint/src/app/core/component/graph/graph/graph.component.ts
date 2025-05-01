@@ -140,12 +140,82 @@ export class GraphComponent implements OnInit, OnDestroy {
   #createChart(graph: Graph): void {
 
     if (this.layout && this.graph()) {
-      this.layout.nodes(graph.nodes);
 
-      this.layout.links(graph.links as any);
+      const disconnectedGroups = this.#disconnectedNodeGroups(graph.links);
+      if (disconnectedGroups.length < 2) {
+        this.layout.nodes(graph.nodes);
+        this.layout.links(graph.links as any);
+        this.layout.start(0, 0, 0, 0, true, false);
+        return
+      }
+
+      // if there are disconnected groups, we need to add fake links to connect them
+      const links = graph.links.map(x => x) as any;
+
+      disconnectedGroups.forEach((group, index) => {
+        if (index === disconnectedGroups.length - 1) {
+          // last group, no need to add a link
+          return;
+        }
+        const nextGroup = disconnectedGroups[index + 1];
+
+        const firstNode = group[0];
+        const firstNextGroupNode = nextGroup[0];
+
+        const fakeLink: IUiLink = {
+          id: `fake-link-${index}`,
+          iri: `fake-link-${index}`,
+          source: firstNode,
+          target: firstNextGroupNode,
+          label: '',
+        };
+        links.push(fakeLink);
+      });
+      this.layout.nodes(graph.nodes);
+      this.layout.links(links);
       this.layout.start(0, 0, 0, 0, true, false);
+      return
     }
   }
+
+  #disconnectedNodeGroups(links: IUiLink[]): IUiGraphNode[][] {
+    const disconnectedGroups: IUiGraphNode[][] = [];
+    for (const link of links) {
+      if (disconnectedGroups.length === 0) {
+        disconnectedGroups.push([link.source, link.target]);
+        continue;
+      }
+      const sourceNode = link.source;
+      const targetNode = link.target;
+      let found = false;
+      for (const group of disconnectedGroups) {
+        const findSource = group.find(node => node.id === sourceNode.id);
+        const findTarget = group.find(node => node.id === targetNode.id);
+        if (findSource && findTarget) {
+          // both nodes are in the same group
+          found = true;
+          break;
+        } else if (findSource) {
+          // source node is in the group, add target node to the group
+          group.push(targetNode);
+          found = true;
+          break;
+        } else if (findTarget) {
+          // target node is in the group, add source node to the group
+          group.push(sourceNode);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // create a new group
+        console.log('create new group', sourceNode.iri, targetNode.iri);
+        disconnectedGroups.push([sourceNode, targetNode]);
+      }
+    }
+    return disconnectedGroups
+  }
+
 
   emitNodeSelected(node: IUiGraphNode): void {
     this.selectedSubject = node.id;
@@ -199,20 +269,21 @@ export class GraphComponent implements OnInit, OnDestroy {
     const layout = new LayoutAdaptor();
     layout.size([elementDimensions.width, elementDimensions.height]);
     layout.jaccardLinkLengths(200, 1);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     layout.on(cola.EventType.start, () => {
       const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
       this.layoutIsRunning = true;
     });
+
     layout.on(cola.EventType.tick, () => {
       const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
 
     });
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     layout.on(cola.EventType.end, () => {
 
       const graphValue = this.graph();
