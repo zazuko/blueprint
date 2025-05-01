@@ -2,11 +2,9 @@ import {
   Component,
   Input,
   OnInit,
-  OnDestroy,
+  inject,
 } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { TableModule } from 'primeng/table';
 
@@ -16,12 +14,12 @@ import { FluxValueTableViewer } from 'projects/blueprint/src/app/features/explor
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
 @Component({
-    selector: 'bp-dash-value-table-viewer',
-    templateUrl: './dash-value-table-viewer.component.html',
-    styleUrls: ['./dash-value-table-viewer.component.scss'],
-    imports: [InfoSectionComponent, TableModule]
+  selector: 'bp-dash-value-table-viewer',
+  templateUrl: './dash-value-table-viewer.component.html',
+  styleUrls: ['./dash-value-table-viewer.component.scss'],
+  imports: [InfoSectionComponent, TableModule]
 })
-export class DashValueTableViewerComponent implements OnInit, OnDestroy {
+export class DashValueTableViewerComponent implements OnInit {
   // TODO: Skipped for migration because:
   //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxValueTableViewer = null;
@@ -29,17 +27,13 @@ export class DashValueTableViewerComponent implements OnInit, OnDestroy {
 
   public sectionLabel = '';
   public columnLabels: string[] = [];
+
+  readonly #sparqlService = inject(SparqlService);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public columnsData: any[] = [];
-  private destroy$ = new Subject<void>();
-
-  constructor(
-    private sparqlService: SparqlService,
-  ) { }
 
   ngOnInit(): void {
-    this.sparqlService.select(this.viewer.sparqlQuery)
-      .pipe(takeUntil(this.destroy$))
+    this.#sparqlService.select(this.viewer.sparqlQuery)
       .subscribe(result => {
         this.sectionLabel = this.viewer.label;
         this.columnLabels = this.viewer.header;
@@ -54,9 +48,6 @@ export class DashValueTableViewerComponent implements OnInit, OnDestroy {
       })
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 
 }

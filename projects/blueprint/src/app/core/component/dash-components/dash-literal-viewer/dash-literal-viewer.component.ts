@@ -3,24 +3,22 @@ import {
   Input,
   OnInit,
   ChangeDetectorRef,
-  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { from, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { DashLiteralViewerData } from './model/dash-literal-viewer-data';
 import { InfoSectionComponent } from '@blueprint/component/info-section';
 import { FluxLiteralViewer } from 'projects/blueprint/src/app/features/explore/flux-viewer';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
 @Component({
-    selector: 'bp-dash-literal-viewer',
-    templateUrl: './dash-literal-viewer.component.html',
-    styleUrls: ['./dash-literal-viewer.component.less'],
-    imports: [CommonModule, InfoSectionComponent]
+  selector: 'bp-dash-literal-viewer',
+  templateUrl: './dash-literal-viewer.component.html',
+  styleUrls: ['./dash-literal-viewer.component.less'],
+  imports: [CommonModule, InfoSectionComponent]
 })
-export class DashLiteralViewerComponent implements OnInit, OnDestroy {
+export class DashLiteralViewerComponent implements OnInit {
   // TODO: Skipped for migration because:
   //  Your application code writes to the input. This prevents migration.
   @Input() viewer: FluxLiteralViewer = null;
@@ -37,8 +35,7 @@ export class DashLiteralViewerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    from(this.sparqlService.select(this.viewer.sparqlQuery))
-      .pipe(takeUntil(this.destroy$))
+    this.sparqlService.select(this.viewer.sparqlQuery)
       .subscribe((result) => {
         const literals = result.map(binding => binding['literal']);
         this.data = {
@@ -49,9 +46,6 @@ export class DashLiteralViewerComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 
 }

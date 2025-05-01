@@ -3,9 +3,9 @@ import {
   Component,
   OnInit,
   ChangeDetectionStrategy,
-  OnDestroy,
   inject,
   signal,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,8 +15,7 @@ import {
   Router,
 } from '@angular/router';
 
-import { Subject, Observable } from 'rxjs';
-import { takeUntil, map, debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { Subject, Observable, map, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -35,6 +34,7 @@ import { ActiveFiltersService } from '../services/active-filters/active-filters.
 import { SearchService } from '../services/search/search.service';
 import { SearchQueryParam } from '../model/search-query-param.model';
 import { SearchFilter } from '../model/search-filter.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 'src/shapes/entity/flux-search-result-entity/flux-search-model/entity/ui-class-count-entity/ui-class-count.entity';
 
 @Component({
@@ -51,16 +51,16 @@ import { SearchFilter } from '../model/search-filter.model';
     FormsModule,
   ]
 })
-export class SearchComponent implements OnInit, OnDestroy {
-  private readonly filterService = inject(ActiveFiltersService);
+export class SearchComponent implements OnInit {
+  readonly #filterService = inject(ActiveFiltersService);
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-
-  private readonly loadingIndicatorService = inject(LoadingIndicatorService);
+  readonly #route = inject(ActivatedRoute);
+  readonly #router = inject(Router);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #loadingIndicatorService = inject(LoadingIndicatorService);
 
   public readonly searchDataSource = inject(SearchDataSourceService);
-  private readonly filterItemService = inject(FilterItemService);
+  readonly #filterItemService = inject(FilterItemService);
   public readonly searchService = inject(SearchService);
 
   private searchTermSubject = new Subject<string>();
@@ -83,12 +83,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   activeFilters: SearchFilter[] = [];
 
   searchFilterItems$: Observable<SearchFilter[]>;
-  private destroy$ = new Subject<void>();
 
   constructor() {
-    this.searchFilterItems$ = this.filterItemService.searchFilter$;
+    this.searchFilterItems$ = this.#filterItemService.searchFilter$;
     this.searchTermSubject.pipe(
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.#destroyRef),
       debounceTime(400),
       map(term => {
         if (term.length > 3 || term.length === 0) {
@@ -111,30 +110,30 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.searchService.classCount$.pipe(takeUntil(this.destroy$)).subscribe(classCount => {
+    this.searchService.classCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(classCount => {
       this.classCount.set(classCount as unknown as UiClassCount[]);
     }
     );
 
-    this.searchService.totalCount$.pipe(takeUntil(this.destroy$)).subscribe(totalCount => {
+    this.searchService.totalCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(totalCount => {
       this.resultCount.set(totalCount);
     }
     );
 
     this.searchService.searchResult$.pipe(
-      takeUntil(this.destroy$)
+      takeUntilDestroyed(this.#destroyRef),
     ).subscribe(searchResult => {
       const oldResult = this.searchResult();
       const newResult = searchResult as unknown as SearchResultItem[];
       this.searchResult.set([...oldResult, ...newResult]);
-      this.loadingIndicatorService.done();
+      this.#loadingIndicatorService.done();
     });
 
-    this.route.queryParams
+    this.#route.queryParams
       .pipe(map((queryParam) => queryParam['searchTerm']))
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchTerm) => {
-        this.loadingIndicatorService.loading();
+        this.#loadingIndicatorService.loading();
         this.searchTerm.set(searchTerm || '');
         this.searchParam.term = this.searchTerm();
         this.searchParam.page = 0;
@@ -159,9 +158,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onFilterChange(newFilter: SearchFilter[]): void {
-    this.loadingIndicatorService.loading();
+    this.#loadingIndicatorService.loading();
     this.activeFilters = newFilter;
-    this.filterService.activeFilter = this.activeFilters;
+    this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);
     this.searchParam.filter = this.activeFilters;
     this._search();
@@ -174,7 +173,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams,
     };
-    this.router.navigate([], navigationExtras);
+    this.#router.navigate([], navigationExtras);
   }
 
   onItemSelected(item: SearchResultItem): void {
@@ -185,12 +184,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams,
     };
-    this.router.navigate(['explore', item.iri], navigationExtras);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.#router.navigate(['explore', item.iri], navigationExtras);
   }
 
 }

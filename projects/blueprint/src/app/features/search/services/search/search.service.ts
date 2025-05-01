@@ -1,8 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable, Subject, Subscription } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
+import { Observable, Subject, Subscription, map, switchMap } from 'rxjs';
 
 import { SearchQueryParam } from '../../model/search-query-param.model';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';

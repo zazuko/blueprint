@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable, ReplaySubject, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, ReplaySubject, of, map } from 'rxjs';
 
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 

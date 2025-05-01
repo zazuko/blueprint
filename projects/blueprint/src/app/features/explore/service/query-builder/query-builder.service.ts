@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { map, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 
 
 import { GraphPointer } from 'clownface';

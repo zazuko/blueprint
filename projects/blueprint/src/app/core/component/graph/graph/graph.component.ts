@@ -209,7 +209,6 @@ export class GraphComponent implements OnInit, OnDestroy {
       }
       if (!found) {
         // create a new group
-        console.log('create new group', sourceNode.iri, targetNode.iri);
         disconnectedGroups.push([sourceNode, targetNode]);
       }
     }

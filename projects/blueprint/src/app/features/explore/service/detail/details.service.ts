@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 
 
 import * as sparql from 'rdf-sparql-builder'
