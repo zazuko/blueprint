@@ -3,14 +3,12 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 
 import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
 
 import { blueprint, rdf } from '@blueprint/ontology';
-import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { assert } from 'console';
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 export interface QueryInput {
   nodeIri: string;
