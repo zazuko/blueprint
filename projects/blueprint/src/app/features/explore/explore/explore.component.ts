@@ -23,7 +23,6 @@ import { NeighborNodesComponent } from "../../../core/component/neighbor-nodes/n
 import { UiViewComponent } from '../../../core/ui-view/ui-view/ui-view.component';
 import { ViewDataService } from '../../../core/ui-view/service/view-data/view-data.service';
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
-import { MultiLinkLabels } from '../../../core/component/graph';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 import { Avatar } from '../../../core/component/avatar/avatar.component';
@@ -37,14 +36,13 @@ import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hi
 import { blueprint, nileaUi, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { GraphService } from '../service/graph/graph.service';
 import { SelectionService } from '../service/selection/selection.service';
-import { GraphNode } from '@blueprint/component/graph/model/graph-node.model';
-import { Graph } from '@blueprint/component/graph/model/graph.model';
+import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { DetailsComponent } from '@blueprint/component/details';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { fadeInOut, fadeIn } from '@blueprint/animation/index';
 import { AggregateRelationComponent } from "../../../core/ui-view/view-component-library/aggregate-relation/aggregate-relation.component";
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
-import { INodeElement, NodeElement } from '@blueprint/model/node-element/node-element.class';
+import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommentComponent } from "../../../core/component/comment/comment.component";
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
@@ -97,7 +95,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
   subject: string = '';
   graphOpenState = signal(true);
-  expandedNode: GraphNode | null = null;
+  expandedNode: IUiGraphNode | null = null;
   routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
   uiView: UiView[] = [];
@@ -118,7 +116,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   routeParamMap$: Observable<ParamMap>
   graph$: Observable<Graph>;
 
-  multiLinks: MultiLinkLabels = null;
   linkPanelIsOpen = false;
 
   constructor() {
@@ -230,12 +227,12 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   // graph events
-  onNodeSelected(node: GraphNode): void {
+  onNodeSelected(node: IUiGraphNode): void {
     this.expandedNode = node;
     this.selectByIri(node.id);
   }
 
-  onNodeElementSelected(node: INodeElement): void {
+  onNodeElementSelected(node: IUiGraphNode): void {
     this.selectByIri(node.iri);
   }
 
@@ -244,27 +241,17 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
-  onNodeExpanded(node: GraphNode): void {
+  onNodeExpanded(node: IUiGraphNode): void {
     this.expandedNode = node;
     this.loadingIndicatorService.loading();
 
     this.#graphService.expandNode(node.id);
   }
 
-  onNodeFocused(node: GraphNode): void {
+  onNodeFocused(node: IUiGraphNode): void {
     this.#graphService.clearGraph();
     this.expandedNode = node;
     this.#graphService.expandNode(node.id);
   }
-
-  onMultiLinkSelected(multiLinks: MultiLinkLabels): void {
-    // this.multiLinks = multiLinks;
-    // this.linkPanelIsOpen = true;
-    console.log('onMultiLinkSelected', multiLinks);
-  }
-
-
-
-
 
 }

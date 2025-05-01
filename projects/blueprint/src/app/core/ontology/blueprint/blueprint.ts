@@ -1291,6 +1291,85 @@ class BlueprintOntology extends Ontology {
         return this.namespace('CompositionLinkResult');
     }
 
+    /**
+     * Get the x predicate.
+     * 
+     * @readonly
+     */
+    get x(): string {
+        return this.namespace('x').value;
+    }
+
+    /**
+     * Get the prefixed x predicate.
+     * 
+     * @readonly
+     */
+    get xPrefixed(): string {
+        return `${this.prefix()}:x`;
+    }
+    /**
+     * Get the x predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get xNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('x');
+    }
+
+    /**
+     * Get the y predicate.
+     * 
+     * @readonly
+     */
+    get y(): string {
+        return this.namespace('y').value;
+    }
+    /**
+     * Get the prefixed y predicate.
+     * 
+     * @readonly
+     */
+    get yPrefixed(): string {
+        return `${this.prefix()}:y`;
+    }
+
+    /**
+     * Get the y predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get yNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('y');
+    }
+
+    /**
+     * Get the index predicate.
+     * 
+     * @readonly
+     */
+    get index(): string {
+        return this.namespace('index').value;
+    }
+
+    /**
+     * Get the prefixed index predicate.
+     * 
+     * @readonly
+     */
+    get indexPrefixed(): string {
+        return `${this.prefix()}:index`;
+    }
+    /**
+     * Get the index predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get indexNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('index');
+    }
+
+
 }
 
 export const blueprint = new BlueprintOntology();

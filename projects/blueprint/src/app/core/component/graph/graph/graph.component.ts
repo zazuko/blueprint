@@ -20,15 +20,13 @@ import { ButtonModule } from 'primeng/button';
 import * as cola from 'webcola';
 
 import { LayoutAdaptor } from './layout-adapter';
-import { MultiLinkLabels } from '../graph-elements/model/multi-link-labels.model';
-import { ArrowComponent, NodeComponent } from '../graph-elements';
 
 import { DraggableDirective } from './draggable/draggable.directive';
-import { GraphNode } from '../model/graph-node.model';
-import { Graph } from '../model/graph.model';
-import { GraphLink } from '../model/graph-link.model';
+import { Graph, IUiGraphNode, IUiLink } from '../model/graph.model';
 import { ColorUtil } from '@blueprint/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
+import { NodeComponent } from '../graph-elements/node/node.component';
 
 @Component({
   selector: 'bp-graph',
@@ -49,18 +47,17 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly xOffset = input('0');
   readonly yOffset = input('0');
 
-  readonly nodeSelected = output<GraphNode>();
-  readonly nodeExpanded = output<GraphNode>();
-  readonly nodeFocused = output<GraphNode>();
+  readonly nodeSelected = output<IUiGraphNode>();
+  readonly nodeExpanded = output<IUiGraphNode>();
+  readonly nodeFocused = output<IUiGraphNode>();
   readonly linkSelected = output<string>();
-  readonly multiLinkSelected = output<MultiLinkLabels>();
 
 
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
-  public linksSignal = signal<GraphLink[]>([]);
-  public nodesSignal = signal<GraphNode[]>([]);
+  public linksSignal = signal<IUiLink[]>([]);
+  public nodesSignal = signal<IUiGraphNode[]>([]);
 
 
   public layout: LayoutAdaptor | null = null;
@@ -80,7 +77,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   selectedSubject: string | null;
   isLinkPanelOpen = false;
-  multiLinks: MultiLinkLabels | null = null;
 
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
@@ -144,27 +140,97 @@ export class GraphComponent implements OnInit, OnDestroy {
   #createChart(graph: Graph): void {
 
     if (this.layout && this.graph()) {
-      this.layout.nodes(graph.nodes);
 
-      this.layout.links(graph.links as any);
+      const disconnectedGroups = this.#disconnectedNodeGroups(graph.links);
+      if (disconnectedGroups.length < 2) {
+        this.layout.nodes(graph.nodes);
+        this.layout.links(graph.links as any);
+        this.layout.start(0, 0, 0, 0, true, false);
+        return
+      }
+
+      // if there are disconnected groups, we need to add fake links to connect them
+      const links = graph.links.map(x => x) as any;
+
+      disconnectedGroups.forEach((group, index) => {
+        if (index === disconnectedGroups.length - 1) {
+          // last group, no need to add a link
+          return;
+        }
+        const nextGroup = disconnectedGroups[index + 1];
+
+        const firstNode = group[0];
+        const firstNextGroupNode = nextGroup[0];
+
+        const fakeLink: IUiLink = {
+          id: `fake-link-${index}`,
+          iri: `fake-link-${index}`,
+          source: firstNode,
+          target: firstNextGroupNode,
+          label: '',
+        };
+        links.push(fakeLink);
+      });
+      this.layout.nodes(graph.nodes);
+      this.layout.links(links);
       this.layout.start(0, 0, 0, 0, true, false);
+      return
     }
   }
 
-  emitNodeSelected(node: GraphNode): void {
+  #disconnectedNodeGroups(links: IUiLink[]): IUiGraphNode[][] {
+    const disconnectedGroups: IUiGraphNode[][] = [];
+    for (const link of links) {
+      if (disconnectedGroups.length === 0) {
+        disconnectedGroups.push([link.source, link.target]);
+        continue;
+      }
+      const sourceNode = link.source;
+      const targetNode = link.target;
+      let found = false;
+      for (const group of disconnectedGroups) {
+        const findSource = group.find(node => node.id === sourceNode.id);
+        const findTarget = group.find(node => node.id === targetNode.id);
+        if (findSource && findTarget) {
+          // both nodes are in the same group
+          found = true;
+          break;
+        } else if (findSource) {
+          // source node is in the group, add target node to the group
+          group.push(targetNode);
+          found = true;
+          break;
+        } else if (findTarget) {
+          // target node is in the group, add source node to the group
+          group.push(sourceNode);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // create a new group
+        console.log('create new group', sourceNode.iri, targetNode.iri);
+        disconnectedGroups.push([sourceNode, targetNode]);
+      }
+    }
+    return disconnectedGroups
+  }
+
+
+  emitNodeSelected(node: IUiGraphNode): void {
     this.selectedSubject = node.id;
     this.nodeSelected.emit(node);
   }
 
-  emitNodeExpanded(node: GraphNode): void {
+  emitNodeExpanded(node: IUiGraphNode): void {
     this.nodeExpanded.emit(node);
   }
 
-  emitNodeFocused(node: GraphNode): void {
+  emitNodeFocused(node: IUiGraphNode): void {
     this.nodeFocused.emit(node);
   }
 
-  onLinkSelected(link: GraphLink): void {
+  onLinkSelected(link: IUiLink): void {
     console.log('link selected', link);
   }
 
@@ -203,20 +269,21 @@ export class GraphComponent implements OnInit, OnDestroy {
     const layout = new LayoutAdaptor();
     layout.size([elementDimensions.width, elementDimensions.height]);
     layout.jaccardLinkLengths(200, 1);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     layout.on(cola.EventType.start, () => {
       const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
       this.layoutIsRunning = true;
     });
+
     layout.on(cola.EventType.tick, () => {
       const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
 
     });
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     layout.on(cola.EventType.end, () => {
 
       const graphValue = this.graph();
@@ -254,21 +321,21 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 
 
-  dragStart(event: DragEvent, node: GraphNode): void {
+  dragStart(event: DragEvent, node: IUiGraphNode): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cola.Layout.dragStart(node as any);
     this.dragstart.x = event.x;
     this.dragstart.y = event.y;
   }
 
-  drag(event: DragEvent, node: GraphNode): void {
+  drag(event: DragEvent, node: IUiGraphNode): void {
     //  event.stopPropagation();
     this.layout.resume();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cola.Layout.drag(node as any, event);
   }
 
-  dragEnd(event: DragEvent, node: GraphNode): void {
+  dragEnd(event: DragEvent, node: IUiGraphNode): void {
     //   event.stopPropagation();
     cola.Layout.dragEnd(node);
     // only change the fixed/unfixed flag when the node is dragged a certain distance,
@@ -284,11 +351,6 @@ export class GraphComponent implements OnInit, OnDestroy {
       node.showPin = node.isPinned;
       node.fixed = node.isPinned ? 1 : 0;
     }
-  }
-
-  onMultiLinkSelected(links: MultiLinkLabels) {
-    this.isLinkPanelOpen = true;
-    this.multiLinks = links;
   }
 
   /**

@@ -1,38 +1,38 @@
-@if(node) {
+@if(node()) {
 
-<svg:g class="node-group" [attr.transform]="'translate(' + node?.x + ',' + node?.y + ')'" (mouseenter)="node.showMenu = true" (mouseleave)="node.showMenu = false" (click)="emitNodeSelected($event)">
+<svg:g class="node-group" [attr.transform]="'translate(' + node().x + ',' + node().y + ')'" (mouseenter)="node().showMenu = true" (mouseleave)="node().showMenu = false" (click)="emitNodeSelected($event)">
   <svg:circle [attr.r]="nodeRadius + 8" class="mouse-event-capture"></circle>
-  <svg:circle [attr.r]="nodeRadius + 6" [ngClass]="isSelected
+  <svg:circle [attr.r]="nodeRadius + 6" [ngClass]="isSelected()
                                         ? 'highlight-indicator highlight-indicator--active'
                                         : 'highlight-indicator'
                                 ">  </circle>
-  <svg:circle [attr.r]="nodeRadius" [attr.stroke]="color" [attr.fill]="color" class="node-symbol" [ngClass]="
-                                    isSelected ? 'node-symbol node-symbol--selected' : 'node-symbol'
+  <svg:circle [attr.r]="nodeRadius" [attr.stroke]="color()" [attr.fill]="color()" class="node-symbol" [ngClass]="
+                                    isSelected() ? 'node-symbol node-symbol--selected' : 'node-symbol'
                                 ">  </circle>
   <svg:g x="50%" y="50%">
     <foreignObject x="-50" y="-50" width="100" height="100">
       <div class="node-label">
         <div class="node-label-bg">
           <div class="node-pin-icon">
-            <i [ngClass]="node.showPin ? 'fa-map-pin' : ''" class="fa fa-fw"></i>
+            <i [ngClass]="node().showPin ? 'fa-map-pin' : ''" class="fa fa-fw"></i>
           </div>
           <div class="node-label-icon">
-            <i [ngClass]="node.icon"></i>
+            <i [ngClass]="node().avatars[0].icon"></i>
           </div>
-          <div class="node-label-title"> {{ node.label }}</div>
-          <div class="node-label-type">{{ node.type }}</div>
+          <div class="node-label-title">{{ node().label }}</div>
+          <div class="node-label-type">{{ node().classLabel.join(', ') }}</div>
         </div>
       </div>
     </foreignObject>
   </g>
-  @if(!disableMenu() && node.showMenu && !node.expanded) {
+  @if(!disableMenu() && node().showMenu && !node().expanded) {
     <svg:g class="menu-item-container" transform="translate(0, -55)" (click)="emitNodeExpanded($event)"  (mousedown)="stopPropagation($event)">
       <svg:circle r="15" cx="0" cy="0"></circle>
       <svg:text class="fas menu-item-icon" x="0" y="0">{{ "\uf31e" }}</text>
     </g>
   }
 
-  @if(node.showMenu && !disableMenu()) {
+  @if(node().showMenu && !disableMenu()) {
     <svg:g class="menu-item-container" transform="rotate(45) translate(0, -55) rotate(45)" (click)="emitNodeFocused($event)" (mousedown)="stopPropagation($event)">
       <svg:circle r="15" cx="0" cy="0"></circle>
       <svg:text class="fas menu-item-icon" x="0" y="0">{{ "\uf140" }}</text>
