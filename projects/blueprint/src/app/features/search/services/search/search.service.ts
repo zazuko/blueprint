@@ -17,19 +17,21 @@ import { QleverFullTextSearch } from './full-text-search/qlever-full-text-search
 
 import { blueprint, rdf } from '@blueprint/ontology';
 
-import { FullTextSearchDialect, SparqlService } from '@blueprint/service/sparql/sparql.service';
+import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from '@blueprint/utils';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 import { SearchResult } from '@blueprint/model/search-result/search-result';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { ConfigService, FullTextSearchDialect } from '@blueprint/service/config/config.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
 
+  readonly #appConfig = inject(ConfigService).getConfiguration();
   private readonly uiClassMetadataService = inject(UiClassMetadataService);
   private readonly sparqlService = inject(SparqlService);
 
@@ -109,11 +111,11 @@ export class SearchService {
         }),
         switchMap(filteredClassMetadata => {
           // create full text search provider
-          console.log('fullTextSearchDialect', this.sparqlService.fullTextSearchDialect);
+          console.log('fullTextSearchDialect', this.#appConfig.fullTextSearchDialect);
 
           let ftsProvider: FusekiFullTextSearch | StardogFullTextSearch | NeptuneFullTextSearch | GraphDBFullTextSearch | QleverFullTextSearch;
 
-          switch (this.sparqlService.fullTextSearchDialect) {
+          switch (this.#appConfig.fullTextSearchDialect) {
             case FullTextSearchDialect.QLEVER:
               ftsProvider = new QleverFullTextSearch(this.searchContext);
               break;

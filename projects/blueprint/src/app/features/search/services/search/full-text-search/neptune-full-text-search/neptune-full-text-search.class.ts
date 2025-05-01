@@ -1,12 +1,14 @@
+import { AppConfiguration, ConfigService } from "@blueprint/service/config/config.service";
 import { SearchContext } from "../../model/search-context.class";
 import { FullTextSearch } from "../../util/abstract-search.class";
 
 import { UiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
 import { blueprint, rdfs, rdf, shacl } from "@blueprint/ontology";
-
-import { environment } from "../../../../../../../environments/environment";
+import { inject } from "@angular/core";
 
 export class NeptuneFullTextSearch extends FullTextSearch {
+
+  readonly #appConfig = inject(ConfigService).getConfiguration();
 
   constructor(searchContext: SearchContext) {
     console.log('NeptuneFullTextSearch', searchContext);
@@ -24,13 +26,15 @@ export class NeptuneFullTextSearch extends FullTextSearch {
       this._searchContext.searchTerm.toString(),
       sparqlFilterTerm,
       pageNumber,
-      pageSize);
+      pageSize,
+      this.#appConfig
+    );
     return query;
 
   }
 
   public classCountQueryWithSearchTerm(metadata: UiClassMetadata[]): string {
-    return classCountQuery(this._searchContext.searchTerm.toString(), metadata);
+    return classCountQuery(this._searchContext.searchTerm.toString(), metadata, this.#appConfig);
   }
 
 
@@ -39,8 +43,9 @@ export class NeptuneFullTextSearch extends FullTextSearch {
       .map(metaShape => fluxClassSubQuery(metaShape))
       .join(' UNION');
 
-    return countTotalQuery(this._searchContext.searchTerm.toString(), fluxClassQueries);
+    return countTotalQuery(this._searchContext.searchTerm.toString(), fluxClassQueries, this.#appConfig);
   }
+
 }
 
 // search functions 
@@ -62,7 +67,7 @@ function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
 
 
 
-function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageNumber: number, pageSize: number): string {
+function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageNumber: number, pageSize: number, appConfig: AppConfiguration): string {
   const query = `
   ${rdf.sparqlPrefix()}
   ${blueprint.sparqlPrefix()}
@@ -91,7 +96,7 @@ function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageN
           {
             SELECT ?sub ?luScore ?bpClass WHERE {
               SERVICE fts:search {
-                fts:config fts:endpoint '${environment.neptune.ftsEndpoint}' .
+                fts:config fts:endpoint '${appConfig.neptune.ftsEndpoint}' .
                 fts:config fts:queryType 'query_string' .
                 fts:config fts:field rdfs:label .
                 fts:config fts:field rdfs:comment .
@@ -131,7 +136,8 @@ function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageN
 
 function countTotalQuery(
   searchTerm: string,
-  fluxClassQueries: string
+  fluxClassQueries: string,
+  appConfig: AppConfiguration
 ): string {
   if (searchTerm && searchTerm.length > 0) {
     return `
@@ -155,7 +161,7 @@ WHERE
         {
           SELECT ?sub ?luScore WHERE {
             SERVICE fts:search {
-              fts:config fts:endpoint '${environment.neptune.ftsEndpoint}' .
+              fts:config fts:endpoint '${appConfig.neptune.ftsEndpoint}' .
               fts:config fts:queryType 'query_string' .
               fts:config fts:field rdfs:label .
               fts:config fts:query "${searchTerm} OR ${searchTerm}*" .
@@ -203,7 +209,8 @@ WHERE
 
 function classCountQuery(
   input: string,
-  classMetadata: UiClassMetadata[]
+  classMetadata: UiClassMetadata[],
+  appConfig: AppConfiguration
 ): string {
   let subQueries: string[] = [];
   /*  if (filter.length > 0) {
@@ -212,7 +219,7 @@ function classCountQuery(
       });
     } else {*/
   subQueries = classMetadata.map((meta) => {
-    return classSparqlBlock(meta.targetNode.value, fullTextSearchQuery(input));
+    return classSparqlBlock(meta.targetNode.value, fullTextSearchQuery(input, appConfig));
   });
   // }
 
@@ -250,14 +257,14 @@ ${subQuery}
 
 
 
-function fullTextSearchQuery(input: string): string {
+function fullTextSearchQuery(input: string, appConfig: AppConfiguration): string {
   if (!input || input.length === 0) {
     return '';
   }
 
   return `
       SERVICE fts:search {
-        fts:config fts:endpoint '${environment.neptune.ftsEndpoint}' .
+        fts:config fts:endpoint '${appConfig.neptune.ftsEndpoint}' .
         fts:config fts:queryType 'query_string' .
         fts:config fts:field rdfs:label .
         fts:config fts:query "${input} OR ${input}*" .

@@ -1,56 +1,71 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-
-import { LibraryConfigurationService } from '@blueprint/service/library-configuration/library-configuration.service';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { FullTextSearchDialect } from "@blueprint/service/sparql/sparql.service";
+
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-  private _libraryConfigurationService = inject(LibraryConfigurationService);
-  private _httpClient = inject(HttpClient);
-  protected static instance = 0;
-  private _appConfiguration: FluxConfig = null;
+  readonly #httpClient = inject(HttpClient);
+  #appConfig = signal<AppConfiguration>({} as AppConfiguration);
 
-  constructor() {
-    ConfigService.instance++;
-  }
+  /**
+   * This signal returns the app configuration.
+   * There is a method version if you need it.
+   * 
+   * @see {@link getConfiguration}
+   */
+  configuration = this.#appConfig.asReadonly();
 
-  fetchConfig(): Observable<FluxConfig> {
-    return this._httpClient.get<FluxConfig>('/config.json').pipe(tap(config => {
-      this._appConfiguration = config;
+  /** 
+   * Fetches the app configuration from the config.json file.
+   * This method is called when the app is initialized. You shohuld never call this method directly.
+   */
+  fetchConfig(): Observable<AppConfiguration> {
+    return this.#httpClient.get<AppConfiguration>('/config.json').pipe(tap(config => {
 
-
-      if (environment.production) {
-        environment.endpointUrl = config.endpointUrl ?? environment.endpointUrl;
-      }
-
-      environment.sparqlConsoleUrl = config?.sparqlConsoleUrl ?? null;
-      environment.graphExplorerUrl = config?.graphExplorerUrl ?? null;
-
-      environment.fullTextSearchDialect = config?.fullTextSearchDialect ?? FullTextSearchDialect.STARDOG;
-      console.log('ConfigService', config?.fullTextSearchDialect);
-
-      this._libraryConfigurationService.endpointUrl = environment.endpointUrl;
-      this._libraryConfigurationService.sparqlConsoleUrl = environment.sparqlConsoleUrl;
-      this._libraryConfigurationService.graphExplorerUrl = environment.graphExplorerUrl;
-      this._libraryConfigurationService.production = environment.production;
-      this._libraryConfigurationService.fullTextSearchDialect = environment.fullTextSearchDialect;
+      console.log('%c--- Blueprint Configuration -----', 'color:orange');
+      console.log(`config.json`);
+      console.log(JSON.stringify(config, null, 2));
+      console.log('%c----------------------------------', 'color:orange');
+      this.#appConfig.set(config);
 
     }))
   }
 
-  get config(): FluxConfig {
-    return this._appConfiguration;
+  /**
+   * This method returns the app configuration. 
+   * There is a signal version if you need it.
+   * 
+   * @see {@link configuration}
+   * @returns {AppConfiguration} The app configuration.
+   */
+  getConfiguration(): AppConfiguration {
+    return this.configuration();
   }
+
 }
 
-export type FluxConfig = {
+export type AppConfiguration = {
   readonly endpointUrl: string,
   readonly sparqlConsoleUrl: string,
   readonly graphExplorerUrl: string,
-  readonly fullTextSearchDialect: FullTextSearchDialect
+  readonly fullTextSearchDialect: FullTextSearchDialect,
+  readonly skipAuthentication?: boolean,
+  readonly neptune?: NeptuneConfig,
+}
+
+type NeptuneConfig = {
+  ftsEndpoint: string
+}
+
+
+
+export enum FullTextSearchDialect {
+  FUSEKI = 'fuseki',
+  STARDOG = 'stardog',
+  NEPTUNE = 'neptune',
+  GRAPHDB = 'graphdb',
+  QLEVER = 'qlever'
 }
