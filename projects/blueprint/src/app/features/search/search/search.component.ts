@@ -59,12 +59,11 @@ export class SearchComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
   readonly #loadingIndicatorService = inject(LoadingIndicatorService);
 
-  public readonly searchDataSource = inject(SearchDataSourceService);
   readonly #filterItemService = inject(FilterItemService);
+  public readonly searchDataSource = inject(SearchDataSourceService);
   public readonly searchService = inject(SearchService);
 
   private searchTermSubject = new Subject<string>();
-
 
   currentPage = 0;
 
@@ -147,7 +146,7 @@ export class SearchComponent implements OnInit {
     this.searchTermSubject.next(search);
   }
 
-  onMore(): void {
+  showMoreItems(): void {
     const currentPage = this.searchParam.page ?? 0;
     this.searchParam.page = currentPage + 1;
     this.#search();
