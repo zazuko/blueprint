@@ -176,7 +176,12 @@ export class SearchComponent implements OnInit {
     this.#router.navigate([], navigationExtras);
   }
 
-  onItemSelected(item: SearchResultItem): void {
+  /**
+   * Navigates to the selected item in the search result.
+   * 
+   * @param item Item to navigate to
+   */
+  navigateToItem(item: SearchResultItem): void {
     const queryParams: Params = {
       searchTerm: this.searchParam.term,
       l: item.label,

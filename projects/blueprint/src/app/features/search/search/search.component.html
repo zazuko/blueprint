@@ -16,7 +16,7 @@
     <div style="flex-grow: 1; display: flex; flex-direction: column;">
 
       <bp-search-result-list [searchResult]="searchResult()" [total]="resultCount()" (more)="showMoreItems()"
-        (selected)="onItemSelected($event)" />
+        (selected)="navigateToItem($event)" />
 
 
 
