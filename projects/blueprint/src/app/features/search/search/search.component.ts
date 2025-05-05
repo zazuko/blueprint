@@ -183,6 +183,7 @@ export class SearchComponent implements OnInit {
     };
     const navigationExtras: NavigationExtras = {
       queryParams,
+      fragment: "Information"
     };
     this.#router.navigate(['explore', item.iri], navigationExtras);
   }
