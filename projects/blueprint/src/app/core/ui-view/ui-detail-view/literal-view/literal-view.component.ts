@@ -1,16 +1,24 @@
-import { Component, input } from '@angular/core';
+import { PanelModule } from 'primeng/panel';
+
+import { Component, computed, input } from '@angular/core';
 import { LiteralRenderType } from '../../../service/ui-config/ui-detail/model/ui-detail-configuration-element';
 
 @Component({
-    selector: 'bp-literal-view',
-    imports: [],
-    templateUrl: './literal-view.component.html',
-    styleUrl: './literal-view.component.scss'
+  selector: 'bp-literal-view',
+  imports: [PanelModule],
+  templateUrl: './literal-view.component.html',
+  styleUrl: './literal-view.component.scss'
 })
 export class LiteralViewComponent {
-  label = input<string>('');
-  value = input<string>('');
+  label = input.required<string>();
+  value = input.required<string>();
   renderLiteralAs = input<LiteralRenderType>(LiteralRenderType.PLAIN);
 
   LiteralViewType = LiteralRenderType;
+
+  transformedLabel = computed<string>(() => {
+    const label = this.label();
+    const transformedLabel = label.charAt(0).toUpperCase() + label.slice(1).replace(/([a-z])([A-Z])/g, '$1 $2');
+    return transformedLabel;
+  });
 }

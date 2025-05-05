@@ -2,26 +2,28 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { RdfDetailConfigurationElement } from './model/ui-detail-configuration-element';
 
-import { RdfDetailElement } from './model/ui-detail-element';
+import { IUiDetailElement, RdfDetailElement } from './model/ui-detail-element';
 
 import { blueprint, blueprintShape, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
-
+import { LiteralRenderType } from './model/ui-detail-configuration-element';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiDetailService {
-  private readonly sparqlService = inject(SparqlService);
-
-  constructor() { }
+  readonly #sparqlService = inject(SparqlService);
 
 
   getDetailConfigurationForClass(classIri: string): Observable<RdfDetailConfigurationElement[]> {
-    return this.sparqlService.construct(this.getUiDetailForClassQuery(classIri)).pipe(
+    return this.#sparqlService.construct(this.getUiDetailForClassQuery(classIri)).pipe(
       map(dataset => {
-        return this.extractUiDetails(dataset);
+        const detail = this.extractUiDetails(dataset);
+
+
+        console.log('detail', detail);
+        return detail
       })
     )
 
@@ -42,8 +44,37 @@ export class UiDetailService {
 
   }
 
-  extractUiDetailComponents(subjectIri: string, dataset: RdfTypes.Dataset): RdfDetailElement[] {
-    return rdfEnvironment.clownface(dataset).namedNode(subjectIri).out(blueprint.detailNamedNode).map((node) => new RdfDetailElement(node));
+  extractUiDetailComponents(subjectIri: string, dataset: RdfTypes.Dataset): IUiDetailElement[] {
+    const subject = rdfEnvironment.clownface(dataset).namedNode(subjectIri);
+    const details = subject.out(blueprint.detailNamedNode).map((node) => new RdfDetailElement(node));
+    const literalPredicatesDataset = dataset.match(rdfEnvironment.namedNode(subjectIri), null, null).filter(quad => quad.object.termType === 'Literal');
+
+    const syntheticDetails = [...literalPredicatesDataset].map((quad) => {
+      const predicateString = quad.predicate.value.includes('#')
+        ? quad.predicate.value.split('#').pop()
+        : quad.predicate.value.split('/').pop();
+      const syntheticDetail: IUiDetailElement = {
+        label: predicateString,
+        iri: subjectIri + quad.predicate.value,
+        order: 0,
+        renderLiteralAs: LiteralRenderType.PLAIN,
+        value: [quad.object.value],
+      }
+      return syntheticDetail;
+    });
+
+    details.forEach((detail) => {
+      console.log('detail', detail.iri);
+      console.log('detail', detail.label);
+      console.log('detail', detail.linkLabel);
+      console.log('detail', detail.order);
+      console.log('detail', detail.renderLiteralAs);
+      // console.log('detail', detail.);
+    });
+    console.log('literalPredicatesDataset', literalPredicatesDataset);
+    console.log('details', details);
+    console.log(rdfEnvironment.serialize(dataset));
+    return [...details, ...syntheticDetails]
   }
 
 }

@@ -211,7 +211,7 @@ export class ViewDataService {
 
 
 function defaultQuery(subject: RdfTypes.NamedNode): string {
-  return `
+  const query = `
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
@@ -219,16 +219,18 @@ function defaultQuery(subject: RdfTypes.NamedNode): string {
 
   CONSTRUCT {
     <${subject.value}> ?p ?o .
+    <${subject.value}> ?literalP ?literalO .
     ?metaShape ?shapeP ?oo .
   }
   WHERE {
     {
       VALUES (?p) {
         (${rdf.typePrefixed})
-        (${rdfs.labelPrefixed})
-        (${rdfs.commentPrefixed})
       }
       <${subject.value}> ?p ?o  .
+    } UNION {
+      <${subject.value}> ?literalP ?literalO .
+      FILTER(isLiteral(?literalO))
     } UNION {
       {
         SELECT ?metaShape
@@ -252,4 +254,6 @@ function defaultQuery(subject: RdfTypes.NamedNode): string {
     }
   }
   `;
+
+  return query;
 }

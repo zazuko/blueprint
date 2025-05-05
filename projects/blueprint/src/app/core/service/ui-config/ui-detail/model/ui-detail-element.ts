@@ -5,7 +5,7 @@ import { blueprint, rdfs, shacl } from "@blueprint/ontology";
 import { LiteralRenderType } from "./ui-detail-configuration-element";
 
 
-export interface UiDetailElement {
+export interface IUiDetailElement {
     renderLiteralAs: LiteralRenderType;
     label: string;
     iri: string;
@@ -19,7 +19,7 @@ export interface UiDetailElement {
  * This is an implementation of UiDetailElement using clownface.
  * 
  */
-export class RdfDetailElement implements UiDetailElement {
+export class RdfDetailElement implements IUiDetailElement {
 
     private _node: GraphPointer;
     private _iri: string | null = null;

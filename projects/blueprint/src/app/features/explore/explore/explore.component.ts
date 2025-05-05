@@ -36,7 +36,7 @@ import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
 import { UiDetailService } from '../../../core/service/ui-config/ui-detail/ui-detail.service';
-import { UiDetailElement } from '../../../core/service/ui-config/ui-detail/model/ui-detail-element';
+import { IUiDetailElement } from '../../../core/service/ui-config/ui-detail/model/ui-detail-element';
 import { LiteralViewComponent } from "../../../core/ui-view/ui-detail-view/literal-view/literal-view.component";
 import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hierarchy-view/model/ui-hierarchy-view';
 import { GraphService } from '../service/graph/graph.service';
@@ -45,6 +45,7 @@ import { AggregateRelationComponent } from "../../../core/ui-view/view-component
 import { CommentComponent } from "../../../core/component/comment/comment.component";
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
 import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
   templateUrl: './explore.component.html',
@@ -64,7 +65,8 @@ import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-o
     AggregateRelationComponent,
     TooltipModule,
     CommentComponent,
-    TabsModule
+    TabsModule,
+    PanelModule
   ]
 })
 export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -104,7 +106,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   graph = signal<Graph>({ nodes: [], links: [] });
   subjectAvatars = signal<Avatar[]>([]);
 
-  uiDetailElementsSignal = signal<UiDetailElement[]>([]);
+  uiDetailElementsSignal = signal<IUiDetailElement[]>([]);
 
   searchTerm: string;
   searchFilter: string;
@@ -167,6 +169,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       {
         next: (viewGraph) => {
+          console.log('viewGraph', viewGraph);
           const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
 
           // ---- composition link result

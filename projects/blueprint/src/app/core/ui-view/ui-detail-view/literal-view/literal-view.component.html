@@ -3,7 +3,7 @@
 @case (LiteralViewType.LINK) {
 <div class="literal-view">
     <div class="literal">
-        <span class="label">{{ label() }}:</span>
+        <span class="label">{{ transformedLabel() }}:</span>
         <i class="pi pi-external-link"></i>&nbsp;&nbsp;<a class="value" [href]="value()" target="_blank">{{ value()
             }}</a>
     </div>
@@ -12,7 +12,7 @@
 @case (LiteralViewType.EMAIL) {
 <div class="literal-view">
     <div class="literal">
-        <span class="label">{{ label() }}:</span>
+        <span class="label">{{ transformedLabel() }}:</span>
         <i class="pi pi-at"></i>&nbsp;&nbsp;<a class="value" [href]="'mailto:' + value()">{{ value() }}</a>
     </div>
 </div>
@@ -20,7 +20,7 @@
 @case (LiteralViewType.PHONE) {
 <div class="literal-view">
     <div class="literal">
-        <span class="label">{{ label() }}:</span>
+        <span class="label">{{ transformedLabel() }}</span>
         <i class="pi pi-phone"></i>&nbsp;&nbsp;<a class="value" [href]="'tel:' + value()">{{ value() }}</a>
     </div>
 </div>
@@ -30,8 +30,9 @@
 
 <div class="literal-view">
     <div class="literal">
-        <span class="label">{{ label() }}:</span>
-        <span class="value">{{ value() }}</span>
+        <div class="label">{{ transformedLabel() }}</div>
+        <div class="value">{{ value() }}</div>
+
     </div>
 </div>
 }
@@ -39,7 +40,7 @@
 
 <div class="literal-view">
     <div class="literal">
-        <span class="label">{{ label() }}:</span>
+        <span class="label">{{ transformedLabel() }}:</span>
         @if(value() === 'true') {
         <span style="color: lightgreen" class="pi pi-check-circle"></span>
 
