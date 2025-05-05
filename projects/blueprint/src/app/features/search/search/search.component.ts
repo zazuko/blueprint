@@ -130,15 +130,16 @@ export class SearchComponent implements OnInit {
     });
 
     this.#route.queryParams
-      .pipe(map((queryParam) => queryParam['searchTerm']))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        map((queryParam) => queryParam['searchTerm']),
+        takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchTerm) => {
         this.#loadingIndicatorService.loading();
         this.searchTerm.set(searchTerm || '');
         this.searchParam.term = this.searchTerm();
         this.searchParam.page = 0;
         this.searchResult.set([]);
-        this._search();
+        this.#search();
       });
   }
 
@@ -149,11 +150,11 @@ export class SearchComponent implements OnInit {
   onMore(): void {
     const currentPage = this.searchParam.page ?? 0;
     this.searchParam.page = currentPage + 1;
-    this._search();
+    this.#search();
   }
 
 
-  private _search(): void {
+  #search(): void {
     this.searchService.search(this.searchParam);
   }
 
@@ -163,7 +164,7 @@ export class SearchComponent implements OnInit {
     this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);
     this.searchParam.filter = this.activeFilters;
-    this._search();
+    this.#search();
   }
 
   onSearchTermChanged(newTerm: string): void {
