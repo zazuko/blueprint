@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { from, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { DashLiteralViewerData } from './model/dash-literal-viewer-data';
 import { InfoSectionComponent } from '@blueprint/component/info-section';
 import { FluxLiteralViewer } from 'projects/blueprint/src/app/features/explore/flux-viewer';
@@ -27,7 +27,6 @@ export class DashLiteralViewerComponent implements OnInit {
   @Input() singleLine = false;
 
   data: DashLiteralViewerData = null;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private sparqlService: SparqlService,

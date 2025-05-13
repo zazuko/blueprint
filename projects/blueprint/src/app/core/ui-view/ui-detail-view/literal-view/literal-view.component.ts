@@ -2,6 +2,7 @@ import { PanelModule } from 'primeng/panel';
 
 import { Component, computed, input } from '@angular/core';
 import { LiteralRenderType } from '../../../service/ui-config/ui-detail/model/ui-detail-configuration-element';
+import { RdfTypes } from '../../../rdf/rdf-environment';
 
 @Component({
   selector: 'bp-literal-view',
@@ -11,7 +12,7 @@ import { LiteralRenderType } from '../../../service/ui-config/ui-detail/model/ui
 })
 export class LiteralViewComponent {
   label = input.required<string>();
-  value = input.required<string>();
+  value = input.required<RdfTypes.Literal[]>();
   renderLiteralAs = input<LiteralRenderType>(LiteralRenderType.PLAIN);
 
   LiteralViewType = LiteralRenderType;

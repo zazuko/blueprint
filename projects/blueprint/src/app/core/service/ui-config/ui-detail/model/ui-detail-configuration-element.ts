@@ -1,6 +1,7 @@
 import { GraphPointer } from "clownface";
 import { rdfs, blueprint, shacl } from "@blueprint/ontology";
 import { NamedNode } from "@rdfjs/types";
+import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 
 export interface UiDetailConfigurationElement {
     renderLiteralAs: LiteralRenderType;
@@ -9,63 +10,53 @@ export interface UiDetailConfigurationElement {
     order: number;
 }
 
-export class RdfDetailConfigurationElement implements UiDetailConfigurationElement {
-    private _node: GraphPointer;
+export class RdfDetailConfigurationElement extends ClownfaceObject implements UiDetailConfigurationElement {
 
-    private _iri: string | null = null;
-    private _label: string | null = null;
-    private _renderLiteralAs: LiteralRenderType | null = null;
-    private _order: number | null = null;
+    #_label: string | null = null;
+    #_renderLiteralAs: LiteralRenderType | null = null;
+    #_order: number | null = null;
 
     constructor(pointer: GraphPointer) {
-        this._node = pointer;
+        super(pointer);
     }
-
-    get iri(): string {
-        if (this._iri === null) {
-            this._iri = this._node.value;
-        }
-        return this._iri;
-    }
-
     get label(): string {
-        if (this._label === null) {
-            this._label = this._node.out(rdfs.labelNamedNode).value;
+        if (this.#_label === null) {
+            this.#_label = this._node.out(rdfs.labelNamedNode).value;
         }
-        return this._label;
+        return this.#_label;
     }
 
     get renderLiteralAs(): LiteralRenderType {
-        if (this._renderLiteralAs === null) {
+        if (this.#_renderLiteralAs === null) {
             const rendererIri = this._node.out(blueprint.showAsNamedNode).value;
             switch (rendererIri) {
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Link':
-                    this._renderLiteralAs = LiteralRenderType.LINK;
+                    this.#_renderLiteralAs = LiteralRenderType.LINK;
                     break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Email':
-                    this._renderLiteralAs = LiteralRenderType.EMAIL;
+                    this.#_renderLiteralAs = LiteralRenderType.EMAIL;
                     break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/PhoneNumber':
-                    this._renderLiteralAs = LiteralRenderType.PHONE;
+                    this.#_renderLiteralAs = LiteralRenderType.PHONE;
                     break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Plain':
-                    this._renderLiteralAs = LiteralRenderType.PLAIN;
+                    this.#_renderLiteralAs = LiteralRenderType.PLAIN;
                     break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Boolean':
-                    this._renderLiteralAs = LiteralRenderType.PLAIN;
+                    this.#_renderLiteralAs = LiteralRenderType.PLAIN;
                     break;
                 default:
-                    this._renderLiteralAs = LiteralRenderType.UNKNOWN;
+                    this.#_renderLiteralAs = LiteralRenderType.UNKNOWN;
             }
         }
-        return this._renderLiteralAs;
+        return this.#_renderLiteralAs;
     }
 
     get order(): number {
-        if (this._order === null) {
-            this._order = Number(this._node.out(shacl.orderNamedNode).value);
+        if (this.#_order === null) {
+            this.#_order = Number(this._node.out(shacl.orderNamedNode).value);
         }
-        return this._order;
+        return this.#_order;
     }
 
     getSparqlDetailQueryForSubject(subjectNode: NamedNode): string {
@@ -101,6 +92,7 @@ export enum LiteralRenderType {
     EMAIL = 'EMAIL',
     PHONE = 'PHONE',
     BOOLEAN = 'BOOLEAN',
+    HIDDEN = 'HIDDEN',
     UNKNOWN = 'UNKNOWN'
 }
 

@@ -17,6 +17,7 @@ import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils'
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
+import { defaultSubjectQuery } from './query/default-subject.query';
 
 @Injectable({
   providedIn: 'root'
@@ -70,9 +71,8 @@ export class ViewDataService {
         const aggregateToNodeLinkQueries = types.map((type) => this.#aggregateService.getAggregateToNodeLinkForClassQuery(type));
         const uiClassMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
 
-        const uiDetailQueries = types.map((type) => this.#uiDetailService.getUiDetailForClassQuery(type));
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
+        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
         return this.#sparql.construct(mergedMetaQuery);
       }),
@@ -80,7 +80,8 @@ export class ViewDataService {
         dataset.addAll(viewGraphMetadata);
 
         /* 1. get detail config */
-        const uiDetails = this.#uiDetailService.extractUiDetails(viewGraphMetadata);
+        const uiDetails = [] //this.#uiDetailService.extractUiDetails(viewGraphMetadata);
+        console.log('uiDetails', uiDetails);
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject));
 
         /* 2. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
@@ -183,7 +184,7 @@ export class ViewDataService {
 
 
         // add default query
-        const queries = [...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
+        const queries = [defaultSubjectQuery(subject), ...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
         const mergedQuery = sparqlUtils.mergeConstruct(queries);
@@ -209,51 +210,3 @@ export class ViewDataService {
 
 }
 
-
-function defaultQuery(subject: RdfTypes.NamedNode): string {
-  const query = `
-  ${rdf.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
-
-  CONSTRUCT {
-    <${subject.value}> ?p ?o .
-    <${subject.value}> ?literalP ?literalO .
-    ?metaShape ?shapeP ?oo .
-  }
-  WHERE {
-    {
-      VALUES (?p) {
-        (${rdf.typePrefixed})
-      }
-      <${subject.value}> ?p ?o  .
-    } UNION {
-      <${subject.value}> ?literalP ?literalO .
-      FILTER(isLiteral(?literalO))
-    } UNION {
-      {
-        SELECT ?metaShape
-        WHERE {
-          <${subject.value}> a ?type .
-          ?metaShape ${shacl.targetNodePrefixed} ?type .
-        }
-      }
-      VALUES ?shapeP {
-        ${blueprint.colorIndexPrefixed}
-        ${blueprint.searchPriorityPrefixed}
-        ${blueprint.faIconPrefixed}
-        ${blueprint.iconPrefixed}
-        ${rdfs.labelPrefixed}
-        ${rdfs.commentPrefixed}
-        ${shacl.targetNodePrefixed}
-       
-      }
-      ?metaShape ?shapeP ?oo .
-
-    }
-  }
-  `;
-
-  return query;
-}

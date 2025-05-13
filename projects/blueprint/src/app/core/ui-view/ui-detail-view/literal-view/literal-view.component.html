@@ -1,13 +1,15 @@
 @if (value()) {
 @switch (renderLiteralAs()) {
 @case (LiteralViewType.LINK) {
+<!--
 <div class="literal-view">
     <div class="literal">
         <span class="label">{{ transformedLabel() }}:</span>
-        <i class="pi pi-external-link"></i>&nbsp;&nbsp;<a class="value" [href]="value()" target="_blank">{{ value()
+        <i class="pi pi-external-link"></i>&nbsp;&nbsp;<a class="value" [href]="value()" target="_blank">{{
+            value().value.join(' ')
             }}</a>
     </div>
-</div>
+</div>-->
 }
 @case (LiteralViewType.EMAIL) {
 <div class="literal-view">
@@ -31,17 +33,21 @@
 <div class="literal-view">
     <div class="literal">
         <div class="label">{{ transformedLabel() }}</div>
-        <div class="value">{{ value() }}</div>
-
+        @for(l of value(); track l) {
+        <div class="value">{{ l.value }} @if(l.language){
+            <span class="language">{{'@' + l.language}}</span>
+            }
+        </div>
+        }
     </div>
 </div>
 }
 @case (LiteralViewType.BOOLEAN ) {
-
+<!--
 <div class="literal-view">
     <div class="literal">
         <span class="label">{{ transformedLabel() }}:</span>
-        @if(value() === 'true') {
+        @if(value().value === 'true') {
         <span style="color: lightgreen" class="pi pi-check-circle"></span>
 
         } @else {
@@ -49,7 +55,7 @@
         }
 
     </div>
-</div>
+</div>  -->
 }
 
 }
