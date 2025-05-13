@@ -120,11 +120,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor() {
     this.routeParamMap$ = this.#route.paramMap;
-
-    effect(() => {
-      const r = this.literalDetailElements();
-      console.log('d elem', r);
-    });
   }
 
   literalConfigurationRules = toSignal(toObservable(computed(() => {
@@ -173,7 +168,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         const literalElement: UILiteral = {
-          label: capitalizedLabel + ' ' + key,
+          label: capitalizedLabel,
           order: 10,
           value: literalValues,
           renderer: LiteralRenderType.PLAIN
