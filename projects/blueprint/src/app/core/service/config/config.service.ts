@@ -4,6 +4,13 @@ import { environment } from 'projects/blueprint/src/environments/environment';
 
 import { Observable, tap } from 'rxjs';
 
+/**
+ * This is a special service that is used to fetch the app configuration from the config.json file.
+ * This service is used in the app initializer to fetch the configuration before the app is loaded.
+ * Inside the app you can use it normally like any other service.
+ * 
+ * The configuration is stored in a signal, or you can use the method {@link getConfiguration} to get the configuration.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -61,8 +68,6 @@ export type AppConfiguration = {
 type NeptuneConfig = {
   ftsEndpoint: string
 }
-
-
 
 export enum FullTextSearchDialect {
   FUSEKI = 'fuseki',
