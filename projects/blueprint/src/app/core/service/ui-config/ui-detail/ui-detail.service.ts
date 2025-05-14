@@ -5,7 +5,7 @@ import { blueprintShape, rdf } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { getAllUiDetailConfiguration } from './query/get-all-ui-detail-configuration.query';
-import { LiteralPresentationRule, RdfLiteralPresentationRule } from './new_model/literal.model';
+import { LiteralDisplayRule, RdfLiteralDisplayRule } from './new_model/literal.model';
 
 /**
  * Service to handle UI detail configuration.
@@ -28,17 +28,17 @@ import { LiteralPresentationRule, RdfLiteralPresentationRule } from './new_model
 export class UiDetailService {
   readonly #sparqlService = inject(SparqlService);
 
-  #literalPresentationRule$: Observable<LiteralPresentationRule[]> | null = null;
+  #literalPresentationRule$: Observable<LiteralDisplayRule[]> | null = null;
 
   constructor() {
     this.fetchLiteralPresentationRules().subscribe();
   }
 
-  public fetchLiteralPresentationRules(): Observable<LiteralPresentationRule[]> {
+  public fetchLiteralPresentationRules(): Observable<LiteralDisplayRule[]> {
     if (this.#literalPresentationRule$ === null) {
       this.#literalPresentationRule$ = this.#sparqlService.construct(getAllUiDetailConfiguration()).pipe(
         map(dataset => {
-          const literalRules = rdfEnvironment.clownface(dataset).namedNode(blueprintShape.ClassDetailShapeNamedNode).in(rdf.typeNamedNode).map(n => new RdfLiteralPresentationRule(n));
+          const literalRules = rdfEnvironment.clownface(dataset).namedNode(blueprintShape.ClassDetailShapeNamedNode).in(rdf.typeNamedNode).map(n => new RdfLiteralDisplayRule(n));
           return literalRules;
         })
       );
@@ -54,7 +54,7 @@ export class UiDetailService {
    * @param classIri The IRI of the class to get the detail configuration for.
    * @returns An observable that emits an array of detail configuration elements.
    */
-  getLiteralRulesForClasses(classIris: string[]): Observable<LiteralPresentationRule[]> {
+  getLiteralRulesForClasses(classIris: string[]): Observable<LiteralDisplayRule[]> {
     return this.fetchLiteralPresentationRules().pipe(
       map((rules) => {
         const filteredRules = rules.filter((rule) =>

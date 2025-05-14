@@ -3,7 +3,7 @@ import { Observable, map, switchMap } from 'rxjs';
 
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { blueprint, rdf, rdfs } from '@blueprint/ontology';
+import { flux, rdf, rdfs } from '@blueprint/ontology';
 
 import { HierarchyService } from '../../../configuration/topology/service/hierarchy.service';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';

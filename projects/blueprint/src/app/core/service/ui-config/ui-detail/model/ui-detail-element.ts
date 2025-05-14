@@ -1,6 +1,6 @@
 import { GraphPointer } from "clownface";
 
-import { blueprint, rdfs, shacl } from "@blueprint/ontology";
+import { flux, rdfs, shacl } from "@blueprint/ontology";
 
 import { LiteralRenderType } from "./ui-detail-configuration-element";
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
@@ -63,7 +63,7 @@ export class RdfDetailElement extends ClownfaceObject implements IUiDetailElemen
      */
     get renderLiteralAs(): LiteralRenderType {
         if (this.#renderLiteralAs === null) {
-            const rendererIri = this._node.out(blueprint.showAsNamedNode).value;
+            const rendererIri = this._node.out(flux.showAsNamedNode).value;
             switch (rendererIri) {
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Link':
                     this.#renderLiteralAs = LiteralRenderType.LINK;
@@ -113,7 +113,7 @@ export class RdfDetailElement extends ClownfaceObject implements IUiDetailElemen
     */
     get linkLabel(): string | undefined {
         if (this.#linkLabel === null) {
-            this.#linkLabel = this._node.out(blueprint.linkLabelNamedNode).value;
+            this.#linkLabel = this._node.out(flux.linkLabelNamedNode).value;
         }
         return this.#linkLabel;
     }
@@ -126,7 +126,7 @@ export class RdfDetailElement extends ClownfaceObject implements IUiDetailElemen
      */
     get value(): RdfTypes.Literal[] {
         if (this.#value === null) {
-            this.#value = this._node.out(blueprint.valueNamedNode).map((prt) => {
+            this.#value = this._node.out(flux.valueNamedNode).map((prt) => {
                 return prt.term as RdfTypes.Literal;
             });
         }

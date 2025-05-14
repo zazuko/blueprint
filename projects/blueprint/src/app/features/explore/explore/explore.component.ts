@@ -30,7 +30,7 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 import { Avatar } from '../../../core/component/avatar/avatar.component';
 
-import { blueprint, nileaUi, rdf, rdfs, shacl, schema, skos } from '@blueprint/ontology';
+import { flux, nileaUi, rdf, rdfs, shacl, schema, skos } from '@blueprint/ontology';
 import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
@@ -236,11 +236,11 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
           const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
 
           // ---- composition link result
-          this.compositionLinks.set(cfViewGraph.node(blueprint.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
+          this.compositionLinks.set(cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
           this.thisNodeElement.set(cfViewGraph.namedNode(this.subject).map((node) => new NodeElement(node))[0]);
           // ---- composition link result end
 
-          const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+          const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
           const uiDetails = [] //this.#uiDetailService.extractUiDetailComponents(this.subject, viewGraph);
           this.uiDetailElementsSignal.set(uiDetails.sort((a, b) => a.order - b.order));
           // make it better 

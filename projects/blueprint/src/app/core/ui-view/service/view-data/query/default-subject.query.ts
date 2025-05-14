@@ -9,7 +9,7 @@
  * - We getch the tbox metatadata - right now just predicates
  */
 
-import { rdf, rdfs, shacl, blueprint } from "@blueprint/ontology";
+import { rdf, rdfs, shacl, flux } from "@blueprint/ontology";
 import { RdfTypes } from "../../../../rdf/rdf-environment";
 
 export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
@@ -17,7 +17,7 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
 
   CONSTRUCT {
     <${subject.value}> ?p ?o .
@@ -47,10 +47,10 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
         }
       }
       VALUES ?shapeP {
-        ${blueprint.colorIndexPrefixed}
-        ${blueprint.searchPriorityPrefixed}
-        ${blueprint.faIconPrefixed}
-        ${blueprint.iconPrefixed}
+        ${flux.colorIndexPrefixed}
+        ${flux.searchPriorityPrefixed}
+        ${flux.faIconPrefixed}
+        ${flux.iconPrefixed}
         ${rdfs.labelPrefixed}
         ${rdfs.commentPrefixed}
         ${shacl.targetNodePrefixed}

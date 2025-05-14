@@ -1,6 +1,6 @@
 import { GraphPointer } from "clownface";
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
-import { blueprint, rdfs, shacl } from "@blueprint/ontology";
+import { flux, rdfs, shacl } from "@blueprint/ontology";
 import { Composition } from "../composition";
 import { PathDefinition } from "../path-definition";
 
@@ -45,7 +45,7 @@ export class CompositionToCompositionLink extends ClownfaceObject implements ICo
 
     get targetComposition(): Composition | null {
         if (this.#targetComposition === undefined) {
-            const targetCompositions = this._node.out(blueprint.targetNamedNode).map(n => new Composition(n));
+            const targetCompositions = this._node.out(flux.targetNamedNode).map(n => new Composition(n));
             if (targetCompositions.length === 0) {
                 console.warn(`AggregateLink has no sourceIri: ${this._node.value}`);
                 this.#targetComposition = null;

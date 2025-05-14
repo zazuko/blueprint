@@ -12,7 +12,7 @@ import { GraphPointer } from 'clownface';
 
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { blueprint, rdf, rdfs } from '@blueprint/ontology';
+import { flux, rdf, rdfs } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
@@ -39,7 +39,7 @@ export class HierarchyTreeDataService {
       }),
       map(dataset => {
         const graph = rdfEnvironment.clownface(dataset);
-        const treeNodes = graph.has(rdf.typeNamedNode, blueprint.TreeNodeNamedNode).map(x => new CfTreeNode(x));
+        const treeNodes = graph.has(rdf.typeNamedNode, flux.TreeNodeNamedNode).map(x => new CfTreeNode(x));
         const parents = treeNodes.filter(node => node.parent.length === 0);
         const tree = parents.map(parent => graph.namedNode(parent.iri)).map(node => this._buildTree(node));
         return tree;
@@ -55,7 +55,7 @@ export class HierarchyTreeDataService {
       children: []
     };
 
-    const cfChild = node.out(blueprint.childNamedNode);
+    const cfChild = node.out(flux.childNamedNode);
 
     cfChild.forEach(child => {
       treeNode.children.push(this._buildTree(child));
@@ -109,21 +109,21 @@ export class HierarchyTreeDataService {
 
     const queryHead = `
     ${rdfs.sparqlPrefix()}
-    ${blueprint.sparqlPrefix()}
+    ${flux.sparqlPrefix()}
     
     CONSTRUCT {
       ${rdfClasses.map((_rdfClass, index) => {
 
-      return `${index === 0 ? `?var_${index} a ${blueprint.TreeRootPrefixed} .\n` : ''}
-      ?var_${index} a ${blueprint.TreeNodePrefixed} .\n
+      return `${index === 0 ? `?var_${index} a ${flux.TreeRootPrefixed} .\n` : ''}
+      ?var_${index} a ${flux.TreeNodePrefixed} .\n
       ?var_${index} a ?class_${index} .\n
       ?var_${index} rdfs:label ?label_${index} .\n`
     }).join('\n')}
   
       ${queriesForBranches.map((_q, index) => {
       return `
-      ?child_${index + 1} a ${blueprint.ChildPrefixed}.\n
-      ?parent_${index + 1} ${blueprint.childPrefixed} ?child_${index + 1}.\n`;
+      ?child_${index + 1} a ${flux.ChildPrefixed}.\n
+      ?parent_${index + 1} ${flux.childPrefixed} ?child_${index + 1}.\n`;
 
     }).join('\n')}
      
@@ -179,14 +179,14 @@ class CfTreeNode extends ClownfaceObject {
 
   get children(): CfTreeNode[] {
     if (this._children === undefined) {
-      this._children = this._node.out(blueprint.childNamedNode).map(child => new CfTreeNode(child));
+      this._children = this._node.out(flux.childNamedNode).map(child => new CfTreeNode(child));
     }
     return this._children;
   }
 
   get parent(): CfTreeNode[] {
     if (this._parent === undefined) {
-      this._parent = this._node.in(blueprint.childNamedNode).map(parent => new CfTreeNode(parent));
+      this._parent = this._node.in(flux.childNamedNode).map(parent => new CfTreeNode(parent));
     }
     return this._parent;
   }

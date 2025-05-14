@@ -2,7 +2,7 @@ import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { GraphPointer } from 'clownface';
 import { SearchResultItem } from '../search-result-item/search-result-item';
 
-import { blueprint } from '@blueprint/ontology';
+import { flux } from '@blueprint/ontology';
 
 /**
  * SearchResult Class
@@ -27,7 +27,7 @@ export class SearchResult extends ClownfaceObject {
      */
     public get result(): SearchResultItem[] {
         if (this._result === null) {
-            const results = this._node.out(blueprint.resultNamedNode);
+            const results = this._node.out(flux.resultNamedNode);
             this._result = results.map(result => new SearchResultItem(result));
         }
         return this._result;
@@ -41,7 +41,7 @@ export class SearchResult extends ClownfaceObject {
      */
     public get pageSize(): number {
         if (this._pageSize === null) {
-            const pageSizes = this._node.out(blueprint.pageSizeNamedNode).values;
+            const pageSizes = this._node.out(flux.pageSizeNamedNode).values;
             if (pageSizes.length === 0) {
                 console.warn(`Invalid data: SearchResult.pageSize is undefined. Using default value of 0`);
                 this._pageSize = 0;
@@ -68,7 +68,7 @@ export class SearchResult extends ClownfaceObject {
      */
     public get pageNumber(): number {
         if (this._pageNumber === null) {
-            const pageNumbers = this._node.out(blueprint.pageNumberNamedNode).values;
+            const pageNumbers = this._node.out(flux.pageNumberNamedNode).values;
             if (pageNumbers.length === 0) {
                 console.warn(`Invalid data: SearchResult.pageNumber is undefined. Using default value of 0`);
                 this._pageNumber = 0;
@@ -95,7 +95,7 @@ export class SearchResult extends ClownfaceObject {
      */
     public get total(): number {
         if (this._total === null) {
-            const totals = this._node.out(blueprint.totalNamedNode).values;
+            const totals = this._node.out(flux.totalNamedNode).values;
             if (totals.length === 0) {
                 console.warn(`Invalid data: SearchResult.total is undefined. Using default value of 0`);
                 this._total = 0;

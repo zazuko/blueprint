@@ -1,11 +1,11 @@
-import { rdf, blueprint, rdfs, shacl, blueprintShape } from "@blueprint/ontology";
+import { rdf, flux, rdfs, shacl, blueprintShape } from "@blueprint/ontology";
 
 export function getAllUiDetailConfiguration() {
   const query = `
     # getAllUiDetailConfiguration
     #
     ${rdf.sparqlPrefix()}
-    ${blueprint.sparqlPrefix()}
+    ${flux.sparqlPrefix()}
     ${rdfs.sparqlPrefix()}
     ${shacl.sparqlPrefix()}
     ${blueprintShape.sparqlPrefix()}
@@ -26,8 +26,8 @@ export function getAllUiDetailConfiguration() {
           ${shacl.pathPrefixed}
           ${shacl.orderPrefixed}
           ${shacl.targetClassPrefixed}
-          ${blueprint.showAsPrefixed}
-          ${blueprint.linkLabelPrefixed}
+          ${flux.showAsPrefixed}
+          ${flux.linkLabelPrefixed}
         }
         ?detailShape ?p ?o  .
       } 

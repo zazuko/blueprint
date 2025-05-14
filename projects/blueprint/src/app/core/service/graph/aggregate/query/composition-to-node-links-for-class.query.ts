@@ -1,9 +1,9 @@
-import { shacl, blueprint, rdfs, rdf } from "@blueprint/ontology";
+import { shacl, flux, rdfs, rdf } from "@blueprint/ontology";
 
 export function compositionToNodeLinksForClassQuery(type: string): string {
     const query = `
   ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
   
@@ -31,15 +31,15 @@ export function compositionToNodeLinksForClassQuery(type: string): string {
                   BIND (<${type}> AS ?type)
                   ?shape ${shacl.targetClassPrefixed} ?type .
                   ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
                   ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
+                  ?outgoingLinks a ${flux.CompositionToNodeLinkPrefixed} .
               }
           }
           VALUES ?linkP { 
               ${shacl.targetClassPrefixed}
               ${shacl.propertyPrefixed}
-              ${blueprint.targetPrefixed}
+              ${flux.targetPrefixed}
               ${rdfs.labelPrefixed}
               ${rdf.typePrefixed}
           }
@@ -51,9 +51,9 @@ export function compositionToNodeLinksForClassQuery(type: string): string {
                   BIND (<${type}> AS ?type)
                   ?shape ${shacl.targetClassPrefixed} ?type .
                   ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
                   ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
+                  ?outgoingLinks a ${flux.CompositionToNodeLinkPrefixed} .
               }
           }
           
@@ -85,25 +85,25 @@ export function compositionToNodeLinksForClassQuery(type: string): string {
           {
               SELECT ?incomingLinks ?type WHERE {
                   BIND (<${type}> AS ?type)
-                  ?incomingLinks ${blueprint.targetPrefixed} ?type .
-                  ?incomingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
+                  ?incomingLinks ${flux.targetPrefixed} ?type .
+                  ?incomingLinks a ${flux.CompositionToNodeLinkPrefixed} .
               }
           }
           VALUES ?linkP { 
             ${shacl.targetClassPrefixed}
             ${shacl.propertyPrefixed}
-            ${blueprint.targetPrefixed}
+            ${flux.targetPrefixed}
             ${rdf.typePrefixed}
           }
-          ?incomingLinks ${blueprint.inverseLabelPrefixed} ?inverseLabel .
+          ?incomingLinks ${flux.inverseLabelPrefixed} ?inverseLabel .
           ?incomingLinks ?linkP ?linkO .
       } UNION {
              # incoming links sh:property
           {
               SELECT ?incomingLinks WHERE {
                 BIND (<${type}> AS ?type)
-                ?incomingLinks ${blueprint.targetPrefixed} ?type .
-                ?incomingLinks a ${blueprint.CompositionToNodeLinkPrefixed} .
+                ?incomingLinks ${flux.targetPrefixed} ?type .
+                ?incomingLinks a ${flux.CompositionToNodeLinkPrefixed} .
               }
           }
           ?incomingLinks ${shacl.propertyPrefixed} ?propertyShape .

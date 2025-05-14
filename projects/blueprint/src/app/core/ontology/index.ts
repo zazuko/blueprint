@@ -1,4 +1,4 @@
-export { blueprint } from './blueprint/blueprint';
+export { flux } from './flux/flux';
 export { blueprintShape } from './blueprint-shape/ blueprint-shape';
 export { nileaUi } from './nilea-ui/nilea-ui';
 export { rdfs } from './rdfs/rdfs';

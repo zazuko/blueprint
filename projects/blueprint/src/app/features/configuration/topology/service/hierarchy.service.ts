@@ -6,7 +6,7 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 
-import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
+import { flux, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { HierarchyDefinition } from './model/hierarchy-definition.model';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
@@ -23,7 +23,7 @@ export class HierarchyService {
         const hierarchyQuery = hierarchyByIriQuery(iri);
         return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
-                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
                 if (hierarchyGraph.values.length !== 1) {
                     return null;
                 }
@@ -42,7 +42,7 @@ export class HierarchyService {
 
         return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
-                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
                 const hierarchies = hierarchyGraph.map(hierarchyCfNode => {
                     const hierarchyNode = rdfEnvironment.namedNode(hierarchyCfNode.value);
                     return new HierarchyDefinition(hierarchyNode, dataset)
@@ -57,7 +57,7 @@ export class HierarchyService {
 
         return this.sparqlService.construct(sparqlUtils.mergeConstruct([classMetadataQuery, hierarchyQuery])).pipe(
             map((dataset) => {
-                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+                const hierarchyGraph = rdfEnvironment.clownface(dataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
                 const hierarchies = hierarchyGraph.map(hierarchyCfNode => {
                     const hierarchyNode = rdfEnvironment.namedNode(hierarchyCfNode.value);
                     return new HierarchyDefinition(hierarchyNode, dataset)
@@ -81,7 +81,7 @@ function hierarchyByIriQuery(iri: string): string {
 
     return `
 ${shacl.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
     
@@ -98,8 +98,8 @@ ${rdfs.sparqlPrefix()}
               }
           }
           VALUES ?hierarchyP {
-            ${blueprint.hasRootPrefixed}
-            ${blueprint.parentPrefixed}
+            ${flux.hasRootPrefixed}
+            ${flux.parentPrefixed}
             ${rdfs.commentPrefixed}
             ${rdfs.labelPrefixed}
             ${rdf.typePrefixed}
@@ -110,7 +110,7 @@ ${rdfs.sparqlPrefix()}
           {
               SELECT ?root WHERE {
                   BIND(<${iri}> as ?hierarchy)
-                  ?hierarchy ${blueprint.hasRootPrefixed} ?root .
+                  ?hierarchy ${flux.hasRootPrefixed} ?root .
               }
           }
           ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .
@@ -129,7 +129,7 @@ ${rdfs.sparqlPrefix()}
           {
             SELECT ?root WHERE {
                 BIND(<${iri}> as ?hierarchy)
-                ?hierarchy ${blueprint.hasRootPrefixed} ?root .
+                ?hierarchy ${flux.hasRootPrefixed} ?root .
             }
           }
           ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .
@@ -154,7 +154,7 @@ function hierarchyForClassQuery(iri: string): string {
 
     const query = `
 ${shacl.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
       
@@ -170,12 +170,12 @@ ${rdfs.sparqlPrefix()}
                   BIND(<${iri}> as ?class)
                   ?shape ${shacl.targetClassPrefixed} ?class .
                   ?shape ${shacl.groupPrefixed} ?group .
-                  ?group a ${blueprint.HierarchyPrefixed} .
+                  ?group a ${flux.HierarchyPrefixed} .
               }
           }
           VALUES ?groupP {
-              ${blueprint.hasRootPrefixed}
-              ${blueprint.parentPrefixed}
+              ${flux.hasRootPrefixed}
+              ${flux.parentPrefixed}
               ${rdfs.labelPrefixed}
               ${rdf.typePrefixed}
           }    
@@ -187,8 +187,8 @@ ${rdfs.sparqlPrefix()}
                   BIND(<${iri}> as ?class)
                   ?shape ${shacl.targetClassPrefixed} ?class .
                   ?shape ${shacl.groupPrefixed} ?group .
-                  ?group a ${blueprint.HierarchyPrefixed} .
-                  ?group ${blueprint.hasRootPrefixed} ?root .
+                  ?group a ${flux.HierarchyPrefixed} .
+                  ?group ${flux.hasRootPrefixed} ?root .
               }
           }
           ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .
@@ -209,8 +209,8 @@ ${rdfs.sparqlPrefix()}
                   BIND(<${iri}> as ?class)
                   ?shape ${shacl.targetClassPrefixed} ?class .
                   ?shape ${shacl.groupPrefixed} ?group .
-                  ?group a ${blueprint.HierarchyPrefixed} .
-                  ?group ${blueprint.hasRootPrefixed} ?root .
+                  ?group a ${flux.HierarchyPrefixed} .
+                  ?group ${flux.hasRootPrefixed} ?root .
               }
           }
           ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .
@@ -236,7 +236,7 @@ ${rdfs.sparqlPrefix()}
 function getAllHierarchiesQuery(): string {
     return `
     ${shacl.sparqlPrefix()}
-    ${blueprint.sparqlPrefix()}
+    ${flux.sparqlPrefix()}
     ${rdf.sparqlPrefix()}
     ${rdfs.sparqlPrefix()}  
 
@@ -249,12 +249,12 @@ function getAllHierarchiesQuery(): string {
         {
             {
                 SELECT ?hierarchy WHERE {
-                    ?hierarchy a ${blueprint.HierarchyPrefixed} .
+                    ?hierarchy a ${flux.HierarchyPrefixed} .
                 }
             }
             VALUES ?hierarchyP {
-                ${blueprint.hasRootPrefixed}
-                ${blueprint.parentPrefixed}
+                ${flux.hasRootPrefixed}
+                ${flux.parentPrefixed}
                 ${rdfs.commentPrefixed}
                 ${rdfs.labelPrefixed}
                 ${rdf.typePrefixed}
@@ -264,8 +264,8 @@ function getAllHierarchiesQuery(): string {
         {
             {
                 SELECT ?root WHERE {
-                    ?hierarchy a ${blueprint.HierarchyPrefixed} .
-                    ?hierarchy ${blueprint.hasRootPrefixed} ?root .
+                    ?hierarchy a ${flux.HierarchyPrefixed} .
+                    ?hierarchy ${flux.hasRootPrefixed} ?root .
                 }
             }
             ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .
@@ -283,8 +283,8 @@ function getAllHierarchiesQuery(): string {
         {
             {
                 SELECT ?root WHERE {
-                    ?hierarchy a ${blueprint.HierarchyPrefixed} .
-                    ?hierarchy ${blueprint.hasRootPrefixed} ?root .
+                    ?hierarchy a ${flux.HierarchyPrefixed} .
+                    ?hierarchy ${flux.hasRootPrefixed} ?root .
                 }
             }
             ?root (${shacl.propertyPrefixed}/${shacl.nodePrefixed})* ?shape .

@@ -10,7 +10,7 @@ import { HierarchyService } from 'projects/blueprint/src/app/features/configurat
 import { MessageChannelService } from '../../../service/message-channel/message-channel.service';
 import { UiDetailService } from '../../../service/ui-config/ui-detail/ui-detail.service';
 
-import { blueprint, rdf, rdfs, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
+import { flux, rdf, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
@@ -97,7 +97,7 @@ export class ViewDataService {
 
 
         // 2.1 get the hierarchy definitions
-        const hierarchyGraph = rdfEnvironment.clownface(viewGraphMetadata).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+        const hierarchyGraph = rdfEnvironment.clownface(viewGraphMetadata).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
         const hierarchyDefinitions = hierarchyGraph.map(hierarchyCfNode => new HierarchyDefinition(rdfEnvironment.namedNode(hierarchyCfNode.value), viewGraphMetadata)).filter(d => {
           const classesInHierarchy = d.aggregateNodes.map(node => node.targetClassIri);
           return classesInHierarchy.some(c => types.includes(c));

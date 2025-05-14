@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
+import { flux, rdf, rdfs, shacl } from '@blueprint/ontology';
 
 
 import { ICompositionToNodeLink } from './model/composition/composition-to-node-link';
@@ -54,13 +54,13 @@ export class AggregateService {
 
         const outLinks: ICompositionToCompositionLink[] = [];
         const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
-        console.log(blueprint.CompositionToCompositionLinkNamedNode.value);
+        console.log(flux.CompositionToCompositionLinkNamedNode.value);
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)
                 .out(shacl.groupNamedNode)
                 .in(shacl.targetClassNamedNode)
-                .has(rdf.typeNamedNode, blueprint.CompositionToCompositionLinkNamedNode)
+                .has(rdf.typeNamedNode, flux.CompositionToCompositionLinkNamedNode)
                 .map(link => outLinkFactory.creteLink(link));
             outLinks.push(...links);
         });
@@ -72,8 +72,8 @@ export class AggregateService {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)
                 .out(shacl.groupNamedNode)
-                .in(blueprint.targetNamedNode)
-                .has(rdf.typeNamedNode, blueprint.CompositionToCompositionLinkNamedNode)
+                .in(flux.targetNamedNode)
+                .has(rdf.typeNamedNode, flux.CompositionToCompositionLinkNamedNode)
                 .map(link => inLinkFactory.creteLink(link));
             inLinks.push(...links);
         });
@@ -99,7 +99,7 @@ export class AggregateService {
                 .in(shacl.targetClassNamedNode)
                 .out(shacl.groupNamedNode)
                 .in(shacl.targetClassNamedNode)
-                .has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode)
+                .has(rdf.typeNamedNode, flux.CompositionToNodeLinkNamedNode)
                 .map(link => outLinkFactory.creteLink(link));
             outLinks.push(...links);
         });
@@ -110,8 +110,8 @@ export class AggregateService {
 
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
-                .in(blueprint.targetNamedNode)
-                .has(rdf.typeNamedNode, blueprint.CompositionToNodeLinkNamedNode)
+                .in(flux.targetNamedNode)
+                .has(rdf.typeNamedNode, flux.CompositionToNodeLinkNamedNode)
                 .map(link => inLinkFactory.creteLink(link));
             inLinks.push(...links);
         });
@@ -248,23 +248,23 @@ export class AggregateService {
                     const query = `
                         ${rdf.sparqlPrefix()}
                         ${rdfs.sparqlPrefix()}
-                        ${blueprint.sparqlPrefix()}
+                        ${flux.sparqlPrefix()}
         
                         CONSTRUCT {
-                            <${link.iri}> ${blueprint.resultPrefixed} <${link.iri}/${outerIndex}> .
-                            <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
-                            <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
+                            <${link.iri}> ${flux.resultPrefixed} <${link.iri}/${outerIndex}> .
+                            <${link.iri}/${outerIndex}> a  ${flux.CompositionLinkResultPrefixed} .
+                            <${link.iri}/${outerIndex}> ${flux.resultPrefixed} ?result .
                             <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
                             ?result ${rdf.typePrefixed} ?resultT .
                             ?result ${rdfs.labelPrefixed} ?resultL .
                             ?element_${outerIndex}_${pathFromRootSource.length} ${rdfs.labelPrefixed} ?connectionPointL .
                             ?element_${outerIndex}_${pathFromRootSource.length} ${rdf.typePrefixed} ?connectionPointT .
-                            ?element_${outerIndex}_${pathFromRootSource.length} a ${blueprint.ConnectionPointPrefixed} .
-                            ?result ${blueprint.sourcePrefixed} ?element_${outerIndex}_${pathFromRootSource.length} . 
-                            ?element_${outerIndex}_${pathFromRootSource.length} ${blueprint.targetPrefixed} ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} . 
+                            ?element_${outerIndex}_${pathFromRootSource.length} a ${flux.ConnectionPointPrefixed} .
+                            ?result ${flux.sourcePrefixed} ?element_${outerIndex}_${pathFromRootSource.length} . 
+                            ?element_${outerIndex}_${pathFromRootSource.length} ${flux.targetPrefixed} ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} . 
                             ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} ${rdfs.labelPrefixed} ?connectionPointODestL .
                             ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} ${rdf.typePrefixed} ?connectionPointODestT .
-                            ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} a ${blueprint.ConnectionPointPrefixed} .
+                            ?element_${outerIndex}_${wholePath.length - pathToRootTarget.length} a ${flux.ConnectionPointPrefixed} .
                         } WHERE {
                             ${body}
                         }`;
@@ -332,19 +332,19 @@ export class AggregateService {
                     const query = `
                         ${rdf.sparqlPrefix()}
                         ${rdfs.sparqlPrefix()}
-                        ${blueprint.sparqlPrefix()}
+                        ${flux.sparqlPrefix()}
         
                         CONSTRUCT {
-                            <${link.iri}> ${blueprint.resultPrefixed} <${link.iri}/${outerIndex}> .
-                            <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
-                            <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
+                            <${link.iri}> ${flux.resultPrefixed} <${link.iri}/${outerIndex}> .
+                            <${link.iri}/${outerIndex}> a  ${flux.CompositionLinkResultPrefixed} .
+                            <${link.iri}/${outerIndex}> ${flux.resultPrefixed} ?result .
                             <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
                             ?result ${rdf.typePrefixed} ?resultT .
                             ?result ${rdfs.labelPrefixed} ?resultL .
                             ?element_${outerIndex}_1 ${rdf.typePrefixed} ?connectionPointT .
                             ?element_${outerIndex}_1 ${rdfs.labelPrefixed} ?connectionPointL .
-                            ?element_${outerIndex}_1 a ${blueprint.ConnectionPointPrefixed} .
-                            ?result ${blueprint.targetPrefixed} ?element_${outerIndex}_1 . 
+                            ?element_${outerIndex}_1 a ${flux.ConnectionPointPrefixed} .
+                            ?result ${flux.targetPrefixed} ?element_${outerIndex}_1 . 
 
                         } WHERE {
                             ${body}

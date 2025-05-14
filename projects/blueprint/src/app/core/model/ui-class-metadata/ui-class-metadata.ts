@@ -1,6 +1,6 @@
 
 
-import { blueprint, rdfs, shacl } from '@blueprint/ontology';
+import { flux, rdfs, shacl } from '@blueprint/ontology';
 
 import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { GraphPointer } from 'clownface';
@@ -77,7 +77,7 @@ export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetada
      */
     public get icon(): string {
         if (this._icon === null) {
-            const icons = this._node.out(blueprint.faIconNamedNode).values;
+            const icons = this._node.out(flux.faIconNamedNode).values;
             if (icons.length === 0) {
                 console.warn(`No icon found for <${this._node.value}. Consider using blueprint:faIcon to define the icon.`);
                 this._icon = '';
@@ -99,7 +99,7 @@ export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetada
      */
     public get colorIndex(): number {
         if (this._colorIndex === null) {
-            const colorIndex = this._node.out(blueprint.colorIndexNamedNode).values;
+            const colorIndex = this._node.out(flux.colorIndexNamedNode).values;
             if (colorIndex.length === 0) {
                 console.warn(`No color index found for <${this._node.value}. Consider using blueprint:colorIndex to define the color index. Defaulting to '${DEFAULT_COLOR}'.`);
                 this._colorIndex = 0;
@@ -138,7 +138,7 @@ export class RdfUiClassMetadata extends ClownfaceObject implements UiClassMetada
      */
     public get searchPriority(): number {
         if (this._searchPriority === null) {
-            const searchPriority = this._node.out(blueprint.searchPriorityNamedNode).values;
+            const searchPriority = this._node.out(flux.searchPriorityNamedNode).values;
             if (searchPriority.length === 0) {
                 console.warn(`No search priority found for <${this._node.value}. Consider using blueprint:searchPriority to define the search priority. Defaulting to 1.`);
                 this._searchPriority = 1;

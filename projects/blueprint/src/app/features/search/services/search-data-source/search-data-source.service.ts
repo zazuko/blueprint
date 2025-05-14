@@ -15,7 +15,7 @@ import {
 import { SearchQueryParam } from '../../model/search-query-param.model';
 import { SearchService } from '../search/search.service';
 
-import { blueprint, rdf } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 import { SearchResult } from '@blueprint/model/search-result/search-result';
@@ -50,7 +50,7 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
   get classCount$(): Observable<UiClassCount[]> {
     return this._classCountStream.asObservable().pipe(
       map(dataset => {
-        return rdfEnvironment.clownface(dataset).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode))
+        return rdfEnvironment.clownface(dataset).node(flux.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode))
       })
     );
   }
@@ -116,7 +116,7 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
 
     searchQuery$.pipe(takeUntil(this._newSearch$)).subscribe((dataset) => {
       const searchResultGraph = rdfEnvironment.clownface(dataset);
-      const searchResultIris = searchResultGraph.out(blueprint.queryNamedNode).values;
+      const searchResultIris = searchResultGraph.out(flux.queryNamedNode).values;
       if (searchResultIris.length === 0) {
         console.warn(`Invalid data: SearchResult.query is undefined`);
         return;

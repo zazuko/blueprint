@@ -1,5 +1,5 @@
 import { GraphPointer } from "clownface";
-import { rdfs, blueprint, shacl } from "@blueprint/ontology";
+import { rdfs, flux, shacl } from "@blueprint/ontology";
 import { NamedNode } from "@rdfjs/types";
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 
@@ -28,7 +28,7 @@ export class RdfDetailConfigurationElement extends ClownfaceObject implements Ui
 
     get renderLiteralAs(): LiteralRenderType {
         if (this.#_renderLiteralAs === null) {
-            const rendererIri = this._node.out(blueprint.showAsNamedNode).value;
+            const rendererIri = this._node.out(flux.showAsNamedNode).value;
             switch (rendererIri) {
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Link':
                     this.#_renderLiteralAs = LiteralRenderType.LINK;
@@ -64,19 +64,19 @@ export class RdfDetailConfigurationElement extends ClownfaceObject implements Ui
         const label = this.label;
         const iri = this.iri;
         const order = this.order;
-        const rendererIri = this._node.out(blueprint.showAsNamedNode).value;
+        const rendererIri = this._node.out(flux.showAsNamedNode).value;
 
         const sparqlQueryForUiDetails = `
-        ${blueprint.sparqlPrefix()}
+        ${flux.sparqlPrefix()}
         ${rdfs.sparqlPrefix()}
         ${shacl.sparqlPrefix()}
 
         CONSTRUCT {
-            <${subjectNode.value}> ${blueprint.detailPrefixed} <${iri}> .
+            <${subjectNode.value}> ${flux.detailPrefixed} <${iri}> .
             <${iri}> ${rdfs.labelPrefixed} "${label}" .
             <${iri}> ${shacl.orderPrefixed} ${order} .
-            <${iri}> ${blueprint.showAsPrefixed} <${rendererIri}> .
-            <${iri}> ${blueprint.valuePrefixed} ?literal .
+            <${iri}> ${flux.showAsPrefixed} <${rendererIri}> .
+            <${iri}> ${flux.valuePrefixed} ?literal .
         } WHERE {
             <${subjectNode.value}> <${path}> ?literal .
         }

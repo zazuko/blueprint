@@ -2,9 +2,9 @@ import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-obj
 import { LiteralRenderType } from "../model/ui-detail-configuration-element";
 import { RdfTypes } from "../../../../rdf/rdf-environment";
 import { GraphPointer } from "clownface";
-import { blueprint, rdfs, shacl } from "@blueprint/ontology";
+import { flux, rdfs, shacl } from "@blueprint/ontology";
 
-export interface LiteralPresentationRule {
+export interface LiteralDisplayRule {
     readonly iri: string,
     readonly label: string,
     readonly renderLiteralAs: LiteralRenderType,
@@ -13,7 +13,7 @@ export interface LiteralPresentationRule {
     readonly targetClass: RdfTypes.NamedNode[],
 }
 
-export class RdfLiteralPresentationRule extends ClownfaceObject implements LiteralPresentationRule {
+export class RdfLiteralDisplayRule extends ClownfaceObject implements LiteralDisplayRule {
     #label: string | null = null;
     #renderLiteralAs: LiteralRenderType | null = null;
     #order: number | null = null;
@@ -37,7 +37,7 @@ export class RdfLiteralPresentationRule extends ClownfaceObject implements Liter
 
     get renderLiteralAs(): LiteralRenderType {
         if (this.#renderLiteralAs === null) {
-            const rendererIri = this._node.out(this._node.namedNode(blueprint.showAsNamedNode)).value;
+            const rendererIri = this._node.out(this._node.namedNode(flux.showAsNamedNode)).value;
             switch (rendererIri) {
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Link':
                     this.#renderLiteralAs = LiteralRenderType.LINK;

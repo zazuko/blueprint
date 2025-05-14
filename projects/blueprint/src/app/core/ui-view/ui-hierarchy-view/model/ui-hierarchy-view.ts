@@ -1,7 +1,7 @@
 
 import { GraphPointer } from 'clownface';
 
-import { blueprint, appLocal } from "@blueprint/ontology";
+import { flux, appLocal } from "@blueprint/ontology";
 import { HierarchyElement } from '../../view-component-library/hierarchy/hierarchy.component';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 import { ColorUtil } from '../../../utils/color-util';
@@ -44,7 +44,7 @@ export class RdfUiHierarchyView implements UiHierarchyView {
      */
     get label(): string {
         if (this._label === null) {
-            const labelArray = this._node.out(blueprint.namespace['label']).values;
+            const labelArray = this._node.out(flux.namespace['label']).values;
             if (labelArray.length === 0) {
                 console.error(`No label found for view <${this.iri}>`);
                 this._label = '';
