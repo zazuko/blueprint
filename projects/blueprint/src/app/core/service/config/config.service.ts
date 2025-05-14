@@ -34,12 +34,13 @@ export class ConfigService {
     console.log('Fetching app configuration from config.json');
     return this.#httpClient.get<AppConfiguration>('/config.json').pipe(tap(config => {
       console.log('App configuration fetched', config);
+      this.#appConfig.set(config);
+
       if (!environment.production) {
         console.log('%c--- Blueprint Configuration -----', 'color:orange');
         console.log(`config.json`);
         console.log(JSON.stringify(config, null, 2));
         console.log('%c----------------------------------', 'color:orange');
-        this.#appConfig.set(config);
       }
     }))
   }
