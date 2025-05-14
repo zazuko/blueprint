@@ -1,8 +1,8 @@
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object"
-import { LiteralRenderType } from "../model/ui-detail-configuration-element";
 import { RdfTypes } from "../../../../rdf/rdf-environment";
 import { GraphPointer } from "clownface";
 import { flux, rdfs, shacl } from "@blueprint/ontology";
+import { LiteralRenderType } from "../../../../ui-view/ui-detail-view/literal/literal.component";
 
 export interface LiteralDisplayRule {
     readonly iri: string,
@@ -39,19 +39,7 @@ export class RdfLiteralDisplayRule extends ClownfaceObject implements LiteralDis
         if (this.#renderLiteralAs === null) {
             const rendererIri = this._node.out(this._node.namedNode(flux.showAsNamedNode)).value;
             switch (rendererIri) {
-                case 'https://ld.flux.zazuko.com/shapes/metadata/Link':
-                    this.#renderLiteralAs = LiteralRenderType.LINK;
-                    break;
-                case 'https://ld.flux.zazuko.com/shapes/metadata/Email':
-                    this.#renderLiteralAs = LiteralRenderType.EMAIL;
-                    break;
-                case 'https://ld.flux.zazuko.com/shapes/metadata/PhoneNumber':
-                    this.#renderLiteralAs = LiteralRenderType.PHONE;
-                    break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Plain':
-                    this.#renderLiteralAs = LiteralRenderType.PLAIN;
-                    break;
-                case 'https://ld.flux.zazuko.com/shapes/metadata/Boolean':
                     this.#renderLiteralAs = LiteralRenderType.PLAIN;
                     break;
                 case 'https://ld.flux.zazuko.com/shapes/metadata/Hidden':

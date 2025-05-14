@@ -37,8 +37,6 @@ import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
 import { UiDetailService } from '../../../core/service/ui-config/ui-detail/ui-detail.service';
-import { IUiDetailElement } from '../../../core/service/ui-config/ui-detail/model/ui-detail-element';
-import { LiteralViewComponent } from "../../../core/ui-view/ui-detail-view/literal-view/literal-view.component";
 import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hierarchy-view/model/ui-hierarchy-view';
 import { GraphService } from '../service/graph/graph.service';
 import { SelectionService } from '../service/selection/selection.service';
@@ -49,8 +47,7 @@ import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-o
 import { PanelModule } from 'primeng/panel';
 import { GraphPointer } from 'clownface';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
-import { UILiteral, LiteralComponent } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
-import { LiteralRenderType } from '@blueprint/service/ui-config/ui-detail/model/ui-detail-configuration-element';
+import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 
 @Component({
   templateUrl: './explore.component.html',
@@ -65,7 +62,6 @@ import { LiteralRenderType } from '@blueprint/service/ui-config/ui-detail/model/
     ExploreHeaderComponent,
     NeighborNodesComponent,
     UiHierarchyViewComponent,
-    LiteralViewComponent,
     AggregateRelationComponent,
     TooltipModule,
     TabsModule,
@@ -108,7 +104,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   term: string;
   graph = signal<Graph>({ nodes: [], links: [] });
 
-  uiDetailElementsSignal = signal<IUiDetailElement[]>([]);
 
   searchTerm: string;
   searchFilter: string;
@@ -240,10 +235,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
           // ---- composition link result end
 
           const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
-          const uiDetails = [] //this.#uiDetailService.extractUiDetailComponents(this.subject, viewGraph);
-          this.uiDetailElementsSignal.set(uiDetails.sort((a, b) => a.order - b.order));
           // make it better 
-          const subjectGraph = rdfEnvironment.clownface(viewGraph).namedNode(this.subject);
 
 
           this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));

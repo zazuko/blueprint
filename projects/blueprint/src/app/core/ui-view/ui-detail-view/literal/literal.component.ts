@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { LiteralRenderType } from '@blueprint/service/ui-config/ui-detail/model/ui-detail-configuration-element';
 import { StringLiteralComponent } from '../component/string-literal/string-literal.component';
 import { RdfTypes } from '../../../rdf/rdf-environment';
 
@@ -19,25 +18,16 @@ export class LiteralComponent {
   LiteralRenderType = LiteralRenderType;
 }
 
+export enum LiteralRenderType {
+  PLAIN = 'https://ld.flux.zazuko.com/shapes/metadata/Plain',
+  HIDDEN = 'https://ld.flux.zazuko.com/shapes/metadata/Hidden',
+  UNKNOWN = 'https://ld.flux.zazuko.com/shapes/metadata/Unknown',
 
+}
 export interface UILiteral {
   label: string,
   value: RdfTypes.Literal[]
   renderer: LiteralRenderType
   order: number
   //lineage: LiteralLineage
-}
-
-
-export interface LiteralLineage {
-  sourceIri: string,
-  label: string,
-  path: string,
-  ruleIri: string,
-  ruleType: LiteralRuleType
-}
-
-enum LiteralRuleType {
-  SYNTHETIC,
-  MANUAL_CONFIGURATION,
 }

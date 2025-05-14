@@ -1,1 +1,0 @@
-export { DetailsComponent } from './details/details.component'
