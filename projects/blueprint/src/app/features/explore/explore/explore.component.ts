@@ -141,7 +141,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     const literalRules = this.literalConfigurationRules();
     const literalElements: UILiteral[] = [];
 
-    console.log('literalMap', literalMap);
     [...literalMap.keys()].forEach((key) => {
       const literalValues = literalMap.get(key).map(q => q.object as RdfTypes.Literal);
 
@@ -232,7 +231,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
         next: (viewGraph) => {
           const currentResource = new GraphResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subject));
           this.currentGraphResource.set(currentResource);
-          console.log('viewGraph', viewGraph);
+
           const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
 
           // ---- composition link result
