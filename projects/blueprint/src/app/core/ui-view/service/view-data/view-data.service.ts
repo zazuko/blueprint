@@ -81,7 +81,6 @@ export class ViewDataService {
 
         /* 1. get detail config */
         const uiDetails = [] //this.#uiDetailService.extractUiDetails(viewGraphMetadata);
-        console.log('uiDetails', uiDetails);
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject));
 
         /* 2. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
