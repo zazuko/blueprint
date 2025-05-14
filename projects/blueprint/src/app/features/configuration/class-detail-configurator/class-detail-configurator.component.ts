@@ -12,18 +12,18 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 
-import { AvatarComponent, Avatar } from '@blueprint/component/avatar/avatar.component';
+import { AvatarComponent, Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { LoadingIndicatorService } from '@blueprint/component/loading-indicator/service/loading-indicator.service';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 
 
 @Component({
-    selector: 'bp-class-detail-configurator',
-    templateUrl: './class-detail-configurator.component.html',
-    styleUrl: './class-detail-configurator.component.scss',
-    imports: [BreadcrumbPageComponent, AvatarComponent, DragDropModule]
+  selector: 'bp-class-detail-configurator',
+  templateUrl: './class-detail-configurator.component.html',
+  styleUrl: './class-detail-configurator.component.scss',
+  imports: [BreadcrumbPageComponent, AvatarComponent, DragDropModule]
 })
 export class ClassDetailConfiguratorComponent implements OnChanges {
   readonly id = input.required<string>();

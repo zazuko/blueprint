@@ -5,13 +5,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { HierarchyCardComponent } from './hierarchy-card/hierarchy-card.component';
 import { HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 import { fadeInOut } from '../../../core/animation/fade-in-out/fade-in-out';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   templateUrl: './inventory.component.html',

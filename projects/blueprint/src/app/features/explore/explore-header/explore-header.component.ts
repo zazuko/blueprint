@@ -10,7 +10,7 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RippleModule } from 'primeng/ripple';
 
-import { Avatar, AvatarComponent } from '../../../core/component/avatar/avatar.component';
+import { Avatar, AvatarComponent } from '../../../shared/component/avatar/avatar.component';
 import { fadeIn } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { ConfigService } from '@blueprint/service/config/config.service';
 

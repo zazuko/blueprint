@@ -8,11 +8,11 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 
 import { GraphComponent } from "../../../core/component/graph/graph/graph.component";
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
-import { Avatar } from '@blueprint/component/avatar/avatar.component';
+import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   selector: 'bp-concept-relations',

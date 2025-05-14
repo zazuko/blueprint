@@ -1,12 +1,12 @@
 import { NgClass } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import { Theme } from '@blueprint/service/theme-manager/theme-manager.service';
+import { Theme } from '../../service/theme-manager/theme-manager.service';
 
 @Component({
-    selector: 'bp-theme-picker-menu-item',
-    imports: [NgClass],
-    templateUrl: './theme-picker-menu-item.component.html',
-    styleUrl: './theme-picker-menu-item.component.scss'
+  selector: 'bp-theme-picker-menu-item',
+  imports: [NgClass],
+  templateUrl: './theme-picker-menu-item.component.html',
+  styleUrl: './theme-picker-menu-item.component.scss'
 })
 export class ThemePickerMenuItemComponent {
   item = input.required<ThemePickerMenuItem>();

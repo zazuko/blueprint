@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
 
-import { SearchResultItemComponent } from "../search-result-item/search-result-item.component";
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
-import { fadeInOut } from '../../animation/fade-in-out/fade-in-out';
+import { fadeInOut } from '../../../core/animation/fade-in-out/fade-in-out';
+import { SearchResultItemComponent } from '../search-result-item/search-result-item.component';
 
 @Component({
   selector: 'bp-search-result-list',

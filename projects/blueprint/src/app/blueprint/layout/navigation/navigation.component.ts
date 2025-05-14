@@ -7,13 +7,13 @@ import { ConnectionPositionPair } from '@angular/cdk/overlay';
 import { PopoverModule } from 'primeng/popover';
 
 import { NavigationState } from './service/navigation-state.service';
-import { ThemeManager } from '../../service/theme-manager/theme-manager.service';
 
 import { ThemePickerMenuComponent } from '../theme-picker-menu/theme-picker-menu.component';
 import { MobileLogoButtonComponent } from "../mobile-logo-button/mobile-logo-button.component";
-import { BrandLogoComponent } from '../brand-logo/brand-logo.component';
+import { BrandLogoComponent } from '../../../shared/component/brand/brand-logo/brand-logo.component';
 import { Router, RouterLink } from '@angular/router';
 import { NavigationMenuItem, NavMenuItemComponent } from './nav-menu-item/nav-menu-item.component';
+import { ThemeManager } from '../service/theme-manager/theme-manager.service';
 
 type MenuType = 'theme-picker';
 

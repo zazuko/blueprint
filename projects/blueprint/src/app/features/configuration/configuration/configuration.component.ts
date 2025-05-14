@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { Router, RouterLink } from '@angular/router';
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
 import { ConfigurationCardComponent } from '../../../core/component/configuration-card/configuration-card.component';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   selector: 'bp-configuration',

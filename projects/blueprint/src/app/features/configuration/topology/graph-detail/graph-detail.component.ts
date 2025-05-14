@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Breadcrumb } from 'projects/blueprint/src/app/core/layout/breadcrumb-navigation/model/breadcrumb.model';
-import { BreadcrumbPageComponent } from "../../../../core/page/breadcrumb-page/breadcrumb-page.component";
+import { Breadcrumb } from 'projects/blueprint/src/app/shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from 'projects/blueprint/src/app/shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   selector: 'bp-graph-detail',

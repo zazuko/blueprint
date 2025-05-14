@@ -1,4 +1,5 @@
 import { GraphPointer } from 'clownface';
+
 import { flux } from '@blueprint/ontology';
 
 import { NodeElement } from '../node-element/node-element.class';
@@ -7,7 +8,7 @@ import { NodeElement } from '../node-element/node-element.class';
  * SearchResultItem Class
  */
 export class SearchResultItem extends NodeElement {
-    private _score: number | null = null;
+    #score: number | null = null;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -20,16 +21,16 @@ export class SearchResultItem extends NodeElement {
      * @link blueprint:score
      */
     public get score(): number {
-        if (this._score === null) {
+        if (this.#score === null) {
             const scores = this._node.out(flux.scoreNamedNode).values;
             if (scores.length === 0) {
                 console.error(`No score found for ${this._node.value}`);
-                this._score = 0;
+                this.#score = 0;
             } else {
                 // get max score of scores
-                this._score = Math.max(...scores.map(score => Number(score)));
+                this.#score = Math.max(...scores.map(score => Number(score)));
             }
         }
-        return this._score;
+        return this.#score;
     }
 }

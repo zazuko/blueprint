@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LogoComponent } from '../logo/logo.component';
+import { LogoComponent } from '../../../shared/component/brand/logo/logo.component';
 
 @Component({
     selector: 'bp-mobile-logo-button',

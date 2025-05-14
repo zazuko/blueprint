@@ -28,7 +28,7 @@ import { ViewDataService } from '../../../core/ui-view/service/view-data/view-da
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
-import { Avatar } from '../../../core/component/avatar/avatar.component';
+import { Avatar } from '../../../shared/component/avatar/avatar.component';
 
 import { flux, nileaUi, rdf, rdfs, shacl, schema, skos } from '@blueprint/ontology';
 import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
