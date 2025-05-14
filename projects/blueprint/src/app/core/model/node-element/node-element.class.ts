@@ -6,7 +6,7 @@ import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-class-metadata';
 
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
-import { Avatar } from '@blueprint/component/avatar/avatar.component';
+import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
 import { ColorUtil } from '../../utils/color-util';
 

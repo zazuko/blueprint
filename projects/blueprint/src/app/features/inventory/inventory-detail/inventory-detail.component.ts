@@ -14,18 +14,18 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { ClusterDiagramComponent } from "../../../dev/cluster-diagram/cluster-diagram.component";
 import { HierarchyTreeDataService } from './service/hierarchy-tree-data.service';
 import { NodeElement } from '../../../core/model/node-element/node-element.class';
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { MessageChannelService } from '../../../core/service/message-channel/message-channel.service';
-import { AvatarComponent } from '@blueprint/component/avatar/avatar.component';
+import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 import { fadeInOut } from '../../../core/animation/fade-in-out/fade-in-out';
 import { ContentItem, HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 import { labelAlphaSort } from '../../../core/utils/sort-functions';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   templateUrl: './inventory-detail.component.html',

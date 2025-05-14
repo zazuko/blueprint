@@ -1,6 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { BreadcrumbPageComponent } from "../../../core/page/breadcrumb-page/breadcrumb-page.component";
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
+
 import { RouterLink } from '@angular/router';
 import { ConfigurationCardComponent } from "../../../core/component/configuration-card/configuration-card.component";
 import { HierarchyService } from './service/hierarchy.service';
@@ -8,13 +7,15 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MessageChannelService } from '../../../core/service/message-channel/message-channel.service';
 import { HierarchyDefinition } from './service/model/hierarchy-definition.model';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 
 @Component({
-    selector: 'bp-topology',
-    templateUrl: './topology.component.html',
-    styleUrl: './topology.component.scss',
-    imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
+  selector: 'bp-topology',
+  templateUrl: './topology.component.html',
+  styleUrl: './topology.component.scss',
+  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
 })
 export class TopologyComponent implements OnInit {
   private readonly messageChannel = inject(MessageChannelService);

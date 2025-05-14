@@ -1,7 +1,5 @@
 import { Component, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BreadcrumbPageComponent } from "../../../../core/page/breadcrumb-page/breadcrumb-page.component";
-import { Breadcrumb } from 'projects/blueprint/src/app/core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { OrganizationChartModule } from 'primeng/organizationchart';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
@@ -9,11 +7,13 @@ import { HierarchyService } from '../service/hierarchy.service';
 import { HierarchyNode } from '../service/model/hierarchy-node.model';
 import { LoadingIndicatorService } from '../../../../core/component/loading-indicator/service/loading-indicator.service';
 import { HierarchyDefinition } from '../service/model/hierarchy-definition.model';
+import { Breadcrumb } from 'projects/blueprint/src/app/shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from 'projects/blueprint/src/app/shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
-    templateUrl: './horizontal-tree-detail.component.html',
-    styleUrl: './horizontal-tree-detail.component.scss',
-    imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule, TreeModule]
+  templateUrl: './horizontal-tree-detail.component.html',
+  styleUrl: './horizontal-tree-detail.component.scss',
+  imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule, TreeModule]
 })
 export class HorizontalTreeDetailComponent implements OnChanges {
   readonly id = input.required<string>();

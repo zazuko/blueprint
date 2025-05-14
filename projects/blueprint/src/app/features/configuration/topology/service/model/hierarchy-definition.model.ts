@@ -1,7 +1,7 @@
 import { AnyPointer } from 'clownface';
 
 import { flux, rdfs, rdf, shacl, appLocal, nileaUi, blueprintShape } from '@blueprint/ontology';
-import { Avatar } from '@blueprint/component/avatar/avatar.component';
+import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { Aggregation } from '@blueprint/service/graph/aggregate/model/aggregation';
 import { HierarchyNode } from './hierarchy-node.model';

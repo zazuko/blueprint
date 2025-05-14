@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { Theme, ThemeManager } from '../../service/theme-manager/theme-manager.service';
 import { NavigationMenuItem } from '../navigation/nav-menu-item/nav-menu-item.component';
 import { ThemePickerMenuItemComponent } from "./theme-picker-menu-item/theme-picker-menu-item.component";
+import { Theme, ThemeManager } from '../service/theme-manager/theme-manager.service';
 
 
 const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [

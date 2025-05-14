@@ -1,11 +1,11 @@
 import { Component, WritableSignal, inject, signal } from '@angular/core';
-import { BreadcrumbPageComponent } from '../../../core/page/breadcrumb-page/breadcrumb-page.component';
-import { Breadcrumb } from '../../../core/layout/breadcrumb-navigation/model/breadcrumb.model';
 import { SkosConcept } from './model/skos.model';
 import { TreeNode } from 'primeng/api';
 import { TreeModule } from 'primeng/tree';
 import { CategoryService } from './service/category.service';
 import { CategoryTreeNodeComponent } from './category-tree-node/category-tree-node.component';
+import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
+import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
 @Component({
   selector: 'bp-category-configurator',

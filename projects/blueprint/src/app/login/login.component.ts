@@ -9,18 +9,19 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '@blueprint/service/auth/auth.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 
-import { BrandLogoComponent } from "../core/layout/brand-logo/brand-logo.component";
 import { MessageChannelService } from '../core/service/message-channel/message-channel.service';
+import { BrandLogoComponent } from '../shared/component/brand/brand-logo/brand-logo.component';
+
 
 @Component({
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    imports: [
-        ReactiveFormsModule, //
-        InputTextModule,
-        ButtonModule,
-        BrandLogoComponent
-    ]
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  imports: [
+    ReactiveFormsModule, //
+    InputTextModule,
+    ButtonModule,
+    BrandLogoComponent
+  ]
 })
 export class LoginComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
@@ -67,7 +68,8 @@ export class LoginComponent implements OnInit {
           this.#messageChannel.debug('Login successful');
           this.#router.navigateByUrl(this.returnUrl);
         },
-        error: () => {
+        error: (e) => {
+          console.error(e);
           this.errorMessage = 'Wrong username or password';
           this.#authService.clear();
           this.#messageChannel.debug('Wrong username or password');

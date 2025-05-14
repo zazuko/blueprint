@@ -1,5 +1,5 @@
 import { Component, output, input } from '@angular/core';
-import { AvatarComponent } from '../../../component/avatar/avatar.component';
+import { AvatarComponent } from '../../../../shared/component/avatar/avatar.component';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({

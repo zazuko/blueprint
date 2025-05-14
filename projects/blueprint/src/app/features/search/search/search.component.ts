@@ -24,7 +24,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 
-import { SearchResultListComponent } from '../../../core/component/search-result-list/search-result-list.component';
+import { SearchResultListComponent } from '../search-result-list/search-result-list.component';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { FormsModule } from '@angular/forms';
 import { FilterPanelComponent } from '../../../core/component/filter-panel/filter-panel.component';
