@@ -2,7 +2,7 @@ import { ClownfaceObject } from '../clownface-object/clownface-object';
 
 import { GraphPointer } from 'clownface';
 
-import { blueprint } from '@blueprint/ontology';
+import { flux } from '@blueprint/ontology';
 
 
 
@@ -25,7 +25,7 @@ export class UiClassCount extends ClownfaceObject {
      */
     public get count(): number {
         if (this._count === null) {
-            const c = this._node.out(blueprint.countNamedNode).values;
+            const c = this._node.out(flux.countNamedNode).values;
             if (c.length === 0) {
                 console.error(`No count found for ${this._node.value}`);
                 this._count = 0;

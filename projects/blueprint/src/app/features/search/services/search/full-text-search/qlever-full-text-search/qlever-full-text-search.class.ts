@@ -2,46 +2,46 @@ import { SearchContext } from "../../model/search-context.class";
 import { FullTextSearch } from "../../util/abstract-search.class";
 
 import { UiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
-import { blueprint, rdfs, rdf, shacl } from "@blueprint/ontology";
+import { flux, rdfs, rdf, shacl } from "@blueprint/ontology";
 
 
 export class QleverFullTextSearch extends FullTextSearch {
 
-    constructor(searchContext: SearchContext) {
-        super(searchContext);
-    }
+  constructor(searchContext: SearchContext) {
+    super(searchContext);
+  }
 
-    public searchQueryWithSearchTerm(metadata: UiClassMetadata[], pageNumber: number, pageSize: number): string {
+  public searchQueryWithSearchTerm(metadata: UiClassMetadata[], pageNumber: number, pageSize: number): string {
 
-        const fluxClassQueries = metadata
-            .map(metaShape => fluxClassSubQuery(metaShape))
-            .join(' UNION');
+    const fluxClassQueries = metadata
+      .map(metaShape => fluxClassSubQuery(metaShape))
+      .join(' UNION');
 
-        const query = searchQueryWithSearchTerm(
-            this._searchContext.searchTerm.toString(),
-            fluxClassQueries,
-            pageNumber,
-            pageSize);
-        return query;
+    const query = searchQueryWithSearchTerm(
+      this._searchContext.searchTerm.toString(),
+      fluxClassQueries,
+      pageNumber,
+      pageSize);
+    return query;
 
-    }
+  }
 
-    public classCountQueryWithSearchTerm(metadata: UiClassMetadata[]): string {
-        return classCountQuery(this._searchContext.searchTerm.toString(), metadata);
-    }
+  public classCountQueryWithSearchTerm(metadata: UiClassMetadata[]): string {
+    return classCountQuery(this._searchContext.searchTerm.toString(), metadata);
+  }
 
-    public totalCountQueryWithSearchTerm(metadata: UiClassMetadata[]): string {
-        const fluxClassQueries = metadata
-            .map(metaShape => fluxClassSubQuery(metaShape))
-            .join(' UNION');
+  public totalCountQueryWithSearchTerm(metadata: UiClassMetadata[]): string {
+    const fluxClassQueries = metadata
+      .map(metaShape => fluxClassSubQuery(metaShape))
+      .join(' UNION');
 
-        return countTotalQuery(this._searchContext.searchTerm.toString(), fluxClassQueries);
-    }
+    return countTotalQuery(this._searchContext.searchTerm.toString(), fluxClassQueries);
+  }
 }
 
 
 function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
-    return `
+  return `
   {
     BIND( <${classMetadata.targetNode.value}> as ?fluxIri)
     BIND( ${classMetadata.searchPriority} as ?searchPriority) 
@@ -57,9 +57,9 @@ function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
 
 
 function searchQueryWithSearchTerm(searchTerm: string, fluxClassQueries: string, pageNumber: number, pageSize: number): string {
-    return `
+  return `
   ${rdf.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
   PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
@@ -67,13 +67,13 @@ function searchQueryWithSearchTerm(searchTerm: string, fluxClassQueries: string,
 
   CONSTRUCT
   {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-        ${blueprint.resultPrefixed} ?sub ;
-        ${blueprint.pageSizePrefixed} $pageSize;
-        ${blueprint.pageNumberPrefixed} $pageNumber. 
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+        ${flux.resultPrefixed} ?sub ;
+        ${flux.pageSizePrefixed} $pageSize;
+        ${flux.pageNumberPrefixed} $pageNumber. 
       ?sub a ?fluxIri ;
-           a ${blueprint.UiSearchResultItemPrefixed};
-          ${blueprint.scorePrefixed} ?score ;
+           a ${flux.UiSearchResultItemPrefixed};
+          ${flux.scorePrefixed} ?score ;
           ${rdfs.labelPrefixed} ?label ;
           ${rdfs.commentPrefixed} ?comment .
           
@@ -112,13 +112,13 @@ function searchQueryWithSearchTerm(searchTerm: string, fluxClassQueries: string,
 
 
 function countTotalQuery(
-    searchTerm: string,
-    fluxClassQueries: string
+  searchTerm: string,
+  fluxClassQueries: string
 ): string {
-    if (searchTerm && searchTerm.length > 0) {
-        return `
+  if (searchTerm && searchTerm.length > 0) {
+    return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
@@ -126,8 +126,8 @@ PREFIX ql: <http://qlever.cs.uni-freiburg.de/builtin-functions/>
 
 CONSTRUCT
 {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-      ${blueprint.totalPrefixed} ?count .
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+      ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -151,18 +151,18 @@ WHERE
   } 
 }
  `;
-    }
-    return `
+  }
+  return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT
 {
-  ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-  ${blueprint.totalPrefixed} ?count .
+  ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+  ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -176,59 +176,59 @@ WHERE
 
 
 function classCountQuery(
-    input: string,
-    classMetadata: UiClassMetadata[]
+  input: string,
+  classMetadata: UiClassMetadata[]
 ): string {
-    let subQueries: string[] = [];
-    /*  if (filter.length > 0) {
-        subQueries = filter.map((iri) => {
-          return classSparqlBlock(iri, fullTextSearchQuery(input));
-        });
-      } else {*/
-    subQueries = classMetadata.map((meta) => {
-        return classSparqlBlock(meta.targetNode.value, fullTextSearchQuery(input));
-    });
-    // }
+  let subQueries: string[] = [];
+  /*  if (filter.length > 0) {
+      subQueries = filter.map((iri) => {
+        return classSparqlBlock(iri, fullTextSearchQuery(input));
+      });
+    } else {*/
+  subQueries = classMetadata.map((meta) => {
+    return classSparqlBlock(meta.targetNode.value, fullTextSearchQuery(input));
+  });
+  // }
 
-    let query = `
+  let query = `
 # 2 instance count per flux type class
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 PREFIX ql: <http://qlever.cs.uni-freiburg.de/builtin-functions/>
 
 CONSTRUCT {
-?fluxIri a ${blueprint.UiClassCountPrefixed} ; 
-   ${blueprint.countPrefixed} ?count .
+?fluxIri a ${flux.UiClassCountPrefixed} ; 
+   ${flux.countPrefixed} ?count .
 } where {`;
-    subQueries.forEach((subQuery, index) => {
-        if (index === 0) {
-            query += `
+  subQueries.forEach((subQuery, index) => {
+    if (index === 0) {
+      query += `
 {
 ${subQuery}
 }`;
-        } else {
-            query += `
+    } else {
+      query += `
 UNION {
 ${subQuery}
 }`;
-        }
-    });
-    query += `
+    }
+  });
+  query += `
 }
 `;
 
-    return query;
+  return query;
 }
 
 
 
 
 function fullTextSearchQuery(searchTerm: string): string {
-    if (!searchTerm || searchTerm.length === 0) {
-        return '';
-    }
+  if (!searchTerm || searchTerm.length === 0) {
+    return '';
+  }
 
-    return `
+  return `
       ?s (${rdfs.labelPrefixed} | ${rdfs.commentPrefixed}) ?l .
         ?sub (${rdfs.labelPrefixed} | ${rdfs.commentPrefixed}) ?l .
                ?text ql:contains-entity ?l ;
@@ -237,7 +237,7 @@ function fullTextSearchQuery(searchTerm: string): string {
 }
 
 function classSparqlBlock(iri: string, fullTextSearchBlock: string): string {
-    return `
+  return `
   {
     SELECT ?fluxIri (COUNT(DISTINCT ?s) AS ?count) WHERE {
       VALUES ?fluxIri

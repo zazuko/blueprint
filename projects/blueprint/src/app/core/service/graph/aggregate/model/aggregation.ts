@@ -1,5 +1,5 @@
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
-import { blueprint, rdf, shacl } from '@blueprint/ontology';
+import { flux, rdf, shacl } from '@blueprint/ontology';
 import { GraphPointer } from 'clownface';
 import { PathDefinition } from './path-definition';
 
@@ -34,12 +34,12 @@ export abstract class Aggregation extends ClownfaceObject {
 
     /**
     * The root iri of the aggregate. The root is the node that is the entry point of the aggregate.
-    * If this return undefined. There is a configuration error in the blueprint.
+    * If this return undefined. There is a configuration error in the flux.
     * 
     * @readonly
     */
     get rootIri(): string | undefined {
-        return this._node.out(blueprint.hasRootNamedNode).value;
+        return this._node.out(flux.hasRootNamedNode).value;
     }
 }
 
@@ -69,7 +69,7 @@ export class AggregateMemberNode extends ClownfaceObject {
      */
     get isConnectionPoint(): boolean {
         if (this._isConnectionPoint === null) {
-            this._isConnectionPoint = this._node.has(rdf.typeNamedNode, blueprint.ConnectionPointNamedNode).values.length > 0;
+            this._isConnectionPoint = this._node.has(rdf.typeNamedNode, flux.ConnectionPointNamedNode).values.length > 0;
         }
         return this._isConnectionPoint
     }
@@ -119,7 +119,7 @@ export class AggregateMemberNode extends ClownfaceObject {
     }
 
     private _traversePathToRoot(node: GraphPointer, path: PathDefinition[]): void {
-        if (node.in(blueprint.hasRootNamedNode).values.length > 0) {
+        if (node.in(flux.hasRootNamedNode).values.length > 0) {
             return;
         }
         const pathElementNodes = node.in(shacl.nodeNamedNode);

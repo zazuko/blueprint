@@ -59,12 +59,11 @@ export class SearchComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
   readonly #loadingIndicatorService = inject(LoadingIndicatorService);
 
-  public readonly searchDataSource = inject(SearchDataSourceService);
   readonly #filterItemService = inject(FilterItemService);
+  public readonly searchDataSource = inject(SearchDataSourceService);
   public readonly searchService = inject(SearchService);
 
   private searchTermSubject = new Subject<string>();
-
 
   currentPage = 0;
 
@@ -130,15 +129,16 @@ export class SearchComponent implements OnInit {
     });
 
     this.#route.queryParams
-      .pipe(map((queryParam) => queryParam['searchTerm']))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        map((queryParam) => queryParam['searchTerm']),
+        takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchTerm) => {
         this.#loadingIndicatorService.loading();
         this.searchTerm.set(searchTerm || '');
         this.searchParam.term = this.searchTerm();
         this.searchParam.page = 0;
         this.searchResult.set([]);
-        this._search();
+        this.#search();
       });
   }
 
@@ -146,14 +146,14 @@ export class SearchComponent implements OnInit {
     this.searchTermSubject.next(search);
   }
 
-  onMore(): void {
+  showMoreItems(): void {
     const currentPage = this.searchParam.page ?? 0;
     this.searchParam.page = currentPage + 1;
-    this._search();
+    this.#search();
   }
 
 
-  private _search(): void {
+  #search(): void {
     this.searchService.search(this.searchParam);
   }
 
@@ -163,7 +163,7 @@ export class SearchComponent implements OnInit {
     this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);
     this.searchParam.filter = this.activeFilters;
-    this._search();
+    this.#search();
   }
 
   onSearchTermChanged(newTerm: string): void {
@@ -176,13 +176,19 @@ export class SearchComponent implements OnInit {
     this.#router.navigate([], navigationExtras);
   }
 
-  onItemSelected(item: SearchResultItem): void {
+  /**
+   * Navigates to the selected item in the search result.
+   * 
+   * @param item Item to navigate to
+   */
+  navigateToItem(item: SearchResultItem): void {
     const queryParams: Params = {
       searchTerm: this.searchParam.term,
       l: item.label,
     };
     const navigationExtras: NavigationExtras = {
       queryParams,
+      fragment: "Information"
     };
     this.#router.navigate(['explore', item.iri], navigationExtras);
   }

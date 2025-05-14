@@ -1,6 +1,6 @@
 import { GraphPointer } from "clownface";
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
-import { blueprint, rdf, rdfs, shacl } from "@blueprint/ontology";
+import { flux, rdf, rdfs, shacl } from "@blueprint/ontology";
 import { PathDefinition } from "../path-definition";
 import { Composition } from "../composition";
 import { OutgoingPathFactory } from "projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory";
@@ -59,7 +59,7 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      */
     get targetComposition(): Composition | null {
         if (this.#targetComposition === undefined) {
-            const targetCompositions = this._node.out(blueprint.targetNamedNode).has(rdf.typeNamedNode, blueprint.CompositionNamedNode).map(p => new Composition(p));
+            const targetCompositions = this._node.out(flux.targetNamedNode).has(rdf.typeNamedNode, flux.CompositionNamedNode).map(p => new Composition(p));
 
             if (targetCompositions.length === 0) {
                 this.#targetComposition = null;
@@ -132,7 +132,7 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      */
     get sourceNodeIri(): string | null {
         if (this.#sourceNodeIri === undefined) {
-            const sourceIris = this._node.out(blueprint.sourceNamedNode).values;
+            const sourceIris = this._node.out(flux.sourceNamedNode).values;
             if (sourceIris.length === 0) {
                 this.#sourceNodeIri = null;
             } else {
@@ -152,7 +152,7 @@ export class CompositionToNodeLink extends ClownfaceObject implements ICompositi
      */
     get targetNodeIri(): string | null {
         if (this.#targetNodeIri === undefined) {
-            const targetIris = this._node.out(blueprint.targetNamedNode).values;
+            const targetIris = this._node.out(flux.targetNamedNode).values;
             if (targetIris.length === 0) {
                 this.#targetNodeIri = null;
             } else {

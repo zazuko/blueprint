@@ -13,34 +13,22 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
   styleUrl: './comment.component.scss'
 })
 export class CommentComponent {
-  text = input<string | null | undefined>(undefined);
+  text = input.required<string>();
 
   #maxHeight = 200;
   #minHeight = 100;
 
-  comment = computed<string | null>(() => {
-    if (!this.text()) {
-      return null;
-    }
+  comment = computed<string>(() => {
     return this.text().trim();
-  }
-  );
+  });
 
   lineCount = computed<number>(() => {
-    if (!this.comment()) {
-      return 0;
-    }
     return this.comment().split('\n').length;
-  }
-  );
+  });
 
   height = computed<number>(() => {
-    if (!this.comment()) {
-      return this.#minHeight;
-    }
-    return Math.min(this.#maxHeight, this.#minHeight + this.lineCount() * 20);
-  }
-  );
-
+    const lineCount = this.lineCount();
+    return Math.min(this.#maxHeight, this.#minHeight + lineCount * 20);
+  });
 
 }

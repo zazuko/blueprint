@@ -1,7 +1,9 @@
-export { blueprint } from './blueprint/blueprint';
+export { flux } from './flux/flux';
 export { blueprintShape } from './blueprint-shape/ blueprint-shape';
 export { nileaUi } from './nilea-ui/nilea-ui';
 export { rdfs } from './rdfs/rdfs';
 export { rdf } from './rdf/rdf';
 export { shacl } from './shacl/shacl';
+export { skos } from './skos/skos';
+export { schema } from './schema/schema';
 export { appLocal } from './app/app';

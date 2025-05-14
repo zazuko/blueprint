@@ -1,5 +1,5 @@
 import { GraphPointer } from 'clownface';
-import { blueprint } from '@blueprint/ontology';
+import { flux } from '@blueprint/ontology';
 
 import { NodeElement } from '../node-element/node-element.class';
 
@@ -21,7 +21,7 @@ export class SearchResultItem extends NodeElement {
      */
     public get score(): number {
         if (this._score === null) {
-            const scores = this._node.out(blueprint.scoreNamedNode).values;
+            const scores = this._node.out(flux.scoreNamedNode).values;
             if (scores.length === 0) {
                 console.error(`No score found for ${this._node.value}`);
                 this._score = 0;

@@ -1,4 +1,4 @@
-import { blueprint, rdf, rdfs } from "@blueprint/ontology";
+import { flux, rdf, rdfs } from "@blueprint/ontology";
 import { ICompositionToNodeLink } from "../../model/composition/composition-to-node-link";
 import { CompositionToNodeQueryStrategy } from "./composition-to-node-query-strategy";
 
@@ -132,16 +132,16 @@ export class CompositionToNodeRootStrategy extends CompositionToNodeQueryStrateg
                 const query = `
                 ${rdf.sparqlPrefix()}
                 ${rdfs.sparqlPrefix()}
-                ${blueprint.sparqlPrefix()}
+                ${flux.sparqlPrefix()}
 
                 CONSTRUCT {
-                    <${link.iri}> ${blueprint.resultPrefixed} <${link.iri}/${outerIndex}> .
-                    <${link.iri}/${outerIndex}> a  ${blueprint.CompositionLinkResultPrefixed} .
-                    <${link.iri}/${outerIndex}> ${blueprint.resultPrefixed} ?result .
+                    <${link.iri}> ${flux.resultPrefixed} <${link.iri}/${outerIndex}> .
+                    <${link.iri}/${outerIndex}> a  ${flux.CompositionLinkResultPrefixed} .
+                    <${link.iri}/${outerIndex}> ${flux.resultPrefixed} ?result .
                     <${link.iri}/${outerIndex}> ${rdfs.labelPrefixed} "${link.label}" .
                     ?result ?resultP ?resultO .
                     ?element_${outerIndex}_${pathFromRoot.length} ?connectionPointP ?connectionPointO .
-                    ?result ${blueprint.sourcePrefixed} ?element_${outerIndex}_${pathFromRoot.length} . 
+                    ?result ${flux.sourcePrefixed} ?element_${outerIndex}_${pathFromRoot.length} . 
                 } WHERE {
                     ${body} 
                 }`;

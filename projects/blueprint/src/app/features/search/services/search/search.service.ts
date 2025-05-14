@@ -13,7 +13,7 @@ import { GraphDBFullTextSearch } from './full-text-search/graphdb-full-text-sear
 import { QleverFullTextSearch } from './full-text-search/qlever-full-text-search/qlever-full-text-search.class';
 
 
-import { blueprint, rdf } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
@@ -51,7 +51,7 @@ export class SearchService {
     this._searchSubscription = this.page(searchParams.page).pipe(
       map(dataset => {
         const resultGraph = rdfEnvironment.clownface(dataset);
-        const searchResultIris = resultGraph.node(blueprint.UiSearchResultNamedNode).in(rdf.typeNamedNode).values;
+        const searchResultIris = resultGraph.node(flux.UiSearchResultNamedNode).in(rdf.typeNamedNode).values;
         if (searchResultIris.length === 0) {
           console.warn(`Invalid data: SearchResult.query is undefined`);
           return [];
@@ -64,7 +64,7 @@ export class SearchService {
 
         if (searchParams.page === 0) {
           this.totalCount$.next(searchResult.total);
-          const classCounts = rdfEnvironment.clownface(dataset).node(blueprint.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode));
+          const classCounts = rdfEnvironment.clownface(dataset).node(flux.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode));
           this.classCount$.next(classCounts);
         }
 

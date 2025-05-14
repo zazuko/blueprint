@@ -2,7 +2,7 @@ import { SearchContext } from "../../model/search-context.class";
 import { FullTextSearch } from "../../util/abstract-search.class";
 
 import { UiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
-import { blueprint, rdfs, rdf, shacl } from "@blueprint/ontology";
+import { flux, rdfs, rdf, shacl } from "@blueprint/ontology";
 
 
 export class StardogFullTextSearch extends FullTextSearch {
@@ -59,7 +59,7 @@ function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
 function searchQueryWithSearchTerm(searchTerm: string, fluxClassQueries: string, pageNumber: number, pageSize: number): string {
   return `
   ${rdf.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
   PREFIX fts: <tag:stardog:api:search:>
@@ -67,13 +67,13 @@ function searchQueryWithSearchTerm(searchTerm: string, fluxClassQueries: string,
   
   CONSTRUCT
   {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-        ${blueprint.resultPrefixed} ?sub ;
-        ${blueprint.pageSizePrefixed} $pageSize;
-        ${blueprint.pageNumberPrefixed} $pageNumber. 
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+        ${flux.resultPrefixed} ?sub ;
+        ${flux.pageSizePrefixed} $pageSize;
+        ${flux.pageNumberPrefixed} $pageNumber. 
       ?sub a ?fluxIri ;
-           a ${blueprint.UiSearchResultItemPrefixed};
-          ${blueprint.scorePrefixed} ?score ;
+           a ${flux.UiSearchResultItemPrefixed};
+          ${flux.scorePrefixed} ?score ;
           ${rdfs.labelPrefixed} ?label ;
           ${rdfs.commentPrefixed} ?comment .
           
@@ -120,7 +120,7 @@ function countTotalQuery(
   if (searchTerm && searchTerm.length > 0) {
     return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX fts: <tag:stardog:api:search:>
@@ -128,8 +128,8 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT
 {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-      ${blueprint.totalPrefixed} ?count .
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+      ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -158,15 +158,15 @@ WHERE
   }
   return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT
 {
-  ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-  ${blueprint.totalPrefixed} ?count .
+  ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+  ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -196,13 +196,13 @@ function classCountQuery(
 
   let query = `
 # 2 instance count per flux type class
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 PREFIX fts: <tag:stardog:api:search:>
 
 CONSTRUCT {
-?fluxIri a ${blueprint.UiClassCountPrefixed} ; 
-   ${blueprint.countPrefixed} ?count .
+?fluxIri a ${flux.UiClassCountPrefixed} ; 
+   ${flux.countPrefixed} ?count .
 } where {`;
   subQueries.forEach((subQuery, index) => {
     if (index === 0) {

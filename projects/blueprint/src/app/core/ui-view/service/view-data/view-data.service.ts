@@ -10,13 +10,14 @@ import { HierarchyService } from 'projects/blueprint/src/app/features/configurat
 import { MessageChannelService } from '../../../service/message-channel/message-channel.service';
 import { UiDetailService } from '../../../service/ui-config/ui-detail/ui-detail.service';
 
-import { blueprint, rdf, rdfs, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
+import { flux, rdf, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
+import { defaultSubjectQuery } from './query/default-subject.query';
 
 @Injectable({
   providedIn: 'root'
@@ -70,9 +71,8 @@ export class ViewDataService {
         const aggregateToNodeLinkQueries = types.map((type) => this.#aggregateService.getAggregateToNodeLinkForClassQuery(type));
         const uiClassMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
 
-        const uiDetailQueries = types.map((type) => this.#uiDetailService.getUiDetailForClassQuery(type));
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...uiDetailQueries, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
+        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
         return this.#sparql.construct(mergedMetaQuery);
       }),
@@ -80,7 +80,7 @@ export class ViewDataService {
         dataset.addAll(viewGraphMetadata);
 
         /* 1. get detail config */
-        const uiDetails = this.#uiDetailService.extractUiDetails(viewGraphMetadata);
+        const uiDetails = [] //this.#uiDetailService.extractUiDetails(viewGraphMetadata);
         const uiDetailQueries = uiDetails.map((uiDetail) => uiDetail.getSparqlDetailQueryForSubject(subject));
 
         /* 2. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
@@ -96,7 +96,7 @@ export class ViewDataService {
 
 
         // 2.1 get the hierarchy definitions
-        const hierarchyGraph = rdfEnvironment.clownface(viewGraphMetadata).node(blueprint.HierarchyNamedNode).in(rdf.typeNamedNode);
+        const hierarchyGraph = rdfEnvironment.clownface(viewGraphMetadata).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
         const hierarchyDefinitions = hierarchyGraph.map(hierarchyCfNode => new HierarchyDefinition(rdfEnvironment.namedNode(hierarchyCfNode.value), viewGraphMetadata)).filter(d => {
           const classesInHierarchy = d.aggregateNodes.map(node => node.targetClassIri);
           return classesInHierarchy.some(c => types.includes(c));
@@ -183,7 +183,7 @@ export class ViewDataService {
 
 
         // add default query
-        const queries = [...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, defaultQuery(subject), ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
+        const queries = [defaultSubjectQuery(subject), ...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
         const mergedQuery = sparqlUtils.mergeConstruct(queries);
@@ -209,47 +209,3 @@ export class ViewDataService {
 
 }
 
-
-function defaultQuery(subject: RdfTypes.NamedNode): string {
-  return `
-  ${rdf.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
-
-  CONSTRUCT {
-    <${subject.value}> ?p ?o .
-    ?metaShape ?shapeP ?oo .
-  }
-  WHERE {
-    {
-      VALUES (?p) {
-        (${rdf.typePrefixed})
-        (${rdfs.labelPrefixed})
-        (${rdfs.commentPrefixed})
-      }
-      <${subject.value}> ?p ?o  .
-    } UNION {
-      {
-        SELECT ?metaShape
-        WHERE {
-          <${subject.value}> a ?type .
-          ?metaShape ${shacl.targetNodePrefixed} ?type .
-        }
-      }
-      VALUES ?shapeP {
-        ${blueprint.colorIndexPrefixed}
-        ${blueprint.searchPriorityPrefixed}
-        ${blueprint.faIconPrefixed}
-        ${blueprint.iconPrefixed}
-        ${rdfs.labelPrefixed}
-        ${rdfs.commentPrefixed}
-        ${shacl.targetNodePrefixed}
-       
-      }
-      ?metaShape ?shapeP ?oo .
-
-    }
-  }
-  `;
-}

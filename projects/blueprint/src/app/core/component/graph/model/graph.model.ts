@@ -1,6 +1,6 @@
 import { INodeElement, NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { GraphPointer } from 'clownface';
-import { blueprint } from '@blueprint/ontology';
+import { flux } from '@blueprint/ontology';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
@@ -37,7 +37,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
 
 
   get index(): number {
-    const index = this._node.out(blueprint.indexNamedNode).value;
+    const index = this._node.out(flux.indexNamedNode).value;
     if (index === undefined) {
       return -1;
     }
@@ -54,31 +54,31 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
   }
 
   set index(index: number) {
-    const hasIndex = this._node.out(blueprint.indexNamedNode).value !== undefined;
+    const hasIndex = this._node.out(flux.indexNamedNode).value !== undefined;
     if (hasIndex) {
-      this._node.deleteOut(blueprint.indexNamedNode);
+      this._node.deleteOut(flux.indexNamedNode);
     }
-    this._node.addOut(blueprint.indexNamedNode, rdfEnvironment.literal(`${index}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
+    this._node.addOut(flux.indexNamedNode, rdfEnvironment.literal(`${index}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
 
   set x(x: number) {
-    const hasX = this._node.out(blueprint.xNamedNode).value !== undefined;
+    const hasX = this._node.out(flux.xNamedNode).value !== undefined;
     if (hasX) {
-      this._node.deleteOut(blueprint.xNamedNode);
+      this._node.deleteOut(flux.xNamedNode);
     }
-    this._node.addOut(blueprint.xNamedNode, rdfEnvironment.literal(`${x}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
+    this._node.addOut(flux.xNamedNode, rdfEnvironment.literal(`${x}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
 
   set y(y: number) {
-    const hasY = this._node.out(blueprint.yNamedNode).value !== undefined;
+    const hasY = this._node.out(flux.yNamedNode).value !== undefined;
     if (hasY) {
-      this._node.deleteOut(blueprint.yNamedNode);
+      this._node.deleteOut(flux.yNamedNode);
     }
-    this._node.addOut(blueprint.yNamedNode, rdfEnvironment.literal(`${y}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
+    this._node.addOut(flux.yNamedNode, rdfEnvironment.literal(`${y}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
 
   get x(): number | undefined {
-    const x = this._node.out(blueprint.xNamedNode).value;
+    const x = this._node.out(flux.xNamedNode).value;
     if (x === undefined) {
       return undefined;
     }
@@ -86,7 +86,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
   }
 
   get y(): number | undefined {
-    const y = this._node.out(blueprint.yNamedNode).value;
+    const y = this._node.out(flux.yNamedNode).value;
     if (y === undefined) {
       return undefined;
     }
@@ -94,20 +94,20 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
   }
 
   get isPinned(): boolean {
-    const isPinnedString = this._node.out(blueprint.namespace`isPinned`).value;
+    const isPinnedString = this._node.out(flux.namespace`isPinned`).value;
     return isPinnedString === 'true' || isPinnedString === '1';
   }
 
   set isPinned(isPinned: boolean) {
-    const hasIsPinned = this._node.out(blueprint.namespace`isPinned`).value !== undefined;
+    const hasIsPinned = this._node.out(flux.namespace`isPinned`).value !== undefined;
     if (hasIsPinned) {
-      this._node.deleteOut(blueprint.namespace`isPinned`);
+      this._node.deleteOut(flux.namespace`isPinned`);
     }
-    this._node.addOut(blueprint.namespace`isPinned`, rdfEnvironment.literal(`${isPinned}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+    this._node.addOut(flux.namespace`isPinned`, rdfEnvironment.literal(`${isPinned}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
   get fixed(): number {
-    const fixed = this._node.out(blueprint.namespace`fixed`).value;
+    const fixed = this._node.out(flux.namespace`fixed`).value;
     if (fixed === undefined) {
       return 0;
     }
@@ -115,50 +115,50 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
   }
 
   set fixed(fixed: number) {
-    const hasFixed = this._node.out(blueprint.namespace`fixed`).value !== undefined;
+    const hasFixed = this._node.out(flux.namespace`fixed`).value !== undefined;
     if (hasFixed) {
-      this._node.deleteOut(blueprint.namespace`fixed`);
+      this._node.deleteOut(flux.namespace`fixed`);
     }
-    this._node.addOut(blueprint.namespace`fixed`, rdfEnvironment.literal(`${fixed}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
+    this._node.addOut(flux.namespace`fixed`, rdfEnvironment.literal(`${fixed}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#integer')));
   }
 
   get showPin(): boolean {
-    const showPinString = this._node.out(blueprint.namespace`showPin`).value;
+    const showPinString = this._node.out(flux.namespace`showPin`).value;
     return showPinString === 'true' || showPinString === '1';
   }
 
   set showPin(showPin: boolean) {
-    const hasShowPin = this._node.out(blueprint.namespace`showPin`).value !== undefined;
+    const hasShowPin = this._node.out(flux.namespace`showPin`).value !== undefined;
     if (hasShowPin) {
-      this._node.deleteOut(blueprint.namespace`showPin`);
+      this._node.deleteOut(flux.namespace`showPin`);
     }
-    this._node.addOut(blueprint.namespace`showPin`, rdfEnvironment.literal(`${showPin}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+    this._node.addOut(flux.namespace`showPin`, rdfEnvironment.literal(`${showPin}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
   get expanded(): boolean {
-    const expandedString = this._node.out(blueprint.namespace`expanded`).value;
+    const expandedString = this._node.out(flux.namespace`expanded`).value;
     return expandedString === 'true' || expandedString === '1';
   }
 
   set expanded(expanded: boolean) {
-    const hasExpanded = this._node.out(blueprint.namespace`expanded`).value !== undefined;
+    const hasExpanded = this._node.out(flux.namespace`expanded`).value !== undefined;
     if (hasExpanded) {
-      this._node.deleteOut(blueprint.namespace`expanded`);
+      this._node.deleteOut(flux.namespace`expanded`);
     }
-    this._node.addOut(blueprint.namespace`expanded`, rdfEnvironment.literal(`${expanded}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+    this._node.addOut(flux.namespace`expanded`, rdfEnvironment.literal(`${expanded}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
   get showMenu(): boolean {
-    const showMenuString = this._node.out(blueprint.namespace`showMenu`).value;
+    const showMenuString = this._node.out(flux.namespace`showMenu`).value;
     return showMenuString === 'true' || showMenuString === '1';
   }
 
   set showMenu(showMenu: boolean) {
-    const hasShowMenu = this._node.out(blueprint.namespace`showMenu`).value !== undefined;
+    const hasShowMenu = this._node.out(flux.namespace`showMenu`).value !== undefined;
     if (hasShowMenu) {
-      this._node.deleteOut(blueprint.namespace`showMenu`);
+      this._node.deleteOut(flux.namespace`showMenu`);
     }
-    this._node.addOut(blueprint.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
+    this._node.addOut(flux.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
 }
@@ -179,17 +179,17 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
   }
 
   get source(): RdfUiGraphNode {
-    const sourceNode = this._node.in(blueprint.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
+    const sourceNode = this._node.in(flux.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
     return sourceNode[0];
   }
 
   get target(): RdfUiGraphNode {
-    const targetNode = this._node.out(blueprint.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
+    const targetNode = this._node.out(flux.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
     return targetNode[0];
   }
 
   get label(): string {
-    return this._node.out(blueprint.linkLabelNamedNode).values.join(' ,') ?? 'no label';
+    return this._node.out(flux.linkLabelNamedNode).values.join(' ,') ?? 'no label';
   }
 
   get id(): string {

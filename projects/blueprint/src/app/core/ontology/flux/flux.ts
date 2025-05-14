@@ -3,7 +3,7 @@
 import { rdfEnvironment, RdfTypes, NamespaceBuilder } from '../../rdf/rdf-environment';
 import { Ontology } from '../ontology';
 
-class BlueprintOntology extends Ontology {
+class FluxOntology extends Ontology {
 
     constructor() {
         super(rdfEnvironment.namespace('https://flux.described.at/'));
@@ -1372,4 +1372,4 @@ class BlueprintOntology extends Ontology {
 
 }
 
-export const blueprint = new BlueprintOntology();
+export const flux = new FluxOntology();

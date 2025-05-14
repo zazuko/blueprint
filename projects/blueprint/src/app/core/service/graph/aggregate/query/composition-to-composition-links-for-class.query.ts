@@ -1,9 +1,9 @@
-import { shacl, blueprint, rdfs, rdf } from "@blueprint/ontology";
+import { shacl, flux, rdfs, rdf } from "@blueprint/ontology";
 
 export function compositionToCompositionLinksForClassQuery(type: string): string {
     const query = `
   ${shacl.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
   
@@ -33,15 +33,15 @@ export function compositionToCompositionLinksForClassQuery(type: string): string
                   BIND (<${type}> AS ?type)
                   ?shape ${shacl.targetClassPrefixed} ?type .
                   ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
                   ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
+                  ?outgoingLinks a ${flux.CompositionToCompositionLinkPrefixed} .
               }
           }
           VALUES ?linkP { 
               ${shacl.targetClassPrefixed}
               ${shacl.propertyPrefixed}
-              ${blueprint.targetPrefixed}
+              ${flux.targetPrefixed}
               ${rdfs.labelPrefixed}
               ${rdf.typePrefixed}
           }
@@ -53,9 +53,9 @@ export function compositionToCompositionLinksForClassQuery(type: string): string
                   BIND (<${type}> AS ?type)
                   ?shape ${shacl.targetClassPrefixed} ?type .
                   ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
                   ?outgoingLinks ${shacl.targetClassPrefixed} ?aggregate .
-                  ?outgoingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
+                  ?outgoingLinks a ${flux.CompositionToCompositionLinkPrefixed} .
               }
           }
           
@@ -88,18 +88,18 @@ export function compositionToCompositionLinksForClassQuery(type: string): string
                   BIND (<${type}> AS ?type)
                   ?inShape ${shacl.targetClassPrefixed} ?type .
                   ?inShape ${shacl.groupPrefixed} ?inAggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?incomingLinks ${blueprint.targetPrefixed} ?inAggregate .
-                  ?incomingLinks a ${blueprint.CompositionToCompositionLinkPrefixed} .
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
+                  ?incomingLinks ${flux.targetPrefixed} ?inAggregate .
+                  ?incomingLinks a ${flux.CompositionToCompositionLinkPrefixed} .
               }
           }
           VALUES ?linkP { 
             ${shacl.targetClassPrefixed}
             ${shacl.propertyPrefixed}
-            ${blueprint.targetPrefixed}
+            ${flux.targetPrefixed}
             ${rdf.typePrefixed}
           }
-          ?incomingLinks ${blueprint.inverseLabelPrefixed} ?inverseLabel .
+          ?incomingLinks ${flux.inverseLabelPrefixed} ?inverseLabel .
           ?incomingLinks ?linkP ?linkO .
       } UNION {
              # incoming links sh:property
@@ -108,9 +108,9 @@ export function compositionToCompositionLinksForClassQuery(type: string): string
                   BIND (<${type}> AS ?type)
                   ?shape ${shacl.targetClassPrefixed} ?type .
                   ?shape ${shacl.groupPrefixed} ?aggregate . 
-                  ?aggregate ${rdf.typePrefixed} ${blueprint.CompositionPrefixed}.
-                  ?incomingLinks ${blueprint.targetPrefixed} ?aggregate .
-                  ?incomingLinks a  ${blueprint.CompositionToCompositionLinkPrefixed} .
+                  ?aggregate ${rdf.typePrefixed} ${flux.CompositionPrefixed}.
+                  ?incomingLinks ${flux.targetPrefixed} ?aggregate .
+                  ?incomingLinks a  ${flux.CompositionToCompositionLinkPrefixed} .
               }
           }
           ?incomingLinks ${shacl.propertyPrefixed} ?propertyShape .

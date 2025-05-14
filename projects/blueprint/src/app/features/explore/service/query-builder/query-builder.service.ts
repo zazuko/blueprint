@@ -5,7 +5,7 @@ import { Observable, map, switchMap } from 'rxjs';
 
 import { GraphPointer } from 'clownface';
 
-import { rdf, blueprint, shacl, rdfs } from '@blueprint/ontology';
+import { rdf, flux, shacl, rdfs } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
@@ -70,13 +70,13 @@ export class QueryBuilderService {
     const outLinkDefinitions = metaGraph
       .namedNode(inputNode)
       .out(rdf.typeNamedNode)
-      .in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
+      .in(shacl.targetClassNamedNode).has(rdf.typeNamedNode, flux.LinkNamedNode).map(node => new UiLinkDefinition(node));
 
 
     const inLinkDefinitions = metaGraph
       .namedNode(inputNode)
       .out(rdf.typeNamedNode)
-      .in(shacl.classNamedNode).has(rdf.typeNamedNode, blueprint.LinkNamedNode).map(node => new UiLinkDefinition(node));
+      .in(shacl.classNamedNode).has(rdf.typeNamedNode, flux.LinkNamedNode).map(node => new UiLinkDefinition(node));
 
     const inputQuery = getInputNodeQuery(inputNode);
 
@@ -111,15 +111,15 @@ function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
 PREFIX schema: <http://schema.org/>
 
 CONSTRUCT {
   ?input a ?fluxUiType .
-  ?input ${blueprint.hasUiLinkPrefixed} ?linkIri .
-  ?linkIri ${blueprint.linkPrefixed} ?link ;
-    ${blueprint.linkLabelPrefixed} ?linkLabel ;
-    ${blueprint.hasUiLinkPrefixed} ?target .
+  ?input ${flux.hasUiLinkPrefixed} ?linkIri .
+  ?linkIri ${flux.linkPrefixed} ?link ;
+    ${flux.linkLabelPrefixed} ?linkLabel ;
+    ${flux.hasUiLinkPrefixed} ?target .
   # Get type of the target node
   ?target a ?targetType .
   ?target a ?fluxUiType.
@@ -127,7 +127,7 @@ CONSTRUCT {
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
-  BIND (${blueprint.UiNodePrefixed} as ?fluxUiType)
+  BIND (${flux.UiNodePrefixed} as ?fluxUiType)
   BIND (<${link.arrowTarget}> as ?targetType)
   ?input ${link.propertyPath}  ?target .
   ?target a ?targetType .
@@ -146,23 +146,23 @@ function getIncomingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
 
 CONSTRUCT {
   ?input a ?fluxUiType .
-  ?linkIri ${blueprint.linkPrefixed} ?link ;
-    ${blueprint.linkLabelPrefixed} ?linkLabel ;
-    ${blueprint.hasUiLinkPrefixed} ?input .
+  ?linkIri ${flux.linkPrefixed} ?link ;
+    ${flux.linkLabelPrefixed} ?linkLabel ;
+    ${flux.hasUiLinkPrefixed} ?input .
   # Get type of the target node
   ?target a ?targetType .
   ?target a ?fluxUiType.
   ?target ${rdfs.labelPrefixed} ?targetLabel.
-  ?target  ${blueprint.hasUiLinkPrefixed} ?linkIri .
+  ?target  ${flux.hasUiLinkPrefixed} ?linkIri .
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
   BIND (<${link.arrowSource}> as ?targetType)
-  BIND (${blueprint.UiNodePrefixed} as ?fluxUiType)
+  BIND (${flux.UiNodePrefixed} as ?fluxUiType)
   ?target ${link.propertyPath}  ?input  .
   ?target a ?targetType .
   ?target ${rdfs.labelPrefixed} ?targetLabel .

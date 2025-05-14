@@ -3,7 +3,7 @@ import { map, Observable, shareReplay } from 'rxjs';
 
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { blueprint, rdf, rdfs, shacl } from '@blueprint/ontology';
+import { flux, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
 
@@ -13,7 +13,7 @@ import { rdfEnvironment } from '../../rdf/rdf-environment';
 export class UiLinkMetadataService {
   private readonly sparqlService = inject(SparqlService);
 
-  private readonly uiLinkNode = blueprint.LinkNamedNode;
+  private readonly uiLinkNode = flux.LinkNamedNode;
   private cachedUiLinkMetadata$: Observable<UiLinkMetadata[]> | null = null;
 
   /**
@@ -62,7 +62,7 @@ WHERE {
 
 function linkMetadataForIriQuery(input: string): string {
   return `
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
@@ -70,7 +70,7 @@ ${shacl.sparqlPrefix()}
 CONSTRUCT {
   ?input a ?class .
   
-  ?link a ${blueprint.LinkPrefixed} ;
+  ?link a ${flux.LinkPrefixed} ;
     ${shacl.targetClassPrefixed} ?fromClass ;
     ${shacl.classPrefixed} ?toClass ;
     ${shacl.namePrefixed} ?name ;
@@ -97,7 +97,7 @@ CONSTRUCT {
               ?input a ?fromClass .
             }
           }
-          ?link a ${blueprint.LinkPrefixed} ;
+          ?link a ${flux.LinkPrefixed} ;
             ${shacl.targetClassPrefixed} ?fromClass ;
             ${shacl.classPrefixed} ?toClass ;
             ${shacl.pathPrefixed} ?path .
@@ -112,7 +112,7 @@ CONSTRUCT {
               ?input a ?toClass .
             }
           }
-          ?link a ${blueprint.LinkPrefixed} ;
+          ?link a ${flux.LinkPrefixed} ;
             ${shacl.classPrefixed} ?toClass ;
             ${shacl.targetClassPrefixed} ?fromClass ;
             ${shacl.pathPrefixed} ?path .
@@ -137,7 +137,7 @@ CONSTRUCT {
           }
           ?link ${shacl.targetClassPrefixed} ?fromClass ;
                 ${shacl.classPrefixed} ?toClass ;
-                a ${blueprint.LinkPrefixed} .
+                a ${flux.LinkPrefixed} .
         }
       }  
     } UNION  {  
@@ -151,7 +151,7 @@ CONSTRUCT {
           }
            ?link ${shacl.classPrefixed} ?toClass ;
             ${shacl.targetClassPrefixed} ?fromClass ;
-            a ${blueprint.LinkPrefixed} .
+            a ${flux.LinkPrefixed} .
         }
       }
       # ---------------------- incoming and outgoing links -----------------------

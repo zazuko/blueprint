@@ -1,7 +1,8 @@
 <div class="content">
 
-  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject" [subjectLabel]="subjectLabel()"
-    [subjectClassLabel]="subjectClassLabel()" [avatars]="subjectAvatars()" />
+  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject"
+    [subjectLabel]="currentGraphResource()?.title?? ''" [subjectClassLabel]="currentGraphResource()?.classLabel ?? ''"
+    [avatars]="currentGraphResource()?.avatars ?? []" />
 
   <p-tabs [value]="routeFragment()">
     <p-tablist>
@@ -33,20 +34,15 @@
     }
 
     <div class="view-container">
-      <bp-comment [text]="subjectComment()" />
-
-      @for(detail of uiDetailElementsSignal(); track detail.iri) {
-      <bp-literal-view [value]="detail.value.join()" [label]="detail.label"
-        [renderLiteralAs]="detail.renderLiteralAs" />
+      @for(l of literalDetailElements(); track l) {
+      <bp-literal [literal]="l"></bp-literal>
       }
 
-      <br>
-      <br>
-      <br>
-      <br>
+      @for(detail of uiDetailElementsSignal(); track detail.iri) {
 
-      <bp-details />
+      <bp-literal-view [value]="detail.value" [label]="detail.label" [renderLiteralAs]="detail.renderLiteralAs" />
 
+      }
     </div>
   </div>
 

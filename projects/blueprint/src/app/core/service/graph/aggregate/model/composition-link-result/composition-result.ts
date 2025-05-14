@@ -1,6 +1,6 @@
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
-import { blueprint, rdfs } from "@blueprint/ontology";
+import { flux, rdfs } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
 
 
@@ -24,7 +24,7 @@ export class CompositionLinkResult extends ClownfaceObject {
 
     get result(): CompositionNodeElement[] {
         if (this._result === null) {
-            this._result = this._node.out(blueprint.resultNamedNode).map(n => new CompositionNodeElement(n));
+            this._result = this._node.out(flux.resultNamedNode).map(n => new CompositionNodeElement(n));
         }
         return this._result;
     }
@@ -43,9 +43,9 @@ export class CompositionNodeElement extends NodeElement {
 
     get connections(): Connection[] {
         if (this._connections === null) {
-            const sourceConnectionPoints = this._node.out(blueprint.sourceNamedNode);
+            const sourceConnectionPoints = this._node.out(flux.sourceNamedNode);
             if (sourceConnectionPoints.values.length === 0) {
-                const targetConnectionPoints = this._node.out(blueprint.targetNamedNode).map(n => new NodeElement(n));
+                const targetConnectionPoints = this._node.out(flux.targetNamedNode).map(n => new NodeElement(n));
                 this._connections = targetConnectionPoints.map(target => {
                     return {
                         source: null,
@@ -58,7 +58,7 @@ export class CompositionNodeElement extends NodeElement {
 
                     const conns = sourcePoint.map((sourceConnector) => {
                         const connections: Connection[] = [];
-                        sourceConnector.out(blueprint.targetNamedNode).forEach((targetConnector) => {
+                        sourceConnector.out(flux.targetNamedNode).forEach((targetConnector) => {
                             connections.push({
                                 source: new NodeElement(sourceConnector),
                                 target: new NodeElement(targetConnector)

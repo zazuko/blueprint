@@ -3,7 +3,7 @@ import { SearchContext } from "../../model/search-context.class";
 import { FullTextSearch } from "../../util/abstract-search.class";
 
 import { UiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
-import { blueprint, rdfs, rdf, shacl } from "@blueprint/ontology";
+import { flux, rdfs, rdf, shacl } from "@blueprint/ontology";
 import { inject } from "@angular/core";
 
 export class NeptuneFullTextSearch extends FullTextSearch {
@@ -70,7 +70,7 @@ function fluxClassSubQuery(classMetadata: UiClassMetadata): string {
 function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageNumber: number, pageSize: number, appConfig: AppConfiguration): string {
   const query = `
   ${rdf.sparqlPrefix()}
-  ${blueprint.sparqlPrefix()}
+  ${flux.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
   PREFIX fts: <http://aws.amazon.com/neptune/vocab/v01/services/fts#>
@@ -78,12 +78,12 @@ function searchQueryWithSearchTerm(searchTerm: string, filterTerm: string, pageN
   
   CONSTRUCT
   {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-        ${blueprint.resultPrefixed} ?sub ;
-        ${blueprint.pageSizePrefixed} $pageSize;
-        ${blueprint.pageNumberPrefixed} $pageNumber. 
-      ?sub a ${blueprint.UiSearchResultItemPrefixed};
-          ${blueprint.scorePrefixed} ?luScore ;
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+        ${flux.resultPrefixed} ?sub ;
+        ${flux.pageSizePrefixed} $pageSize;
+        ${flux.pageNumberPrefixed} $pageNumber. 
+      ?sub a ${flux.UiSearchResultItemPrefixed};
+          ${flux.scorePrefixed} ?luScore ;
           a ?bpClass ;
           ?searchItemP ?searchItemO .
           
@@ -142,7 +142,7 @@ function countTotalQuery(
   if (searchTerm && searchTerm.length > 0) {
     return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX fts: <http://aws.amazon.com/neptune/vocab/v01/services/fts#>
@@ -150,8 +150,8 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT
 {
-    ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-      ${blueprint.totalPrefixed} ?count .
+    ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+      ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -186,15 +186,15 @@ WHERE
   }
   return `
 ${rdf.sparqlPrefix()}
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT
 {
-  ${blueprint.queryPrefixed} a ${blueprint.UiSearchResultPrefixed} ;
-  ${blueprint.totalPrefixed} ?count .
+  ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+  ${flux.totalPrefixed} ?count .
 }
 WHERE
 {
@@ -225,14 +225,14 @@ function classCountQuery(
 
   let query = `
 # 2 instance count per flux type class
-${blueprint.sparqlPrefix()}
+${flux.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${shacl.sparqlPrefix()}
 PREFIX fts: <http://aws.amazon.com/neptune/vocab/v01/services/fts#>
 
 CONSTRUCT {
-?fluxIri a ${blueprint.UiClassCountPrefixed} ; 
-   ${blueprint.countPrefixed} ?count .
+?fluxIri a ${flux.UiClassCountPrefixed} ; 
+   ${flux.countPrefixed} ?count .
 } where {`;
   subQueries.forEach((subQuery, index) => {
     if (index === 0) {

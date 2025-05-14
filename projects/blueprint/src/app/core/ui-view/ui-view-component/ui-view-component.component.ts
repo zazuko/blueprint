@@ -13,7 +13,7 @@ import { DatabaseColumn, DatabaseTable } from '../view-component-library/databas
 import { TreeNode } from 'primeng/api';
 import { NodeElement } from '../../model/node-element/node-element.class';
 import { GraphPointer } from 'clownface';
-import { nileaUi, rdfs, blueprint } from '@blueprint/ontology';
+import { nileaUi, rdfs, flux } from '@blueprint/ontology';
 import { MessageChannelService } from '../../service/message-channel/message-channel.service';
 import { DashHostDirective } from './dash-host/dash-host.directive';
 import { ArchimateApplication, ArchimateDataFlow } from '../view-component-library/archi-diagram/model/archimate-data-flow';
@@ -66,7 +66,7 @@ export class UiViewComponentComponent {
   }
 
   private _buildTree(node: GraphPointer): TreeNode<NodeElement> {
-    const data = new NodeElement(node.out(blueprint.instanceNamedNode) as GraphPointer);
+    const data = new NodeElement(node.out(flux.instanceNamedNode) as GraphPointer);
     const treeNode: TreeNode = {
       key: data.iri,
       label: data.label,
@@ -74,7 +74,7 @@ export class UiViewComponentComponent {
       children: []
     };
 
-    const cfChild = node.out(blueprint.childNamedNode);
+    const cfChild = node.out(flux.childNamedNode);
 
     cfChild.forEach(child => {
       treeNode.children.push(this._buildTree(child));
@@ -189,7 +189,7 @@ export class UiViewComponentComponent {
     const componentRef = viewContainerRef.createComponent(TreeViewComponent);
 
     // convert result graph to component input
-    const cfTree = uiViewComponent.componentData.out(blueprint.hasRootNamedNode);
+    const cfTree = uiViewComponent.componentData.out(flux.hasRootNamedNode);
     const tree = cfTree.map(dataNode => this._buildTree(dataNode)).sort(labelAlphaSort);
     componentRef.setInput('data', tree);
 

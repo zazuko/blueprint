@@ -1,6 +1,6 @@
 import { AnyPointer } from 'clownface';
 
-import { blueprint, rdfs, rdf, shacl, appLocal, nileaUi, blueprintShape } from '@blueprint/ontology';
+import { flux, rdfs, rdf, shacl, appLocal, nileaUi, blueprintShape } from '@blueprint/ontology';
 import { Avatar } from '@blueprint/component/avatar/avatar.component';
 import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { Aggregation } from '@blueprint/service/graph/aggregate/model/aggregation';
@@ -115,7 +115,7 @@ export class HierarchyDefinition extends Aggregation {
      */
     get rootNode(): HierarchyNode | null {
         if (this._rootNode === undefined) {
-            const root = this._node.out(blueprint.hasRootNamedNode);
+            const root = this._node.out(flux.hasRootNamedNode);
             if (root.values.length === 1) {
                 const nodeNode = rdfEnvironment.namedNode(root.value);
                 const rootCfNode = rdfEnvironment.clownface(this._node.dataset as RdfTypes.Dataset).node(nodeNode);
@@ -171,11 +171,11 @@ export class HierarchyDefinition extends Aggregation {
         ${shacl.sparqlPrefix()}
         ${rdfs.sparqlPrefix()}
         ${rdf.sparqlPrefix()}
-        ${blueprint.sparqlPrefix()}
+        ${flux.sparqlPrefix()}
         ${appLocal.sparqlPrefix()}
         
         CONSTRUCT {
-           ?componentIri ${blueprint.labelPrefixed} ?viewLabel .
+           ?componentIri ${flux.labelPrefixed} ?viewLabel .
            ?componentIri ${rdf.typePrefixed} ?treeType .
            ?componentIri ${appLocal.resultPrefixed} ?resultIri .
            ?resultIri ${appLocal.elementPrefixed} ?newIri .
@@ -252,8 +252,8 @@ export class HierarchyDefinition extends Aggregation {
                     }
                }
             
-               ?metaShape ${blueprint.faIconPrefixed} ?icon ;
-                  ${blueprint.colorIndexPrefixed} ?colorIndex ; 
+               ?metaShape ${flux.faIconPrefixed} ?icon ;
+                  ${flux.colorIndexPrefixed} ?colorIndex ; 
                   ${rdfs.labelPrefixed} ?classLabel .
                
                BIND(IRI(CONCAT(STR(?componentIri), '/result')) AS ?resultIri)
@@ -288,23 +288,23 @@ export class HierarchyDefinition extends Aggregation {
         )
         const constructHead = `
         ${rdfs.sparqlPrefix()}
-        ${blueprint.sparqlPrefix()}
+        ${flux.sparqlPrefix()}
         ${shacl.sparqlPrefix()}
 
         PREFIX data: <http://localhost/data/>
 
         CONSTRUCT {
-            data:TableInstance a ${blueprint.TablePrefixed} .
-            data:TableInstance ${blueprint.hasHeaderPrefixed} ?header .
+            data:TableInstance a ${flux.TablePrefixed} .
+            data:TableInstance ${flux.hasHeaderPrefixed} ?header .
             ?header ?tableP ?metaO .
-            ?header ${blueprint.colorIndexPrefixed} ?columnIndex .
+            ?header ${flux.colorIndexPrefixed} ?columnIndex .
           
             ?instance a ?class .
             ?instance ${rdfs.labelPrefixed} ?label .
-            ?instance ${blueprint.keyPrefixed} ?key .
+            ?instance ${flux.keyPrefixed} ?key .
           
-            data:TableInstance ${blueprint.hasRowPrefixed} ?row .
-            ?row ${blueprint.cellPrefixed} ${vars.join(', ')} .
+            data:TableInstance ${flux.hasRowPrefixed} ?row .
+            ?row ${flux.cellPrefixed} ${vars.join(', ')} .
         }
         `;
         const classes = allChildNodes.map(node => node.targetClass);
@@ -315,9 +315,9 @@ export class HierarchyDefinition extends Aggregation {
             }
             ?rowClass ^${shacl.targetNodePrefixed} ?meta .
              VALUES (?metaP ?tableP) {
-                (${blueprint.colorIndexPrefixed} ${blueprint.colorIndexPrefixed})
-                (${blueprint.faIconPrefixed} ${blueprint.faIconPrefixed})
-                (${rdfs.labelPrefixed} ${blueprint.keyPrefixed})
+                (${flux.colorIndexPrefixed} ${flux.colorIndexPrefixed})
+                (${flux.faIconPrefixed} ${flux.faIconPrefixed})
+                (${rdfs.labelPrefixed} ${flux.keyPrefixed})
             }
             ?meta  ?metaP ?metaO .
             BIND (IRI(CONCAT(STR(data:table), "/header", STR(?columnIndex))) AS ?header)
@@ -410,7 +410,7 @@ export class HierarchyDefinition extends Aggregation {
     ${rdfs.sparqlPrefix()}
     ${shacl.sparqlPrefix()}
     ${nileaUi.sparqlPrefix()}
-    ${blueprint.sparqlPrefix()}
+    ${flux.sparqlPrefix()}
     CONSTRUCT {
         <${viewIri}> a ${nileaUi.UiViewPrefixed} .
         <${viewIri}> ${nileaUi.forClassPrefixed} <${pathToLeaves[0][0].targetClass}> .
@@ -424,14 +424,14 @@ export class HierarchyDefinition extends Aggregation {
         ${nileaUi.TreeViewComponentPrefixed} ${rdfs.labelPrefixed} 'Tree'.
         ?componentIri a ${nileaUi.TreeViewComponentPrefixed} .
         ?componentIri  ${nileaUi.hasComponentDataPrefixed} ?componentDataIri .
-        ?componentDataIri ${blueprint.hasRootPrefixed} ?child_0 .
+        ?componentDataIri ${flux.hasRootPrefixed} ?child_0 .
       ${indices.map(i => {
-            return `${i === 0 ? `?child_0 a ${blueprint.TreeRootPrefixed} .\n` : ''} 
-       ?${i === 0 ? `child_0 ${blueprint.instancePrefixed} ?subject` : `child_${i} ${blueprint.instancePrefixed} ?var_${i}`}.\n
+            return `${i === 0 ? `?child_0 a ${flux.TreeRootPrefixed} .\n` : ''} 
+       ?${i === 0 ? `child_0 ${flux.instancePrefixed} ?subject` : `child_${i} ${flux.instancePrefixed} ?var_${i}`}.\n
 
       ?${i === 0 ? 'subject' : `var_${i}`} ${rdfs.labelPrefixed} ?label_${i} .\n
       ?${i === 0 ? 'subject' : `var_${i}`}  a ?class_${i} .\n
-      ?child_${i}  ${blueprint.childPrefixed} ?child_${i + 1}.\n`;
+      ?child_${i}  ${flux.childPrefixed} ?child_${i + 1}.\n`;
 
         }).join('\n')}
      

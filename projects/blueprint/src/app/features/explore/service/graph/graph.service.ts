@@ -6,7 +6,7 @@ import { QueryBuilderService } from '../query-builder/query-builder.service';
 
 import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
 
-import { blueprint, rdf } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 export interface QueryInput {
@@ -78,8 +78,8 @@ export class GraphService {
         this.#currentDataset.addAll(dataset);
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
-        const nodes = cfGraph.node(blueprint.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
-        const links = cfGraph.in(blueprint.linkNamedNode).map(n => new RdfUiLink(n));
+        const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
+        const links = cfGraph.in(flux.linkNamedNode).map(n => new RdfUiLink(n));
 
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
