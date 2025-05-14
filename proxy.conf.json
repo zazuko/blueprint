@@ -1,7 +1,6 @@
 {
   "/query": {
     "target": "http://127.0.0.1:7001/",
-    "target2": "https://ld.bafu.zazukoians.org/query",
     "headers": {
       "Connection": "keep-alive"
     },
