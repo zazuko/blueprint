@@ -15,6 +15,10 @@ export class SparqlService {
   readonly #http = inject(HttpClient);
   readonly #appConfig = inject(ConfigService).getConfiguration();
 
+  constructor() {
+    console.log('SparqlService initialized');
+    console.log('SparqlService endpointUrl', this.#appConfig.endpointUrl);
+  }
 
   /**
    * Execute a SPARQL SELECT query

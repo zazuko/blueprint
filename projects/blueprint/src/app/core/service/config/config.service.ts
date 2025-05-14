@@ -31,8 +31,9 @@ export class ConfigService {
    * This method is called when the app is initialized. You shohuld never call this method directly.
    */
   fetchConfig(): Observable<AppConfiguration> {
+    console.log('Fetching app configuration from config.json');
     return this.#httpClient.get<AppConfiguration>('/config.json').pipe(tap(config => {
-
+      console.log('App configuration fetched', config);
       if (!environment.production) {
         console.log('%c--- Blueprint Configuration -----', 'color:orange');
         console.log(`config.json`);
