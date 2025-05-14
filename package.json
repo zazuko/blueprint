@@ -39,7 +39,6 @@
     "n3": "^1.25.2",
     "primeicons": "^7.0.0",
     "primeng": "^19.1.0",
-    "rdf-sparql-builder": "^0.2.1",
     "rxjs": "~7.8.2",
     "sparqljs": "^3.7.3",
     "tslib": "^2.5.0",
