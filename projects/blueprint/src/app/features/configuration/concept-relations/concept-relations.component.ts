@@ -4,15 +4,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
+import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
+import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
+
 
 import { GraphComponent } from "../../../core/component/graph/graph/graph.component";
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
 import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
-import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
-import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
+
 
 @Component({
   selector: 'bp-concept-relations',
