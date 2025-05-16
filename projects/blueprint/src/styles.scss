@@ -129,3 +129,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: light-dark(rgb(249, 250, 251), rgb(17, 24, 39));
 }
+
+
+.p-avatar-icon {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
