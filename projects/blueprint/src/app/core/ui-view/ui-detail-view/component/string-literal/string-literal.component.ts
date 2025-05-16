@@ -12,12 +12,7 @@ export class StringLiteralComponent {
   value = input.required<RdfTypes.Literal[]>();
 
   isUrl(value: string): boolean {
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
+    return /^https?:\/\/.+/i.test(value);
   }
 
 }

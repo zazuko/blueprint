@@ -2,9 +2,8 @@ import { flux, rdf, rdfs, shacl } from '@blueprint/ontology';
 
 
 /**
- * Get the link definition for a given IRI.
+ * Get all link definitions.
  * 
- * @param input The IRI of the node to fetch the link metadata for.
  * @returns a sparql query
  */
 export function allLinkDefinitionsQuery(): string {

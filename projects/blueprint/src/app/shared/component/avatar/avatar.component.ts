@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 
@@ -13,6 +13,12 @@ export class AvatarComponent {
   size = input<'normal' | 'large' | 'xlarge'>('xlarge');
   shape = input<'square' | 'circle'>('circle');
 
+  constructor() {
+    effect(() => {
+      console.log('asdfadfasfad', this.avatars());
+    }
+    );
+  }
 }
 
 export interface Avatar {

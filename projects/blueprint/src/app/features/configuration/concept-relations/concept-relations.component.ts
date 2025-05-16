@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
-import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
+import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
 
 
@@ -39,7 +39,7 @@ export class ConceptRelationsComponent {
   ];
 
   readonly nodeDefinitions = toSignal<UiClassMetadata[] | undefined>(this.#classMetadataService.getClassMetadata(), { initialValue: undefined });
-  readonly linkDefinitions = toSignal<UiLinkMetadata[] | undefined>(this.#linkMetadataService.getLinkMetadata(), { initialValue: undefined });
+  readonly linkDefinitions = toSignal<UiLinkDefinition[] | undefined>(this.#linkMetadataService.getLinkMetadata(), { initialValue: undefined });
 
 
   /**
@@ -88,14 +88,14 @@ export class ConceptRelationsComponent {
 
     const uiLinks: IUiLink[] = [];
 
-    linkDefinitions.forEach(linkMetadata => {
+    linkDefinitions.forEach(linkDefinition => {
 
       const link: IUiLink = {
-        id: linkMetadata.iri,
-        iri: linkMetadata.iri,
-        label: linkMetadata.label,
-        source: nodeMap.get(linkMetadata.source),
-        target: nodeMap.get(linkMetadata.destination),
+        id: linkDefinition.iri,
+        iri: linkDefinition.iri,
+        label: linkDefinition.label,
+        source: nodeMap.get(linkDefinition.arrowSource),
+        target: nodeMap.get(linkDefinition.arrowTarget),
 
       };
 

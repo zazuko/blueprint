@@ -48,6 +48,9 @@ import { PanelModule } from 'primeng/panel';
 import { GraphPointer } from 'clownface';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
+import { DEFAULT_ICON } from '@blueprint/constant/icon';
+import { DEFAULT_COLOR } from '@blueprint/constant/color';
+import { lab } from 'd3';
 
 @Component({
   templateUrl: './explore.component.html',
@@ -347,13 +350,22 @@ class GraphResource extends ClownfaceObject {
   get avatars(): Avatar[] {
     if (this.#avatars === undefined) {
       const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      const avatarArray: Avatar[] = metaGraph.map((metaData) => {
+      let avatarArray: Avatar[] = metaGraph.map((metaData) => {
         const uiClassMetaData = new RdfUiClassMetadata(metaData);
         const icon = uiClassMetaData.icon;
         const color = uiClassMetaData.color;
         const label = uiClassMetaData.label;
         return { label, icon, color };
       });
+      if (avatarArray.length === 0) {
+        avatarArray = [
+          {
+            label: this._node.out(rdf.typeNamedNode).values.join(', '),
+            icon: DEFAULT_ICON,
+            color: DEFAULT_COLOR
+          }
+        ];
+      }
       this.#avatars = avatarArray;
     }
     return this.#avatars;
@@ -367,7 +379,11 @@ class GraphResource extends ClownfaceObject {
   get classLabel(): string {
     if (this.#classLabel === undefined) {
       const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      this.#classLabel = metaGraph.out(rdfs.labelNamedNode).values.join(',')
+      let classLabel = metaGraph.out(rdfs.labelNamedNode).values.join(', ');
+      if (classLabel.length === 0) {
+        classLabel = this._node.out(rdf.typeNamedNode).values.map(label => `<${label}>`).join(', ');
+      }
+      this.#classLabel = classLabel;
     }
     return this.#classLabel;
   }

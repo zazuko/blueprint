@@ -4,10 +4,11 @@ import { map, Observable, shareReplay } from 'rxjs';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { flux, rdf } from '@blueprint/ontology';
-import { UiLinkMetadata } from '@blueprint/model/ui-link-metadata/ui-link-metadata';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 import { linkDefinitionsForIriQuery } from './query/link-definitions-for-iri.query';
+import { allLinkDefinitionsQuery } from './query/all-link-definitions.query';
+import { UiLinkDefinition, RdfUiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ import { linkDefinitionsForIriQuery } from './query/link-definitions-for-iri.que
 export class UiLinkMetadataService {
   readonly #sparqlService = inject(SparqlService);
   readonly #uiLinkNode = flux.LinkNamedNode;
-  #cachedUiLinkMetadata$: Observable<UiLinkMetadata[]> | null = null;
+  #cachedUiLinkMetadata$: Observable<UiLinkDefinition[]> | null = null;
 
   /**
    * Return all FluxLinkMetadataShape Entities. This method caches the result.
@@ -23,39 +24,16 @@ export class UiLinkMetadataService {
    * watch out using this.
    * @returns An Observable return all FluxLinkMetadataShape Entities.
    */
-  getLinkMetadata(): Observable<UiLinkMetadata[]> {
+  getLinkMetadata(): Observable<UiLinkDefinition[]> {
     if (this.#cachedUiLinkMetadata$ === null) {
-      this.#cachedUiLinkMetadata$ = this.#sparqlService.construct(this.getLinkMetadataSparqlQuery()).pipe(
+      this.#cachedUiLinkMetadata$ = this.#sparqlService.construct(allLinkDefinitionsQuery()).pipe(
         map(dataset => {
-          return rdfEnvironment.clownface(dataset).node(this.#uiLinkNode).in(rdf.typeNamedNode).map(metadataPtr => new UiLinkMetadata(metadataPtr))
+          return rdfEnvironment.clownface(dataset).node(this.#uiLinkNode).in(rdf.typeNamedNode).map(metadataPtr => new RdfUiLinkDefinition(metadataPtr))
         }),
         shareReplay(1)
       );
     }
     return this.#cachedUiLinkMetadata$;
-  }
-
-  /**
-   * @todo: This is not fetching the path. This is not a bug, but it works because it is only used in concept relations.
-   * But it would not work to use this for the explore graph.
-   * @returns A SPARQL query sting to fetch this entity graph
-   */
-  public getLinkMetadataSparqlQuery(): string {
-    const query = `
-CONSTRUCT {
-  ?link ?p ?o .
-}
-WHERE {
-  {
-    SELECT ?link WHERE {
-      ?link a <${this.#uiLinkNode.value}> .
-    }
-  }
-  ?link ?p ?o .
-}
-`;
-    console.log(query);
-    return query;
   }
 
   /**
