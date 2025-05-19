@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable, forkJoin, map, switchMap } from 'rxjs';
+import { Observable, forkJoin, map, switchMap, of } from 'rxjs';
 
 
 import { rdf, flux, shacl, rdfs } from '@blueprint/ontology';
@@ -30,7 +30,7 @@ export class QueryBuilderService {
   * @param input The input string to build the query from.
   * @returns An Observable that emits a Dataset containing the results of the query.
   */
-  public buildQuery(input: string): Observable<RdfTypes.Dataset> {
+  public buildQuery(input: string): Observable<{ data: RdfTypes.Dataset; linkDefinitions: UiLinkDefinition[]; classDefinitions: UiClassMetadata[]; }> {
     const dataset = rdfEnvironment.dataset();
 
     // Get the SPARQL queries for retrieving UI and link metadata
@@ -49,13 +49,8 @@ export class QueryBuilderService {
         const getLinksQuery = this._buildQueryFromMetaModel(input, response.data, response.linkDefinition, response.classDefinition);
 
         // Execute the query strings to retrieve the final results
-        return this.#sparqlService.construct(getLinksQuery);
-      }),
-      map((ds) => {
-        // add links and nodes to dataset
-        dataset.addAll(ds)
-        return dataset;
-      }),
+        return getLinksQuery
+      })
     );
   }
 
@@ -64,7 +59,7 @@ export class QueryBuilderService {
     dataset: RdfTypes.Dataset,
     linkDefinitions: UiLinkDefinition[],
     classDefinitions: UiClassMetadata[]
-  ): string {
+  ): Observable<{ data: RdfTypes.Dataset; linkDefinitions: UiLinkDefinition[]; classDefinitions: UiClassMetadata[]; }> {
 
     const inputNode = rdfEnvironment.namedNode(input);
     const rdfGraph = rdfEnvironment.clownface(dataset);
@@ -200,7 +195,7 @@ export class QueryBuilderService {
     });
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
-    return query;
+    return forkJoin({ data: this.#sparqlService.construct(query), linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
   }
 
 }
@@ -252,7 +247,7 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), '/outgoing/', MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
+  BIND(IRI(CONCAT(STR(?link), MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
 }
 `;
 }
@@ -287,7 +282,7 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), '/incoming/', MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
+  BIND(IRI(CONCAT(STR(?link), MD5(STR(?target)), '/', MD5(STR(?input)))) as ?linkIri )
 }
 `;
 }
