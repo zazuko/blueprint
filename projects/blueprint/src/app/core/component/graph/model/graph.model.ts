@@ -4,6 +4,7 @@ import { flux } from '@blueprint/ontology';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
+import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
 
 export interface Graph {
@@ -170,11 +171,12 @@ export interface IUiLink extends cola.Link<IUiGraphNode> {
   target: IUiGraphNode;
   id: string;
   label: string;
+  linkDefinition: UiLinkDefinition | null;
 }
 
 
 export class RdfUiLink extends ClownfaceObject implements IUiLink {
-  constructor(node: GraphPointer) {
+  constructor(node: GraphPointer, public linkDefinition: UiLinkDefinition) {
     super(node);
   }
 

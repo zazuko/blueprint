@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map, switchMap, of } from 'rxjs';
 
 
-import { rdf, flux, shacl, rdfs } from '@blueprint/ontology';
+import { rdf, flux, shacl, rdfs, schema, skos } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
@@ -14,6 +14,7 @@ import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-proper
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { link } from 'fs';
 
 
 @Injectable({
@@ -117,11 +118,15 @@ export class QueryBuilderService {
       // Extract label from predicate: last part after '/' or '#'
       const labelMatch = predicate.match(/([^\/#]+)$/);
       const label = labelMatch ? labelMatch[1] : predicate;
-      const tragetTypes = rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
+      let tragetTypes = rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
+      console.log('tragetTypes', tragetTypes);
       // check if one of the target types is in the class definitions
       const isTargetTypeInClassDefinitions = tragetTypes.some(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
-      if (!isTargetTypeInClassDefinitions) {
-        return [];
+      if (isTargetTypeInClassDefinitions) {
+        // change order of tragetTypes the ones with classDefinitioins first
+        const targetTypesWithClassDefinitions = tragetTypes.filter(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
+        const targetTypesWithoutClassDefinitions = tragetTypes.filter(type => !classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
+        tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
 
       const ttl = `
@@ -148,6 +153,7 @@ export class QueryBuilderService {
     );
 
     outLinkDefinitions.push(...syntheticLinksOut);
+    linkDefinitions.push(...syntheticLinksOut);
     /*
         const syntheticLinksIn = outObjectPredicates.flatMap(predicate => {
           const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
@@ -204,13 +210,30 @@ function getInputNodeQuery(input: RdfTypes.NamedNode): string {
   return `
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
+${flux.sparqlPrefix()}
+${schema.sparqlPrefix()}
+${skos.sparqlPrefix()}
 
 CONSTRUCT {
   ?input ${rdfs.labelPrefixed} ?inputObject .
+  ?input ${schema.namePrefixed} ?targetName .
+  ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  ?input ${schema.familyNamePrefixed} ?familyName .
   ?input a ?inputClass .
 } WHERE {
   BIND (<${input.value}> as ?input)
-  ?input ${rdfs.labelPrefixed} ?inputObject .
+ OPTIONAL {
+    ?input ${rdfs.labelPrefixed} ?targetLabel .
+  }
+  OPTIONAL {
+    ?input ${schema.namePrefixed} ?targetName .
+  }
+  OPTIONAL {
+    ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  }
+  OPTIONAL {
+    ?input ${schema.familyNamePrefixed} ?familyName .
+  }  
   ?input ${rdf.typePrefixed} ?inputClass .
 }
 `;
@@ -222,7 +245,8 @@ function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${flux.sparqlPrefix()}
-PREFIX schema: <http://schema.org/>
+  ${schema.sparqlPrefix()}
+  ${skos.sparqlPrefix()}
 
 CONSTRUCT {
   ?input a ?fluxUiType .
@@ -234,6 +258,9 @@ CONSTRUCT {
   ?target a ?targetType .
   ?target a ?fluxUiType.
   ?target ${rdfs.labelPrefixed} ?targetLabel.
+  ?target ${schema.namePrefixed} ?targetName .
+  ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  ?target ${schema.familyNamePrefixed} ?familyName .
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
@@ -243,7 +270,16 @@ CONSTRUCT {
   ?target a ?targetType .
   OPTIONAL {
   ?target ${rdfs.labelPrefixed} ?targetLabel .
-}
+  }
+  OPTIONAL {
+  ?target ${schema.namePrefixed} ?targetName .
+  }
+  OPTIONAL {
+    ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  }
+  OPTIONAL {
+    ?target ${schema.familyNamePrefixed} ?familyName .
+  }
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
@@ -258,6 +294,8 @@ function getIncomingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${flux.sparqlPrefix()}
+  ${schema.sparqlPrefix()}
+  ${skos.sparqlPrefix()}
 
 CONSTRUCT {
   ?input a ?fluxUiType .
@@ -268,6 +306,9 @@ CONSTRUCT {
   ?target a ?targetType .
   ?target a ?fluxUiType.
   ?target ${rdfs.labelPrefixed} ?targetLabel.
+  ?target ${schema.namePrefixed} ?targetName .
+  ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  ?target ${schema.familyNamePrefixed} ?familyName .
   ?target  ${flux.hasUiLinkPrefixed} ?linkIri .
 } WHERE {
   BIND (<${input.value}> as ?input)
@@ -277,7 +318,16 @@ CONSTRUCT {
   ?target ${link.propertyPath}  ?input  .
   ?target a ?targetType .
   OPTIONAL {
-  ?target ${rdfs.labelPrefixed} ?targetLabel .
+    ?target ${rdfs.labelPrefixed} ?targetLabel .
+  }
+  OPTIONAL {
+    ?target ${schema.namePrefixed} ?targetName .
+  }
+  OPTIONAL {
+    ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
+  }
+  OPTIONAL {
+    ?target ${schema.familyNamePrefixed} ?familyName .
   }
   BIND ("${link.label}" as ?linkLabel) .
   

@@ -50,6 +50,36 @@ class SchemaOntology extends Ontology {
     get nameNamedNode(): RdfTypes.NamedNode {
         return this.namespace('name');
     }
+
+    /**
+     * Get the familyName predicate.
+     * 
+     * @readonly
+     */
+    get familyName(): string {
+        return this.namespace('familyName').value;
+    }
+
+    /** 
+     *  Get the prefixed familyName predicate.
+     * 
+     * 
+     * @readonly
+     */
+    get familyNamePrefixed(): string {
+        return `${this.prefix()}:familyName`;
+    }
+
+    /**
+     * Get the familyName predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get familyNameNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('familyName');
+    }
+
+
 }
 
 export const schema = new SchemaOntology();

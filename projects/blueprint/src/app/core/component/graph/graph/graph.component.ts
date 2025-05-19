@@ -168,6 +168,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           source: firstNode,
           target: firstNextGroupNode,
           label: '',
+          linkDefinition: null,
         };
         links.push(fakeLink);
       });

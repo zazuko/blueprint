@@ -7,7 +7,6 @@ import {
   DestroyRef,
   AfterViewInit,
   computed,
-  effect,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -46,7 +45,7 @@ import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
 import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
 import { PanelModule } from 'primeng/panel';
 import { GraphPointer } from 'clownface';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { ClownfaceObject, precedence } from '@blueprint/model/clownface-object/clownface-object';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
 import { DEFAULT_COLOR } from '@blueprint/constant/color';
@@ -323,23 +322,7 @@ class GraphResource extends ClownfaceObject {
    */
   get title(): string {
     if (this.#title === undefined) {
-      const rdfsLabelTerm = this._node.out(rdfs.labelNamedNode).terms.filter((term) => term.termType === 'Literal');
-      const schemaNameTerm = this._node.out(schema.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
-      const skosPrefLabelTerm = this._node.out(skos.prefLabelNamedNode).terms.filter((term) => term.termType === 'Literal');
-
-      if (skosPrefLabelTerm.length > 0) {
-        this.#title = skosPrefLabelTerm.sort(precedence)[0].value;
-      }
-      else if (rdfsLabelTerm.length > 0) {
-        this.#title = rdfsLabelTerm.sort(precedence)[0].value;
-      }
-      else if (schemaNameTerm.length > 0) {
-        // order by langage tag and terms with langage en first
-        this.#title = schemaNameTerm.sort(precedence)[0].value;
-      }
-      else {
-        this.#title = this._node.value;
-      }
+      this.#title = ClownfaceObject.getLabelForNode(this._node);
     }
     return this.#title;
   }
@@ -430,15 +413,3 @@ class GraphResource extends ClownfaceObject {
 
 }
 
-
-function precedence(a: RdfTypes.Literal, b: RdfTypes.Literal): number {
-  const aTerm = a as RdfTypes.Literal;
-  const bTerm = b as RdfTypes.Literal;
-  if (aTerm.language.startsWith('en') && !aTerm.language.startsWith('en')) {
-    return -1;
-  } else if (!aTerm.language.startsWith('en') && bTerm.language.startsWith('en')) {
-    return 1;
-  } else {
-    return 0;
-  }
-}

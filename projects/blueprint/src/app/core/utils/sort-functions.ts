@@ -5,7 +5,23 @@ export function sortStrings(a: string, b: string): number {
 }
 
 export function labelAlphaSort(a: ObjectWithLabel, b: ObjectWithLabel): number {
-  return a.label.localeCompare(b.label);
+  const aLabel = a.label ?? '';
+  const bLabel = b.label ?? '';
+  const aNum = Number(aLabel);
+  const bNum = Number(bLabel);
+
+  const aIsNum = !isNaN(aNum);
+  const bIsNum = !isNaN(bNum);
+
+  if (aIsNum && bIsNum) {
+    return aNum - bNum;
+  } else if (!aIsNum && !bIsNum) {
+    return aLabel.localeCompare(bLabel, undefined, { sensitivity: 'base' });
+  } else {
+    // Numbers come before strings
+    return aIsNum ? -1 : 1;
+  }
+
 }
 
 interface ObjectWithLabel {

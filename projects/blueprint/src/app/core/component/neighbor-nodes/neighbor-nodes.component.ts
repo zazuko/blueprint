@@ -1,9 +1,10 @@
-import { Component, OnChanges, Signal, SimpleChanges, computed, signal, output, input } from '@angular/core';
+import { Component, computed, output, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
-import { Graph, IUiGraphNode, RdfUiGraphNode } from '../graph/model/graph.model';
-import { ColorUtil } from '../../utils/color-util';
-import { HierarchyCardComponent } from '../../../features/inventory/inventory/hierarchy-card/hierarchy-card.component';
+import { Graph, IUiGraphNode, RdfUiLink } from '../graph/model/graph.model';
+import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
+import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
+import { labelAlphaSort } from '../../utils/sort-functions';
 
 
 
@@ -11,7 +12,7 @@ import { HierarchyCardComponent } from '../../../features/inventory/inventory/hi
   selector: 'bp-neighbor-nodes',
   imports: [
     CommonModule,
-    HierarchyCardComponent
+    NeighborNodesListComponent,
   ],
   templateUrl: './neighbor-nodes.component.html',
   styleUrl: './neighbor-nodes.component.scss',
@@ -25,69 +26,95 @@ export class NeighborNodesComponent {
 
   nodeSelected = output<IUiGraphNode>();
 
-
-  public colorUtil = ColorUtil;
-  public Number = Number;
-
-  currentNode: Signal<IUiGraphNode | null> = computed(() => {
-    return this.graph().nodes.find(node => node.iri === this.subject()) ?? null;
-  });
-
-  nodeMap: Signal<Map<string, IUiGraphNode[]>> = computed(() => {
+  nodeList = computed<NeighborNodeList[]>(() => {
     const graph = this.graph();
-    const subject = this.subject();
-    if (graph === null) {
-      return new Map<string, IUiGraphNode[]>();
+    const nodes = graph.nodes;
+    const links = graph.links;
+    const currentIri = this.subject();
+
+    const nodeMap = new Map<string, IUiGraphNode>();
+    for (const node of nodes) {
+      const iri = node.iri;
+      if (!nodeMap.has(iri)) {
+        nodeMap.set(iri, node);
+      }
     }
 
-    return this.#buildNodeMap(subject, graph);
-  });
-
-
-
-  keys: Signal<string[]> = computed(() => {
-    const keys = Array.from(this.nodeMap().keys());
-    return keys;
-  });
-
-
-  #buildNodeMap(subject: string, graph: Graph): Map<string, IUiGraphNode[]> {
-
-    const subjectIsSourceLinks = graph.links.filter(link => link.source.iri === subject);
-    const subjectIsTargetLinks = graph.links.filter(link => link.target.iri === subject);
-
-    const nodeMap = new Map<string, IUiGraphNode[]>();
-
-    subjectIsSourceLinks.forEach(link => {
-      const nodes = nodeMap.get(link.target.classLabel[0]) || [];
-      // if node already exists in the array, do not push it again
-      if (nodes.find(node => node.iri === link.target.iri)) {
-        return;
+    const linkMap = new Map<string, UiLinkDefinition>();
+    for (const link of links) {
+      if (link.linkDefinition === undefined) {
+        console.warn('link.linkDefinition is undefined', link);
+        (link as RdfUiLink).logTable();
+        debugger;
+        continue;
       }
-      const graphNode = link.target;
-
-      nodes.push(graphNode);
-      nodeMap.set(link.target.classLabel[0], nodes);
+      const linkDefinitionIri = link.linkDefinition.iri;
+      linkMap.set(linkDefinitionIri, link.linkDefinition);
     }
-    );
 
-    subjectIsTargetLinks.forEach(link => {
-      const nodes = nodeMap.get(link.source.classLabel[0]) || [];
-      // if node already exists in the array, do not push it again
-      if (nodes.find(node => node.iri === link.source.iri)) {
-        return;
+
+    const outLinkMap = new Map<string, IUiGraphNode[]>();
+    const inLinkMap = new Map<string, IUiGraphNode[]>();
+
+
+    for (const link of links) {
+      const sourceIri = link.source.iri;
+      const targetIri = link.target.iri;
+
+      if (link.source.iri === currentIri) {
+        const targetNode = nodeMap.get(targetIri);
+        if (targetNode) {
+          const nodes = outLinkMap.get(link.linkDefinition.iri) || [];
+          nodes.push(targetNode);
+          outLinkMap.set(link.linkDefinition.iri, nodes);
+        }
+      } else if (link.target.iri === currentIri) {
+        const sourceNode = nodeMap.get(sourceIri);
+        if (sourceNode) {
+          const nodes = inLinkMap.get(link.linkDefinition.iri) || [];
+          nodes.push(sourceNode);
+          inLinkMap.set(link.linkDefinition.iri, nodes);
+        }
       }
-      const graphNode = link.source;
+    }
 
-      nodes.push(graphNode);
-      nodeMap.set(link.source.classLabel[0], nodes);
-    });
 
-    console.log('nodeMap', nodeMap);
-    return nodeMap;
-  }
+    const list: NeighborNodeList[] = [];
+    for (const key of outLinkMap.keys()) {
+      const link = linkMap.get(key);
+      const nodes = outLinkMap.get(key);
+      if (link && nodes) {
+        list.push({
+          link: link,
+          nodes: nodes.sort(labelAlphaSort),
+          isOutgoing: true
+        });
+      }
+    }
+    for (const key of inLinkMap.keys()) {
+      const link = linkMap.get(key);
+      const nodes = inLinkMap.get(key);
+      if (link && nodes) {
+        list.push({
+          link: link,
+          nodes: nodes.sort(labelAlphaSort),
+          isOutgoing: false
+        });
+      }
+    }
+    return list;
+
+  });
 
   public emitNodeSelected(node: IUiGraphNode): void {
     this.nodeSelected.emit(node);
+  }
+
+
+  constructor() {
+    effect(() => {
+      const nodeList = this.nodeList();
+      console.log('%cnodeList', 'color:purple', nodeList);
+    });
   }
 }

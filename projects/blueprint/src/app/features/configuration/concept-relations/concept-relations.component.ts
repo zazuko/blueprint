@@ -96,7 +96,7 @@ export class ConceptRelationsComponent {
         label: linkDefinition.label,
         source: nodeMap.get(linkDefinition.arrowSource),
         target: nodeMap.get(linkDefinition.arrowTarget),
-
+        linkDefinition
       };
 
       if (link.source && link.target) {

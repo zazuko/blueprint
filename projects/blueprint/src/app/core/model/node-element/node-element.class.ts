@@ -9,6 +9,7 @@ import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avata
 import { rdfEnvironment } from '../../rdf/rdf-environment';
 import { ColorUtil } from '../../utils/color-util';
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
+import { C } from '@angular/cdk/scrolling-module.d-ud2XrbF8';
 
 /**
  * Interface for the NodeElement
@@ -86,17 +87,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get label(): string {
         if (this.#label === null) {
-            const labels = this._node.out(rdfs.labelNamedNode).values;
-            if (labels.length > 1) {
-                console.warn(`Multiple labels for ${this.iri}: ${labels.join(', ')}. Joining them with a comma.`);
-                this.#label = labels.join(', ');
-            }
-            else if (labels.length === 0) {
-                console.warn(`No label for ${this.iri}. Defaulting to ''`);
-                this.#label = '';
-            } else {
-                this.#label = labels[0];
-            }
+            this.#label = ClownfaceObject.getLabelForNode(this._node);
         }
         return this.#label;
     }
