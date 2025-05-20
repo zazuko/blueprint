@@ -45,7 +45,6 @@ export class NeighborNodesComponent {
       if (link.linkDefinition === undefined) {
         console.warn('link.linkDefinition is undefined', link);
         (link as RdfUiLink).logTable();
-        debugger;
         continue;
       }
       const linkDefinitionIri = link.linkDefinition.iri;

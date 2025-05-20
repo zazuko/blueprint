@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { IUiLink } from '../../model/graph.model';
+import { ConsolidatedLink } from '../../model/graph.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -22,7 +22,7 @@ export class ArrowComponent {
   x2 = input.required<number>();
   y1 = input.required<number>();
   y2 = input.required<number>();
-  link = input.required<IUiLink>();
+  link = input.required<ConsolidatedLink>();
 
   isSourceAndTargetSame = computed(() => {
     const link = this.link();
@@ -50,5 +50,16 @@ export class ArrowComponent {
     //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
+
+  calculateLoopLinkLabelTransformIncoming = computed<string>(() => {
+    const x1 = this.x1();
+    const y1 = this.y1();
+    const rotation = -45;
+    //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
+    //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
+    return `translate(${x1},${y1}) rotate(${rotation})`;
+  });
+
+
 
 }

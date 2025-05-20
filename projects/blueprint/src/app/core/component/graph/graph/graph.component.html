@@ -9,7 +9,7 @@
       <g class="zoomable">
         <!-- links -->
         <g class="link-layer">
-          @for(link of linksSignal(); track link) {
+          @for(link of linksSignal(); track link.iri) {
           <g bp-arrow [x1]="link.source.x" [y1]="link.source.y" [x2]="link.target.x" [y2]="link.target.y" [link]="link"
             (click)="onLinkSelected(link)"></g>
           }

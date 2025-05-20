@@ -200,3 +200,21 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
 }
 
 
+
+
+export interface ConsolidatedLink extends IUiLink {
+  incomingLabels: LabelWithLinkDefinition[];
+  outgoingLabels: LabelWithLinkDefinition[];
+  direction: 'outgoing' | 'bidirectional';
+}
+
+
+export interface ConsolidatedGraph {
+  nodes: IUiGraphNode[];
+  links: ConsolidatedLink[];
+};
+
+export interface LabelWithLinkDefinition {
+  label: string;
+  linkDefinition: UiLinkDefinition;
+}

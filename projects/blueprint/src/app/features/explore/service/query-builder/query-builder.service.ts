@@ -14,7 +14,6 @@ import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-proper
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
-import { link } from 'fs';
 
 
 @Injectable({
@@ -69,12 +68,15 @@ export class QueryBuilderService {
     const sourceTypes = allSourceTypes.filter(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
     const outObjectPredicates = ClownfaceObject.getPredicatesForNode(rdfGraph.node(inputNode)).filter(p => p !== rdf.typeNamedNode.value);
     const inObjectPredicates = rdfGraph.node(inputNode).in().map(n => ClownfaceObject.getPredicatesForNode(n)).flat().filter(p => p !== rdf.typeNamedNode.value);
-    console.log('inObjectPredicates', inObjectPredicates);
+
     const inputNodeTypes = rdfGraph.node(inputNode).out(rdf.typeNamedNode).values;
     const outLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowSource));
     const inLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowTarget));
 
 
+    outObjectPredicates.forEach(predicate => {
+      console.log('%coutObjectPredicates', 'color: magenta', predicate, rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).values.length);
+    })
     // remove object predicates that are already in the link definitions
     outLinkDefinitions.forEach(link => {
       const linkPropertyPath = link.propertyPath;
