@@ -6,7 +6,7 @@ import { QueryBuilderService } from '../query-builder/query-builder.service';
 
 import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
 
-import { flux, rdf, rdfs } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 
 export interface QueryInput {
