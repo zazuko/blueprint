@@ -18,6 +18,7 @@
 </g>
 }
 @else if (link().direction === 'outgoing') {
+  <!-- outgoing label rendering -->
   <svg:g>
   <svg:line marker-end="url(#arrow)" [attr.x1]="x1()" [attr.y1]="y1()" [attr.x2]="x2()" [attr.y2]="y2()"></line>
   <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
@@ -33,28 +34,34 @@
   
 </g>
 } @else if (link().direction === 'bidirectional') {
+    <!-- bidi label rendering -->
+
    <svg:g>
   <svg:line marker-end="url(#arrow)" marker-start="url(#arrow-start)" [attr.x1]="x1()" [attr.y1]="y1()" [attr.x2]="x2()" [attr.y2]="y2()"></line>
   <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
-    <text y="10" text-anchor="middle">
-    @for(l of link().outgoingLabels; track l.linkDefinition.iri) {
-      <tspan font-size="12px" class="left" x="0" dy="-1.2em">{{l.label}}</tspan>
+    @for(l of outgoingLabels(); track l.linkDefinition.iri) {
       @if($last) {
-        <tspan font-size="12px" class="left" x="0" dy="-1.2em">&#8594;</tspan>
+        <svg:text [attr.y]="- 1 * (($index * 12) + 12 + 5)"  font-size="12px" text-anchor="middle">&#8594;</text>
+        <svg:text [attr.y]="-1 * (($index * 12 ) + 5)  "  font-size="12px" text-anchor="middle">{{l.label}}</text>
+
+      } @else {
+        <svg:text [attr.y]="-1 * (($index * 12) + 5)"  font-size="12px" text-anchor="middle">{{l.label}}</text>
+
       }
     }
-     @for(l of link().incomingLabels; track l.linkDefinition.iri) {
+     @for(l of incomingLabels(); track l.linkDefinition.iri) {
       @if($first) {
-        <tspan font-size="12px" class="left" x="0" dy="2.4em">{{l.label}}</tspan>
-                <tspan font-size="12px" class="left" x="0" dy="1.2em">&#8592;</tspan>
+          <svg:text [attr.y]="((incomingLabels().length - $index) * 12)" font-size="12px" text-anchor="middle">{{l.label}}</text>
+          <svg:text [attr.y]="((incomingLabels().length - $index) * 12 + 15)" font-size="12px" text-anchor="middle">&#8592;</text>
+
 
       }
       @else {
-        <tspan font-size="12px" class="left" x="0" dy="-1.2em">{{l.label}}</tspan>
+          <svg:text [attr.y]="((incomingLabels().length - $index) * 12)" font-size="12px" text-anchor="middle">{{l.label}}</text>
       }
       
     }
-    </text>
+    
     
   </g>
   

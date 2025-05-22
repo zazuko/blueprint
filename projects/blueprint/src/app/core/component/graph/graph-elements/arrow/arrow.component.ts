@@ -7,6 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { ConsolidatedLink } from '../../model/graph.model';
+import { lab } from 'd3';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -61,5 +62,16 @@ export class ArrowComponent {
   });
 
 
+  incomingLabels = computed(() => {
+    const link = this.link();
+    const labels = link.incomingLabels;
+    return labels;
 
+  });
+  outgoingLabels = computed(() => {
+    const link = this.link();
+    const labels = link.outgoingLabels;
+    return labels;
+
+  });
 }

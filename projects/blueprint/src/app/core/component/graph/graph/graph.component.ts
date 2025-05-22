@@ -377,7 +377,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
     const layout = new LayoutAdaptor();
     layout.size([elementDimensions.width, elementDimensions.height]);
-    layout.jaccardLinkLengths(200, 1);
+    layout.jaccardLinkLengths(280, 1);
 
     layout.on(cola.EventType.start, () => {
       const graph = this.consolidatedGraph();
