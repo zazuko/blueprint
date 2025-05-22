@@ -23,7 +23,7 @@ export class ThemeManager {
   readonly themeChanged$ = new Subject<void>();
 
   constructor() {
-    console.log('ThemeManager constructor');
+
     if (!isPlatformBrowser(this.#platformId)) {
       return;
     }

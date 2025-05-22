@@ -69,6 +69,6 @@ export interface NeighborNodeList {
   link: UiLinkDefinition;
   nodes: IUiGraphNode[];
   isOutgoing: boolean;
-
+  id: string;
 
 }

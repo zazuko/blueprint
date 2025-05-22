@@ -113,8 +113,6 @@ export class GraphComponent implements OnInit, OnDestroy {
       }
     };
 
-    console.log('linksMap', linkMap);
-
     const consolidatedLinks: ConsolidatedLink[] = [...linkMap.keys()].flatMap((key, index) => {
       const links = linkMap.get(key);
 
@@ -189,19 +187,11 @@ export class GraphComponent implements OnInit, OnDestroy {
       return [];
     });
 
-    console.log('consolidated links', consolidatedLinks);
-
-    const linksa = graph.links as ConsolidatedLink[];
     return { nodes, links: consolidatedLinks };
   });
 
   constructor() {
-    effect(() => {
-      const graph = this.consolidatedGraph();
-      console.log('links', graph.links);
 
-
-    });
     effect(() => {
       const graph = this.consolidatedGraph();
 

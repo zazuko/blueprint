@@ -36,8 +36,6 @@ export abstract class ClownfaceObject {
             return label;
         }
 
-        console.log('No label found for node', graphPointer.value);
-        console.log('GraphPointer', graphPointer.value.split('/'));
         if (graphPointer.value.includes('#')) {
             label = graphPointer.value.split('#').pop();
             return label;

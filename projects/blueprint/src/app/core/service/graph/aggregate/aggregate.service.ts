@@ -129,7 +129,6 @@ export class AggregateService {
      */
     getCompositionToCompositionLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
-        console.log('%cComposition links', 'color: magenta', links.length);
 
         // strategies to create the queries
         const strategies: CompositionToCompositionQueryStrategy[] = [
@@ -374,7 +373,6 @@ export class AggregateService {
      */
     getCompositionToNodeLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToNodeLinks(viewGraphMetadata, classIris);
-        console.log('%cNode links', 'color: magenta', links.length);
 
         // strategies to create the queries
         const strategies: CompositionToNodeQueryStrategy[] = [

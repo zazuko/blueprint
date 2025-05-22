@@ -84,6 +84,7 @@ export class NeighborNodesComponent {
       const nodes = outLinkMap.get(key);
       if (link && nodes) {
         list.push({
+          id: key + 'out',
           link: link,
           nodes: nodes.sort(labelAlphaSort),
           isOutgoing: true
@@ -95,6 +96,7 @@ export class NeighborNodesComponent {
       const nodes = inLinkMap.get(key);
       if (link && nodes) {
         list.push({
+          id: key + 'in',
           link: link,
           nodes: nodes.sort(labelAlphaSort),
           isOutgoing: false
@@ -114,6 +116,12 @@ export class NeighborNodesComponent {
     effect(() => {
       const nodeList = this.nodeList();
       console.log('%cnodeList', 'color:purple', nodeList);
-    });
+      nodeList.forEach((node, index) => {
+        console.log('%cnode', 'color:blue', index, node.id);
+
+
+      });
+    }
+    );
   }
-}
+};

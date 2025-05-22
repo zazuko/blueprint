@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable, forkJoin, map, switchMap, of } from 'rxjs';
+import { Observable, forkJoin, switchMap, of } from 'rxjs';
 
-
-import { rdf, flux, shacl, rdfs, schema, skos } from '@blueprint/ontology';
+import { rdf, flux, shacl, rdfs, schema, skos, appLocal } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
@@ -12,7 +11,6 @@ import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rd
 import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-properties-for-iri.query';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 
 
@@ -66,49 +64,68 @@ export class QueryBuilderService {
 
     const allSourceTypes = rdfGraph.node(inputNode).out(rdf.typeNamedNode).values;
     const sourceTypes = allSourceTypes.filter(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
-    const outObjectPredicates = ClownfaceObject.getPredicatesForNode(rdfGraph.node(inputNode)).filter(p => p !== rdf.typeNamedNode.value);
-    const inObjectPredicates = rdfGraph.node(inputNode).in().map(n => ClownfaceObject.getPredicatesForNode(n)).flat().filter(p => p !== rdf.typeNamedNode.value);
+    const outObjectPredicates = [... new Set([...dataset.match(inputNode, null, null)].filter(q => q.object.termType === 'NamedNode' || q.object.termType === "BlankNode").filter(q => !q.predicate.equals(rdf.typeNamedNode)).map(q => q.predicate.value))];
+    const inObjectPredicates = [...new Set([...dataset.match(null, null, inputNode)].filter(q => !q.predicate.equals(rdfEnvironment.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#first'))).map(q => q.predicate.value))];
 
     const inputNodeTypes = rdfGraph.node(inputNode).out(rdf.typeNamedNode).values;
     const outLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowSource));
     const inLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowTarget));
 
-
-    outObjectPredicates.forEach(predicate => {
-      console.log('%coutObjectPredicates', 'color: magenta', predicate, rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).values.length);
-    })
+    console.log('%coutObjectPredicates', 'color:blue', outObjectPredicates);
+    console.log('%cinObjectPredicates', 'color:green', inObjectPredicates);
     // remove object predicates that are already in the link definitions
     outLinkDefinitions.forEach(link => {
-      const linkPropertyPath = link.propertyPath;
-      // Regex to match the first element of a SPARQL property path
-      // Matches <...> or a prefixed name (e.g., schema:employee)
-      const match = linkPropertyPath.match(/^(\s*<[^>]+>\s*|\s*[a-zA-Z_][\w\-]*:[\w\-]+\s*)/);
-      const firstElementOfPath = match ? match[1].trim() : null;
+      const firstElementOfPath = link.propertyPathFragments[0];
+      console.log('%casdfasdf', 'color:magenta', firstElementOfPath);
+
       // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
       if (firstElementOfPath && firstElementOfPath.length > 2) {
-        const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
-        if (outObjectPredicates.includes(trimmedPredicate)) {
-          const index = outObjectPredicates.indexOf(trimmedPredicate);
-          if (index > -1) {
-            outObjectPredicates.splice(index, 1);
+        if (firstElementOfPath.startsWith('<')) {
+          const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
+          if (outObjectPredicates.includes(trimmedPredicate)) {
+            const index = outObjectPredicates.indexOf(trimmedPredicate);
+            if (index > -1) {
+              console.log('%cout link remove', 'color:blue', trimmedPredicate, ' from outObjectPredicates', outObjectPredicates);
+              outObjectPredicates.splice(index, 1);
+            }
+          }
+        } else if (firstElementOfPath.startsWith('^')) {
+          const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
+          if (inObjectPredicates.includes(trimmedPredicate)) {
+            const index = inObjectPredicates.indexOf(trimmedPredicate);
+            if (index > -1) {
+              console.log('%cout link remove', 'color:green', trimmedPredicate, ' from inObjectPredicates', inObjectPredicates);
+
+              inObjectPredicates.splice(index, 1);
+            }
           }
         }
       }
     });
 
     inLinkDefinitions.forEach(link => {
-      const linkPropertyPath = link.inversePropertyPath;
-      // Regex to match the first element of a SPARQL property path
-      // Matches <...> or a prefixed name (e.g., schema:employee)
-      const match = linkPropertyPath.match(/^(\s*<[^>]+>\s*|\s*[a-zA-Z_][\w\-]*:[\w\-]+\s*)/);
-      const firstElementOfPath = match ? match[1].trim() : null;
+      const firstElementOfPath = link.inversePropertyPathFragments[0];
+
       // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
       if (firstElementOfPath && firstElementOfPath.length > 2) {
-        const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
-        if (outObjectPredicates.includes(trimmedPredicate)) {
-          const index = outObjectPredicates.indexOf(trimmedPredicate);
-          if (index > -1) {
-            outObjectPredicates.splice(index, 1);
+        console.log('%cin link what todo ? firstElementOfPath', 'color: green', firstElementOfPath);
+        if (firstElementOfPath.startsWith('<')) {
+          const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
+          if (outObjectPredicates.includes(trimmedPredicate)) {
+            const index = outObjectPredicates.indexOf(trimmedPredicate);
+            if (index > -1) {
+              console.log('%cout link remove', 'color:green', trimmedPredicate, ' from outObjectPredicates', outObjectPredicates);
+              outObjectPredicates.splice(index, 1);
+            }
+          }
+        } else if (firstElementOfPath.startsWith('^')) {
+          const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
+          if (inObjectPredicates.includes(trimmedPredicate)) {
+            const index = inObjectPredicates.indexOf(trimmedPredicate);
+            if (index > -1) {
+              console.log('%cout link remove', 'color:blue', trimmedPredicate, ' from inObjectPredicates', inObjectPredicates);
+              inObjectPredicates.splice(index, 1);
+            }
           }
         }
       }
@@ -121,7 +138,7 @@ export class QueryBuilderService {
       const labelMatch = predicate.match(/([^\/#]+)$/);
       const label = labelMatch ? labelMatch[1] : predicate;
       let tragetTypes = rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
-      console.log('tragetTypes', tragetTypes);
+
       // check if one of the target types is in the class definitions
       const isTargetTypeInClassDefinitions = tragetTypes.some(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
       if (isTargetTypeInClassDefinitions) {
@@ -130,7 +147,7 @@ export class QueryBuilderService {
         const targetTypesWithoutClassDefinitions = tragetTypes.filter(type => !classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
         tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
-
+      console.log('%ctragetTypes', 'color: red', bracketLessPredicate, predicate);
       const ttl = `
 @prefix vorlon: <https://vorlon.described.at/ontology#> .
 @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
@@ -139,68 +156,79 @@ export class QueryBuilderService {
 @prefix flux: <https://flux.described.at/> .
 @prefix : <http://localhost:7001/> .
 @prefix schema: <http://schema.org/> .
-
-  <${input}/${bracketLessPredicate}/synthetic> a flux:Link ;
+${appLocal.turtlePrefix()}
+  <${predicate}/link/synthetic> a flux:Link ;
    sh:targetClass <${sourceTypes[0]}> ;
    sh:class <${rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values[0]}> ;
    sh:name "${label}" ;
+   ${appLocal.isSyntheticPrefixed} true ;
    sh:path <${predicate}> .
 
 
       `;
       dataset.addAll(rdfEnvironment.parseTurtle(ttl));
-      const syntheticLink = rdfEnvironment.clownface(dataset).namedNode(`${input}/${bracketLessPredicate}/synthetic`).map(l => new RdfUiLinkDefinition(l));
+      const syntheticLink = rdfEnvironment.clownface(dataset).namedNode(`${predicate}/link/synthetic`).map(l => new RdfUiLinkDefinition(l));
       return syntheticLink;
     }
     );
 
+
+
     outLinkDefinitions.push(...syntheticLinksOut);
     linkDefinitions.push(...syntheticLinksOut);
-    /*
-        const syntheticLinksIn = outObjectPredicates.flatMap(predicate => {
-          const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
-          // Extract label from predicate: last part after '/' or '#'
-          const labelMatch = predicate.match(/([^\/#]+)$/);
-          const label = labelMatch ? labelMatch[1] : predicate;
-          const tragetTypes = rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
-          // check if one of the target types is in the class definitions
-          const isTargetTypeInClassDefinitions = tragetTypes.some(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
-           if (!isTargetTypeInClassDefinitions) {
-             return [];
-           }
-             
-          const ttl = `
-    @prefix vorlon: <https://vorlon.described.at/ontology#> .
-    @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
-    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix sh: <http://www.w3.org/ns/shacl#> .
-    @prefix flux: <https://flux.described.at/> .
-    @prefix : <http://localhost:7001/> .
-    @prefix schema: <http://schema.org/> .
-    
-      <${input}/${bracketLessPredicate}/synthetic> a flux:Link ;
-       sh:targetClass <${sourceTypes[0]}> ;
-       sh:class <${rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values[0]}> ;
-       sh:name "${label}" ;
-       sh:path <${predicate}> .
-    
-    
-          `;
-          console.log(ttl);
-          dataset.addAll(rdfEnvironment.parseTurtle(ttl));
-          const syntheticLink = rdfEnvironment.clownface(dataset).namedNode(`${input}/${bracketLessPredicate}/synthetic`).map(l => new RdfUiLinkDefinition(l));
-          return syntheticLink;
-        }
-        );
-    */
+
+    // create synthetic in links for object predicates
+    const syntheticLinksIn = inObjectPredicates.flatMap(predicate => {
+      const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
+      // Extract label from predicate: last part after '/' or '#'
+      const labelMatch = predicate.match(/([^\/#]+)$/);
+      const label = labelMatch ? labelMatch[1] : predicate;
+      let tragetTypes = rdfGraph.node(inputNode).in(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
+
+      // check if one of the target types is in the class definitions
+      const isTargetTypeInClassDefinitions = tragetTypes.some(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
+      if (isTargetTypeInClassDefinitions) {
+        // change order of tragetTypes the ones with classDefinitioins first
+        const targetTypesWithClassDefinitions = tragetTypes.filter(type => classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
+        const targetTypesWithoutClassDefinitions = tragetTypes.filter(type => !classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
+        tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
+      }
+      console.log('%cin tragetTypes', 'color: red', bracketLessPredicate, predicate);
+      const ttl = `
+@prefix vorlon: <https://vorlon.described.at/ontology#> .
+@prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix flux: <https://flux.described.at/> .
+@prefix : <http://localhost:7001/> .
+@prefix schema: <http://schema.org/> .
+${appLocal.turtlePrefix()}
+  <${predicate}/link/synthetic> a flux:Link ;
+   sh:targetClass <${sourceTypes[0]}> ;
+   sh:class <${rdfGraph.node(inputNode).in(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values[0]}> ;
+   sh:name "${label}" ;
+   ${appLocal.isSyntheticPrefixed} true ;
+   sh:path <${predicate}> .
+
+
+      `;
+      dataset.addAll(rdfEnvironment.parseTurtle(ttl));
+      const syntheticLink = rdfEnvironment.clownface(dataset).namedNode(`${predicate}/link/synthetic`).map(l => new RdfUiLinkDefinition(l));
+      return syntheticLink;
+    }
+    );
+
+
+    inLinkDefinitions.push(...syntheticLinksIn);
+    linkDefinitions.push(...syntheticLinksIn);
+
     // create sub queries
     const inputQuery = getInputNodeQuery(inputNode);
     const outgoingLinkQueries = outLinkDefinitions.filter(link => link.propertyPath !== null).map(link => getOutgoingLinksQuery(inputNode, link));
     const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinksQuery(inputNode, link));
 
-    outgoingLinkQueries.forEach(query => {
-      console.log('outgoingLinkQueries', query);
-    });
+
+
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
     return forkJoin({ data: this.#sparqlService.construct(query), linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
@@ -267,9 +295,11 @@ CONSTRUCT {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
   BIND (${flux.UiNodePrefixed} as ?fluxUiType)
-  BIND (<${link.arrowTarget}> as ?targetType)
+  ${link.isSynthetic ? `` : `BIND (<${link.arrowTarget}> as ?targetType)`}
+  ${link.isSynthetic ? `` : `?target a ?targetType .`}
   ?input ${link.propertyPath}  ?target .
-  ?target a ?targetType .
+  FILTER (!isLiteral(?target))
+
   OPTIONAL {
   ?target ${rdfs.labelPrefixed} ?targetLabel .
   }
@@ -315,10 +345,14 @@ CONSTRUCT {
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
-  BIND (<${link.arrowSource}> as ?targetType)
   BIND (${flux.UiNodePrefixed} as ?fluxUiType)
+
+  ${link.isSynthetic ? `` : `BIND (<${link.arrowSource}> as ?targetType)`}
+  ${link.isSynthetic ? `` : `?target a ?targetType .`}
+
   ?target ${link.propertyPath}  ?input  .
-  ?target a ?targetType .
+  FILTER (!isLiteral(?target))
+
   OPTIONAL {
     ?target ${rdfs.labelPrefixed} ?targetLabel .
   }

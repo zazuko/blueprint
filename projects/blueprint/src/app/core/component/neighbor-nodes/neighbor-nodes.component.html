@@ -1,4 +1,4 @@
-@for(list of nodeList(); track list.link.iri) {
+@for(list of nodeList(); track list.id) {
 <bp-neighbor-nodes-list [nodeList]="list" (nodeSelected)="emitNodeSelected($event)"></bp-neighbor-nodes-list>
 } @empty {
 <div class="panel">

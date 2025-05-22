@@ -30,10 +30,10 @@ CONSTRUCT {
         }
         ?o ?op ?oo .
     } UNION  {
-        ?s ?rerverseP <${iri}> .
+        ?s ?reverseP <${iri}> .
         FILTER (!isLiteral(?s))
     } UNION {
-        ?s ?rerverseP <${iri}> .
+        ?s ?reverseP <${iri}> .
         FILTER (!isLiteral(?s))
         VALUES ?reverseOp {
             ${rdf.typePrefixed}

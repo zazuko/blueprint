@@ -1,6 +1,6 @@
 import { GraphPointer } from 'clownface';
 import { ClownfaceObject } from '../clownface-object/clownface-object';
-import { shacl } from '@blueprint/ontology';
+import { appLocal, shacl } from '@blueprint/ontology';
 
 import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
 import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
@@ -10,8 +10,11 @@ export interface UiLinkDefinition {
     label: string;
     propertyPath: string | null;
     inversePropertyPath: string | null;
+    propertyPathFragments: string[];
+    inversePropertyPathFragments: string[] | null;
     arrowSource: string | null;
     arrowTarget: string | null;
+    isSynthetic: boolean;
 }
 
 
@@ -20,8 +23,11 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
     #arrowSource: string | null | undefined = undefined;
     #arrowTarget: string | null | undefined = undefined;
     #label: string | undefined = undefined;
+    #propertyPathFragments: string[] | undefined = undefined;
     #propertyPath: string | null | undefined = undefined;
+    #inversePropertyPathFragments: string[] | undefined = undefined;
     #inversePropertyPath: string | null | undefined = undefined;
+    #isSynthetic: boolean | undefined = undefined;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -40,6 +46,27 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
             }
         }
         return this.#label;
+    }
+
+    get propertyPathFragments(): string[] {
+
+        if (this.#propertyPathFragments == undefined) {
+            const paths = this._node.out(shacl.pathNamedNode);
+            const pathFactory = new OutgoingPathFactory();
+            const propertyPaths = paths.map(path => pathFactory.createPath(path));
+
+            if (propertyPaths.length === 0) {
+                console.error(`No path found for link <${this._node.value}>`);
+                this.#propertyPathFragments = [];
+                return this.#propertyPathFragments;
+            }
+
+            if (propertyPaths.length > 1) {
+                console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
+            }
+            this.#propertyPathFragments = propertyPaths[0].toPathFragments();
+        }
+        return this.#propertyPathFragments;
     }
 
     get propertyPath(): string | null {
@@ -62,6 +89,25 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#propertyPath;
     }
 
+    get inversePropertyPathFragments(): string[] | null {
+        if (this.#inversePropertyPathFragments === undefined) {
+            const paths = this._node.out(shacl.pathNamedNode);
+            const pathFactory = new IncomingPathFactory();
+            const propertyPaths = paths.map(path => pathFactory.createPath(path));
+            if (propertyPaths.length === 0) {
+                console.error(`No path found for link <${this._node.value}>`);
+                this.#inversePropertyPathFragments = [];
+                return this.#inversePropertyPathFragments;
+            }
+
+            if (propertyPaths.length > 1) {
+                console.warn(`Multiple paths found for link <${this._node.value}>. Using the first one.`);
+            }
+            this.#inversePropertyPathFragments = propertyPaths[0].toPathFragments();
+        }
+        return this.#inversePropertyPathFragments;
+    }
+
     get inversePropertyPath(): string | null {
         if (this.#inversePropertyPath === undefined) {
             const paths = this._node.out(shacl.pathNamedNode);
@@ -80,6 +126,8 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         }
         return this.#inversePropertyPath;
     }
+
+
 
     get arrowSource(): string | null {
         if (this.#arrowSource === undefined) {
@@ -111,6 +159,21 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
             }
         }
         return this.#arrowTarget;
+    }
+
+    get isSynthetic(): boolean {
+        if (this.#isSynthetic === undefined) {
+            const synthetic = this._node.out(appLocal.isSyntheticNamedNode).values;
+            if (synthetic.length === 0) {
+                this.#isSynthetic = false;
+            } else {
+                if (synthetic.length > 1) {
+                    console.warn(`Multiple synthetics found for link <${this._node.value}>. Using the first one.`);
+                }
+                this.#isSynthetic = synthetic[0] === 'true';
+            }
+        }
+        return this.#isSynthetic;
     }
 
 }
