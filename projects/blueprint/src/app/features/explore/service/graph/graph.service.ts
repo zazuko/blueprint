@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { Observable, ReplaySubject, of, map } from 'rxjs';
 
@@ -28,6 +28,13 @@ export class GraphService {
   // It is a ReplaySubject with a buffer size of 1, meaning it will emit the last value to new subscribers.
   public graph$ = new ReplaySubject<Graph>(1);
 
+  #internalGraphSignal = signal<Graph>({
+    nodes: [],
+    links: [],
+  });
+
+  graphSignal = this.#internalGraphSignal.asReadonly();
+
   /**
   * Clears the current dataset by resetting the nodes and links.
   * This is useful when the user wants to start a new graph.
@@ -40,6 +47,8 @@ export class GraphService {
     this.#nodesMap = new Map<string, RdfUiGraphNode>();
     this.#linksMap = new Map<string, RdfUiLink>();
     this.graph$.next({ nodes: [], links: [] });
+    this.#internalGraphSignal.set({ nodes: [], links: [] });
+
   }
 
   /**
@@ -51,6 +60,7 @@ export class GraphService {
     this.#query(iri).subscribe({
       next: (graph) => {
         this.graph$.next(graph);
+        this.#internalGraphSignal.set(graph);
       },
       error: (err) => {
         console.error(err);

@@ -7,6 +7,7 @@ import {
   DestroyRef,
   AfterViewInit,
   computed,
+  effect,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -71,7 +72,7 @@ import { lab } from 'd3';
     LiteralComponent
   ]
 })
-export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ExploreComponent implements OnInit, OnDestroy {
   readonly #route = inject(ActivatedRoute);
   readonly #router = inject(Router);
   readonly #graphService = inject(GraphService);
@@ -80,7 +81,6 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly #destroyRef = inject(DestroyRef);
   public readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #uiDetailService = inject(UiDetailService);
-
   public compositionLinks = signal<CompositionLinkResult[]>([]);
   public thisNodeElement = signal<NodeElement | null>(null);
 
@@ -93,10 +93,11 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public activeItem = this.tabNavItems[0];
 
-  public currentGraphResource = signal<GraphResource | null>(null);
 
-  subject: string = '';
-  graphOpenState = signal(true);
+  // this is the IRI of the subject in the route
+  public currentGraphResource = signal<GraphResource | null>(null);
+  public bubbleGraph = this.#graphService.graphSignal;
+
   expandedNode: IUiGraphNode | null = null;
   routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
@@ -104,19 +105,56 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
   uiView: UiView[] = [];
   uiHierarchy: UiHierarchyView[] = [];
   term: string;
-  graph = signal<Graph>({ nodes: [], links: [] });
 
 
   searchTerm: string;
   searchFilter: string;
   expanded = true;
 
-  routeParamMap$: Observable<ParamMap>
-  graph$: Observable<Graph>;
-
 
   constructor() {
-    this.routeParamMap$ = this.#route.paramMap;
+
+    effect(() => {
+      const subject = this.subjectIri();
+      console.log('subject', subject);
+      if (subject === undefined) {
+        return;
+      }
+
+      this.#graphService.expandNode(subject);
+      this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject)).pipe(
+        takeUntilDestroyed(this.#destroyRef),
+      ).subscribe(
+        {
+          next: (viewGraph) => {
+            console.log('viewGraph', viewGraph);
+
+            const currentResource = new GraphResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subjectIri()));
+            this.currentGraphResource.set(currentResource);
+
+            const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
+
+            // ---- composition link result
+            this.compositionLinks.set(cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
+            this.thisNodeElement.set(cfViewGraph.namedNode(this.subjectIri()).map((node) => new NodeElement(node))[0]);
+            // ---- composition link result end
+
+            const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
+            // make it better 
+
+            this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
+
+            this.uiHierarchy = cfHierarchyGraph.map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraph));
+
+            this.loadingIndicatorService.done();
+            this.#selectionService.setSelectedNode(this.subjectIri());
+          },
+          error: (error) => {
+            console.error('error', error);
+            this.loadingIndicatorService.done();
+          }
+        });
+    });
   }
 
   literalConfigurationRules = toSignal(toObservable(computed(() => {
@@ -129,6 +167,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     }))
   );
 
+  // create literal elements from the current graph resource
   literalDetailElements = computed<UILiteral[]>(() => {
     const currentResource = this.currentGraphResource();
     if (currentResource === null) {
@@ -179,81 +218,23 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit(): void {
-
     this.#graphService.clearGraph();
+  }
 
-
-    this.#graphService.graph$.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-      map(graph => {
-        if (this.expandedNode !== null) {
-          // set the nodes without x and y to the expanded node's x and y. this makes new nodes appear from the expanded node
-          // and not the center of the graph 
-          graph.nodes.filter(nodeWithoutX => !nodeWithoutX.x).forEach((newNode) => {
-            newNode.x = this.expandedNode.x;
-            newNode.y = this.expandedNode.y;
-          });
-          this.expandedNode = null;
-        }
-        return graph;
-      })
-    ).subscribe({
-      next: graph => {
-        this.graph.set(graph);
-      },
-      error: (error) => {
-        console.error('error', error);
-        this.loadingIndicatorService.done();
+  subjectIri = toSignal<string | undefined>(this.#route.paramMap.pipe(
+    takeUntilDestroyed(this.#destroyRef),
+    map((params) => params.get('subject')),
+    map((subject) => {
+      if (subject === null) {
+        this.#router.navigate(['explore']);
+        return '';
       }
-    });
+      return subject;
+    })
+  ), { initialValue: undefined });
 
 
-  }
-  ngAfterViewInit(): void {
-    // fetch the view for the subject on route change
-    this.routeParamMap$.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-      tap(() => {
-        this.loadingIndicatorService.loading();
-      }),
-      map((params) => params.get('subject')),
-      switchMap((subject) => {
-        this.subject = subject;
-        this.#graphService.expandNode(subject);
-        return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject));
-      }),
-      takeUntilDestroyed(this.#destroyRef),
-    ).subscribe(
-      {
-        next: (viewGraph) => {
-          const currentResource = new GraphResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subject));
-          this.currentGraphResource.set(currentResource);
 
-          const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
-
-          // ---- composition link result
-          this.compositionLinks.set(cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
-          this.thisNodeElement.set(cfViewGraph.namedNode(this.subject).map((node) => new NodeElement(node))[0]);
-          // ---- composition link result end
-
-          const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
-          // make it better 
-
-
-          this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
-          this.uiView.length === 0 ? this.graphOpenState.set(true) : this.graphOpenState.set(false);
-
-          this.uiHierarchy = cfHierarchyGraph.map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraph));
-
-          this.loadingIndicatorService.done();
-          this.#selectionService.setSelectedNode(this.subject);
-        },
-        error: (error) => {
-          console.error('error', error);
-          this.loadingIndicatorService.done();
-        }
-      });
-  }
 
   ngOnDestroy(): void {
     this.#selectionService.clearSelection();

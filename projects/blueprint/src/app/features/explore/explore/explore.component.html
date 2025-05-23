@@ -1,6 +1,6 @@
 <div class="content">
 
-  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject"
+  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subjectIri()"
     [subjectLabel]="currentGraphResource()?.title?? ''" [subjectClassLabel]="currentGraphResource()?.classLabel ?? ''"
     [avatars]="currentGraphResource()?.avatars ?? []" />
 
@@ -44,7 +44,8 @@
 
 
   } @else if (routeFragment() === 'Nearby') {
-  <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeElementSelected($event)" @fadeIn />
+  <bp-neighbor-nodes [graph]="bubbleGraph()" [subject]="subjectIri()" (nodeSelected)="onNodeElementSelected($event)"
+    @fadeIn />
   } @else if (routeFragment() === 'Context') {
 
   <div class="subject-view" @fadeIn>
@@ -81,7 +82,7 @@
     <div class="content-size content-style">
 
       <bp-graph (nodeSelected)="onNodeSelected($event)" (nodeExpanded)="onNodeExpanded($event)"
-        (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="true" [disableZoomMenu]="true" [graph]="graph()"
+        (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="true" [disableZoomMenu]="true" [graph]="bubbleGraph()"
         xOffset="200" yOffset="200" />
 
     </div>
