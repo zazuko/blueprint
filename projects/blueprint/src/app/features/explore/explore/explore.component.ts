@@ -1,19 +1,16 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
   inject,
   signal,
   DestroyRef,
-  AfterViewInit,
   computed,
   effect,
 } from '@angular/core';
-import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
-import { Observable, map, switchMap, tap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 
 import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
@@ -28,11 +25,9 @@ import { ViewDataService } from '../../../core/ui-view/service/view-data/view-da
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
-import { Avatar } from '../../../shared/component/avatar/avatar.component';
 
-import { flux, nileaUi, rdf, rdfs, shacl, schema, skos } from '@blueprint/ontology';
-import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
-import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { flux, nileaUi, rdf, } from '@blueprint/ontology';
+import { IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
@@ -45,12 +40,8 @@ import { AggregateRelationComponent } from "../../../core/ui-view/view-component
 import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
 import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
 import { PanelModule } from 'primeng/panel';
-import { GraphPointer } from 'clownface';
-import { ClownfaceObject, precedence } from '@blueprint/model/clownface-object/clownface-object';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
-import { DEFAULT_ICON } from '@blueprint/constant/icon';
-import { DEFAULT_COLOR } from '@blueprint/constant/color';
-import { lab } from 'd3';
+import { ExploredResource } from '../model/explored-resource.class';
 
 @Component({
   templateUrl: './explore.component.html',
@@ -72,17 +63,18 @@ import { lab } from 'd3';
     LiteralComponent
   ]
 })
-export class ExploreComponent implements OnInit, OnDestroy {
+export class ExploreComponent {
   readonly #route = inject(ActivatedRoute);
   readonly #router = inject(Router);
   readonly #graphService = inject(GraphService);
   readonly #selectionService = inject(SelectionService);
   readonly #viewData = inject(ViewDataService);
   readonly #destroyRef = inject(DestroyRef);
-  public readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #uiDetailService = inject(UiDetailService);
-  public compositionLinks = signal<CompositionLinkResult[]>([]);
-  public thisNodeElement = signal<NodeElement | null>(null);
+  readonly loadingIndicatorService = inject(LoadingIndicatorService);
+
+  readonly compositionLinks = signal<CompositionLinkResult[]>([]);
+  readonly thisNodeElement = signal<NodeElement | null>(null);
 
   tabNavItems: MenuItem[] = [
     { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
@@ -95,7 +87,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
 
 
   // this is the IRI of the subject in the route
-  public currentGraphResource = signal<GraphResource | null>(null);
+  public currentGraphResource = signal<ExploredResource | null>(null);
   public bubbleGraph = this.#graphService.graphSignal;
 
   expandedNode: IUiGraphNode | null = null;
@@ -106,13 +98,12 @@ export class ExploreComponent implements OnInit, OnDestroy {
   uiHierarchy: UiHierarchyView[] = [];
   term: string;
 
-
   searchTerm: string;
   searchFilter: string;
   expanded = true;
 
-
   constructor() {
+    this.#graphService.clearGraph();
 
     effect(() => {
       const subject = this.subjectIri();
@@ -129,7 +120,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
           next: (viewGraph) => {
             console.log('viewGraph', viewGraph);
 
-            const currentResource = new GraphResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subjectIri()));
+            const currentResource = new ExploredResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subjectIri()));
             this.currentGraphResource.set(currentResource);
 
             const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
@@ -161,10 +152,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
     return this.currentGraphResource()?.rdfTypeIri ?? [];
   })).pipe(
     switchMap((rdfTypeIri) => this.#uiDetailService.getLiteralRulesForClasses(rdfTypeIri)),
-    map((rules) => {
-
-      return rules;
-    }))
+  )
   );
 
   // create literal elements from the current graph resource
@@ -217,10 +205,6 @@ export class ExploreComponent implements OnInit, OnDestroy {
   });
 
 
-  ngOnInit(): void {
-    this.#graphService.clearGraph();
-  }
-
   subjectIri = toSignal<string | undefined>(this.#route.paramMap.pipe(
     takeUntilDestroyed(this.#destroyRef),
     map((params) => params.get('subject')),
@@ -232,13 +216,6 @@ export class ExploreComponent implements OnInit, OnDestroy {
       return subject;
     })
   ), { initialValue: undefined });
-
-
-
-
-  ngOnDestroy(): void {
-    this.#selectionService.clearSelection();
-  }
 
 
   // graph events
@@ -268,129 +245,6 @@ export class ExploreComponent implements OnInit, OnDestroy {
     this.expandedNode = node;
     this.#graphService.expandNode(node.id);
   }
-
-}
-
-
-
-class GraphResource extends ClownfaceObject {
-
-  #title: string | undefined = undefined;
-  #avatars: Avatar[] | undefined = undefined;
-  #classLabel: string | undefined = undefined;
-  #rdfTypeIri: string[] | null = null;
-
-  constructor(node: GraphPointer) {
-    super(node);
-  }
-
-  get rdfTypeIri(): string[] {
-    if (this.#rdfTypeIri === null) {
-      this.#rdfTypeIri = this._node.out(rdf.typeNamedNode).values;
-    }
-    return this.#rdfTypeIri;
-  }
-
-  /**
-   * Get the title of the resource. It will try to get the title from the following predicates in order:
-   * - skos:prefLabel
-   * - rdfs:label
-   * - schema:name
-   * - the resource IRI
-   * 
-   * Then it is ordered by the language tag. We find a label with the language tag "en" first. This my be not 
-   * the best solution, but it is the best we can do for now.
-   */
-  get title(): string {
-    if (this.#title === undefined) {
-      this.#title = ClownfaceObject.getLabelForNode(this._node);
-    }
-    return this.#title;
-  }
-
-  /**
-   * Get the avatars of the resource.
-   */
-  get avatars(): Avatar[] {
-    if (this.#avatars === undefined) {
-      const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      let avatarArray: Avatar[] = metaGraph.map((metaData) => {
-        const uiClassMetaData = new RdfUiClassMetadata(metaData);
-        const icon = uiClassMetaData.icon;
-        const color = uiClassMetaData.color;
-        const label = uiClassMetaData.label;
-        return { label, icon, color };
-      });
-      if (avatarArray.length === 0) {
-        avatarArray = [
-          {
-            label: this._node.out(rdf.typeNamedNode).values.join(', '),
-            icon: DEFAULT_ICON,
-            color: DEFAULT_COLOR
-          }
-        ];
-      }
-      this.#avatars = avatarArray;
-    }
-    return this.#avatars;
-  }
-
-  /**
-   * Get the class label of the resource.
-   * 
-   * @todo: this should be part of the avatar
-   */
-  get classLabel(): string {
-    if (this.#classLabel === undefined) {
-      const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      let classLabel = metaGraph.out(rdfs.labelNamedNode).values.join(', ');
-      if (classLabel.length === 0) {
-        classLabel = this._node.out(rdf.typeNamedNode).values.map(label => `<${label}>`).join(', ');
-      }
-      this.#classLabel = classLabel;
-    }
-    return this.#classLabel;
-  }
-
-  /**
-   * Get all predicates for the resource where the object is a literal.
-   * 
-   * @returns An array of literal predicates for the resource. This is done by getting all the quads for the resource and filtering
-   */
-  getLiteralTripleMap(): Map<string, RdfTypes.Quad[]> {
-    const quads = [...this._node.dataset.match(this._node.term, null, null)];
-    const literalQuads = quads.filter(quad => quad.object.termType === 'Literal');
-    // create a map with predicate as key and then the quads as array
-    const literalPredicateMap = new Map<string, RdfTypes.Quad[]>();
-    literalQuads.forEach((quad) => {
-      const key = quad.predicate.value;
-      if (!literalPredicateMap.has(key)) {
-        literalPredicateMap.set(key, []);
-      }
-      literalPredicateMap.get(key)?.push(quad);
-    });
-    return literalPredicateMap;
-  }
-
-  resolveLabelForPredicate(predicate: string): string {
-    const predicatePtr = this._node.namedNode(predicate);
-    const rdfsLabelTerms = predicatePtr.out(rdfs.labelNamedNode).terms as RdfTypes.Literal[];
-    const skosPrefLabelTerms = predicatePtr.out(skos.prefLabelNamedNode).terms as RdfTypes.Literal[];
-    const name = [...rdfsLabelTerms, ...skosPrefLabelTerms].sort(precedence);
-    if (name.length > 0) {
-      return name[0].value;
-    }
-    const predicateString = predicate.includes('#')
-      ? predicate.split('#').pop()
-      : predicate.split('/').pop();
-    if (predicateString) {
-      return predicateString.replace(/([a-z])([A-Z])/g, '$1 $2');
-    }
-    return predicate;
-  }
-
-
-
 
 }
 
