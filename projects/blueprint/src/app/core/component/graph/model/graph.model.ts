@@ -21,6 +21,7 @@ export interface IUiGraphNode extends INodeElement {
   fixed: number;
   expanded: boolean;
   showMenu: boolean;
+  isBlankNode: boolean;
   /**
    * this is the same as .iri but it is needed to support the cola.js interface
    */
@@ -162,6 +163,9 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     this._node.addOut(flux.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
+  get isBlankNode(): boolean {
+    return this._node.term.termType === 'BlankNode' ? true : false;
+  }
 }
 
 

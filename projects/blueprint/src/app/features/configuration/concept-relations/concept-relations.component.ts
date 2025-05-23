@@ -81,7 +81,8 @@ export class ConceptRelationsComponent {
         showMenu: false,
         classLabel: ['Concept'],
         color: nodeMetadata.color,
-        description: ''
+        description: '',
+        isBlankNode: false,
       };
       nodeMap.set(node.iri, node);
     });
