@@ -42,6 +42,7 @@ import { ColorUtil } from '../../../utils/color-util';
 })
 export class GraphComponent implements OnInit, OnDestroy {
   readonly graph = input.required<Graph>();
+  readonly selectedNodeId = input<string>('');
   readonly disableZoomMenu = input<boolean>(false);
   readonly disableNodeMenu = input<boolean>(false);
 
@@ -76,7 +77,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   dragstart = { x: 0, y: 0 };
 
-  selectedSubject: string | null;
   isLinkPanelOpen = false;
 
   layoutIsRunning = false;
@@ -327,7 +327,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 
   emitNodeSelected(node: IUiGraphNode): void {
-    this.selectedSubject = node.id;
     this.nodeSelected.emit(node);
   }
 

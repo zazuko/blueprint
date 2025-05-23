@@ -76,6 +76,7 @@ export class ExploreComponent {
   readonly compositionLinks = signal<CompositionLinkResult[]>([]);
   readonly thisNodeElement = signal<NodeElement | null>(null);
 
+  readonly selectedNodeIri = this.#selectionService.selectedNodeIriSignal;
   tabNavItems: MenuItem[] = [
     { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
     { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
@@ -233,7 +234,7 @@ export class ExploreComponent {
     this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
-  onNodeExpanded(node: IUiGraphNode): void {
+  expandNode(node: IUiGraphNode): void {
     this.expandedNode = node;
     this.loadingIndicatorService.loading();
 

@@ -1,26 +1,32 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
-import { ReplaySubject, Observable, distinctUntilChanged } from 'rxjs';
-
+/**
+ * Service to manage the selection of nodes in the graph.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class SelectionService {
-  private selectedNode: ReplaySubject<string>;
+  #internalSelectedNode = signal<string | undefined>(undefined);
 
-  constructor() {
-    this.selectedNode = new ReplaySubject(1);
+  /**
+   * A signal containing the currently selected node IRI or undefined if no node is selected.
+   */
+  readonly selectedNodeIriSignal = this.#internalSelectedNode.asReadonly();
+
+  /**
+   * Select a node by its IRI.
+   * @param iri The IRI of the node to select.
+   */
+  setSelectedNode(iri: string) {
+    this.#internalSelectedNode.set(iri);
   }
 
-  get selectedNode$(): Observable<string> {
-    return this.selectedNode.pipe(distinctUntilChanged());
-  }
-
-  public setSelectedNode(uri: string) {
-    this.selectedNode.next(uri);
-  }
-
-  public clearSelection() {
-    this.selectedNode = new ReplaySubject(1);
+  /**
+   * Clear the current selected node
+   * @returns An observable that emits the currently selected node IRI.
+   */
+  clearSelection() {
+    this.#internalSelectedNode.set(undefined);
   }
 }

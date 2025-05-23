@@ -18,7 +18,7 @@
         <g class="node-layer">
           @for(node of nodesSignal(); track node.iri) {
           <g bp-node fluxDraggable [node]="node" [disableMenu]="disableNodeMenu()" [color]="node.color"
-            [isSelected]="node.id === selectedSubject" (dragStartEvent)="dragStart($event, node)"
+            [isSelected]="node.id === selectedNodeId()" (dragStartEvent)="dragStart($event, node)"
             (dragEvent)="drag($event, node)" (dragEndEvent)="dragEnd($event, node)"
             (nodeSelected)="emitNodeSelected($event)" (nodeExpanded)="emitNodeExpanded($event)"
             (nodeFocused)="emitNodeFocused($event)"></g>

@@ -21,8 +21,11 @@
 .highlight-indicator {
   stroke-width: 3;
   visibility: hidden;
-  fill: none;
-
+ // fill: none;
+  fill:  #ffcc00;
+  stroke: #ffcc00;
+  filter: drop-shadow(0 0 8px #ffcc00aa);
+  stroke-opacity: 0.5;
   &--active {
     visibility: visible;
   }
