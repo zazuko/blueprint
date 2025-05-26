@@ -52,14 +52,6 @@ export class ArrowComponent {
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
 
-  calculateLoopLinkLabelTransformIncoming = computed<string>(() => {
-    const x1 = this.x1();
-    const y1 = this.y1();
-    const rotation = -45;
-    //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    return `translate(${x1},${y1}) rotate(${rotation})`;
-  });
 
 
   incomingLabels = computed(() => {

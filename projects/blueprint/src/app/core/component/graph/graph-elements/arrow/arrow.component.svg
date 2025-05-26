@@ -41,7 +41,11 @@
   <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
     @for(l of outgoingLabels(); track l.linkDefinition.iri) {
       @if($last) {
+        @if(x1() >= x2()) {
+        <svg:text [attr.y]="- 1 * (($index * 12) + 12 + 5)"  font-size="12px" text-anchor="middle">&#8592;</text>
+        } @else {
         <svg:text [attr.y]="- 1 * (($index * 12) + 12 + 5)"  font-size="12px" text-anchor="middle">&#8594;</text>
+        }
         <svg:text [attr.y]="-1 * (($index * 12 ) + 5)  "  font-size="12px" text-anchor="middle">{{l.label}}</text>
 
       } @else {
@@ -52,7 +56,14 @@
      @for(l of incomingLabels(); track l.linkDefinition.iri) {
       @if($first) {
           <svg:text [attr.y]="((incomingLabels().length - $index) * 12)" font-size="12px" text-anchor="middle">{{l.label}}</text>
+          @if(x1() >= x2()) {
+          <svg:text [attr.y]="((incomingLabels().length - $index) * 12 + 15)" font-size="12px" text-anchor="middle">&#8594;</text>
+
+          } @else {
           <svg:text [attr.y]="((incomingLabels().length - $index) * 12 + 15)" font-size="12px" text-anchor="middle">&#8592;</text>
+
+          }
+
 
 
       }
