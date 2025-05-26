@@ -82,7 +82,7 @@
     <div class="content-size content-style">
 
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
-        (nodeExpanded)="expandNode($event)" (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="true"
+        (nodeExpanded)="expandNode($event)" (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="false"
         [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
 
     </div>

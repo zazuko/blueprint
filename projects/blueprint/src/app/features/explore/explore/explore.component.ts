@@ -91,7 +91,6 @@ export class ExploreComponent {
   public currentGraphResource = signal<ExploredResource | null>(null);
   public bubbleGraph = this.#graphService.graphSignal;
 
-  expandedNode: IUiGraphNode | null = null;
   routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
 
@@ -107,13 +106,22 @@ export class ExploreComponent {
     this.#graphService.clearGraph();
 
     effect(() => {
+      const selectedNodeIri = this.selectedNodeIri();
+      if (selectedNodeIri) {
+        this.#graphService.expandNode(selectedNodeIri);
+      }
+    }
+    );
+
+    effect(() => {
       const subject = this.subjectIri();
-      console.log('subject', subject);
+
       if (subject === undefined) {
         return;
       }
 
-      this.#graphService.expandNode(subject);
+
+      //   this.#graphService.expandNode(subject);
       this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject)).pipe(
         takeUntilDestroyed(this.#destroyRef),
       ).subscribe(
@@ -221,7 +229,7 @@ export class ExploreComponent {
 
   // graph events
   onNodeSelected(node: IUiGraphNode): void {
-    this.expandedNode = node;
+    //this.expandedNode = node;
     this.selectByIri(node.id);
   }
 
@@ -235,16 +243,19 @@ export class ExploreComponent {
   }
 
   expandNode(node: IUiGraphNode): void {
-    this.expandedNode = node;
-    this.loadingIndicatorService.loading();
+    console.log('------------------expandNode', node.id);
+    // this.expandedNode = node;
+    //  this.loadingIndicatorService.loading();
 
     this.#graphService.expandNode(node.id);
   }
 
   onNodeFocused(node: IUiGraphNode): void {
     this.#graphService.clearGraph();
-    this.expandedNode = node;
-    this.#graphService.expandNode(node.id);
+    //  this.expandedNode = node;
+    // this.#graphService.expandNode(node.id);
+    this.#router.navigate(['explore', node.id], { fragment: this.routeFragment() });
+
   }
 
 }
