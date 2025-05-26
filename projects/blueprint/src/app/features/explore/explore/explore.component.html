@@ -44,8 +44,7 @@
 
 
   } @else if (routeFragment() === 'Nearby') {
-  <bp-neighbor-nodes [graph]="bubbleGraph()" [subject]="subjectIri()" (nodeSelected)="onNodeElementSelected($event)"
-    @fadeIn />
+  <bp-neighbor-nodes [graph]="bubbleGraph()" [subject]="subjectIri()" (nodeSelected)="onNodeSelected($event)" @fadeIn />
   } @else if (routeFragment() === 'Context') {
 
   <div class="subject-view" @fadeIn>
@@ -80,10 +79,19 @@
   <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
-
+      <p-drawer [(visible)]="visible" header="Subject" [modal]="true" position="right">
+        @if(currentGraphResource()) {
+        <p [pTooltip]="currentGraphResource().iri" class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
+          &lt;{{currentGraphResource().iri}}&gt;</p>
+        }
+        @for(l of literalDetailElements(); track l) {
+        <bp-literal [literal]="l"></bp-literal>
+        }
+      </p-drawer>
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
-        (nodeExpanded)="expandNode($event)" (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="false"
-        [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
+        (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)" [disableNodeMenu]="false"
+        (nodeMore)="showNodeDetails($event)" [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200"
+        yOffset="200" />
 
     </div>
 

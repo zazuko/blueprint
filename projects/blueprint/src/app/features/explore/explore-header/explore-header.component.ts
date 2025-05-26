@@ -121,7 +121,14 @@ export class ExploreHeaderComponent {
    * @returns {void}
    */
   public copyIriToClipboard(): void {
+
     this.#clipboard.copy(this.iri());
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Copied IRI',
+      detail: this.iri(),
+      life: 2000
+    });
   }
 
 }

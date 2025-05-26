@@ -127,3 +127,12 @@ $title-height: 118px;
   margin-top: 12px;
 
 }
+
+
+.iri {
+  font-size: 9px;
+  width: 260px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

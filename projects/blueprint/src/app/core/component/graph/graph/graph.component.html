@@ -21,7 +21,7 @@
             [isSelected]="node.id === selectedNodeId()" (dragStartEvent)="dragStart($event, node)"
             (dragEvent)="drag($event, node)" (dragEndEvent)="dragEnd($event, node)"
             (nodeSelected)="emitNodeSelected($event)" (nodeExpanded)="emitNodeExpanded($event)"
-            (nodeFocused)="emitNodeFocused($event)"></g>
+            (nodeFocused)="emitNodeFocused($event)" (nodeMore)="emitNodeMore($event)"></g>
           }
         </g>
 

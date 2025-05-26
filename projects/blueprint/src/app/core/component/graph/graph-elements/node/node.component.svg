@@ -38,6 +38,13 @@
       <svg:text class="fas menu-item-icon" x="0" y="0">{{ "\uf140" }}</text>
     </g>
   }
+
+   @if(node().showMenu && !disableMenu()) {
+    <svg:g class="menu-item-container" transform="rotate(90) translate(0, -55)" (click)="emitNodeMore($event)" (mousedown)="stopPropagation($event)">
+      <svg:circle r="15" cx="0" cy="0"></circle>
+      <svg:text class="fas menu-item-icon" x="0" y="0" transform="rotate(-90)">{{ "\uf05a" }}</text>
+    </g>
+  }
 </g>
 
 }

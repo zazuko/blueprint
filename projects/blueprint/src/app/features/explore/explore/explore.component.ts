@@ -5,6 +5,8 @@ import {
   DestroyRef,
   computed,
   effect,
+  OnDestroy,
+  model,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,10 +14,13 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 
 import { map, switchMap } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
+
 import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem } from 'primeng/api';
-
+import { DrawerModule } from 'primeng/drawer';
+import { ButtonModule } from 'primeng/button'
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
 import { GraphComponent } from '../../../core/component/graph/graph/graph.component';
@@ -42,6 +47,10 @@ import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-o
 import { PanelModule } from 'primeng/panel';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { ExploredResource } from '../model/explored-resource.class';
+import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
+
+type NodeExploreCommand = "expand" | "select";
+
 
 @Component({
   templateUrl: './explore.component.html',
@@ -60,10 +69,12 @@ import { ExploredResource } from '../model/explored-resource.class';
     TooltipModule,
     TabsModule,
     PanelModule,
-    LiteralComponent
+    LiteralComponent,
+    DrawerModule,
+    ButtonModule
   ]
 })
-export class ExploreComponent {
+export class ExploreComponent implements OnDestroy {
   readonly #route = inject(ActivatedRoute);
   readonly #router = inject(Router);
   readonly #graphService = inject(GraphService);
@@ -71,8 +82,9 @@ export class ExploreComponent {
   readonly #viewData = inject(ViewDataService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #uiDetailService = inject(UiDetailService);
+  readonly #clipboard = inject(Clipboard);
   readonly loadingIndicatorService = inject(LoadingIndicatorService);
-
+  readonly #messageChannelServie = inject(MessageChannelService);
   readonly compositionLinks = signal<CompositionLinkResult[]>([]);
   readonly thisNodeElement = signal<NodeElement | null>(null);
 
@@ -86,7 +98,7 @@ export class ExploreComponent {
 
   public activeItem = this.tabNavItems[0];
 
-
+  visible = model<boolean>(false);
   // this is the IRI of the subject in the route
   public currentGraphResource = signal<ExploredResource | null>(null);
   public bubbleGraph = this.#graphService.graphSignal;
@@ -100,18 +112,17 @@ export class ExploreComponent {
 
   searchTerm: string;
   searchFilter: string;
-  expanded = true;
+
+  nodeExploreCommand: NodeExploreCommand = 'expand'; // default command is expand
 
   constructor() {
-    this.#graphService.clearGraph();
 
     effect(() => {
       const selectedNodeIri = this.selectedNodeIri();
-      if (selectedNodeIri) {
+      if (selectedNodeIri && this.nodeExploreCommand === 'expand') {
         this.#graphService.expandNode(selectedNodeIri);
       }
-    }
-    );
+    });
 
     effect(() => {
       const subject = this.subjectIri();
@@ -151,6 +162,7 @@ export class ExploreComponent {
           },
           error: (error) => {
             console.error('error', error);
+            this.#messageChannelServie.error('Error loading view for subject', error, 'Please check the subject IRI and try again.');
             this.loadingIndicatorService.done();
           }
         });
@@ -229,12 +241,8 @@ export class ExploreComponent {
 
   // graph events
   onNodeSelected(node: IUiGraphNode): void {
-    //this.expandedNode = node;
+    this.nodeExploreCommand = 'select';
     this.selectByIri(node.id);
-  }
-
-  onNodeElementSelected(node: IUiGraphNode): void {
-    this.selectByIri(node.iri);
   }
 
   selectByIri(iri: string): void {
@@ -243,20 +251,38 @@ export class ExploreComponent {
   }
 
   expandNode(node: IUiGraphNode): void {
-    console.log('------------------expandNode', node.id);
-    // this.expandedNode = node;
-    //  this.loadingIndicatorService.loading();
-
-    this.#graphService.expandNode(node.id);
+    this.nodeExploreCommand = 'expand';
+    if (this.selectedNodeIri() === node.id) {
+      this.#graphService.expandNode(node.id);
+      return;
+    }
+    this.selectByIri(node.id);
   }
 
-  onNodeFocused(node: IUiGraphNode): void {
+  focusNode(node: IUiGraphNode): void {
     this.#graphService.clearGraph();
-    //  this.expandedNode = node;
-    // this.#graphService.expandNode(node.id);
-    this.#router.navigate(['explore', node.id], { fragment: this.routeFragment() });
-
+    this.nodeExploreCommand = 'expand';
+    if (this.selectedNodeIri() === node.id) {
+      this.#graphService.expandNode(node.id);
+      return;
+    }
+    this.selectByIri(node.id);
   }
 
+  showNodeDetails(node: IUiGraphNode): void {
+    console.log('showNodeDetails', node);
+    this.nodeExploreCommand = 'select';
+    this.selectByIri(node.id);
+    this.visible.set(true);
+  }
+
+  copyToClipboard(text: string): void {
+    this.#clipboard.copy(text);
+  };
+
+  ngOnDestroy(): void {
+    this.#graphService.clearGraph();
+  }
 }
+
 

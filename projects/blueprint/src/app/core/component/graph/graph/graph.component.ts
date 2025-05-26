@@ -52,6 +52,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeSelected = output<IUiGraphNode>();
   readonly nodeExpanded = output<IUiGraphNode>();
   readonly nodeFocused = output<IUiGraphNode>();
+  readonly nodeMore = output<IUiGraphNode>();
   readonly linkSelected = output<string>();
 
 
@@ -110,6 +111,7 @@ export class GraphComponent implements OnInit, OnDestroy {
         // if there is an incoming link, add the link to the incoming link array
         const directionalLink = (link as UiLinkWithDirection);
         directionalLink.direction = 'incoming'; incomingLink.push(directionalLink);
+
       }
     };
 
@@ -336,6 +338,10 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   emitNodeFocused(node: IUiGraphNode): void {
     this.nodeFocused.emit(node);
+  }
+
+  emitNodeMore(node: IUiGraphNode): void {
+    this.nodeMore.emit(node);
   }
 
   onLinkSelected(link: IUiLink): void {
