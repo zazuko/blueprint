@@ -34,7 +34,7 @@
     }
 
     <div class="view-container">
-      @for(l of literalDetailElements(); track l) {
+      @for(l of literalDetailElements(); track l.ruleIri) {
       <bp-literal [literal]="l"></bp-literal>
       }
 
@@ -79,12 +79,24 @@
   <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
-      <p-drawer [(visible)]="visible" header="Subject" [modal]="true" position="right">
+      <p-drawer [(visible)]="visible" [modal]="drawerModal()" position="right">
+        <ng-template #header>
+          <div class="drawer-header">
+
+            <div style="display: flex; flex-direction: column;">
+              <h1 class="drawer-title">Subject</h1>
+
+            </div>
+            <button pButton icon="pi pi-thumbtack" class="p-button-rounded p-button-text"
+              (click)="toggleModalDetailsDrawer()" aria-label="Pin drawer"
+              [ngStyle]="pinDetailsPanel() ? {'color': 'red'} : {}"></button>
+          </div>
+        </ng-template>
         @if(currentGraphResource()) {
         <p [pTooltip]="currentGraphResource().iri" class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
           &lt;{{currentGraphResource().iri}}&gt;</p>
         }
-        @for(l of literalDetailElements(); track l) {
+        @for(l of literalDetailElements(); track l.ruleIri) {
         <bp-literal [literal]="l"></bp-literal>
         }
       </p-drawer>

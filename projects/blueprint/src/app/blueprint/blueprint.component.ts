@@ -48,18 +48,7 @@ export class BlueprintComponent {
         }
         );
 
-        this.#messageChannelService.warn$.subscribe(message => {
-            const options: ToastMessageOptions = {
-                severity: 'warn',
-                sticky: false,
-                detail: message.message + ' ' + (message.details ? JSON.stringify(message.details, null, 2) : '') + (message.suggestion ? ' - ' + message.suggestion : ''),
-                summary: message.message,
-                life: 2000,
 
-            };
-            this.#messageService.add(options);
-        }
-        );
     }
 
 }

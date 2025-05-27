@@ -99,6 +99,11 @@ export class ExploreComponent implements OnDestroy {
   public activeItem = this.tabNavItems[0];
 
   visible = model<boolean>(false);
+  pinDetailsPanel = signal<boolean>(false);
+
+  drawerModal = computed(() => {
+    return !this.pinDetailsPanel();
+  });
   // this is the IRI of the subject in the route
   public currentGraphResource = signal<ExploredResource | null>(null);
   public bubbleGraph = this.#graphService.graphSignal;
@@ -193,6 +198,7 @@ export class ExploreComponent implements OnDestroy {
       if (literalRule) {
         if (literalValues) {
           const literalElement: UILiteral = {
+            ruleIri: key,
             label: literalRule.label,
             order: literalRule.order,
             value: literalValues,
@@ -212,6 +218,7 @@ export class ExploreComponent implements OnDestroy {
 
 
         const literalElement: UILiteral = {
+          ruleIri: key,
           label: capitalizedLabel,
           order: 10,
           value: literalValues,
@@ -280,6 +287,19 @@ export class ExploreComponent implements OnDestroy {
     this.#clipboard.copy(text);
   };
 
+  toggleModalDetailsDrawer(): void {
+    this.visible.set(!this.visible());
+    window.setTimeout(() => {
+      const currentPinDetailsPanel = this.pinDetailsPanel();
+      this.pinDetailsPanel.set(!currentPinDetailsPanel);
+      if (!currentPinDetailsPanel) {
+        window.setTimeout(() => {
+          this.visible.set(!this.visible());
+
+        }, 400);
+      }
+    }, 200);
+  }
   ngOnDestroy(): void {
     this.#graphService.clearGraph();
   }

@@ -1,7 +1,7 @@
 <div class="literal-view">
     <div class="literal">
         <div class="label"> {{ label() }}</div>
-        @for(l of value(); track l) {
+        @for(l of valuesWithId(); track l.id) {
         @if(isUrl(l.value)) {
         <div style="display: flex; flex-direction: row; gap: 0.5rem; align-items: center;">
             <i class="pi pi-external-link"></i>
