@@ -48,6 +48,7 @@ import { PanelModule } from 'primeng/panel';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
+import { RdfPrefixPipe } from "../../../core/rdf/prefix/rdf-prefix.pipe";
 
 type NodeExploreCommand = "expand" | "select";
 type SelectionKind = "node" | "link";
@@ -72,6 +73,7 @@ type SelectionKind = "node" | "link";
     LiteralComponent,
     DrawerModule,
     ButtonModule,
+    RdfPrefixPipe
   ]
 })
 export class ExploreComponent implements OnDestroy {
@@ -313,7 +315,9 @@ export class ExploreComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('%cExploreComponent ngOnDestroy', 'color: red; font-weight: bold;');
     this.#graphService.clearGraph();
+    this.#selectionService.clearSelection();
   }
 }
 

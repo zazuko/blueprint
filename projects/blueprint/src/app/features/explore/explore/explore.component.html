@@ -104,14 +104,29 @@
         @if(selectedLink()) {
         @for(l of selectedLink()!.outgoingLabels; track l.linkDefinition.iri) {
         <div>{{l.label}}</div>
-        <div>{{l.linkDefinition.propertyPath}}</div>
+        <div>
+          Path:
+          @for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
+          <span>{{pathElement | rdfPrefix}}</span>
+          @if(!$last) {
+          <span>/</span>
+          }
+
+          }
+        </div>
         <div>{{l.linkDefinition.label}}</div>
         }
         <hr>
         @for(l of selectedLink()!.incomingLabels; track l.linkDefinition.iri) {
         <div>{{l.label}}</div>
-        <div>{{l.linkDefinition.propertyPath}}</div>
-        <div>{{l.linkDefinition.label}}</div>
+        Path:
+        @for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
+        <span>{{pathElement | rdfPrefix}}</span>
+        @if(!$last) {
+        <span>/</span>
+        }
+
+        }
         }
         }
         }

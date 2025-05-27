@@ -4,7 +4,7 @@ import { ClownfaceObject, precedence } from "@blueprint/model/clownface-object/c
 import { RdfUiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
 import { rdf, rdfs, shacl, skos } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
-import { RdfTypes } from "../../../core/rdf/rdf-environment";
+import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/avatar/avatar.component";
 
 
@@ -80,7 +80,7 @@ export class ExploredResource extends ClownfaceObject {
             const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
             let classLabel = metaGraph.out(rdfs.labelNamedNode).values.join(', ');
             if (classLabel.length === 0) {
-                classLabel = this._node.out(rdf.typeNamedNode).values.map(label => `<${label}>`).join(', ');
+                classLabel = this._node.out(rdf.typeNamedNode).map((type) => rdfEnvironment.shrinkTerm(type.term)).join(', ');
             }
             this.#classLabel = classLabel;
         }

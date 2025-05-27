@@ -33,6 +33,9 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         super(node);
     }
 
+    /**
+     * Returns the label of the link.
+     */
     get label(): string {
         if (this.#label === undefined) {
             const name = this._node.out(shacl.nameNamedNode).values;
@@ -48,6 +51,11 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#label;
     }
 
+    /**
+     * Return the property path fragments for this link definition.
+     * The property path is the path that points to the target of the link.
+     * If no property path is found, it returns an empty array.
+     */
     get propertyPathFragments(): string[] {
 
         if (this.#propertyPathFragments == undefined) {
@@ -69,6 +77,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#propertyPathFragments;
     }
 
+    /**
+     * Returns the property path for this link definition.
+     * The property path is the path that points to the target of the link.
+     * If no property path is found, it returns null. 
+     * If multiple property paths are found, it logs a warning and returns the first one.
+     */
     get propertyPath(): string | null {
         if (this.#propertyPath == undefined) {
             const paths = this._node.out(shacl.pathNamedNode);
@@ -89,6 +103,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#propertyPath;
     }
 
+    /**
+     * Returns the inverse property path fragments for this link definition.
+     * The inverse property path is the path that points to the source of the link.
+     * If no inverse property path is found, it returns an empty array. 
+     * If multiple inverse property paths are found, it logs a warning and returns the first one.
+     */
     get inversePropertyPathFragments(): string[] | null {
         if (this.#inversePropertyPathFragments === undefined) {
             const paths = this._node.out(shacl.pathNamedNode);
@@ -108,6 +128,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#inversePropertyPathFragments;
     }
 
+    /**
+     * Returns the inverse property path for this link definition.
+     * The inverse property path is the path that points to the source of the link.
+     * If no inverse property path is found, it returns null. 
+     * If multiple inverse property paths are found, it logs a warning and returns the first one.
+     */
     get inversePropertyPath(): string | null {
         if (this.#inversePropertyPath === undefined) {
             const paths = this._node.out(shacl.pathNamedNode);
@@ -127,8 +153,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#inversePropertyPath;
     }
 
-
-
+    /**
+     * Returns the source of the arrow for this link definition.
+     * The source is the target class of the link.
+     * If no source is found, it returns null. 
+     * If multiple sources are found, it logs a warning and returns the first one.
+     */
     get arrowSource(): string | null {
         if (this.#arrowSource === undefined) {
             const source = this._node.out(shacl.targetClassNamedNode).values;
@@ -145,6 +175,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#arrowSource;
     }
 
+    /**
+     * Returns the target of the arrow for this link definition.
+     * The target is the class that the link points to.
+     * If no target is found, it returns null. 
+     * If multiple targets are found, it logs a warning and returns the first one.
+     */
     get arrowTarget(): string | null {
         if (this.#arrowTarget === undefined) {
             const targets = this._node.out(shacl.classNamedNode).values;
@@ -161,6 +197,10 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#arrowTarget;
     }
 
+    /**
+     * Returns whether this link definition is synthetic.
+     * A synthetic link is a link that is not defined in the ontology, but is created by the application.
+     */
     get isSynthetic(): boolean {
         if (this.#isSynthetic === undefined) {
             const synthetic = this._node.out(appLocal.isSyntheticNamedNode).values;
