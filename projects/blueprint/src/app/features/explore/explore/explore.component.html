@@ -84,7 +84,7 @@
           <div class="drawer-header">
 
             <div style="display: flex; flex-direction: column;">
-              <h1 class="drawer-title">Subject</h1>
+              <h1 class="drawer-title">{{selectionKind() === 'node' ? 'Subject' : 'Link'}}</h1>
 
             </div>
             <button pButton icon="pi pi-thumbtack" class="p-button-rounded p-button-text"
@@ -92,6 +92,7 @@
               [ngStyle]="pinDetailsPanel() ? {'color': 'red'} : {}"></button>
           </div>
         </ng-template>
+        @if(selectionKind() === 'node') {
         @if(currentGraphResource()) {
         <p [pTooltip]="currentGraphResource().iri" class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
           &lt;{{currentGraphResource().iri}}&gt;</p>
@@ -99,11 +100,26 @@
         @for(l of literalDetailElements(); track l.ruleIri) {
         <bp-literal [literal]="l"></bp-literal>
         }
+        } @else {
+        @if(selectedLink()) {
+        @for(l of selectedLink()!.outgoingLabels; track l.linkDefinition.iri) {
+        <div>{{l.label}}</div>
+        <div>{{l.linkDefinition.propertyPath}}</div>
+        <div>{{l.linkDefinition.label}}</div>
+        }
+        <hr>
+        @for(l of selectedLink()!.incomingLabels; track l.linkDefinition.iri) {
+        <div>{{l.label}}</div>
+        <div>{{l.linkDefinition.propertyPath}}</div>
+        <div>{{l.linkDefinition.label}}</div>
+        }
+        }
+        }
       </p-drawer>
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
         (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)" [disableNodeMenu]="false"
-        (nodeMore)="showNodeDetails($event)" [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200"
-        yOffset="200" />
+        (nodeMore)="showNodeDetails($event)" (linkSelected)="selectLink($event)" [disableZoomMenu]="true"
+        [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
 
     </div>
 

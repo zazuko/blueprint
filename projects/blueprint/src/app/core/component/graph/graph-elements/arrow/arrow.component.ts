@@ -2,7 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
-  computed
+  computed,
+  output
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -24,6 +25,8 @@ export class ArrowComponent {
   y1 = input.required<number>();
   y2 = input.required<number>();
   link = input.required<ConsolidatedLink>();
+
+  linkSelected = output<ConsolidatedLink>();
 
   isSourceAndTargetSame = computed(() => {
     const link = this.link();
@@ -47,12 +50,8 @@ export class ArrowComponent {
     const x1 = this.x1();
     const y1 = this.y1();
     const rotation = -45;
-    //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
-
-
 
   incomingLabels = computed(() => {
     const link = this.link();
@@ -64,6 +63,11 @@ export class ArrowComponent {
     const link = this.link();
     const labels = link.outgoingLabels;
     return labels;
-
   });
+
+  emitLinkSelected(event: Event): void {
+    event.stopPropagation();
+    const link = this.link();
+    this.linkSelected.emit(link);
+  }
 }

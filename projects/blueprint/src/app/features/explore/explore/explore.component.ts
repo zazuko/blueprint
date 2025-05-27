@@ -32,7 +32,7 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 
 import { flux, nileaUi, rdf, } from '@blueprint/ontology';
-import { IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { ConsolidatedLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
@@ -50,7 +50,7 @@ import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 
 type NodeExploreCommand = "expand" | "select";
-
+type SelectionKind = "node" | "link";
 
 @Component({
   templateUrl: './explore.component.html',
@@ -71,7 +71,7 @@ type NodeExploreCommand = "expand" | "select";
     PanelModule,
     LiteralComponent,
     DrawerModule,
-    ButtonModule
+    ButtonModule,
   ]
 })
 export class ExploreComponent implements OnDestroy {
@@ -100,6 +100,9 @@ export class ExploreComponent implements OnDestroy {
 
   visible = model<boolean>(false);
   pinDetailsPanel = signal<boolean>(false);
+  selectionKind = signal<SelectionKind>('node');
+  showLinks = signal<boolean>(false);
+  selectedLink = signal<ConsolidatedLink | null>(null);
 
   drawerModal = computed(() => {
     return !this.pinDetailsPanel();
@@ -254,6 +257,7 @@ export class ExploreComponent implements OnDestroy {
 
   selectByIri(iri: string): void {
     this.#selectionService.setSelectedNode(iri);
+    this.selectionKind.set('node');
     this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
@@ -300,6 +304,14 @@ export class ExploreComponent implements OnDestroy {
       }
     }, 200);
   }
+
+  selectLink(link: ConsolidatedLink): void {
+    this.selectedLink.set(link);
+    this.showLinks.set(true);
+    this.visible.set(true);
+    this.selectionKind.set('link');
+  }
+
   ngOnDestroy(): void {
     this.#graphService.clearGraph();
   }

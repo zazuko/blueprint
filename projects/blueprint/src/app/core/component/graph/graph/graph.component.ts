@@ -53,7 +53,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeExpanded = output<IUiGraphNode>();
   readonly nodeFocused = output<IUiGraphNode>();
   readonly nodeMore = output<IUiGraphNode>();
-  readonly linkSelected = output<string>();
+  readonly linkSelected = output<ConsolidatedLink>();
 
 
   readonly #element = inject(ElementRef).nativeElement;
@@ -344,8 +344,8 @@ export class GraphComponent implements OnInit, OnDestroy {
     this.nodeMore.emit(node);
   }
 
-  onLinkSelected(link: IUiLink): void {
-    console.log('link selected', link);
+  emitLinkSelected(link: ConsolidatedLink): void {
+    this.linkSelected.emit(link);
   }
 
   zoomInOneStep(): void {
