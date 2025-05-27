@@ -12,6 +12,12 @@ import prefixes from '@zazuko/prefixes/prefixes';
 class RdfEnvironment {
     #rdfEnv = env;
 
+    constructor() {
+        prefixes['cube'] = 'https://cube.link/';
+        prefixes['cubeMeta'] = 'https://cube.link/meta/';
+        prefixes['ex'] = 'http://example.com/';
+    }
+
     /**
      * Parse a Turtle string into a dataset.
      * 
@@ -139,7 +145,11 @@ class RdfEnvironment {
      * @returns The shrunk term as a string.
      */
     shrinkTerm(term: RdfTypes.Term): string {
-        return shrink(term.value)
+        const shrinked = shrink(term.value, prefixes);
+        if (!shrinked) {
+            return `<${term.value}>`;
+        }
+        return shrinked;
     }
 
     /**

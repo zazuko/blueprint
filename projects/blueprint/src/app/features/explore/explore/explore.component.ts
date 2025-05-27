@@ -49,6 +49,7 @@ import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 import { RdfPrefixPipe } from "../../../core/rdf/prefix/rdf-prefix.pipe";
+import { LinkPanelComponent } from "../link-panel/link-panel.component";
 
 type NodeExploreCommand = "expand" | "select";
 type SelectionKind = "node" | "link";
@@ -73,7 +74,7 @@ type SelectionKind = "node" | "link";
     LiteralComponent,
     DrawerModule,
     ButtonModule,
-    RdfPrefixPipe
+    LinkPanelComponent
   ]
 })
 export class ExploreComponent implements OnDestroy {
@@ -106,6 +107,13 @@ export class ExploreComponent implements OnDestroy {
   showLinks = signal<boolean>(false);
   selectedLink = signal<ConsolidatedLink | null>(null);
 
+  selectedLinkIri = computed(() => {
+    const link = this.selectedLink();
+    if (!link) {
+      return '';
+    }
+    return link.iri;
+  });
   drawerModal = computed(() => {
     return !this.pinDetailsPanel();
   });
@@ -199,6 +207,10 @@ export class ExploreComponent implements OnDestroy {
     [...literalMap.keys()].forEach((key) => {
       const literalValues = literalMap.get(key).map(q => q.object as RdfTypes.Literal);
 
+      if (!literalRules) {
+        debugger;
+        console.warn('No literal rules found for key:', key);
+      }
       const literalRule = literalRules.find((rule) => rule.path.value === key);
       if (literalRule) {
         if (literalValues) {
@@ -309,6 +321,7 @@ export class ExploreComponent implements OnDestroy {
 
   selectLink(link: ConsolidatedLink): void {
     this.selectedLink.set(link);
+
     this.showLinks.set(true);
     this.visible.set(true);
     this.selectionKind.set('link');

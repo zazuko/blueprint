@@ -29,6 +29,7 @@ import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
 import { NodeComponent } from '../graph-elements/node/node.component';
 import { ColorUtil } from '../../../utils/color-util';
 
+type SelectionType = 'node' | 'link';
 @Component({
   selector: 'bp-graph',
   templateUrl: './graph.component.html',
@@ -43,6 +44,7 @@ import { ColorUtil } from '../../../utils/color-util';
 export class GraphComponent implements OnInit, OnDestroy {
   readonly graph = input.required<Graph>();
   readonly selectedNodeId = input<string>('');
+  readonly selectedLinkId = input<string>('');
   readonly disableZoomMenu = input<boolean>(false);
   readonly disableNodeMenu = input<boolean>(false);
 
@@ -59,9 +61,10 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
-  public linksSignal = signal<ConsolidatedLink[]>([]);
-  public nodesSignal = signal<IUiGraphNode[]>([]);
+  readonly linksSignal = signal<ConsolidatedLink[]>([]);
+  readonly nodesSignal = signal<IUiGraphNode[]>([]);
 
+  selectionType = signal<SelectionType>('node');
 
   public layout: LayoutAdaptor | null = null;
   private d3zoom; // ZoomBehavior<Element, unknown> | null = null;
@@ -329,22 +332,27 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 
   emitNodeSelected(node: IUiGraphNode): void {
+    this.selectionType.set('node');
     this.nodeSelected.emit(node);
   }
 
   emitNodeExpanded(node: IUiGraphNode): void {
+    this.selectionType.set('node');
     this.nodeExpanded.emit(node);
   }
 
   emitNodeFocused(node: IUiGraphNode): void {
+    this.selectionType.set('node');
     this.nodeFocused.emit(node);
   }
 
   emitNodeMore(node: IUiGraphNode): void {
+    this.selectionType.set('node');
     this.nodeMore.emit(node);
   }
 
   emitLinkSelected(link: ConsolidatedLink): void {
+    this.selectionType.set('link');
     this.linkSelected.emit(link);
   }
 

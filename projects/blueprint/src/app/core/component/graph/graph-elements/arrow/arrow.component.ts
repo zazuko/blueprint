@@ -8,7 +8,6 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { ConsolidatedLink } from '../../model/graph.model';
-import { lab } from 'd3';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -20,11 +19,12 @@ import { lab } from 'd3';
 })
 export class ArrowComponent {
   // inputs
-  x1 = input.required<number>();
-  x2 = input.required<number>();
-  y1 = input.required<number>();
-  y2 = input.required<number>();
-  link = input.required<ConsolidatedLink>();
+  readonly x1 = input.required<number>();
+  readonly x2 = input.required<number>();
+  readonly y1 = input.required<number>();
+  readonly y2 = input.required<number>();
+  readonly link = input.required<ConsolidatedLink>();
+  readonly isSelected = input<boolean>(false);
 
   linkSelected = output<ConsolidatedLink>();
 

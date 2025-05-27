@@ -11,17 +11,19 @@
         <g class="link-layer">
           @for(link of linksSignal(); track link.iri) {
           <g bp-arrow [x1]="link.source.x" [y1]="link.source.y" [x2]="link.target.x" [y2]="link.target.y" [link]="link"
-            (linkSelected)="emitLinkSelected(link)"></g>
+            (linkSelected)="emitLinkSelected(link)"
+            [isSelected]="link.iri === selectedLinkId() && selectionType() === 'link'"></g>
           }
         </g>
         <!-- nodes -->
         <g class="node-layer">
           @for(node of nodesSignal(); track node.iri) {
           <g bp-node fluxDraggable [node]="node" [disableMenu]="disableNodeMenu()" [color]="node.color"
-            [isSelected]="node.id === selectedNodeId()" (dragStartEvent)="dragStart($event, node)"
-            (dragEvent)="drag($event, node)" (dragEndEvent)="dragEnd($event, node)"
-            (nodeSelected)="emitNodeSelected($event)" (nodeExpanded)="emitNodeExpanded($event)"
-            (nodeFocused)="emitNodeFocused($event)" (nodeMore)="emitNodeMore($event)"></g>
+            [isSelected]="node.id === selectedNodeId() && selectionType() === 'node'"
+            (dragStartEvent)="dragStart($event, node)" (dragEvent)="drag($event, node)"
+            (dragEndEvent)="dragEnd($event, node)" (nodeSelected)="emitNodeSelected($event)"
+            (nodeExpanded)="emitNodeExpanded($event)" (nodeFocused)="emitNodeFocused($event)"
+            (nodeMore)="emitNodeMore($event)"></g>
           }
         </g>
 

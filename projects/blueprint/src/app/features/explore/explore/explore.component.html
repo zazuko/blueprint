@@ -102,39 +102,14 @@
         }
         } @else {
         @if(selectedLink()) {
-        @for(l of selectedLink()!.outgoingLabels; track l.linkDefinition.iri) {
-        <div>{{l.label}}</div>
-        <div>
-          Path:
-          @for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
-          <span>{{pathElement | rdfPrefix}}</span>
-          @if(!$last) {
-          <span>/</span>
-          }
-
-          }
-        </div>
-        <div>{{l.linkDefinition.label}}</div>
-        }
-        <hr>
-        @for(l of selectedLink()!.incomingLabels; track l.linkDefinition.iri) {
-        <div>{{l.label}}</div>
-        Path:
-        @for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
-        <span>{{pathElement | rdfPrefix}}</span>
-        @if(!$last) {
-        <span>/</span>
-        }
-
-        }
-        }
+        <bp-link-panel [link]="selectedLink()" />
         }
         }
       </p-drawer>
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
-        (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)" [disableNodeMenu]="false"
-        (nodeMore)="showNodeDetails($event)" (linkSelected)="selectLink($event)" [disableZoomMenu]="true"
-        [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
+        [selectedLinkId]="selectedLinkIri()" (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)"
+        [disableNodeMenu]="false" (nodeMore)="showNodeDetails($event)" (linkSelected)="selectLink($event)"
+        [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
 
     </div>
 
