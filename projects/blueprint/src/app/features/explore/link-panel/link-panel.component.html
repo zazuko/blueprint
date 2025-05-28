@@ -1,26 +1,25 @@
+@if(link()!.outgoingLabels.length > 0) {
+<div class="direction"> &#8592;</div>
 @for(l of link()!.outgoingLabels; track l.linkDefinition.iri) {
-<div>{{l.label}}</div>
-<div>
+<bp-list-item [label]="l" />
+}
+}
+<hr>
+@if(link()!.incomingLabels.length > 0) {
+
+<div class="direction"> &#8594;</div>
+
+@for(l of link()!.incomingLabels; track l.linkDefinition.iri) {
+<div class="list-item">
+    <div>{{l.label}}</div>
     Path:
     @for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
     <span>{{pathElement | rdfPrefix}}</span>
     @if(!$last) {
     <span>/</span>
     }
-
     }
 </div>
-<div>{{l.linkDefinition.label}}</div>
-}
-<hr>
-@for(l of link()!.incomingLabels; track l.linkDefinition.iri) {
-<div>{{l.label}}</div>
-Path:
-@for(pathElement of l.linkDefinition.propertyPathFragments; track pathElement) {
-<span>{{pathElement | rdfPrefix}}</span>
-@if(!$last) {
-<span>/</span>
-}
 
 }
 }

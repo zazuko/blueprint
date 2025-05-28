@@ -1,0 +1,16 @@
+
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    font-size: 0.8em;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+}

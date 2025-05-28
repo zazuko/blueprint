@@ -2,10 +2,11 @@ import { Component, computed, input } from '@angular/core';
 import { ConsolidatedLink } from '@blueprint/component/graph/model/graph.model';
 import { RdfPrefixPipe } from "../../../core/rdf/prefix/rdf-prefix.pipe";
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
+import { ListItemComponent } from "./list-item/list-item.component";
 
 @Component({
   selector: 'bp-link-panel',
-  imports: [RdfPrefixPipe],
+  imports: [RdfPrefixPipe, ListItemComponent],
   templateUrl: './link-panel.component.html',
   styleUrl: './link-panel.component.scss'
 })

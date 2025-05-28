@@ -1,0 +1,15 @@
+<div><span class="direction">Label:</span>{{label().label}}</div>
+<div class="row">
+    <div class="direction">Path:</div>
+    @for(pathElement of path(); track pathElement.ngForIndex) {
+    <div>{{pathElement.displayString}}
+        @if(!$last) {
+        <span>/</span>
+        }
+    </div>
+
+    }
+</div>
+
+<bp-string-literal label="Arrow Label" [value]="labelLiterals()" />
+<bp-string-literal label="Path" [value]="pathLiterals()" />

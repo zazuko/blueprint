@@ -1,6 +1,5 @@
 import { Component, computed, input } from '@angular/core';
 import { RdfTypes } from '../../../../rdf/rdf-environment';
-import { equal } from 'assert';
 
 @Component({
   selector: 'bp-string-literal',
