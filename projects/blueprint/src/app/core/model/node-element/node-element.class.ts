@@ -7,9 +7,7 @@ import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-cla
 
 import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
-import { ColorUtil } from '../../utils/color-util';
 import { DEFAULT_ICON } from '@blueprint/constant/icon';
-import { C } from '@angular/cdk/scrolling-module.d-ud2XrbF8';
 import { DEFAULT_COLOR } from '@blueprint/constant/color';
 
 /**
