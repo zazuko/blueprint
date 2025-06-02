@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 
 import { Observable, ReplaySubject, of, map } from 'rxjs';
 
-import { QueryBuilderService } from '../query-builder/query-builder.service';
+import { GraphQueryBuilderService } from '../query-builder/graph-query-builder.service';
 
 import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
 
@@ -17,7 +17,7 @@ export interface QueryInput {
   providedIn: 'root',
 })
 export class GraphService {
-  readonly #queryBuilder = inject(QueryBuilderService);
+  readonly #queryBuilder = inject(GraphQueryBuilderService);
 
   #nodesMap = new Map<string, RdfUiGraphNode>();
   #linksMap = new Map<string, RdfUiLink>();
@@ -95,6 +95,11 @@ export class GraphService {
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');
 
+        nodes.forEach(node => {
+          if (node.isBlankNode) {
+            node.logTable();
+          }
+        });
 
         // node position
         // if the current node does not have a position, set it to (0, 0)

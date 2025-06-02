@@ -13,7 +13,7 @@ import { rdf, rdfs, shacl, flux } from "@blueprint/ontology";
 import { RdfTypes } from "../../../../rdf/rdf-environment";
 
 export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
-    const query = `
+  const query = `
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
   ${shacl.sparqlPrefix()}
@@ -39,6 +39,10 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
       <${subject.value}> ?literalPT ?literalPO .
       ?literalPT ?literalTboxP ?literalTboxO .
     } UNION {
+      <${subject.value}> ?literalBlankNodeP ?blankNodeS .
+      FILTER(isBlank(?blankNodeS))
+      ?blankNodeS ?blankNodePO ?blankNodeO . 
+    } UNION {
       {
         SELECT ?metaShape
         WHERE {
@@ -62,5 +66,5 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
   }
   `;
 
-    return query;
+  return query;
 }

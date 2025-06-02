@@ -31,12 +31,10 @@ export interface IUiGraphNode extends INodeElement {
 
 export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNode {
 
-
   constructor(node: GraphPointer) {
     super(node);
 
   }
-
 
   get index(): number {
     const index = this._node.out(flux.indexNamedNode).value;
@@ -155,6 +153,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     return showMenuString === 'true' || showMenuString === '1';
   }
 
+
   set showMenu(showMenu: boolean) {
     const hasShowMenu = this._node.out(flux.namespace`showMenu`).value !== undefined;
     if (hasShowMenu) {
@@ -163,6 +162,9 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     this._node.addOut(flux.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
+  /**
+   * Returns true if the node is a blank node
+   */
   get isBlankNode(): boolean {
     return this._node.term.termType === 'BlankNode' ? true : false;
   }

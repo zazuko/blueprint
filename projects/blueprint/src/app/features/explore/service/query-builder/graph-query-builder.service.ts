@@ -17,7 +17,7 @@ import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-met
 @Injectable({
   providedIn: 'root',
 })
-export class QueryBuilderService {
+export class GraphQueryBuilderService {
   readonly #sparqlService = inject(SparqlService);
   readonly #uiClassMetadataService = inject(UiClassMetadataService);
   readonly #uiLinkMetadataService = inject(UiLinkMetadataService);
@@ -299,6 +299,7 @@ CONSTRUCT {
   ${link.isSynthetic ? `` : `?target a ?targetType .`}
   ?input ${link.propertyPath}  ?target .
   FILTER (!isLiteral(?target))
+  FILTER (!isBlank(?target))
 
   OPTIONAL {
   ?target ${rdfs.labelPrefixed} ?targetLabel .
@@ -352,6 +353,7 @@ CONSTRUCT {
 
   ?target ${link.propertyPath}  ?input  .
   FILTER (!isLiteral(?target))
+  FILTER (!isBlank(?target))
 
   OPTIONAL {
     ?target ${rdfs.labelPrefixed} ?targetLabel .
