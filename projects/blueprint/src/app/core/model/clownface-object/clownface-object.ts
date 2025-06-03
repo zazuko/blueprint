@@ -1,7 +1,7 @@
 import { GraphPointer } from 'clownface';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
-import { rdfs, schema, skos } from '@blueprint/ontology';
+import { rdfs, schema, shacl, skos } from '@blueprint/ontology';
 
 /**
  * Base class for all objects that are represented by a node in the RDF graph. It provides some basic functionality to
@@ -15,6 +15,7 @@ export abstract class ClownfaceObject {
         const schemaNameTerm = graphPointer.out(schema.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
         const skosPrefLabelTerm = graphPointer.out(skos.prefLabelNamedNode).terms.filter((term) => term.termType === 'Literal');
         const schemaFamilyNameTerm = graphPointer.out(schema.familyNameNamedNode).terms.filter((term) => term.termType === 'Literal');
+        const shaclNameTerm = graphPointer.out(shacl.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
 
         let label = '';
         if (skosPrefLabelTerm.length > 0) {
@@ -36,9 +37,16 @@ export abstract class ClownfaceObject {
             return label;
         }
 
+        if (shaclNameTerm.length > 0) {
+            // order by langage tag and terms with langage en first
+            label = shaclNameTerm.sort(precedence)[0].value;
+            return label;
+        }
+
         if (graphPointer.value.includes('#')) {
             label = graphPointer.value.split('#').pop();
-            return label;
+            return decodeURIComponent(label);
+
         }
 
         label = graphPointer.value.split('/').pop();
@@ -47,7 +55,7 @@ export abstract class ClownfaceObject {
             parts.pop();
             label = parts.pop();
         }
-        return label;
+        return decodeURIComponent(label);
 
     }
 

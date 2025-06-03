@@ -37,6 +37,9 @@
       @for(l of literalDetailElements(); track l.ruleIri) {
       <bp-literal [literal]="l"></bp-literal>
       }
+      <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+        (nodeSelected)="expandNode($event)" @fadeIn />
+
 
 
     </div>
@@ -44,7 +47,8 @@
 
 
   } @else if (routeFragment() === 'Nearby') {
-  <bp-neighbor-nodes [graph]="bubbleGraph()" [subject]="subjectIri()" (nodeSelected)="onNodeSelected($event)" @fadeIn />
+  <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+    (nodeSelected)="expandNode($event)" @fadeIn />
   } @else if (routeFragment() === 'Context') {
 
   <div class="subject-view" @fadeIn>

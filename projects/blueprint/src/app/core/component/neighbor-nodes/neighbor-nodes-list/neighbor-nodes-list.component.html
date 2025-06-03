@@ -1,9 +1,21 @@
-<p>We have {{nodeList().nodes.length}} nodes @if(nodeList().isOutgoing){<span>outoing links</span>}@else{<span>incomming
-        links</span>}</p>
-<p>{{nodeList().link.iri}}</p>
-<p>{{nodeList().link.propertyPath}}</p>
-<p>is outgoing {{nodeList().isOutgoing}}</p>
+@if(nodeList().isOutgoing) {
+<div style="display: flex; flex-direction: row; align-items: center; gap:0.4em; padding-left: 4px">
+    <!--  <bp-avatar [avatars]="exploredResource().avatars" [selected]="true" size="normal"></bp-avatar>
+    <span style="font-size: 1rem; align-self: center;">&#8213;</span>-->
+    <div class="label"><span [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label}}</span></div>
+    <!--     <span style="font-size: 1rem; align-self: center;">&#8594;</span>
+    <bp-avatar [avatars]="targetAvatars()" size="normal"></bp-avatar> -->
+</div>
+} @else {
+<div style="display: flex; flex-direction: row; align-items: center; gap:0.4em; padding-left: 4px">
+    <bp-avatar [avatars]="exploredResource().avatars" [selected]="true" size="normal"></bp-avatar>
+    <span style="font-size: 1rem; align-self: center;">&#8592;</span>
+    <div class="label"><span [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label}}</span></div>
+    <span style="font-size: 1rem; align-self: center;">&#8213;</span>
+    <bp-avatar [avatars]="targetAvatars()" size="normal"></bp-avatar>
 
+</div>
+}
 @if(showFilter()) {
 <p-iconfield>
     <p-inputicon styleClass="pi pi-search" />
@@ -17,4 +29,3 @@
         [secondLine]="node.classLabel.join()"></bp-hierarchy-card>
     }
 </div>
-<h1>end</h1>

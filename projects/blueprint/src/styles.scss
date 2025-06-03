@@ -136,3 +136,7 @@ body {
     justify-content: center !important;
     align-items: center !important;
 }
+
+.selected-avatar{
+    box-shadow: 0 0 2px 2px var(--p-tabs-tab-active-color);
+}

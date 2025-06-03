@@ -208,7 +208,6 @@ export class ExploreComponent implements OnDestroy {
       const literalValues = literalMap.get(key).map(q => q.object as RdfTypes.Literal);
 
       if (!literalRules) {
-        debugger;
         console.warn('No literal rules found for key:', key);
       }
       const literalRule = literalRules.find((rule) => rule.path.value === key);

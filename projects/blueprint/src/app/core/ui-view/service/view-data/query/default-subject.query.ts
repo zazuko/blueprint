@@ -23,6 +23,9 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
     <${subject.value}> ?p ?o .
     <${subject.value}> ?literalP ?literalO .
     ?literalPT ?literalTboxP ?literalTboxO .
+     <${subject.value}> ?literalBlankNodeP ?blankNodeS .
+    ?blankNodeS ?blankNodePO ?blankNodeO . 
+
     ?metaShape ?shapeP ?oo .
   }
   WHERE {
@@ -66,5 +69,6 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
   }
   `;
 
+  console.log("Default subject query: ", query);
   return query;
 }

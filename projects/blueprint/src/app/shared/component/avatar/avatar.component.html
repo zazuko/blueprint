@@ -2,17 +2,17 @@
 
 <p-avatarGroup>
     @for(avatar of uniqueAvatars(); track avatar.id) {
-    <p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()"
-        [style]="{'background-color': avatar.color}"></p-avatar>
+    <p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()" [style]="{'background-color': avatar.color}"
+        [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
     }
 </p-avatarGroup>
 }@else if(uniqueAvatars().length === 1) {
 @for(avatar of uniqueAvatars(); track avatar.id) {
 
-<p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()"
-    [style]="{'background-color': avatar.color}"></p-avatar>
+<p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()" [style]="{'background-color': avatar.color}"
+    [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
 }
 } @else {
-<p-avatar [size]="size()"></p-avatar>
+<p-avatar [size]="size()" [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
 
 }

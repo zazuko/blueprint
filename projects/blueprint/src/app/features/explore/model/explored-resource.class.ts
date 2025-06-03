@@ -6,6 +6,7 @@ import { rdf, rdfs, shacl, skos } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
 import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/avatar/avatar.component";
+import { NodeElement } from "@blueprint/model/node-element/node-element.class";
 
 
 export class ExploredResource extends ClownfaceObject {
@@ -122,6 +123,19 @@ export class ExploredResource extends ClownfaceObject {
             return predicateString.replace(/([a-z])([A-Z])/g, '$1 $2');
         }
         return predicate;
+    }
+
+    blankNodeElements(): NodeElement[] {
+
+        const blankNodeTerms = this._node.out().filter(term => term.term.termType === 'BlankNode');
+
+        console.log('Blank Node Terms:', blankNodeTerms.map(term => term.term.value));
+        return blankNodeTerms.map(term => {
+            const blankNodeElement = new NodeElement(term);
+            return blankNodeElement;
+        });
+
+
     }
 
 

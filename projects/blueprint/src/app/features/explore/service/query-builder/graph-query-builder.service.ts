@@ -270,7 +270,7 @@ CONSTRUCT {
 }
 
 function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
-  return `
+  const query = `
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}
   ${rdfs.sparqlPrefix()}
@@ -296,7 +296,9 @@ CONSTRUCT {
   BIND (<${link.iri}> as ?link)
   BIND (${flux.UiNodePrefixed} as ?fluxUiType)
   ${link.isSynthetic ? `` : `BIND (<${link.arrowTarget}> as ?targetType)`}
-  ${link.isSynthetic ? `` : `?target a ?targetType .`}
+  OPTIONAL {
+    ?target a ?targetType .
+  }  
   ?input ${link.propertyPath}  ?target .
   FILTER (!isLiteral(?target))
   FILTER (!isBlank(?target))
@@ -319,6 +321,9 @@ CONSTRUCT {
   BIND(IRI(CONCAT(STR(?link), MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
 }
 `;
+
+  console.log('%cgetOutgoingLinksQuery', 'color:blue', query);
+  return query;
 }
 
 function getIncomingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
@@ -349,8 +354,10 @@ CONSTRUCT {
   BIND (${flux.UiNodePrefixed} as ?fluxUiType)
 
   ${link.isSynthetic ? `` : `BIND (<${link.arrowSource}> as ?targetType)`}
-  ${link.isSynthetic ? `` : `?target a ?targetType .`}
 
+  OPTIONAL {
+    ?target a ?targetType .
+  }
   ?target ${link.propertyPath}  ?input  .
   FILTER (!isLiteral(?target))
   FILTER (!isBlank(?target))

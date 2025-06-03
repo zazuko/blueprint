@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { Graph, IUiGraphNode, RdfUiLink } from '../graph/model/graph.model';
 import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
-import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
+import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { labelAlphaSort } from '../../utils/sort-functions';
+import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
 
 
 
@@ -22,7 +23,7 @@ import { labelAlphaSort } from '../../utils/sort-functions';
 })
 export class NeighborNodesComponent {
   readonly graph = input.required<Graph>();
-  readonly subject = input.required<string>();
+  readonly exploredResource = input.required<ExploredResource>();
 
   nodeSelected = output<IUiGraphNode>();
 
@@ -30,7 +31,7 @@ export class NeighborNodesComponent {
     const graph = this.graph();
     const nodes = graph.nodes;
     const links = graph.links;
-    const currentIri = this.subject();
+    const currentIri = this.exploredResource().iri;
 
     const nodeMap = new Map<string, IUiGraphNode>();
     for (const node of nodes) {
@@ -105,6 +106,14 @@ export class NeighborNodesComponent {
     }
     return list;
 
+  });
+
+  outgoingNodeList = computed<NeighborNodeList[]>(() => {
+    return this.nodeList().filter(nodeList => nodeList.isOutgoing);
+  });
+
+  incomingNodeList = computed<NeighborNodeList[]>(() => {
+    return this.nodeList().filter(nodeList => !nodeList.isOutgoing);
   });
 
   public emitNodeSelected(node: IUiGraphNode): void {

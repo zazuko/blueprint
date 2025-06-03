@@ -12,6 +12,7 @@ export class AvatarComponent {
   avatars = input.required<Avatar[]>();
   size = input<'normal' | 'large' | 'xlarge'>('xlarge');
   shape = input<'square' | 'circle'>('circle');
+  selected = input<boolean>(false);
 
   uniqueAvatars = computed<AvatarWithId[]>(() => {
     const unique = new Map<string, AvatarWithId>();
