@@ -144,18 +144,12 @@ export class ExploreComponent implements OnDestroy {
     })
   }
 
-
-
-
-
   literalConfigurationRules = toSignal(toObservable(computed(() => {
     return this.currentGraphResource()?.rdfTypeIri ?? [];
   })).pipe(
     switchMap((rdfTypeIri) => this.#uiDetailService.getLiteralRulesForClasses(rdfTypeIri)),
   )
   );
-
-
 
   // create literal elements from the current graph resource
   literalDetailElements = computed<UILiteral[]>(() => {
@@ -207,8 +201,6 @@ export class ExploreComponent implements OnDestroy {
       }
     });
     return literalElements;
-
-
   });
 
 
@@ -366,5 +358,3 @@ export class ExploreComponent implements OnDestroy {
     this.#selectionService.clearSelection();
   }
 }
-
-
