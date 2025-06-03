@@ -4,6 +4,7 @@ import { appLocal, shacl } from '@blueprint/ontology';
 
 import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
 import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
+import { rdfEnvironment } from '../../rdf/rdf-environment';
 
 export interface UiLinkDefinition {
     iri: string;
@@ -11,12 +12,18 @@ export interface UiLinkDefinition {
     propertyPath: string | null;
     inversePropertyPath: string | null;
     propertyPathFragments: string[];
+    prefixedPropertyPathFragments: PrefixedPathFragment[];
     inversePropertyPathFragments: string[] | null;
     arrowSource: string | null;
     arrowTarget: string | null;
     isSynthetic: boolean;
 }
 
+export interface PrefixedPathFragment {
+    prefixedPredicate: string;
+    predicateIri: string;
+    isInverse: boolean;
+}
 
 
 export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefinition {
@@ -126,6 +133,20 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
             this.#inversePropertyPathFragments = propertyPaths[0].toPathFragments();
         }
         return this.#inversePropertyPathFragments;
+    }
+
+    get prefixedPropertyPathFragments(): PrefixedPathFragment[] {
+        return this.propertyPathFragments.map(fragment => {
+            const isInverse = fragment.startsWith('^');
+            const path = isInverse ? fragment.slice(1) : fragment;
+            const prefixedPath = rdfEnvironment.shrink(path);
+            const prefixedPathFragment: PrefixedPathFragment = {
+                predicateIri: path,
+                prefixedPredicate: prefixedPath,
+                isInverse: isInverse,
+            };
+            return prefixedPathFragment;
+        });
     }
 
     /**

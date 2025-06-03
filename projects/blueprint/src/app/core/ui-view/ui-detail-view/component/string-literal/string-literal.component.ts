@@ -15,7 +15,7 @@ export class StringLiteralComponent {
     const values = this.value();
     return values.map(literal => {
       return {
-        id: `${literal}-${literal.language || ''}-${literal.datatype || ''}`,
+        id: `${literal.value}-${literal.language || ''}-${literal.datatype.value || ''}`,
         termType: literal.termType,
         value: literal.value,
         language: literal.language,
