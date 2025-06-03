@@ -133,7 +133,7 @@ export class SearchComponent implements OnInit {
         map((queryParam) => queryParam['searchTerm']),
         takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchTerm) => {
-        this.#loadingIndicatorService.loading();
+        this.#loadingIndicatorService.start();
         this.searchTerm.set(searchTerm || '');
         this.searchParam.term = this.searchTerm();
         this.searchParam.page = 0;
@@ -158,7 +158,7 @@ export class SearchComponent implements OnInit {
   }
 
   onFilterChange(newFilter: SearchFilter[]): void {
-    this.#loadingIndicatorService.loading();
+    this.#loadingIndicatorService.start();
     this.activeFilters = newFilter;
     this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);

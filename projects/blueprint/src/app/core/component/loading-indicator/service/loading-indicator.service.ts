@@ -10,7 +10,7 @@ export class LoadingIndicatorService {
 
   public readonly isLoading = signal<boolean>(false);
 
-  loading(): void {
+  start(): void {
     if (this.isLoading()) {
       this.messageChannel.warn('LoadingIndicatorService: already loading. Check why you call it twice.');
     }

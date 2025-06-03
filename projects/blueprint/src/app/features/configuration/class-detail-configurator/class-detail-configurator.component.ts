@@ -114,7 +114,7 @@ export class ClassDetailConfiguratorComponent implements OnChanges {
 
     const id = changes['id']?.currentValue;
     if (id) {
-      this.loadingIndicatorService.loading();
+      this.loadingIndicatorService.start();
       this.classMetadata.getClassMetadata().pipe(
         takeUntilDestroyed(this.destroyRef)
       ).subscribe(

@@ -12,7 +12,7 @@ import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
-import { map, switchMap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 
@@ -88,8 +88,6 @@ export class ExploreComponent implements OnDestroy {
   readonly #clipboard = inject(Clipboard);
   readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #messageChannelServie = inject(MessageChannelService);
-  readonly compositionLinks = signal<CompositionLinkResult[]>([]);
-  readonly thisNodeElement = signal<NodeElement | null>(null);
 
   readonly selectedNodeIri = this.#selectionService.selectedNodeIriSignal;
   tabNavItems: MenuItem[] = [
@@ -117,15 +115,11 @@ export class ExploreComponent implements OnDestroy {
   drawerModal = computed(() => {
     return !this.pinDetailsPanel();
   });
-  // this is the IRI of the subject in the route
-  public currentGraphResource = signal<ExploredResource | null>(null);
   public bubbleGraph = this.#graphService.graphSignal;
 
   routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
 
-  uiView: UiView[] = [];
-  uiHierarchy: UiHierarchyView[] = [];
   term: string;
 
   searchTerm: string;
@@ -144,48 +138,15 @@ export class ExploreComponent implements OnDestroy {
 
     effect(() => {
       const subject = this.subjectIri();
-
-      if (subject === undefined) {
-        return;
+      if (subject) {
+        this.#selectionService.setSelectedNode(subject);
       }
-
-
-      //   this.#graphService.expandNode(subject);
-      this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject)).pipe(
-        takeUntilDestroyed(this.#destroyRef),
-      ).subscribe(
-        {
-          next: (viewGraph) => {
-            console.log('viewGraph', viewGraph);
-
-            const currentResource = new ExploredResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subjectIri()));
-            this.currentGraphResource.set(currentResource);
-
-            const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
-
-            // ---- composition link result
-            this.compositionLinks.set(cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
-            this.thisNodeElement.set(cfViewGraph.namedNode(this.subjectIri()).map((node) => new NodeElement(node))[0]);
-            // ---- composition link result end
-
-            const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
-            // make it better 
-
-            this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
-
-            this.uiHierarchy = cfHierarchyGraph.map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraph));
-
-            this.loadingIndicatorService.done();
-            this.#selectionService.setSelectedNode(this.subjectIri());
-          },
-          error: (error) => {
-            console.error('error', error);
-            this.#messageChannelServie.error('Error loading view for subject', error, 'Please check the subject IRI and try again.');
-            this.loadingIndicatorService.done();
-          }
-        });
-    });
+    })
   }
+
+
+
+
 
   literalConfigurationRules = toSignal(toObservable(computed(() => {
     return this.currentGraphResource()?.rdfTypeIri ?? [];
@@ -194,10 +155,12 @@ export class ExploreComponent implements OnDestroy {
   )
   );
 
+
+
   // create literal elements from the current graph resource
   literalDetailElements = computed<UILiteral[]>(() => {
     const currentResource = this.currentGraphResource();
-    if (currentResource === null) {
+    if (currentResource === undefined) {
       return [];
     }
     const literalMap = currentResource.getLiteralTripleMap();
@@ -260,6 +223,77 @@ export class ExploreComponent implements OnDestroy {
       return subject;
     })
   ), { initialValue: undefined });
+
+  viewGraphDataset = toSignal(toObservable<string | undefined>(this.subjectIri).pipe(
+    switchMap((subjectIri) => {
+      if (subjectIri === undefined) {
+        return of(rdfEnvironment.dataset());
+      }
+      this.loadingIndicatorService.start();
+      return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subjectIri))
+    }),
+    takeUntilDestroyed(this.#destroyRef),
+    tap(() => {
+      this.loadingIndicatorService.done();
+    })
+  )
+  );
+
+  currentGraphResource = computed<ExploredResource | undefined>(() => {
+    const viewGraphDataset = this.viewGraphDataset();
+
+    if (!viewGraphDataset || viewGraphDataset.size === 0) {
+      return undefined;
+    }
+
+    const currentNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    if (!currentNode) {
+      return undefined;
+    }
+    const currentResource = new ExploredResource(currentNode);
+    return currentResource;
+  });
+
+  compositionLinks = computed<CompositionLinkResult[]>(() => {
+    const viewGraphDataset = this.viewGraphDataset();
+    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
+    return cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node));
+  });
+
+  thisNodeElement = computed<NodeElement | null>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return null;
+    }
+    const viewGraphDataset = this.viewGraphDataset();
+    const thisNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    if (!thisNode.value) {
+      return null;
+    }
+    return new NodeElement(thisNode);
+  }
+  );
+
+  uiView = computed<UiView[]>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return [];
+    }
+
+    const viewGraphDataset = this.viewGraphDataset();
+
+    return rdfEnvironment.clownface(viewGraphDataset).in(rdf.typeNamedNode).map(view => new RdfUiView(view));
+  });
+
+  uiHierarchy = computed<UiHierarchyView[]>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return [];
+    }
+
+    const viewGraphDataset = this.viewGraphDataset();
+    return rdfEnvironment.clownface(viewGraphDataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode).map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraphDataset));
+  });
 
 
   // graph events

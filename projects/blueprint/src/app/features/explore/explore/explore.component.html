@@ -19,14 +19,14 @@
 
 
 
-  @if(routeFragment() === 'Information') {
+  @if(routeFragment() === 'Information' && !loadingIndicatorService.isLoading()) {
   <div class="subject-view" @fadeIn>
 
 
-    @if(uiHierarchy.length > 0) {
-    @defer (when uiHierarchy.length > 0) {
+    @if(uiHierarchy().length > 0) {
+    @defer (when uiHierarchy().length > 0) {
     <div class="hierarchy-container">
-      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      @for( hierarchy of uiHierarchy(); track hierarchy.iri) {
       <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
       }
     </div>
@@ -35,9 +35,9 @@
 
     <div class="view-container">
       @for(l of literalDetailElements(); track l.ruleIri) {
-      <bp-literal [literal]="l"></bp-literal>
+      <bp-literal @fadeIn [literal]="l"></bp-literal>
       }
-      <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+      <bp-neighbor-nodes @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
         (nodeSelected)="expandNode($event)" @fadeIn />
 
 
@@ -46,17 +46,17 @@
   </div>
 
 
-  } @else if (routeFragment() === 'Nearby') {
+  } @else if (routeFragment() === 'Nearby' && !loadingIndicatorService.isLoading()) {
   <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
     (nodeSelected)="expandNode($event)" @fadeIn />
-  } @else if (routeFragment() === 'Context') {
+  } @else if (routeFragment() === 'Context' && !loadingIndicatorService.isLoading()) {
 
   <div class="subject-view" @fadeIn>
 
-    @if(uiHierarchy.length > 0) {
-    @defer (when uiHierarchy.length > 0) {
+    @if(uiHierarchy().length > 0) {
+    @defer (when uiHierarchy().length > 0) {
     <div class="hierarchy-container">
-      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      @for( hierarchy of uiHierarchy(); track hierarchy.iri) {
       <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
       }
     </div>
@@ -64,9 +64,9 @@
     }
     <div class="view-container">
 
-      @defer (when uiView.length > 0) {
+      @defer (when uiView().length > 0) {
       <div class="view-container" @fade>
-        @for( view of uiView; track view.iri) {
+        @for( view of uiView(); track view.iri) {
         <bp-ui-view style="flex-grow: 1" [uiView]="view" (nodeSelected)="selectByIri($event)" />
         }
       </div>

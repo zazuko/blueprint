@@ -1,6 +1,6 @@
 {
   "/query": {
-    "targetddd": "http://127.0.0.1:7001/",
+    "targets": "http://127.0.0.1:7001/",
     "target": "https://ld.bafu.zazukoians.org/query",
     "targetdd": "https://test.lindas.admin.ch/query",
     "targetl": "https://lindas.admin.ch/query",

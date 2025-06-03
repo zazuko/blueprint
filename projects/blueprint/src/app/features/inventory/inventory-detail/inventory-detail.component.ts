@@ -141,7 +141,7 @@ export class InventoryDetailComponent implements OnChanges {
         }
       });
 
-      this.#loadingIndicatorService.loading();
+      this.#loadingIndicatorService.start();
       this.#hierarchyTreeDataService.getTreeDataForHierarchy(id).pipe(
         takeUntilDestroyed(this.#destroyRef)
       ).subscribe(

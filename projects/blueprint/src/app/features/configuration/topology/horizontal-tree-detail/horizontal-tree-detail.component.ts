@@ -66,7 +66,7 @@ export class HorizontalTreeDetailComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const id = changes['id']?.currentValue;
     if (id) {
-      this.loadingIndicator.loading();
+      this.loadingIndicator.start();
       this.hierarchyService.getHierarchyByIri(id).subscribe((hierarchyDefinition) => {
         this.hierarchyDefinition.set(hierarchyDefinition);
         this.loadingIndicator.done();

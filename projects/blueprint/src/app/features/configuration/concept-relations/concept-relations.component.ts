@@ -123,7 +123,7 @@ export class ConceptRelationsComponent {
       const linkDefinitions = this.linkDefinitions();
 
       if (nodeDefinitions == undefined || linkDefinitions === undefined) {
-        this.#loadingIndicatorService.loading();
+        this.#loadingIndicatorService.start();
       } else {
         this.#loadingIndicatorService.done();
       }
