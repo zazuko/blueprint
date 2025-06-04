@@ -139,7 +139,6 @@ export class AggregateService {
             const flitteredLinksForTheCurrentStrategy = strategy.filter(links, classIris);
             return flitteredLinksForTheCurrentStrategy.flatMap(link => strategy.createQuery(link, subject));
         });
-        console.log(newQueries.join('\n\n\n\n'));
 
 
         const queries = links.flatMap(link => {
