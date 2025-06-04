@@ -2,6 +2,7 @@ import { GraphPointer } from 'clownface';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 import { rdfs, schema, shacl, skos } from '@blueprint/ontology';
+import { sortLiteralsByBrowserLanguage } from '../../utils/language-prededence';
 
 /**
  * Base class for all objects that are represented by a node in the RDF graph. It provides some basic functionality to
@@ -17,29 +18,30 @@ export abstract class ClownfaceObject {
         const schemaFamilyNameTerm = graphPointer.out(schema.familyNameNamedNode).terms.filter((term) => term.termType === 'Literal');
         const shaclNameTerm = graphPointer.out(shacl.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
 
+
         let label = '';
         if (skosPrefLabelTerm.length > 0) {
-            label = skosPrefLabelTerm.sort(precedence)[0].value;
+            label = sortLiteralsByBrowserLanguage(skosPrefLabelTerm as RdfTypes.Literal[])[0].value;
             return label;
         }
         if (rdfsLabelTerm.length > 0) {
-            label = rdfsLabelTerm.sort(precedence)[0].value;
+            label = sortLiteralsByBrowserLanguage(rdfsLabelTerm as RdfTypes.Literal[])[0].value;
             return label;
         }
         if (schemaNameTerm.length > 0) {
             // order by langage tag and terms with langage en first
-            label = schemaNameTerm.sort(precedence)[0].value;
+            label = sortLiteralsByBrowserLanguage(schemaNameTerm as RdfTypes.Literal[])[0].value;
             return label;
         }
         if (schemaFamilyNameTerm.length > 0) {
             // order by langage tag and terms with langage en first
-            label = schemaFamilyNameTerm.sort(precedence)[0].value;
+            label = sortLiteralsByBrowserLanguage(schemaFamilyNameTerm as RdfTypes.Literal[])[0].value;
             return label;
         }
 
         if (shaclNameTerm.length > 0) {
             // order by langage tag and terms with langage en first
-            label = shaclNameTerm.sort(precedence)[0].value;
+            label = sortLiteralsByBrowserLanguage(shaclNameTerm as RdfTypes.Literal[])[0].value;
             return label;
         }
 
@@ -125,18 +127,4 @@ export abstract class ClownfaceObject {
         return ClownfaceObject.logNodeAsTable(this._node);
     }
 
-}
-
-
-
-export function precedence(a: RdfTypes.Literal, b: RdfTypes.Literal): number {
-    const aTerm = a as RdfTypes.Literal;
-    const bTerm = b as RdfTypes.Literal;
-    if (aTerm.language.startsWith('en') && !aTerm.language.startsWith('en')) {
-        return -1;
-    } else if (!aTerm.language.startsWith('en') && bTerm.language.startsWith('en')) {
-        return 1;
-    } else {
-        return 0;
-    }
 }

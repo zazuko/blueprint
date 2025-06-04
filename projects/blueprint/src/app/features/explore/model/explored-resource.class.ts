@@ -1,12 +1,13 @@
 import { DEFAULT_COLOR } from "@blueprint/constant/color";
 import { DEFAULT_ICON } from "@blueprint/constant/icon";
-import { ClownfaceObject, precedence } from "@blueprint/model/clownface-object/clownface-object";
+import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 import { RdfUiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
 import { rdf, rdfs, shacl, skos } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
 import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/avatar/avatar.component";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
+import { sortLiteralsByBrowserLanguage } from "../../../core/utils/language-prededence";
 
 
 export class ExploredResource extends ClownfaceObject {
@@ -112,7 +113,7 @@ export class ExploredResource extends ClownfaceObject {
         const predicatePtr = this._node.namedNode(predicate);
         const rdfsLabelTerms = predicatePtr.out(rdfs.labelNamedNode).terms as RdfTypes.Literal[];
         const skosPrefLabelTerms = predicatePtr.out(skos.prefLabelNamedNode).terms as RdfTypes.Literal[];
-        const name = [...rdfsLabelTerms, ...skosPrefLabelTerms].sort(precedence);
+        const name = sortLiteralsByBrowserLanguage([...rdfsLabelTerms, ...skosPrefLabelTerms]);
         if (name.length > 0) {
             return name[0].value;
         }
