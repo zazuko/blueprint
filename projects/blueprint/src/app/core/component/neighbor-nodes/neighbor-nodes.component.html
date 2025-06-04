@@ -1,26 +1,13 @@
-<!-- <h2 style="margin-right: 12px">Outgoing Relations</h2> -->
-
-
-
 @for(list of outgoingNodeList(); track list.id) {
 
 <bp-neighbor-nodes-list [exploredResource]="exploredResource()" [nodeList]="list"
     (nodeSelected)="emitNodeSelected($event)"></bp-neighbor-nodes-list>
-} @empty {
-<!-- <div class="panel">
-    <div class="title">No neighbors found.</div>
-</div> -->
 }
 
 
-<h2 style="margin-right: 12px">Incoming Relations</h2>
 
 @for(list of incomingNodeList(); track list.id) {
 
 <bp-neighbor-nodes-list [exploredResource]="exploredResource()" [nodeList]="list"
     (nodeSelected)="emitNodeSelected($event)"></bp-neighbor-nodes-list>
-} @empty {
-<div class="panel">
-    <div class="title">No neighbors found.</div>
-</div>
 }

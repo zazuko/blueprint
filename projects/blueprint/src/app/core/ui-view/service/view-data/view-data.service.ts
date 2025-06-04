@@ -159,7 +159,6 @@ export class ViewDataService {
         const compositionToCompositionQueries = this.#aggregateService.getCompositionToCompositionLinkQueries(viewGraphMetadata, types, subject.value);
 
         const compositionToNodeLinkQueries = this.#aggregateService.getCompositionToNodeLinkQueries(viewGraphMetadata, types, subject.value);
-        compositionToNodeLinkQueries.forEach(console.log);
         /* 3. get the sparql queries from the UiComponentDefinition and create a query to fetch the data the the whole View */
 
         const hierarchyViewQueries = hierarchyViews.map(uiView => {

@@ -240,11 +240,10 @@ function classSparqlBlock(iri: string, fullTextSearchBlock: string): string {
   return `
   {
     SELECT ?fluxIri (COUNT(DISTINCT ?s) AS ?count) WHERE {
-      VALUES ?fluxIri
-      {
-        <${iri}>
+      BIND (<${iri}> as ?fluxIri)
+      OPTIONAL {
+        ?s a <${iri}> .
       }
-      ?s a  <${iri}> .
       ${fullTextSearchBlock}
     } GROUP BY ?fluxIri
 }

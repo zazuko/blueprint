@@ -1,5 +1,5 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import {
   BehaviorSubject,
@@ -39,7 +39,8 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
   private _classCountStream = new ReplaySubject<RdfTypes.Dataset>();
   private _subscription = new Subscription();
 
-  constructor(private searchService: SearchService) {
+  readonly #searchService = inject(SearchService)
+  constructor() {
     super();
   }
 
@@ -111,8 +112,8 @@ export class SearchDataSourceService extends DataSource<SearchResultItem> {
 
     const searchQuery$ =
       page === 0
-        ? this.searchService.newSearch(this._searchParam)
-        : this.searchService.page(page);
+        ? this.#searchService.newSearch(this._searchParam)
+        : this.#searchService.page(page);
 
     searchQuery$.pipe(takeUntil(this._newSearch$)).subscribe((dataset) => {
       const searchResultGraph = rdfEnvironment.clownface(dataset);

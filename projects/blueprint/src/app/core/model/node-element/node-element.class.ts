@@ -110,7 +110,6 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
                 return this.#classLabel;
             }
             const classIris = this._node.out(rdf.typeNamedNode).filter(node => node.value !== 'https://flux.described.at/UiNode').values.map(iri => rdfEnvironment.shrink(iri));
-            console.log(this._node.out(rdf.typeNamedNode).filter(node => node.value !== 'https://flux.described.at/UiNode').values);
             if (classIris.length > 0) {
                 this.#classLabel = classIris;
                 return this.#classLabel;

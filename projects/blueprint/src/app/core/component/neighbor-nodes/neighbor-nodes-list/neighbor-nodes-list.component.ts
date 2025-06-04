@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { InputIcon } from 'primeng/inputicon';
 import { IconField } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+
 import { IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { HierarchyCardComponent } from "../../../../features/inventory/inventory/hierarchy-card/hierarchy-card.component";
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
@@ -15,15 +17,29 @@ const SHOW_FILTER_IF_MORE_THAN = 10;
 
 @Component({
   selector: 'bp-neighbor-nodes-list',
-  imports: [HierarchyCardComponent, InputIcon, IconField, InputTextModule, FormsModule, Tooltip, AvatarComponent],
+  imports: [
+    HierarchyCardComponent,
+    InputIcon,
+    IconField,
+    InputTextModule,
+    FormsModule,
+    Tooltip,
+    AvatarComponent,
+    ButtonModule
+  ],
   templateUrl: './neighbor-nodes-list.component.html',
   styleUrl: './neighbor-nodes-list.component.scss'
 })
 export class NeighborNodesListComponent {
   nodeList = input.required<NeighborNodeList>();
   exploredResource = input.required<ExploredResource>();
+  showPreviewButton = input<boolean>(false);
 
   nodeSelected = output<IUiGraphNode>();
+  moreInformation = output<IUiGraphNode>();
+
+
+
 
   filterTerm = signal<string>('');
 

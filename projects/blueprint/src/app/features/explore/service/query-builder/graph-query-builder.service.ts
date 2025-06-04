@@ -71,12 +71,9 @@ export class GraphQueryBuilderService {
     const outLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowSource));
     const inLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowTarget));
 
-    console.log('%coutObjectPredicates', 'color:blue', outObjectPredicates);
-    console.log('%cinObjectPredicates', 'color:green', inObjectPredicates);
     // remove object predicates that are already in the link definitions
     outLinkDefinitions.forEach(link => {
       const firstElementOfPath = link.propertyPathFragments[0];
-      console.log('%casdfasdf', 'color:magenta', firstElementOfPath);
 
       // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
       if (firstElementOfPath && firstElementOfPath.length > 2) {
@@ -85,7 +82,6 @@ export class GraphQueryBuilderService {
           if (outObjectPredicates.includes(trimmedPredicate)) {
             const index = outObjectPredicates.indexOf(trimmedPredicate);
             if (index > -1) {
-              console.log('%cout link remove', 'color:blue', trimmedPredicate, ' from outObjectPredicates', outObjectPredicates);
               outObjectPredicates.splice(index, 1);
             }
           }
@@ -94,8 +90,6 @@ export class GraphQueryBuilderService {
           if (inObjectPredicates.includes(trimmedPredicate)) {
             const index = inObjectPredicates.indexOf(trimmedPredicate);
             if (index > -1) {
-              console.log('%cout link remove', 'color:green', trimmedPredicate, ' from inObjectPredicates', inObjectPredicates);
-
               inObjectPredicates.splice(index, 1);
             }
           }
@@ -108,13 +102,11 @@ export class GraphQueryBuilderService {
 
       // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
       if (firstElementOfPath && firstElementOfPath.length > 2) {
-        console.log('%cin link what todo ? firstElementOfPath', 'color: green', firstElementOfPath);
         if (firstElementOfPath.startsWith('<')) {
           const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
           if (outObjectPredicates.includes(trimmedPredicate)) {
             const index = outObjectPredicates.indexOf(trimmedPredicate);
             if (index > -1) {
-              console.log('%cout link remove', 'color:green', trimmedPredicate, ' from outObjectPredicates', outObjectPredicates);
               outObjectPredicates.splice(index, 1);
             }
           }
@@ -123,7 +115,6 @@ export class GraphQueryBuilderService {
           if (inObjectPredicates.includes(trimmedPredicate)) {
             const index = inObjectPredicates.indexOf(trimmedPredicate);
             if (index > -1) {
-              console.log('%cout link remove', 'color:blue', trimmedPredicate, ' from inObjectPredicates', inObjectPredicates);
               inObjectPredicates.splice(index, 1);
             }
           }
@@ -147,7 +138,6 @@ export class GraphQueryBuilderService {
         const targetTypesWithoutClassDefinitions = tragetTypes.filter(type => !classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
         tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
-      console.log('%ctragetTypes', 'color: red', bracketLessPredicate, predicate);
       const ttl = `
 @prefix vorlon: <https://vorlon.described.at/ontology#> .
 @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
@@ -193,7 +183,6 @@ ${appLocal.turtlePrefix()}
         const targetTypesWithoutClassDefinitions = tragetTypes.filter(type => !classDefinitions.some(classDefinition => classDefinition.targetNode.value === type));
         tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
-      console.log('%cin tragetTypes', 'color: red', bracketLessPredicate, predicate);
       const ttl = `
 @prefix vorlon: <https://vorlon.described.at/ontology#> .
 @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
@@ -322,7 +311,6 @@ CONSTRUCT {
 }
 `;
 
-  console.log('%cgetOutgoingLinksQuery', 'color:blue', query);
   return query;
 }
 

@@ -54,7 +54,7 @@ export class AggregateService {
 
         const outLinks: ICompositionToCompositionLink[] = [];
         const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
-        console.log(flux.CompositionToCompositionLinkNamedNode.value);
+
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)

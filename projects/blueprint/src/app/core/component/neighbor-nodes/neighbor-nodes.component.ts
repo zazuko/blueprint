@@ -108,29 +108,46 @@ export class NeighborNodesComponent {
 
   });
 
+  /**
+   * Returns a list of outgoing nodes, sorted by link label.
+   * If a link has no label, it is sorted to the end of the list.
+   */
   outgoingNodeList = computed<NeighborNodeList[]>(() => {
-    return this.nodeList().filter(nodeList => nodeList.isOutgoing);
+    return this.nodeList()
+      .filter(nodeList => nodeList.isOutgoing)
+      .sort((a, b) => {
+        const aLabel = a.link.label || '';
+        const bLabel = b.link.label || '';
+        if (!aLabel && bLabel) {
+          return 1
+        };
+        if (aLabel && !bLabel) {
+          return -1
+        };
+        return aLabel.localeCompare(bLabel);
+      });
   });
 
+  /**
+   * Returns a list of incoming nodes, sorted by link label.
+   * If a link has no label, it is sorted to the end of the list.
+   */
   incomingNodeList = computed<NeighborNodeList[]>(() => {
-    return this.nodeList().filter(nodeList => !nodeList.isOutgoing);
+    return this.nodeList().filter(nodeList => !nodeList.isOutgoing).sort((a, b) => {
+      const aLabel = a.link.label || '';
+      const bLabel = b.link.label || '';
+      if (!aLabel && bLabel) {
+        return 1
+      };
+      if (aLabel && !bLabel) {
+        return -1
+      };
+      return aLabel.localeCompare(bLabel);
+    });
   });
 
   public emitNodeSelected(node: IUiGraphNode): void {
     this.nodeSelected.emit(node);
   }
 
-
-  constructor() {
-    effect(() => {
-      const nodeList = this.nodeList();
-      console.log('%cnodeList', 'color:purple', nodeList);
-      nodeList.forEach((node, index) => {
-        console.log('%cnode', 'color:blue', index, node.id);
-
-
-      });
-    }
-    );
-  }
-};
+}

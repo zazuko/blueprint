@@ -45,6 +45,20 @@
     "tslib": "^2.5.0",
     "webcola": "^3.4.0"
   },
+  "overrides": {
+    "primeng": {
+      "@angular/cdk": "20.0.1",
+      "@angular/animations": "20.0.0",
+      "@angular/common": "20.0.0",
+      "rxjs": "7.8.2",
+      "@angular/core": "20.0.0",
+      "@angular/forms": "20.0.0",
+      "@angular/platform-browser": "20.0.0",
+      "@angular/platform-browser-dynamic": "20.0.0",
+      "@angular/router": "20.0.0",
+      "@angular/service-worker": "20.0.0"
+    }
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
     "@angular-eslint/builder": "19.7.1",

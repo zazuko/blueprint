@@ -48,7 +48,6 @@ import { PanelModule } from 'primeng/panel';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
-import { RdfPrefixPipe } from "../../../core/rdf/prefix/rdf-prefix.pipe";
 import { LinkPanelComponent } from "../link-panel/link-panel.component";
 
 type NodeExploreCommand = "expand" | "select";
@@ -93,14 +92,19 @@ export class ExploreComponent implements OnDestroy {
   tabNavItems: MenuItem[] = [
     { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
     { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
-    { label: 'Nearby', icon: 'pi pi-fw pi-calendar', fragment: 'Nearby' },
+    { label: 'Relations', icon: 'pi pi-arrow-right-arrow-left', fragment: 'Relations' },
     { label: 'Graph', icon: 'fa-solid fa-circle-nodes', fragment: 'Graph' },
   ];
 
   public activeItem = this.tabNavItems[0];
+  routeFragment = toSignal(this.#route.fragment.pipe(map(f => { if (f === null) { return 'Information' } return f })), { initialValue: 'Information' });
 
-  visible = model<boolean>(false);
-  pinDetailsPanel = signal<boolean>(false);
+  isInformationPanelOpen = model<boolean>(false);
+
+  canIOpenInformationPanel = computed(() => {
+    return this.routeFragment() === 'Graph';
+  });
+
   selectionKind = signal<SelectionKind>('node');
   showLinks = signal<boolean>(false);
   selectedLink = signal<ConsolidatedLink | null>(null);
@@ -112,12 +116,10 @@ export class ExploreComponent implements OnDestroy {
     }
     return link.iri;
   });
-  drawerModal = computed(() => {
-    return !this.pinDetailsPanel();
-  });
+
+
   public bubbleGraph = this.#graphService.graphSignal;
 
-  routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
 
 
   term: string;
@@ -273,8 +275,10 @@ export class ExploreComponent implements OnDestroy {
     }
 
     const viewGraphDataset = this.viewGraphDataset();
+    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
+    const uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
 
-    return rdfEnvironment.clownface(viewGraphDataset).in(rdf.typeNamedNode).map(view => new RdfUiView(view));
+    return uiView;
   });
 
   uiHierarchy = computed<UiHierarchyView[]>(() => {
@@ -323,32 +327,18 @@ export class ExploreComponent implements OnDestroy {
     console.log('showNodeDetails', node);
     this.nodeExploreCommand = 'select';
     this.selectByIri(node.id);
-    this.visible.set(true);
+    this.isInformationPanelOpen.set(true);
   }
 
   copyToClipboard(text: string): void {
     this.#clipboard.copy(text);
   };
 
-  toggleModalDetailsDrawer(): void {
-    this.visible.set(!this.visible());
-    window.setTimeout(() => {
-      const currentPinDetailsPanel = this.pinDetailsPanel();
-      this.pinDetailsPanel.set(!currentPinDetailsPanel);
-      if (!currentPinDetailsPanel) {
-        window.setTimeout(() => {
-          this.visible.set(!this.visible());
-
-        }, 400);
-      }
-    }, 200);
-  }
-
   selectLink(link: ConsolidatedLink): void {
     this.selectedLink.set(link);
 
     this.showLinks.set(true);
-    this.visible.set(true);
+    this.isInformationPanelOpen.set(true);
     this.selectionKind.set('link');
   }
 

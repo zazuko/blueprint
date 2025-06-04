@@ -46,9 +46,11 @@
   </div>
 
 
-  } @else if (routeFragment() === 'Nearby' && !loadingIndicatorService.isLoading()) {
-  <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
-    (nodeSelected)="expandNode($event)" @fadeIn />
+  } @else if (routeFragment() === 'Relations' && !loadingIndicatorService.isLoading()) {
+  <div style="margin-top: 24px">
+    <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+      (nodeSelected)="expandNode($event)" @fadeIn />
+  </div>
   } @else if (routeFragment() === 'Context' && !loadingIndicatorService.isLoading()) {
 
   <div class="subject-view" @fadeIn>
@@ -83,7 +85,8 @@
   <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
-      <p-drawer [(visible)]="visible" [modal]="drawerModal()" position="right">
+      @if(canIOpenInformationPanel()) {
+      <p-drawer [(visible)]="isInformationPanelOpen" [modal]="false" position="right">
         <ng-template #header>
           <div class="drawer-header">
 
@@ -91,9 +94,7 @@
               <h1 class="drawer-title">{{selectionKind() === 'node' ? 'Subject' : 'Link'}}</h1>
 
             </div>
-            <button pButton icon="pi pi-thumbtack" class="p-button-rounded p-button-text"
-              (click)="toggleModalDetailsDrawer()" aria-label="Pin drawer"
-              [ngStyle]="pinDetailsPanel() ? {'color': 'red'} : {}"></button>
+
           </div>
         </ng-template>
         @if(selectionKind() === 'node') {
@@ -110,6 +111,7 @@
         }
         }
       </p-drawer>
+      }
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
         [selectedLinkId]="selectedLinkIri()" (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)"
         [disableNodeMenu]="false" (nodeMore)="showNodeDetails($event)" (linkSelected)="selectLink($event)"

@@ -33,7 +33,14 @@
 <div class="node-list">
 
     @for(node of filteredNodes(); track node.iri) {
-    <bp-hierarchy-card [avatars]="node.avatars" [firstLine]="node.label" (click)="emitNodeSelected(node)"
-        [secondLine]="node.classLabel.join()"></bp-hierarchy-card>
+    <div style="position: relative;">
+        @if(showPreviewButton()) {
+        <div style="position: absolute; left:0; top:0;">
+            <p-button icon="pi pi-info" [rounded]="true" [text]="true" />
+        </div>
+        }
+        <bp-hierarchy-card [avatars]="node.avatars" [firstLine]="node.label" (click)="emitNodeSelected(node)"
+            [secondLine]="node.classLabel.join()"></bp-hierarchy-card>
+    </div>
     }
 </div>

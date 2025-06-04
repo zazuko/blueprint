@@ -69,6 +69,5 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
   }
   `;
 
-  console.log("Default subject query: ", query);
   return query;
 }

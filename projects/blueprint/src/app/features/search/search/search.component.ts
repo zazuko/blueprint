@@ -109,12 +109,16 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.searchService.classCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(classCount => {
+    this.searchService.classCount$.pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(classCount => {
       this.classCount.set(classCount as unknown as UiClassCount[]);
     }
     );
 
-    this.searchService.totalCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(totalCount => {
+    this.searchService.totalCount$.pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(totalCount => {
       this.resultCount.set(totalCount);
     }
     );

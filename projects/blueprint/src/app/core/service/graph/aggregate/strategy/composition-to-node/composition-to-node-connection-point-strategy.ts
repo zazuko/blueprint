@@ -21,8 +21,6 @@ export class CompositionToNodeConnectionPointStrategy implements CompositionToNo
     }
 
     createQuery(link: ICompositionToNodeLink, subject: string): string[] {
-        console.log('%cConnectionPointOfSourceStrategy query', 'color: green');
-
         return this.#createQueryForSourceConnectionPoint(link, subject);
     }
 
