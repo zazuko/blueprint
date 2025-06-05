@@ -6,7 +6,7 @@ import { RdfTypes } from "../rdf-environment";
 import { sortLiteralsByBrowserLanguage } from "../../utils/language-prededence";
 import { createPredicateAboxQuery } from "./query/create-predicate-abox.query";
 
-export class PreicateTBox extends ClownfaceObject {
+export class PredicateTBox extends ClownfaceObject {
 
     static getPredicateAboxQuery(predicateIri: string): string {
         return createPredicateAboxQuery(predicateIri);

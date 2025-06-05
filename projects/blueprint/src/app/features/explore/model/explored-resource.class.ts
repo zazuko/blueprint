@@ -8,7 +8,7 @@ import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/ui/avatar/avatar.component";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
 import { sortLiteralsByBrowserLanguage } from "../../../core/utils/language-prededence";
-import { PreicateTBox } from "../../../core/rdf/semantics/predicate-t-box";
+import { PredicateTBox } from "../../../core/rdf/semantics/predicate-t-box";
 
 
 export class ExploredResource extends ClownfaceObject {
@@ -110,10 +110,10 @@ export class ExploredResource extends ClownfaceObject {
         return literalPredicateMap;
     }
 
-    getPrdicateAbox(predicate: string): PreicateTBox | undefined {
+    getPrdicateAbox(predicate: string): PredicateTBox | undefined {
         const predicateAboxPtr = this._node.namedNode(predicate);
         if (predicateAboxPtr.value !== undefined) {
-            const predicateAbox = new PreicateTBox(predicateAboxPtr);
+            const predicateAbox = new PredicateTBox(predicateAboxPtr);
             return predicateAbox;
         }
         return undefined;
@@ -122,7 +122,7 @@ export class ExploredResource extends ClownfaceObject {
     resolveLabelForPredicate(predicate: string): string {
         const predicateAboxPtr = this._node.namedNode(predicate);
         if (predicateAboxPtr.value !== undefined) {
-            const predicateAbox = new PreicateTBox(predicateAboxPtr);
+            const predicateAbox = new PredicateTBox(predicateAboxPtr);
             console.log('Predicate ABox:', predicateAbox.iri);
             console.log('Predicate ABox Type:', predicateAbox.type);
             console.log('Predicate ABox Label:', predicateAbox.label);

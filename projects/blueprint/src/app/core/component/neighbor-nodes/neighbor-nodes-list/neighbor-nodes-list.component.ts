@@ -12,6 +12,8 @@ import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-de
 import { Tooltip } from 'primeng/tooltip';
 import { ExploredResource } from 'projects/blueprint/src/app/features/explore/model/explored-resource.class';
 import { AvatarComponent, Avatar } from "../../../../shared/component/ui/avatar/avatar.component";
+import { PredicateTBox } from '../../../rdf/semantics/predicate-t-box';
+import { RdfPrefixPipe } from '../../../rdf/prefix/rdf-prefix.pipe';
 
 const SHOW_FILTER_IF_MORE_THAN = 10;
 
@@ -25,7 +27,8 @@ const SHOW_FILTER_IF_MORE_THAN = 10;
     FormsModule,
     Tooltip,
     AvatarComponent,
-    ButtonModule
+    ButtonModule,
+    RdfPrefixPipe
   ],
   templateUrl: './neighbor-nodes-list.component.html',
   styleUrl: './neighbor-nodes-list.component.scss'
@@ -40,6 +43,11 @@ export class NeighborNodesListComponent {
 
 
 
+  tBox = computed<PredicateTBox | undefined>(() => {
+    return this.nodeList().link.predicate;
+  });
+
+  showTbox = signal<boolean>(false);
 
   filterTerm = signal<string>('');
 
@@ -88,6 +96,10 @@ export class NeighborNodesListComponent {
   }
   public emitNodeSelected(node: IUiGraphNode): void {
     this.nodeSelected.emit(node);
+  }
+
+  toggleShowTBox(): void {
+    this.showTbox.update(current => !current);
   }
 }
 

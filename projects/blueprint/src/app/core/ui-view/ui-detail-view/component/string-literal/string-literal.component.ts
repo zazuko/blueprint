@@ -3,7 +3,7 @@ import { RdfTypes } from '../../../../rdf/rdf-environment';
 
 import { sortLiteralsByBrowserLanguage } from '../../../../utils/language-prededence';
 import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/field/field.component';
-import { PreicateTBox } from '../../../../rdf/semantics/predicate-t-box';
+import { PredicateTBox } from '../../../../rdf/semantics/predicate-t-box';
 import { TooltipModule } from 'primeng/tooltip';
 import { RdfPrefixPipe } from '../../../../rdf/prefix/rdf-prefix.pipe';
 
@@ -16,7 +16,7 @@ import { RdfPrefixPipe } from '../../../../rdf/prefix/rdf-prefix.pipe';
 export class StringLiteralComponent {
   label = input.required<string>();
   value = input.required<RdfTypes.Literal[]>();
-  tbox = input.required<PreicateTBox | undefined>();
+  tbox = input.required<PredicateTBox | undefined>();
 
   showTBox = signal<boolean>(false);
 

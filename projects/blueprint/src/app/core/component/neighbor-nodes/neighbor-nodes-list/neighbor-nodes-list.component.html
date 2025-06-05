@@ -6,8 +6,15 @@
 
     }
 
-    <div class="label"><span [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ? nodeList().link.label :
-            '{no label}'}}</span></div>
+    <div class="label">
+        @if(tBox() && showTbox()) {
+        <span (click)="toggleShowTBox()" [pTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
+        } @else {
+        <span (click)="toggleShowTBox()" [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
+            nodeList().link.label :
+            '{no label}'}}</span>
+        }
+    </div>
     @if(!nodeList().link.label) {
     <span style="font-size: 1rem; align-self: center;">&#8594;</span>
     <bp-avatar [avatars]="targetAvatars()" size="normal"></bp-avatar>
@@ -17,8 +24,15 @@
 <div style="display: flex; flex-direction: row; align-items: center; gap:0.4em; padding-left: 4px">
     <bp-avatar [avatars]="exploredResource().avatars" [selected]="true" size="normal"></bp-avatar>
     <span style="font-size: 1rem; align-self: center;">&#8592;</span>
-    <div class="label"><span [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ? nodeList().link.label :
-            '{no label}'}}</span></div>
+    <div class="label">
+        @if(tBox() && showTbox()) {
+        <span (click)="toggleShowTBox()" [pTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
+        } @else {
+        <span (click)="toggleShowTBox()" [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
+            nodeList().link.label :
+            '{no label}'}}</span>
+        }
+    </div>
     <span style="font-size: 1rem; align-self: center;">&#8213;</span>
     <bp-avatar [avatars]="targetAvatars()" size="normal"></bp-avatar>
 

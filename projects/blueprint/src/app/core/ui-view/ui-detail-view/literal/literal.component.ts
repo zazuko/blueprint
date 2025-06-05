@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 
 import { StringLiteralComponent } from '../component/string-literal/string-literal.component';
 import { RdfTypes } from '../../../rdf/rdf-environment';
-import { PreicateTBox } from '../../../rdf/semantics/predicate-t-box';
+import { PredicateTBox } from '../../../rdf/semantics/predicate-t-box';
 
 /** 
  * 
@@ -33,5 +33,5 @@ export interface UILiteral {
   value: RdfTypes.Literal[]
   renderer: LiteralRenderType
   order: number
-  predicate?: PreicateTBox
+  predicate?: PredicateTBox
 }
