@@ -1,18 +1,24 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { RdfTypes } from '../../../../rdf/rdf-environment';
 
 import { sortLiteralsByBrowserLanguage } from '../../../../utils/language-prededence';
 import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/field/field.component';
+import { PredicateTBox } from '../../../../rdf/semantics/predicate-t-box';
+import { TooltipModule } from 'primeng/tooltip';
+import { RdfPrefixPipe } from '../../../../rdf/prefix/rdf-prefix.pipe';
 
 @Component({
   selector: 'bp-string-literal',
-  imports: [FieldComponent],
+  imports: [FieldComponent, TooltipModule, RdfPrefixPipe],
   templateUrl: './string-literal.component.html',
   styleUrls: ['../../shared-literal-style.scss', './string-literal.component.scss']
 })
 export class StringLiteralComponent {
   label = input.required<string>();
   value = input.required<RdfTypes.Literal[]>();
+  tbox = input.required<PredicateTBox | undefined>();
+
+  showTBox = signal<boolean>(false);
 
   literalsWithLanguagePrecedence = computed<RdfTypes.Literal[]>(() => {
     const literals = this.value();
@@ -35,6 +41,10 @@ export class StringLiteralComponent {
 
   isUrl(value: string): boolean {
     return /^https?:\/\/.+/i.test(value);
+  }
+
+  toggleShowTBox(): void {
+    this.showTBox.update(current => !current);
   }
 
 }

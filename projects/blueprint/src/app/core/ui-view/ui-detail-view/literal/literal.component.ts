@@ -1,6 +1,8 @@
 import { Component, input } from '@angular/core';
+
 import { StringLiteralComponent } from '../component/string-literal/string-literal.component';
 import { RdfTypes } from '../../../rdf/rdf-environment';
+import { PredicateTBox } from '../../../rdf/semantics/predicate-t-box';
 
 /** 
  * 
@@ -16,6 +18,7 @@ import { RdfTypes } from '../../../rdf/rdf-environment';
 export class LiteralComponent {
   literal = input.required<UILiteral>();
   LiteralRenderType = LiteralRenderType;
+
 }
 
 export enum LiteralRenderType {
@@ -30,5 +33,5 @@ export interface UILiteral {
   value: RdfTypes.Literal[]
   renderer: LiteralRenderType
   order: number
-  //lineage: LiteralLineage
+  predicate?: PredicateTBox
 }

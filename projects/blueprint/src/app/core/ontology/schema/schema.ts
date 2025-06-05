@@ -79,6 +79,58 @@ class SchemaOntology extends Ontology {
         return this.namespace('familyName');
     }
 
+    /**
+     * Get the domainIncludes predicate.
+     * 
+     * @readonly
+     */
+    get domainIncludes(): string {
+        return this.namespace('domainIncludes').value;
+    }
+
+    /**
+     * Get the prefixed domainIncludes predicate.
+     * 
+     * @readonly
+     */
+    get domainIncludesPrefixed(): string {
+        return `${this.prefix()}:domainIncludes`;
+    }
+    /**
+     * Get the domainIncludes predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get domainIncludesNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('domainIncludes');
+    }
+    /**
+     * Get the rangeIncludes predicate.
+     * 
+     * @readonly
+     */
+    get rangeIncludes(): string {
+        return this.namespace('rangeIncludes').value;
+    }
+
+    /**
+     * Get the prefixed rangeIncludes predicate.
+     * 
+     * @readonly
+     */
+    get rangeIncludesPrefixed(): string {
+        return `${this.prefix()}:rangeIncludes`;
+    }
+    /**
+     * Get the rangeIncludes predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get rangeIncludesNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('rangeIncludes');
+    }
+
+
 
 }
 

@@ -132,6 +132,59 @@ class RdfsOntology extends Ontology {
         return this.namespace('subClassOf');
     }
 
+    /**
+     * Get the domain predicate.
+     *
+     * @readonly
+     */
+    get domain(): string {
+        return this.namespace('domain').value;
+    }
+
+    /**
+     * Get the prefixed domain predicate.
+     *
+     * @readonly
+     */
+    get domainPrefixed(): string {
+        return `${this.prefix()}:domain`;
+    }
+
+    /**
+     * Get the domain predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get domainNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('domain');
+    }
+
+    /**
+     * Get the range predicate.
+     *
+     * @readonly
+     */
+    get range(): string {
+        return this.namespace('range').value;
+    }
+    /**
+     * Get the prefixed range predicate.
+     *
+     * @readonly
+     */
+    get rangePrefixed(): string {
+        return `${this.prefix()}:range`;
+    }
+
+    /**
+     * Get the range predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get rangeNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('range');
+    }
+
 }
 
 export const rdfs = new RdfsOntology();

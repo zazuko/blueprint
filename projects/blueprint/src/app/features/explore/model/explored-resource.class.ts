@@ -8,6 +8,7 @@ import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/ui/avatar/avatar.component";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
 import { sortLiteralsByBrowserLanguage } from "../../../core/utils/language-prededence";
+import { PredicateTBox } from "../../../core/rdf/semantics/predicate-t-box";
 
 
 export class ExploredResource extends ClownfaceObject {
@@ -109,7 +110,17 @@ export class ExploredResource extends ClownfaceObject {
         return literalPredicateMap;
     }
 
+    getPrdicateAbox(predicate: string): PredicateTBox | undefined {
+        const predicateAboxPtr = this._node.namedNode(predicate);
+        if (predicateAboxPtr.value !== undefined) {
+            const predicateAbox = new PredicateTBox(predicateAboxPtr);
+            return predicateAbox;
+        }
+        return undefined;
+
+    }
     resolveLabelForPredicate(predicate: string): string {
+
         const predicatePtr = this._node.namedNode(predicate);
         const rdfsLabelTerms = predicatePtr.out(rdfs.labelNamedNode).terms as RdfTypes.Literal[];
         const skosPrefLabelTerms = predicatePtr.out(skos.prefLabelNamedNode).terms as RdfTypes.Literal[];

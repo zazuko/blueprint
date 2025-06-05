@@ -5,6 +5,7 @@ import { appLocal, shacl } from '@blueprint/ontology';
 import { OutgoingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/outgoing-path-factory';
 import { IncomingPathFactory } from 'projects/blueprint/src/app/shared/sparql/path/factory/incoming-path-factory';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
+import { PredicateTBox } from '../../rdf/semantics/predicate-t-box';
 
 export interface UiLinkDefinition {
     iri: string;
@@ -17,6 +18,7 @@ export interface UiLinkDefinition {
     arrowSource: string | null;
     arrowTarget: string | null;
     isSynthetic: boolean;
+    predicate: PredicateTBox;
 }
 
 export interface PrefixedPathFragment {
@@ -35,6 +37,7 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
     #inversePropertyPathFragments: string[] | undefined = undefined;
     #inversePropertyPath: string | null | undefined = undefined;
     #isSynthetic: boolean | undefined = undefined;
+    #predicate: PredicateTBox | undefined | null = null;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -236,5 +239,24 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         }
         return this.#isSynthetic;
     }
+
+    get predicate(): PredicateTBox | undefined {
+        if (this.#predicate === null) {
+            const pathFragments = this.propertyPathFragments;
+            if (pathFragments.length === 1) {
+                const predicateIri = pathFragments[0].startsWith('^') ? pathFragments[0].slice(1) : pathFragments[0];
+                const predicateAboxPtr = this._node.namedNode(predicateIri);
+                if (predicateAboxPtr.value !== undefined) {
+                    this.#predicate = new PredicateTBox(predicateAboxPtr);
+                } else {
+                    this.#predicate = undefined;
+                }
+            } else {
+                this.#predicate = undefined;
+            }
+        }
+        return this.#predicate;
+    }
+
 
 }
