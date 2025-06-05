@@ -98,13 +98,16 @@
           </div>
         </ng-template>
         @if(selectionKind() === 'node') {
-        @if(currentGraphResource()) {
-        <p [pTooltip]="currentGraphResource().iri" class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
-          &lt;{{currentGraphResource().iri}}&gt;</p>
-        }
-        @for(l of literalDetailElements(); track l.ruleIri) {
-        <bp-literal [literal]="l"></bp-literal>
-        }
+        <div style="font-size: 0.8em;">
+          @if(currentGraphResource()) {
+          <p [pTooltip]="currentGraphResource().iri" tooltipPosition="left" tooltipStyleClass="tooltip-one-line"
+            class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
+            &lt;{{currentGraphResource().iri}}&gt;</p>
+          }
+          @for(l of literalDetailElements(); track l.ruleIri) {
+          <bp-literal [literal]="l"></bp-literal>
+          }
+        </div>
         } @else {
         @if(selectedLink()) {
         <bp-link-panel [link]="selectedLink()" />

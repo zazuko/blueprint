@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    font-size: 0.8em;
+}
+
+
+.value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+    direction: rtl;
+    text-align: left;
+}

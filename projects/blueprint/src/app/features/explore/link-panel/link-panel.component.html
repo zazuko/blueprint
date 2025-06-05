@@ -1,22 +1,13 @@
-@if(link()!.outgoingLabels.length > 0) {
-<div class="direction">Outgoing &#8592;</div>
-<br>
 @for(l of link()!.outgoingLabels; track l.linkDefinition.iri) {
-<bp-link-list-item [label]="l" />
+<p-card>
+    <div class="direction"> &#8592;</div>
+    <bp-link-list-item [label]="l" />
+</p-card>
 }
-}
-
-@if(link()!.incomingLabels.length > 0) {
-<br>
-<br>
-<br>
-<br>
-
-<div class="direction">Incoming &#8594;</div>
-<br>
-<br>
 
 @for(l of link()!.incomingLabels; track l.linkDefinition.iri) {
-<bp-link-list-item [label]="l" />
-}
+<p-card>
+    <div class="direction">&#8594;</div>
+    <bp-link-list-item [label]="l" />
+</p-card>
 }

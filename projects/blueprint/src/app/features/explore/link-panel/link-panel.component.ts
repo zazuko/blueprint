@@ -1,11 +1,13 @@
 import { Component, computed, input } from '@angular/core';
+
+import { CardModule } from 'primeng/card';
 import { ConsolidatedLink } from '@blueprint/component/graph/model/graph.model';
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
-import { LinkListItemComponent } from "./list-item/link-list-item.component";
+import { LinkListItemComponent } from "./link-list-item/link-list-item.component";
 
 @Component({
   selector: 'bp-link-panel',
-  imports: [LinkListItemComponent],
+  imports: [LinkListItemComponent, CardModule],
   templateUrl: './link-panel.component.html',
   styleUrl: './link-panel.component.scss'
 })

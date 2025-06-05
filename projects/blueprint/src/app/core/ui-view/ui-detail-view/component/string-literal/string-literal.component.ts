@@ -1,10 +1,12 @@
 import { Component, computed, input } from '@angular/core';
 import { RdfTypes } from '../../../../rdf/rdf-environment';
+
 import { sortLiteralsByBrowserLanguage } from '../../../../utils/language-prededence';
+import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/field/field.component';
 
 @Component({
   selector: 'bp-string-literal',
-  imports: [],
+  imports: [FieldComponent],
   templateUrl: './string-literal.component.html',
   styleUrls: ['../../shared-literal-style.scss', './string-literal.component.scss']
 })

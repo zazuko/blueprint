@@ -1,11 +1,14 @@
 import { Component, computed, input } from '@angular/core';
+
+import { TooltipModule } from 'primeng/tooltip';
+
 import { LabelWithLinkDefinition } from '@blueprint/component/graph/model/graph.model';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/field/field.component';
 
 @Component({
   selector: 'bp-link-list-item',
-  imports: [FieldComponent],
+  imports: [FieldComponent, TooltipModule],
   templateUrl: './link-list-item.component.html',
   styleUrl: './link-list-item.component.scss'
 })
@@ -14,7 +17,6 @@ export class LinkListItemComponent {
 
   path = computed<PathElement[]>(() => {
     const path = this.label().linkDefinition.propertyPathFragments.map((fragment, index) => {
-      console.log(fragment);
       const isInverse = fragment.startsWith('^');
       const predicateIri = isInverse ? fragment.slice(1) : fragment;
       const shrinkedPredicate = `${rdfEnvironment.shrink(predicateIri)}`;
