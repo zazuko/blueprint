@@ -1,0 +1,13 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 1em;
+    font-size: 1em;
+}
+
+.direction {
+    font-weight: 600;
+    margin-bottom: 1em;
+}

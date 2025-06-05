@@ -12,7 +12,7 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 
-import { AvatarComponent, Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { AvatarComponent, Avatar } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 
 import { LoadingIndicatorService } from '@blueprint/component/loading-indicator/service/loading-indicator.service';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
@@ -114,7 +114,7 @@ export class ClassDetailConfiguratorComponent implements OnChanges {
 
     const id = changes['id']?.currentValue;
     if (id) {
-      this.loadingIndicatorService.loading();
+      this.loadingIndicatorService.start();
       this.classMetadata.getClassMetadata().pipe(
         takeUntilDestroyed(this.destroyRef)
       ).subscribe(

@@ -2,11 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
-  computed
+  computed,
+  output
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { IUiLink } from '../../model/graph.model';
+import { ConsolidatedLink } from '../../model/graph.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -18,11 +19,14 @@ import { IUiLink } from '../../model/graph.model';
 })
 export class ArrowComponent {
   // inputs
-  x1 = input.required<number>();
-  x2 = input.required<number>();
-  y1 = input.required<number>();
-  y2 = input.required<number>();
-  link = input.required<IUiLink>();
+  readonly x1 = input.required<number>();
+  readonly x2 = input.required<number>();
+  readonly y1 = input.required<number>();
+  readonly y2 = input.required<number>();
+  readonly link = input.required<ConsolidatedLink>();
+  readonly isSelected = input<boolean>(false);
+
+  linkSelected = output<ConsolidatedLink>();
 
   isSourceAndTargetSame = computed(() => {
     const link = this.link();
@@ -46,9 +50,24 @@ export class ArrowComponent {
     const x1 = this.x1();
     const y1 = this.y1();
     const rotation = -45;
-    //(Math.atan2(0, 0) * 180) / Math.PI; // 180 + (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
-    //  : (Math.atan2(this.y2 - this.y1, this.x2 - this.x1) * 180) / Math.PI;
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
 
+  incomingLabels = computed(() => {
+    const link = this.link();
+    const labels = link.incomingLabels;
+    return labels;
+
+  });
+  outgoingLabels = computed(() => {
+    const link = this.link();
+    const labels = link.outgoingLabels;
+    return labels;
+  });
+
+  emitLinkSelected(event: Event): void {
+    event.stopPropagation();
+    const link = this.link();
+    this.linkSelected.emit(link);
+  }
 }

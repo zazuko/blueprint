@@ -19,6 +19,17 @@ path {
   stroke: none;
 }
 
-tspan {
+text {
   fill: light-dark(rgb(17, 24, 39), rgb(249, 250, 251));
 }
+
+.link {
+  cursor: pointer;
+}
+
+.selected {
+  fill:  var(--p-tabs-tab-active-color);;
+  stroke: var(--p-tabs-tab-active-color);
+  filter: drop-shadow(0 0 8px var(--p-tabs-tab-active-color));
+  stroke-opacity: 0.5;
+  }

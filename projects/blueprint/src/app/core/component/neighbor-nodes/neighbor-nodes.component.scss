@@ -10,12 +10,13 @@ $node-width: 6.5em;
 }
 
 .title {
-    color: var(--quaternary-contrast);
+    color: light-dark(oklch(54.84% 0.023 304.99deg), oklch(70.9% 0.015 304.04deg));
     margin-bottom: 2em;
     font-size: 1.2em;
 
     .highlight {
-        color: var(--primary-contrast);
+        color: light-dark(oklch(0.53 0.02 303.77deg), oklch(0.92 0.01 305.4deg));
+        font-weight: 600;
     }
 
 }

@@ -18,10 +18,10 @@ export class NodeComponent {
   readonly disableMenu = input<boolean>(true);
 
   // outputs
-  nodeSelected = output<IUiGraphNode>();
-  nodeExpanded = output<IUiGraphNode>();
-  nodeFocused = output<IUiGraphNode>();
-
+  readonly nodeSelected = output<IUiGraphNode>();
+  readonly nodeExpanded = output<IUiGraphNode>();
+  readonly nodeFocused = output<IUiGraphNode>();
+  readonly nodeMore = output<IUiGraphNode>();
 
   // constants
   readonly nodeRadius = 50;
@@ -41,6 +41,11 @@ export class NodeComponent {
   emitNodeFocused(event: Event): void {
     event.stopPropagation();
     this.nodeFocused.emit(this.node());
+  }
+
+  emitNodeMore(event: Event): void {
+    event.stopPropagation();
+    this.nodeMore.emit(this.node());
   }
 
   stopPropagation(event: Event): void {

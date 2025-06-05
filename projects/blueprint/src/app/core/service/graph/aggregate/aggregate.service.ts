@@ -54,7 +54,7 @@ export class AggregateService {
 
         const outLinks: ICompositionToCompositionLink[] = [];
         const outLinkFactory = new OutgoingCompositionToCompositionLinkFactory();
-        console.log(flux.CompositionToCompositionLinkNamedNode.value);
+
         classIris.forEach(iri => {
             const links = linkGraph.namedNode(iri)
                 .in(shacl.targetClassNamedNode)
@@ -129,7 +129,6 @@ export class AggregateService {
      */
     getCompositionToCompositionLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToCompositionLinks(viewGraphMetadata, classIris);
-        console.log('%cComposition links', 'color: magenta', links.length);
 
         // strategies to create the queries
         const strategies: CompositionToCompositionQueryStrategy[] = [
@@ -140,7 +139,6 @@ export class AggregateService {
             const flitteredLinksForTheCurrentStrategy = strategy.filter(links, classIris);
             return flitteredLinksForTheCurrentStrategy.flatMap(link => strategy.createQuery(link, subject));
         });
-        console.log(newQueries.join('\n\n\n\n'));
 
 
         const queries = links.flatMap(link => {
@@ -374,7 +372,6 @@ export class AggregateService {
      */
     getCompositionToNodeLinkQueries(viewGraphMetadata: RdfTypes.Dataset, classIris: string[], subject: string): string[] {
         const links = this.#extractCompositionToNodeLinks(viewGraphMetadata, classIris);
-        console.log('%cNode links', 'color: magenta', links.length);
 
         // strategies to create the queries
         const strategies: CompositionToNodeQueryStrategy[] = [

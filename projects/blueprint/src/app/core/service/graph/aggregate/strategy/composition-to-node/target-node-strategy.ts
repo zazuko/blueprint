@@ -150,7 +150,6 @@ export class TargetNodeStrategy implements CompositionToNodeQueryStrategy {
                     ${body}
                 }
             }`;
-            console.log('%cquery', 'color: red', query);
             return [query];
 
         });

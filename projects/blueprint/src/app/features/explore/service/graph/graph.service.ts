@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { Observable, ReplaySubject, of, map } from 'rxjs';
 
-import { QueryBuilderService } from '../query-builder/query-builder.service';
+import { GraphQueryBuilderService } from '../query-builder/graph-query-builder.service';
 
 import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
 
@@ -17,7 +17,7 @@ export interface QueryInput {
   providedIn: 'root',
 })
 export class GraphService {
-  readonly #queryBuilder = inject(QueryBuilderService);
+  readonly #queryBuilder = inject(GraphQueryBuilderService);
 
   #nodesMap = new Map<string, RdfUiGraphNode>();
   #linksMap = new Map<string, RdfUiLink>();
@@ -27,6 +27,13 @@ export class GraphService {
   // The graph$ observable is used to emit the current graph state.
   // It is a ReplaySubject with a buffer size of 1, meaning it will emit the last value to new subscribers.
   public graph$ = new ReplaySubject<Graph>(1);
+
+  #internalGraphSignal = signal<Graph>({
+    nodes: [],
+    links: [],
+  });
+
+  graphSignal = this.#internalGraphSignal.asReadonly();
 
   /**
   * Clears the current dataset by resetting the nodes and links.
@@ -40,6 +47,8 @@ export class GraphService {
     this.#nodesMap = new Map<string, RdfUiGraphNode>();
     this.#linksMap = new Map<string, RdfUiLink>();
     this.graph$.next({ nodes: [], links: [] });
+    this.#internalGraphSignal.set({ nodes: [], links: [] });
+
   }
 
   /**
@@ -51,6 +60,7 @@ export class GraphService {
     this.#query(iri).subscribe({
       next: (graph) => {
         this.graph$.next(graph);
+        this.#internalGraphSignal.set(graph);
       },
       error: (err) => {
         console.error(err);
@@ -74,17 +84,22 @@ export class GraphService {
       return of(data);
     }
     return this.#queryBuilder.buildQuery(expandedNodeIri).pipe(
-      map((dataset) => {
-        this.#currentDataset.addAll(dataset);
+      map((response) => {
+        this.#currentDataset.addAll(response.data);
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
-        const links = cfGraph.in(flux.linkNamedNode).map(n => new RdfUiLink(n));
+        const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink, response.linkDefinitions.find(link => link.iri === rdfLink.out(flux.linkNamedNode).value)));
 
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');
 
+        nodes.forEach(node => {
+          if (node.isBlankNode) {
+            node.logTable();
+          }
+        });
 
         // node position
         // if the current node does not have a position, set it to (0, 0)

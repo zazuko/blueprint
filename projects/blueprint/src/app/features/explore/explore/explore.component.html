@@ -1,6 +1,6 @@
 <div class="content">
 
-  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subject"
+  <bp-explore-header [isLoading]="loadingIndicatorService.isLoading()" [iri]="subjectIri()"
     [subjectLabel]="currentGraphResource()?.title?? ''" [subjectClassLabel]="currentGraphResource()?.classLabel ?? ''"
     [avatars]="currentGraphResource()?.avatars ?? []" />
 
@@ -19,14 +19,14 @@
 
 
 
-  @if(routeFragment() === 'Information') {
+  @if(routeFragment() === 'Information' && !loadingIndicatorService.isLoading()) {
   <div class="subject-view" @fadeIn>
 
 
-    @if(uiHierarchy.length > 0) {
-    @defer (when uiHierarchy.length > 0) {
+    @if(uiHierarchy().length > 0) {
+    @defer (when uiHierarchy().length > 0) {
     <div class="hierarchy-container">
-      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      @for( hierarchy of uiHierarchy(); track hierarchy.iri) {
       <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
       }
     </div>
@@ -34,25 +34,31 @@
     }
 
     <div class="view-container">
-      @for(l of literalDetailElements(); track l) {
-      <bp-literal [literal]="l"></bp-literal>
+      @for(l of literalDetailElements(); track l.ruleIri) {
+      <bp-literal @fadeIn [literal]="l"></bp-literal>
       }
+      <bp-neighbor-nodes @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+        (nodeSelected)="expandNode($event)" @fadeIn />
+
 
 
     </div>
   </div>
 
 
-  } @else if (routeFragment() === 'Nearby') {
-  <bp-neighbor-nodes [graph]="graph()" [subject]="subject" (nodeSelected)="onNodeElementSelected($event)" @fadeIn />
-  } @else if (routeFragment() === 'Context') {
+  } @else if (routeFragment() === 'Relations' && !loadingIndicatorService.isLoading()) {
+  <div style="margin-top: 24px">
+    <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+      (nodeSelected)="expandNode($event)" @fadeIn />
+  </div>
+  } @else if (routeFragment() === 'Context' && !loadingIndicatorService.isLoading()) {
 
   <div class="subject-view" @fadeIn>
 
-    @if(uiHierarchy.length > 0) {
-    @defer (when uiHierarchy.length > 0) {
+    @if(uiHierarchy().length > 0) {
+    @defer (when uiHierarchy().length > 0) {
     <div class="hierarchy-container">
-      @for( hierarchy of uiHierarchy; track hierarchy.iri) {
+      @for( hierarchy of uiHierarchy(); track hierarchy.iri) {
       <bp-ui-hierarchy-view [hierarchyView]="hierarchy" (nodeSelected)="selectByIri($event)" />
       }
     </div>
@@ -60,9 +66,9 @@
     }
     <div class="view-container">
 
-      @defer (when uiView.length > 0) {
+      @defer (when uiView().length > 0) {
       <div class="view-container" @fade>
-        @for( view of uiView; track view.iri) {
+        @for( view of uiView(); track view.iri) {
         <bp-ui-view style="flex-grow: 1" [uiView]="view" (nodeSelected)="selectByIri($event)" />
         }
       </div>
@@ -79,10 +85,40 @@
   <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
+      @if(canIOpenInformationPanel()) {
+      <p-drawer [(visible)]="isInformationPanelOpen" [modal]="false" position="right">
+        <ng-template #header>
+          <div class="drawer-header">
 
-      <bp-graph (nodeSelected)="onNodeSelected($event)" (nodeExpanded)="onNodeExpanded($event)"
-        (nodeFocused)="onNodeFocused($event)" [disableNodeMenu]="true" [disableZoomMenu]="true" [graph]="graph()"
-        xOffset="200" yOffset="200" />
+            <div style="display: flex; flex-direction: column;">
+              <h1 class="drawer-title">{{selectionKind() === 'node' ? 'Subject' : 'Link'}}</h1>
+
+            </div>
+
+          </div>
+        </ng-template>
+        @if(selectionKind() === 'node') {
+        <div style="font-size: 0.8em;">
+          @if(currentGraphResource()) {
+          <p [pTooltip]="currentGraphResource().iri" tooltipPosition="left" tooltipStyleClass="tooltip-one-line"
+            class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
+            &lt;{{currentGraphResource().iri}}&gt;</p>
+          }
+          @for(l of literalDetailElements(); track l.ruleIri) {
+          <bp-literal [literal]="l"></bp-literal>
+          }
+        </div>
+        } @else {
+        @if(selectedLink()) {
+        <bp-link-panel [link]="selectedLink()" />
+        }
+        }
+      </p-drawer>
+      }
+      <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
+        [selectedLinkId]="selectedLinkIri()" (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)"
+        [disableNodeMenu]="false" (nodeMore)="showNodeDetails($event)" (linkSelected)="selectLink($event)"
+        [disableZoomMenu]="true" [graph]="bubbleGraph()" xOffset="200" yOffset="200" />
 
     </div>
 

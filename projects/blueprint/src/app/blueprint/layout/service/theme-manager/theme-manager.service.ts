@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, inject, signal, DOCUMENT } from '@angular/core';
 import { LOCAL_STORAGE } from 'projects/blueprint/src/app/core/providers/storage/local-storage';
 import { Subject } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class ThemeManager {
   readonly themeChanged$ = new Subject<void>();
 
   constructor() {
-    console.log('ThemeManager constructor');
+
     if (!isPlatformBrowser(this.#platformId)) {
       return;
     }

@@ -4,6 +4,7 @@ import { flux } from '@blueprint/ontology';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
+import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
 
 export interface Graph {
@@ -20,6 +21,7 @@ export interface IUiGraphNode extends INodeElement {
   fixed: number;
   expanded: boolean;
   showMenu: boolean;
+  isBlankNode: boolean;
   /**
    * this is the same as .iri but it is needed to support the cola.js interface
    */
@@ -29,12 +31,10 @@ export interface IUiGraphNode extends INodeElement {
 
 export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNode {
 
-
   constructor(node: GraphPointer) {
     super(node);
 
   }
-
 
   get index(): number {
     const index = this._node.out(flux.indexNamedNode).value;
@@ -153,6 +153,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     return showMenuString === 'true' || showMenuString === '1';
   }
 
+
   set showMenu(showMenu: boolean) {
     const hasShowMenu = this._node.out(flux.namespace`showMenu`).value !== undefined;
     if (hasShowMenu) {
@@ -161,6 +162,12 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
     this._node.addOut(flux.namespace`showMenu`, rdfEnvironment.literal(`${showMenu}`, rdfEnvironment.namedNode('http://www.w3.org/2001/XMLSchema#boolean')));
   }
 
+  /**
+   * Returns true if the node is a blank node
+   */
+  get isBlankNode(): boolean {
+    return this._node.term.termType === 'BlankNode' ? true : false;
+  }
 }
 
 
@@ -170,11 +177,12 @@ export interface IUiLink extends cola.Link<IUiGraphNode> {
   target: IUiGraphNode;
   id: string;
   label: string;
+  linkDefinition: UiLinkDefinition | null;
 }
 
 
 export class RdfUiLink extends ClownfaceObject implements IUiLink {
-  constructor(node: GraphPointer) {
+  constructor(node: GraphPointer, public linkDefinition: UiLinkDefinition) {
     super(node);
   }
 
@@ -198,3 +206,21 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
 }
 
 
+
+
+export interface ConsolidatedLink extends IUiLink {
+  incomingLabels: LabelWithLinkDefinition[];
+  outgoingLabels: LabelWithLinkDefinition[];
+  direction: 'outgoing' | 'bidirectional';
+}
+
+
+export interface ConsolidatedGraph {
+  nodes: IUiGraphNode[];
+  links: ConsolidatedLink[];
+};
+
+export interface LabelWithLinkDefinition {
+  label: string;
+  linkDefinition: UiLinkDefinition;
+}

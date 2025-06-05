@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AvatarComponent } from '../../../shared/component/avatar/avatar.component';
+import { AvatarComponent } from '../../../shared/component/ui/avatar/avatar.component';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 
 @Component({

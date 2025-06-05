@@ -5,10 +5,10 @@ import { rdfs, rdf, shacl } from "@blueprint/ontology";
 import { ClownfaceObject } from '../clownface-object/clownface-object';
 import { RdfUiClassMetadata, UiClassMetadata } from '../ui-class-metadata/ui-class-metadata';
 
-import { DEFAULT_ICON } from '@blueprint/constant/icon';
-import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { Avatar } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { rdfEnvironment } from '../../rdf/rdf-environment';
-import { ColorUtil } from '../../utils/color-util';
+import { DEFAULT_ICON } from '@blueprint/constant/icon';
+import { DEFAULT_COLOR } from '@blueprint/constant/color';
 
 /**
  * Interface for the NodeElement
@@ -56,7 +56,6 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
         if (this.#uiClassMetadata === null) {
             const uiClassMetadata = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).map(n => new RdfUiClassMetadata(n));
             if (uiClassMetadata.length === 0) {
-                console.warn(`No UiClassMetadata found for ${this.iri}. This should not happen. There is no icon, color, ... configured for this node. Defaulting to default values.`);
                 const rdfTypes = this._node.out(rdf.typeNamedNode).values;
                 const defaultUiClassMetadatas = rdfTypes.map(rdfType => {
                     const defaultUIClassMetadata: UiClassMetadata = {
@@ -67,7 +66,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
                         searchPriority: 0,
                         label: 'Default',
                         comment: 'No configuration for this node.',
-                        color: ColorUtil.getColorForIndex(0)
+                        color: DEFAULT_COLOR,
                     };
                     return defaultUIClassMetadata;
                 });
@@ -86,17 +85,7 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get label(): string {
         if (this.#label === null) {
-            const labels = this._node.out(rdfs.labelNamedNode).values;
-            if (labels.length > 1) {
-                console.warn(`Multiple labels for ${this.iri}: ${labels.join(', ')}. Joining them with a comma.`);
-                this.#label = labels.join(', ');
-            }
-            else if (labels.length === 0) {
-                console.warn(`No label for ${this.iri}. Defaulting to ''`);
-                this.#label = '';
-            } else {
-                this.#label = labels[0];
-            }
+            this.#label = ClownfaceObject.getLabelForNode(this._node);
         }
         return this.#label;
     }
@@ -110,13 +99,24 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
      */
     get classLabel(): string[] {
         if (this.#classLabel === null) {
-            const labels = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
-            if (labels.length === 0) {
-                console.warn(`No class label for ${this.iri}. Defaulting to ''`);
-                this.#classLabel = [''];
+            const labelsFromBPUiConfig = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
+            if (labelsFromBPUiConfig.length > 0) {
+                this.#classLabel = labelsFromBPUiConfig;
+                return this.#classLabel;
             }
-            this.#classLabel = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode).out(rdfs.labelNamedNode).values;
+            const tBoxClassLabel = this._node.out(rdf.typeNamedNode).out(rdfs.labelNamedNode).values;
+            if (tBoxClassLabel.length > 0) {
+                this.#classLabel = tBoxClassLabel;
+                return this.#classLabel;
+            }
+            const classIris = this._node.out(rdf.typeNamedNode).filter(node => node.value !== 'https://flux.described.at/UiNode').values.map(iri => rdfEnvironment.shrink(iri));
+            if (classIris.length > 0) {
+                this.#classLabel = classIris;
+                return this.#classLabel;
+            }
+            this.#classLabel = [''];
         }
+
         return this.#classLabel;
     }
     /**

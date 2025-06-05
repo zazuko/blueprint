@@ -1,7 +1,7 @@
 import { Component, output, input } from '@angular/core';
 import { INodeElement } from '@blueprint/model/node-element/node-element.class';
 
-import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { CompositionNodeElement } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NgStyle } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';

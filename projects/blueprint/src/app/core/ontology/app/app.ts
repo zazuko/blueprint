@@ -242,6 +242,31 @@ class AppOntology extends Ontology {
         return this.namespace('index');
     }
 
+    /**
+     * Get is synthetic predicate.
+     * 
+     * @readonly
+     */
+    get isSynthetic(): string {
+        return this.namespace('isSynthetic').value;
+    }
+    /**
+     * Get the prefixed is synthetic predicate.
+     * 
+     * @readonly
+     */
+    get isSyntheticPrefixed(): string {
+        return `${this.prefix()}:isSynthetic`;
+    }
+    /**
+     * Get the is synthetic predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get isSyntheticNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('isSynthetic');
+    }
+
 }
 
 export const appLocal = new AppOntology();

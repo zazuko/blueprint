@@ -41,7 +41,7 @@ export class InventoryComponent {
   ];
 
   constructor() {
-    this.#loadingIndicatorService.loading();
+    this.#loadingIndicatorService.start();
     this.#hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(
       {
         next: hierarchies => {

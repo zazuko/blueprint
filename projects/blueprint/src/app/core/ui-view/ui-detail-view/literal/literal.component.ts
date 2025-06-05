@@ -25,6 +25,7 @@ export enum LiteralRenderType {
 
 }
 export interface UILiteral {
+  ruleIri: string,
   label: string,
   value: RdfTypes.Literal[]
   renderer: LiteralRenderType

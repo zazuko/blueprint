@@ -41,7 +41,7 @@ export class TopologyComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadingIndicatorService.loading();
+    this.loadingIndicatorService.start();
     this.hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
       {
         next: (result) => {

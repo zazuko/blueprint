@@ -1,0 +1,13 @@
+@for(l of link()!.outgoingLabels; track l.linkDefinition.iri) {
+<p-card>
+    <div class="direction"> &#8592;</div>
+    <bp-link-list-item [label]="l" />
+</p-card>
+}
+
+@for(l of link()!.incomingLabels; track l.linkDefinition.iri) {
+<p-card>
+    <div class="direction">&#8594;</div>
+    <bp-link-list-item [label]="l" />
+</p-card>
+}

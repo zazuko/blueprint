@@ -25,6 +25,7 @@ $title-height: 118px;
 
 .content {
   padding: $page-padding;
+  padding-top: 24px;
   max-width: 100%;
 }
 
@@ -127,3 +128,30 @@ $title-height: 118px;
   margin-top: 12px;
 
 }
+
+
+.iri {
+  font-size: 9px;
+  width: 230px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-bottom: 2em;
+}
+
+
+.drawer-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-contrast);
+  margin-bottom: 2px;
+}
+
+.drawer-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+

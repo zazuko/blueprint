@@ -5,7 +5,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { NodeElement } from '../../core/model/node-element/node-element.class';
 import { NgStyle } from '@angular/common';
-import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 
 @Component({
   selector: 'bp-cluster-diagram',

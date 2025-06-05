@@ -109,12 +109,16 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.searchService.classCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(classCount => {
+    this.searchService.classCount$.pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(classCount => {
       this.classCount.set(classCount as unknown as UiClassCount[]);
     }
     );
 
-    this.searchService.totalCount$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(totalCount => {
+    this.searchService.totalCount$.pipe(
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe(totalCount => {
       this.resultCount.set(totalCount);
     }
     );
@@ -133,7 +137,7 @@ export class SearchComponent implements OnInit {
         map((queryParam) => queryParam['searchTerm']),
         takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchTerm) => {
-        this.#loadingIndicatorService.loading();
+        this.#loadingIndicatorService.start();
         this.searchTerm.set(searchTerm || '');
         this.searchParam.term = this.searchTerm();
         this.searchParam.page = 0;
@@ -158,7 +162,7 @@ export class SearchComponent implements OnInit {
   }
 
   onFilterChange(newFilter: SearchFilter[]): void {
-    this.#loadingIndicatorService.loading();
+    this.#loadingIndicatorService.start();
     this.activeFilters = newFilter;
     this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);

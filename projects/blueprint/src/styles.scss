@@ -23,6 +23,7 @@
   word-wrap: normal;
   direction: ltr;
   -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
 
@@ -128,4 +129,27 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: light-dark(rgb(249, 250, 251), rgb(17, 24, 39));
+}
+
+
+.p-avatar-icon {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.selected-avatar{
+    box-shadow: 0 0 2px 2px var(--p-tabs-tab-active-color);
+}
+
+
+.tooltip-one-line {
+    max-width: none !important;
+
+  .p-tooltip-text {
+  word-wrap: none !important;
+  white-space: nowrap !important;
+  font-size: 0.8em !important;
+
+  }
 }

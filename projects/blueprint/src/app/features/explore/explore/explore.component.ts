@@ -1,24 +1,26 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
   inject,
   signal,
   DestroyRef,
-  AfterViewInit,
   computed,
   effect,
+  OnDestroy,
+  model,
 } from '@angular/core';
-import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
-import { Observable, map, switchMap, tap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
+
+import { Clipboard } from '@angular/cdk/clipboard';
 
 import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem } from 'primeng/api';
-
+import { DrawerModule } from 'primeng/drawer';
+import { ButtonModule } from 'primeng/button'
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
 import { GraphComponent } from '../../../core/component/graph/graph/graph.component';
@@ -28,11 +30,9 @@ import { ViewDataService } from '../../../core/ui-view/service/view-data/view-da
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
-import { Avatar } from '../../../shared/component/avatar/avatar.component';
 
-import { flux, nileaUi, rdf, rdfs, shacl, schema, skos } from '@blueprint/ontology';
-import { Graph, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
-import { RdfUiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { flux, nileaUi, rdf, } from '@blueprint/ontology';
+import { ConsolidatedLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
@@ -45,9 +45,13 @@ import { AggregateRelationComponent } from "../../../core/ui-view/view-component
 import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
 import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
 import { PanelModule } from 'primeng/panel';
-import { GraphPointer } from 'clownface';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
+import { ExploredResource } from '../model/explored-resource.class';
+import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
+import { LinkPanelComponent } from "../link-panel/link-panel.component";
+
+type NodeExploreCommand = "expand" | "select";
+type SelectionKind = "node" | "link";
 
 @Component({
   templateUrl: './explore.component.html',
@@ -66,70 +70,93 @@ import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui
     TooltipModule,
     TabsModule,
     PanelModule,
-    LiteralComponent
+    LiteralComponent,
+    DrawerModule,
+    ButtonModule,
+    LinkPanelComponent
   ]
 })
-export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ExploreComponent implements OnDestroy {
   readonly #route = inject(ActivatedRoute);
   readonly #router = inject(Router);
   readonly #graphService = inject(GraphService);
   readonly #selectionService = inject(SelectionService);
   readonly #viewData = inject(ViewDataService);
   readonly #destroyRef = inject(DestroyRef);
-  public readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #uiDetailService = inject(UiDetailService);
+  readonly #clipboard = inject(Clipboard);
+  readonly loadingIndicatorService = inject(LoadingIndicatorService);
+  readonly #messageChannelServie = inject(MessageChannelService);
 
-  public compositionLinks = signal<CompositionLinkResult[]>([]);
-  public thisNodeElement = signal<NodeElement | null>(null);
-
+  readonly selectedNodeIri = this.#selectionService.selectedNodeIriSignal;
   tabNavItems: MenuItem[] = [
     { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
     { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
-    { label: 'Nearby', icon: 'pi pi-fw pi-calendar', fragment: 'Nearby' },
+    { label: 'Relations', icon: 'pi pi-arrow-right-arrow-left', fragment: 'Relations' },
     { label: 'Graph', icon: 'fa-solid fa-circle-nodes', fragment: 'Graph' },
   ];
 
   public activeItem = this.tabNavItems[0];
+  routeFragment = toSignal(this.#route.fragment.pipe(map(f => { if (f === null) { return 'Information' } return f })), { initialValue: 'Information' });
 
-  public currentGraphResource = signal<GraphResource | null>(null);
+  isInformationPanelOpen = model<boolean>(false);
 
-  subject: string = '';
-  graphOpenState = signal(true);
-  expandedNode: IUiGraphNode | null = null;
-  routeFragment = toSignal(this.#route.fragment, { initialValue: 'Information' });
+  canIOpenInformationPanel = computed(() => {
+    return this.routeFragment() === 'Graph';
+  });
+
+  selectionKind = signal<SelectionKind>('node');
+  showLinks = signal<boolean>(false);
+  selectedLink = signal<ConsolidatedLink | null>(null);
+
+  selectedLinkIri = computed(() => {
+    const link = this.selectedLink();
+    if (!link) {
+      return '';
+    }
+    return link.iri;
+  });
 
 
-  uiView: UiView[] = [];
-  uiHierarchy: UiHierarchyView[] = [];
+  public bubbleGraph = this.#graphService.graphSignal;
+
+
+
   term: string;
-  graph = signal<Graph>({ nodes: [], links: [] });
-
 
   searchTerm: string;
   searchFilter: string;
-  expanded = true;
 
-  routeParamMap$: Observable<ParamMap>
-  graph$: Observable<Graph>;
-
+  nodeExploreCommand: NodeExploreCommand = 'expand'; // default command is expand
 
   constructor() {
-    this.routeParamMap$ = this.#route.paramMap;
+
+    effect(() => {
+      const selectedNodeIri = this.selectedNodeIri();
+      if (selectedNodeIri && this.nodeExploreCommand === 'expand') {
+        this.#graphService.expandNode(selectedNodeIri);
+      }
+    });
+
+    effect(() => {
+      const subject = this.subjectIri();
+      if (subject) {
+        this.#selectionService.setSelectedNode(subject);
+      }
+    })
   }
 
   literalConfigurationRules = toSignal(toObservable(computed(() => {
     return this.currentGraphResource()?.rdfTypeIri ?? [];
   })).pipe(
     switchMap((rdfTypeIri) => this.#uiDetailService.getLiteralRulesForClasses(rdfTypeIri)),
-    map((rules) => {
-
-      return rules;
-    }))
+  )
   );
 
+  // create literal elements from the current graph resource
   literalDetailElements = computed<UILiteral[]>(() => {
     const currentResource = this.currentGraphResource();
-    if (currentResource === null) {
+    if (currentResource === undefined) {
       return [];
     }
     const literalMap = currentResource.getLiteralTripleMap();
@@ -139,10 +166,14 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
     [...literalMap.keys()].forEach((key) => {
       const literalValues = literalMap.get(key).map(q => q.object as RdfTypes.Literal);
 
+      if (!literalRules) {
+        console.warn('No literal rules found for key:', key);
+      }
       const literalRule = literalRules.find((rule) => rule.path.value === key);
       if (literalRule) {
         if (literalValues) {
           const literalElement: UILiteral = {
+            ruleIri: key,
             label: literalRule.label,
             order: literalRule.order,
             value: literalValues,
@@ -162,6 +193,7 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         const literalElement: UILiteral = {
+          ruleIri: key,
           label: capitalizedLabel,
           order: 10,
           value: literalValues,
@@ -171,258 +203,148 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     return literalElements;
-
-
   });
 
 
-  ngOnInit(): void {
-
-    this.#graphService.clearGraph();
-
-
-    this.#graphService.graph$.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-      map(graph => {
-        if (this.expandedNode !== null) {
-          // set the nodes without x and y to the expanded node's x and y. this makes new nodes appear from the expanded node
-          // and not the center of the graph 
-          graph.nodes.filter(nodeWithoutX => !nodeWithoutX.x).forEach((newNode) => {
-            newNode.x = this.expandedNode.x;
-            newNode.y = this.expandedNode.y;
-          });
-          this.expandedNode = null;
-        }
-        return graph;
-      })
-    ).subscribe({
-      next: graph => {
-        this.graph.set(graph);
-      },
-      error: (error) => {
-        console.error('error', error);
-        this.loadingIndicatorService.done();
+  subjectIri = toSignal<string | undefined>(this.#route.paramMap.pipe(
+    takeUntilDestroyed(this.#destroyRef),
+    map((params) => params.get('subject')),
+    map((subject) => {
+      if (subject === null) {
+        this.#router.navigate(['explore']);
+        return '';
       }
-    });
+      return subject;
+    })
+  ), { initialValue: undefined });
 
+  viewGraphDataset = toSignal(toObservable<string | undefined>(this.subjectIri).pipe(
+    switchMap((subjectIri) => {
+      if (subjectIri === undefined) {
+        return of(rdfEnvironment.dataset());
+      }
+      this.loadingIndicatorService.start();
+      return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subjectIri))
+    }),
+    takeUntilDestroyed(this.#destroyRef),
+    tap(() => {
+      this.loadingIndicatorService.done();
+    })
+  )
+  );
 
+  currentGraphResource = computed<ExploredResource | undefined>(() => {
+    const viewGraphDataset = this.viewGraphDataset();
+
+    if (!viewGraphDataset || viewGraphDataset.size === 0) {
+      return undefined;
+    }
+
+    const currentNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    if (!currentNode) {
+      return undefined;
+    }
+    const currentResource = new ExploredResource(currentNode);
+    return currentResource;
+  });
+
+  compositionLinks = computed<CompositionLinkResult[]>(() => {
+    const viewGraphDataset = this.viewGraphDataset();
+    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
+    return cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node));
+  });
+
+  thisNodeElement = computed<NodeElement | null>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return null;
+    }
+    const viewGraphDataset = this.viewGraphDataset();
+    const thisNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    if (!thisNode.value) {
+      return null;
+    }
+    return new NodeElement(thisNode);
   }
-  ngAfterViewInit(): void {
-    // fetch the view for the subject on route change
-    this.routeParamMap$.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-      tap(() => {
-        this.loadingIndicatorService.loading();
-      }),
-      map((params) => params.get('subject')),
-      switchMap((subject) => {
-        this.subject = subject;
-        this.#graphService.expandNode(subject);
-        return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subject));
-      }),
-      takeUntilDestroyed(this.#destroyRef),
-    ).subscribe(
-      {
-        next: (viewGraph) => {
-          const currentResource = new GraphResource(rdfEnvironment.clownface(viewGraph).namedNode(this.subject));
-          this.currentGraphResource.set(currentResource);
+  );
 
-          const cfViewGraph = rdfEnvironment.clownface(viewGraph, nileaUi.UiViewNamedNode);
+  uiView = computed<UiView[]>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return [];
+    }
 
-          // ---- composition link result
-          this.compositionLinks.set(cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node)));
-          this.thisNodeElement.set(cfViewGraph.namedNode(this.subject).map((node) => new NodeElement(node))[0]);
-          // ---- composition link result end
+    const viewGraphDataset = this.viewGraphDataset();
+    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
+    const uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
 
-          const cfHierarchyGraph = rdfEnvironment.clownface(viewGraph).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode);
-          // make it better 
+    return uiView;
+  });
 
+  uiHierarchy = computed<UiHierarchyView[]>(() => {
+    const subjectIri = this.subjectIri();
+    if (!subjectIri) {
+      return [];
+    }
 
-          this.uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
-          this.uiView.length === 0 ? this.graphOpenState.set(true) : this.graphOpenState.set(false);
-
-          this.uiHierarchy = cfHierarchyGraph.map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraph));
-
-          this.loadingIndicatorService.done();
-          this.#selectionService.setSelectedNode(this.subject);
-        },
-        error: (error) => {
-          console.error('error', error);
-          this.loadingIndicatorService.done();
-        }
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.#selectionService.clearSelection();
-  }
+    const viewGraphDataset = this.viewGraphDataset();
+    return rdfEnvironment.clownface(viewGraphDataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode).map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraphDataset));
+  });
 
 
   // graph events
   onNodeSelected(node: IUiGraphNode): void {
-    this.expandedNode = node;
+    this.nodeExploreCommand = 'select';
     this.selectByIri(node.id);
-  }
-
-  onNodeElementSelected(node: IUiGraphNode): void {
-    this.selectByIri(node.iri);
   }
 
   selectByIri(iri: string): void {
     this.#selectionService.setSelectedNode(iri);
+    this.selectionKind.set('node');
     this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
-  onNodeExpanded(node: IUiGraphNode): void {
-    this.expandedNode = node;
-    this.loadingIndicatorService.loading();
-
-    this.#graphService.expandNode(node.id);
+  expandNode(node: IUiGraphNode): void {
+    this.nodeExploreCommand = 'expand';
+    if (this.selectedNodeIri() === node.id) {
+      this.#graphService.expandNode(node.id);
+      return;
+    }
+    this.selectByIri(node.id);
   }
 
-  onNodeFocused(node: IUiGraphNode): void {
+  focusNode(node: IUiGraphNode): void {
     this.#graphService.clearGraph();
-    this.expandedNode = node;
-    this.#graphService.expandNode(node.id);
-  }
-
-}
-
-
-
-class GraphResource extends ClownfaceObject {
-
-  #title: string | undefined = undefined;
-  #avatars: Avatar[] | undefined = undefined;
-  #classLabel: string | undefined = undefined;
-  #rdfTypeIri: string[] | null = null;
-
-  constructor(node: GraphPointer) {
-    super(node);
-  }
-
-  get rdfTypeIri(): string[] {
-    if (this.#rdfTypeIri === null) {
-      this.#rdfTypeIri = this._node.out(rdf.typeNamedNode).values;
+    this.nodeExploreCommand = 'expand';
+    if (this.selectedNodeIri() === node.id) {
+      this.#graphService.expandNode(node.id);
+      return;
     }
-    return this.#rdfTypeIri;
+    this.selectByIri(node.id);
   }
 
-  /**
-   * Get the title of the resource. It will try to get the title from the following predicates in order:
-   * - skos:prefLabel
-   * - rdfs:label
-   * - schema:name
-   * - the resource IRI
-   * 
-   * Then it is ordered by the language tag. We find a label with the language tag "en" first. This my be not 
-   * the best solution, but it is the best we can do for now.
-   */
-  get title(): string {
-    if (this.#title === undefined) {
-      const rdfsLabelTerm = this._node.out(rdfs.labelNamedNode).terms.filter((term) => term.termType === 'Literal');
-      const schemaNameTerm = this._node.out(schema.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
-      const skosPrefLabelTerm = this._node.out(skos.prefLabelNamedNode).terms.filter((term) => term.termType === 'Literal');
-
-      if (skosPrefLabelTerm.length > 0) {
-        this.#title = skosPrefLabelTerm.sort(precedence)[0].value;
-      }
-      else if (rdfsLabelTerm.length > 0) {
-        this.#title = rdfsLabelTerm.sort(precedence)[0].value;
-      }
-      else if (schemaNameTerm.length > 0) {
-        // order by langage tag and terms with langage en first
-        this.#title = schemaNameTerm.sort(precedence)[0].value;
-      }
-      else {
-        this.#title = this._node.value;
-      }
-    }
-    return this.#title;
+  showNodeDetails(node: IUiGraphNode): void {
+    console.log('showNodeDetails', node);
+    this.nodeExploreCommand = 'select';
+    this.selectByIri(node.id);
+    this.isInformationPanelOpen.set(true);
   }
 
-  /**
-   * Get the avatars of the resource.
-   */
-  get avatars(): Avatar[] {
-    if (this.#avatars === undefined) {
-      const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      const avatarArray: Avatar[] = metaGraph.map((metaData) => {
-        const uiClassMetaData = new RdfUiClassMetadata(metaData);
-        const icon = uiClassMetaData.icon;
-        const color = uiClassMetaData.color;
-        const label = uiClassMetaData.label;
-        return { label, icon, color };
-      });
-      this.#avatars = avatarArray;
-    }
-    return this.#avatars;
+  copyToClipboard(text: string): void {
+    this.#clipboard.copy(text);
+  };
+
+  selectLink(link: ConsolidatedLink): void {
+    this.selectedLink.set(link);
+
+    this.showLinks.set(true);
+    this.isInformationPanelOpen.set(true);
+    this.selectionKind.set('link');
   }
 
-  /**
-   * Get the class label of the resource.
-   * 
-   * @todo: this should be part of the avatar
-   */
-  get classLabel(): string {
-    if (this.#classLabel === undefined) {
-      const metaGraph = this._node.out(rdf.typeNamedNode).in(shacl.targetNodeNamedNode);
-      this.#classLabel = metaGraph.out(rdfs.labelNamedNode).values.join(',')
-    }
-    return this.#classLabel;
-  }
-
-  /**
-   * Get all predicates for the resource where the object is a literal.
-   * 
-   * @returns An array of literal predicates for the resource. This is done by getting all the quads for the resource and filtering
-   */
-  getLiteralTripleMap(): Map<string, RdfTypes.Quad[]> {
-    const quads = [...this._node.dataset.match(this._node.term, null, null)];
-    const literalQuads = quads.filter(quad => quad.object.termType === 'Literal');
-    // create a map with predicate as key and then the quads as array
-    const literalPredicateMap = new Map<string, RdfTypes.Quad[]>();
-    literalQuads.forEach((quad) => {
-      const key = quad.predicate.value;
-      if (!literalPredicateMap.has(key)) {
-        literalPredicateMap.set(key, []);
-      }
-      literalPredicateMap.get(key)?.push(quad);
-    });
-    return literalPredicateMap;
-  }
-
-  resolveLabelForPredicate(predicate: string): string {
-    const predicatePtr = this._node.namedNode(predicate);
-    const rdfsLabelTerms = predicatePtr.out(rdfs.labelNamedNode).terms as RdfTypes.Literal[];
-    const skosPrefLabelTerms = predicatePtr.out(skos.prefLabelNamedNode).terms as RdfTypes.Literal[];
-    const name = [...rdfsLabelTerms, ...skosPrefLabelTerms].sort(precedence);
-    if (name.length > 0) {
-      return name[0].value;
-    }
-    const predicateString = predicate.includes('#')
-      ? predicate.split('#').pop()
-      : predicate.split('/').pop();
-    if (predicateString) {
-      return predicateString.replace(/([a-z])([A-Z])/g, '$1 $2');
-    }
-    return predicate;
-  }
-
-
-
-
-}
-
-
-function precedence(a: RdfTypes.Literal, b: RdfTypes.Literal): number {
-  const aTerm = a as RdfTypes.Literal;
-  const bTerm = b as RdfTypes.Literal;
-  if (aTerm.language.startsWith('en') && !aTerm.language.startsWith('en')) {
-    return -1;
-  } else if (!aTerm.language.startsWith('en') && bTerm.language.startsWith('en')) {
-    return 1;
-  } else {
-    return 0;
+  ngOnDestroy(): void {
+    console.log('%cExploreComponent ngOnDestroy', 'color: red; font-weight: bold;');
+    this.#graphService.clearGraph();
+    this.#selectionService.clearSelection();
   }
 }

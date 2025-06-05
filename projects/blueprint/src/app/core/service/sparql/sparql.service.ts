@@ -15,11 +15,6 @@ export class SparqlService {
   readonly #http = inject(HttpClient);
   readonly #appConfig = inject(ConfigService).getConfiguration();
 
-  constructor() {
-    console.log('SparqlService initialized');
-    console.log('SparqlService endpointUrl', this.#appConfig.endpointUrl);
-  }
-
   /**
    * Execute a SPARQL SELECT query
    *
@@ -74,7 +69,16 @@ export class SparqlService {
     return this.#http.post(endpoint, body.toString(), options)
       .pipe(
         map(response => {
-          const dataset = rdfEnvironment.parseTurtle(response.body);
+          const dataset = rdfEnvironment.dataset();
+          try {
+            dataset.addAll(rdfEnvironment.parseTurtle(response.body));
+
+          } catch (error) {
+            console.error('Error parsing Turtle response:', error);
+            console.error('Response body:', response.body);
+            console.error('Response query:', query);
+            throw error;
+          }
           return dataset
         })
       );

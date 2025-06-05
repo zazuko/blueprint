@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import {
     provideRouter, withComponentInputBinding, withInMemoryScrolling,
 } from '@angular/router';
@@ -20,7 +20,7 @@ function initializeAppFactory(configService: ConfigService): () => void {
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideHttpClient(withInterceptors([authInterceptor])),
         provideRouter(routes,
             withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),

@@ -19,8 +19,5 @@ export class IncomingPathFactory extends PathFactory {
             return '^' + fragment;
         });
         return new ObjectPath(reversedPathFragment);
-
     }
-
-
 }

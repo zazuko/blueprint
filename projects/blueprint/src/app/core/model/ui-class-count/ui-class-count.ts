@@ -12,7 +12,7 @@ import { flux } from '@blueprint/ontology';
  */
 export class UiClassCount extends ClownfaceObject {
 
-    private _count: number | null = null;
+    #count: number | null = null;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -24,19 +24,20 @@ export class UiClassCount extends ClownfaceObject {
      * @readonly
      */
     public get count(): number {
-        if (this._count === null) {
+        if (this.#count === null) {
             const c = this._node.out(flux.countNamedNode).values;
             if (c.length === 0) {
                 console.error(`No count found for ${this._node.value}`);
-                this._count = 0;
+                this.#count = 0;
             } else {
                 if (c.length > 1) {
                     console.warn(`Multiple counts found for ${this._node.value}`);
+                    this.logTable();
                 }
-                this._count = Number(c[0]);
+                this.#count = Number(c[0]);
             }
         }
-        return this._count;
+        return this.#count;
     }
 
 }

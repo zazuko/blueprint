@@ -1,6 +1,8 @@
 import { GraphPointer } from 'clownface';
 
-import { rdfEnvironment } from '../../rdf/rdf-environment';
+import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
+import { rdfs, schema, shacl, skos } from '@blueprint/ontology';
+import { sortLiteralsByBrowserLanguage } from '../../utils/language-prededence';
 
 /**
  * Base class for all objects that are represented by a node in the RDF graph. It provides some basic functionality to
@@ -8,6 +10,58 @@ import { rdfEnvironment } from '../../rdf/rdf-environment';
  * 
  */
 export abstract class ClownfaceObject {
+
+    static getLabelForNode(graphPointer: GraphPointer): string {
+        const rdfsLabelTerm = graphPointer.out(rdfs.labelNamedNode).terms.filter((term) => term.termType === 'Literal');
+        const schemaNameTerm = graphPointer.out(schema.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
+        const skosPrefLabelTerm = graphPointer.out(skos.prefLabelNamedNode).terms.filter((term) => term.termType === 'Literal');
+        const schemaFamilyNameTerm = graphPointer.out(schema.familyNameNamedNode).terms.filter((term) => term.termType === 'Literal');
+        const shaclNameTerm = graphPointer.out(shacl.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
+
+
+        let label = '';
+        if (skosPrefLabelTerm.length > 0) {
+            label = sortLiteralsByBrowserLanguage(skosPrefLabelTerm as RdfTypes.Literal[])[0].value;
+            return label;
+        }
+        if (rdfsLabelTerm.length > 0) {
+            label = sortLiteralsByBrowserLanguage(rdfsLabelTerm as RdfTypes.Literal[])[0].value;
+            return label;
+        }
+        if (schemaNameTerm.length > 0) {
+            // order by langage tag and terms with langage en first
+            label = sortLiteralsByBrowserLanguage(schemaNameTerm as RdfTypes.Literal[])[0].value;
+            return label;
+        }
+        if (schemaFamilyNameTerm.length > 0) {
+            // order by langage tag and terms with langage en first
+            label = sortLiteralsByBrowserLanguage(schemaFamilyNameTerm as RdfTypes.Literal[])[0].value;
+            return label;
+        }
+
+        if (shaclNameTerm.length > 0) {
+            // order by langage tag and terms with langage en first
+            label = sortLiteralsByBrowserLanguage(shaclNameTerm as RdfTypes.Literal[])[0].value;
+            return label;
+        }
+
+        if (graphPointer.value.includes('#')) {
+            label = graphPointer.value.split('#').pop();
+            return decodeURIComponent(label);
+
+        }
+
+        label = graphPointer.value.split('/').pop();
+        if (label === '') {
+            const parts = graphPointer.value.split('/');
+            parts.pop();
+            label = parts.pop();
+        }
+        return decodeURIComponent(label);
+
+    }
+
+
     /**
      * This is a helper function that returns all predicates that are used in the dataset of the given node.
      * 
