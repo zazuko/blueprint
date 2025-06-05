@@ -1,5 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { RdfTypes } from '../../../../rdf/rdf-environment';
+import { sortLiteralsByBrowserLanguage } from '../../../../utils/language-prededence';
 
 @Component({
   selector: 'bp-string-literal',
@@ -11,8 +12,13 @@ export class StringLiteralComponent {
   label = input.required<string>();
   value = input.required<RdfTypes.Literal[]>();
 
+  literalsWithLanguagePrecedence = computed<RdfTypes.Literal[]>(() => {
+    const literals = this.value();
+    return sortLiteralsByBrowserLanguage(literals);
+  }
+  );
   valuesWithId = computed<LiteralWithId[]>(() => {
-    const values = this.value();
+    const values = this.literalsWithLanguagePrecedence();
     return values.map(literal => {
       return {
         id: `${literal.value}-${literal.language || ''}-${literal.datatype.value || ''}`,

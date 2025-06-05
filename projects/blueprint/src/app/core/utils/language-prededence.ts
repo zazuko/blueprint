@@ -7,12 +7,9 @@ class _BrowserLangagePrecedence {
     langPriorityMap = new Map<string, number>();
     constructor() {
         const browserLangs = navigator.languages || [navigator.language];
-        console.log('Browser languages:', browserLangs);
         this.browserLangs = browserLangs.map(lang => lang);
 
         const preferredLangs = browserLangs.map(l => l.toLowerCase());
-
-
 
         preferredLangs.forEach((lang, i) => {
             this.langPriorityMap.set(lang, i); // full match

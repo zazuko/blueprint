@@ -1,8 +1,8 @@
 {
   "/query": {
-    "targetsxx": "http://127.0.0.1:7001/",
+    "target": "http://127.0.0.1:7001/",
     "targetd": "https://ld.bafu.zazukoians.org/query",
-    "target": "https://test.lindas.admin.ch/query",
+    "targetds": "https://test.lindas.admin.ch/query",
     "targetl": "https://lindas.admin.ch/query",
     "headers": {
       "Connection": "keep-alive"

@@ -11,7 +11,7 @@ import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/g
 
 import { GraphComponent } from "../../../core/component/graph/graph/graph.component";
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { Avatar } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { Avatar } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 

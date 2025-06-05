@@ -11,7 +11,7 @@ import { HierarchyCardComponent } from "../../../../features/inventory/inventory
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { Tooltip } from 'primeng/tooltip';
 import { ExploredResource } from 'projects/blueprint/src/app/features/explore/model/explored-resource.class';
-import { AvatarComponent, Avatar } from "../../../../shared/component/avatar/avatar.component";
+import { AvatarComponent, Avatar } from "../../../../shared/component/ui/avatar/avatar.component";
 
 const SHOW_FILTER_IF_MORE_THAN = 10;
 

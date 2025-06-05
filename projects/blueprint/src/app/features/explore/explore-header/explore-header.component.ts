@@ -10,7 +10,7 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RippleModule } from 'primeng/ripple';
 
-import { Avatar, AvatarComponent } from '../../../shared/component/avatar/avatar.component';
+import { Avatar, AvatarComponent } from '../../../shared/component/ui/avatar/avatar.component';
 import { fadeIn } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { ConfigService } from '@blueprint/service/config/config.service';
 
@@ -79,7 +79,6 @@ export class ExploreHeaderComponent {
   sparqlConsoleUrl = computed<string>(() => {
     const appConfiguration = this.#appConfig.configuration();
 
-
     const query = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -121,8 +120,8 @@ export class ExploreHeaderComponent {
    * @returns {void}
    */
   public copyIriToClipboard(): void {
-
     this.#clipboard.copy(this.iri());
+
     this.messageService.add({
       severity: 'success',
       summary: 'Copied IRI',

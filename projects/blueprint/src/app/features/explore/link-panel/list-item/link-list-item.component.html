@@ -1,0 +1,13 @@
+<bp-field label="Link Label">
+    {{label().label}}
+</bp-field>
+
+<bp-field label="Path">
+    @for(pathElement of path(); track pathElement.ngForIndex) {
+    <div>{{pathElement.displayString}}
+        @if(!$last) {
+        <span>/</span>
+        }
+    </div>
+    }
+</bp-field>

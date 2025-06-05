@@ -1,16 +1,15 @@
 import { Component, computed, input } from '@angular/core';
 import { LabelWithLinkDefinition } from '@blueprint/component/graph/model/graph.model';
-import { rdf } from '@blueprint/ontology';
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { StringLiteralComponent } from 'projects/blueprint/src/app/core/ui-view/ui-detail-view/component/string-literal/string-literal.component';
+import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/field/field.component';
 
 @Component({
-  selector: 'bp-list-item',
-  imports: [StringLiteralComponent],
-  templateUrl: './list-item.component.html',
-  styleUrl: './list-item.component.scss'
+  selector: 'bp-link-list-item',
+  imports: [FieldComponent],
+  templateUrl: './link-list-item.component.html',
+  styleUrl: './link-list-item.component.scss'
 })
-export class ListItemComponent {
+export class LinkListItemComponent {
   label = input.required<LabelWithLinkDefinition>();
 
   path = computed<PathElement[]>(() => {

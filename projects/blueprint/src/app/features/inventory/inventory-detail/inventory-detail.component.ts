@@ -20,7 +20,7 @@ import { HierarchyTreeDataService } from './service/hierarchy-tree-data.service'
 import { NodeElement } from '../../../core/model/node-element/node-element.class';
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { MessageChannelService } from '../../../core/service/message-channel/message-channel.service';
-import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { fadeInOut } from '../../../core/animation/fade-in-out/fade-in-out';
 import { ContentItem, HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
 import { labelAlphaSort } from '../../../core/utils/sort-functions';

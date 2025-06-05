@@ -45,7 +45,6 @@ export class NodeComponent {
 
   emitNodeMore(event: Event): void {
     event.stopPropagation();
-    console.log('Node more clicked', this.node());
     this.nodeMore.emit(this.node());
   }
 

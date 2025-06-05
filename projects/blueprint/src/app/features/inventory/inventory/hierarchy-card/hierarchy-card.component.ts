@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Avatar, AvatarComponent } from 'projects/blueprint/src/app/shared/component/avatar/avatar.component';
+import { Avatar, AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 
 @Component({
   selector: 'bp-hierarchy-card',

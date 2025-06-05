@@ -5,7 +5,7 @@ import { RdfUiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-
 import { rdf, rdfs, shacl, skos } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
 import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
-import { Avatar } from "../../../shared/component/avatar/avatar.component";
+import { Avatar } from "../../../shared/component/ui/avatar/avatar.component";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
 import { sortLiteralsByBrowserLanguage } from "../../../core/utils/language-prededence";
 
