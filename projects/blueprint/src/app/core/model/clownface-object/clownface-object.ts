@@ -1,7 +1,7 @@
 import { GraphPointer } from 'clownface';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
-import { rdfs, schema, shacl, skos } from '@blueprint/ontology';
+import { rdf, rdfs, schema, shacl, skos } from '@blueprint/ontology';
 import { sortLiteralsByBrowserLanguage } from '../../utils/language-prededence';
 
 /**

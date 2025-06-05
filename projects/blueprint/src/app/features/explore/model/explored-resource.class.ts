@@ -8,6 +8,7 @@ import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/ui/avatar/avatar.component";
 import { NodeElement } from "@blueprint/model/node-element/node-element.class";
 import { sortLiteralsByBrowserLanguage } from "../../../core/utils/language-prededence";
+import { PreicateTBox } from "../../../core/rdf/semantics/predicate-t-box";
 
 
 export class ExploredResource extends ClownfaceObject {
@@ -109,7 +110,28 @@ export class ExploredResource extends ClownfaceObject {
         return literalPredicateMap;
     }
 
+    getPrdicateAbox(predicate: string): PreicateTBox | undefined {
+        const predicateAboxPtr = this._node.namedNode(predicate);
+        if (predicateAboxPtr.value !== undefined) {
+            const predicateAbox = new PreicateTBox(predicateAboxPtr);
+            return predicateAbox;
+        }
+        return undefined;
+
+    }
     resolveLabelForPredicate(predicate: string): string {
+        const predicateAboxPtr = this._node.namedNode(predicate);
+        if (predicateAboxPtr.value !== undefined) {
+            const predicateAbox = new PreicateTBox(predicateAboxPtr);
+            console.log('Predicate ABox:', predicateAbox.iri);
+            console.log('Predicate ABox Type:', predicateAbox.type);
+            console.log('Predicate ABox Label:', predicateAbox.label);
+            console.log('Predicate ABox Comment:', predicateAbox.comment);
+            console.log('Predicate ABox Domain:', predicateAbox.domain);
+            console.log('Predicate ABox Range:', predicateAbox.range);
+            console.log('Predicate ABox Domain Includes:', predicateAbox.domainIncludes);
+            console.log('Predicate ABox Range Includes:', predicateAbox.rangeIncludes);
+        }
         const predicatePtr = this._node.namedNode(predicate);
         const rdfsLabelTerms = predicatePtr.out(rdfs.labelNamedNode).terms as RdfTypes.Literal[];
         const skosPrefLabelTerms = predicatePtr.out(skos.prefLabelNamedNode).terms as RdfTypes.Literal[];

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'bp-field',
@@ -8,4 +8,11 @@ import { Component, input } from '@angular/core';
 })
 export class FieldComponent {
   label = input.required<string>();
+
+  labelClicked = output<void>();
+
+
+  emitLabelClicked(): void {
+    this.labelClicked.emit();
+  }
 }

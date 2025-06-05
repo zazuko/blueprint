@@ -189,6 +189,7 @@ export class ExploreComponent implements OnDestroy {
         // - if not found Create a label from it's IRI.
         // - if not found use the key as label
         const label = currentResource.resolveLabelForPredicate(key);
+        const predicateAbox = currentResource.getPrdicateAbox(key);
         const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
 
 
@@ -197,7 +198,8 @@ export class ExploreComponent implements OnDestroy {
           label: capitalizedLabel,
           order: 10,
           value: literalValues,
-          renderer: LiteralRenderType.PLAIN
+          renderer: LiteralRenderType.PLAIN,
+          predicate: predicateAbox
         }
         literalElements.push(literalElement);
       }

@@ -1,4 +1,4 @@
-<bp-field [label]="label()">
+<bp-field (labelClicked)="toggleShowTBox()" [label]="((tbox() && showTBox()) ? tbox().iri : label()) | rdfPrefix">
     @for(l of valuesWithId(); track l.id) {
     @if(isUrl(l.value)) {
     <div class="value">
