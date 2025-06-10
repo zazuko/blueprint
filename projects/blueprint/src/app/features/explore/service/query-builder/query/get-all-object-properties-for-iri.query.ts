@@ -11,37 +11,32 @@ ${skos.sparqlPrefix()}
 
 CONSTRUCT {
     <${iri}> ?p ?o.
-    ?o ?op ?oo .
+    ?predicate ?op ?oo .
 
     ?s ?reverseP <${iri}> .
-    ?s ?reverseOp ?oo .
+    ?reversePredicate ?reverseOp ?oo .
 } WHERE {
     {
         <${iri}> ?p ?o.
         FILTER (!isLiteral(?o))
     } UNION {
-        <${iri}> ?p ?o.
-        FILTER (!isLiteral(?o))
-        VALUES ?op {
-            ${rdf.typePrefixed}
-            ${rdfs.labelPrefixed}
-            ${skos.prefLabelPrefixed}
-            ${schema.namePrefixed}
+        {
+            SELECT DISTINCT ?predicate WHERE {
+                <${iri}> ?predicate ?o.
+                FILTER (!isLiteral(?o))
+            }
         }
-        ?o ?op ?oo .
+        ?predicate ?op ?oo .
     } UNION  {
         ?s ?reverseP <${iri}> .
         FILTER (!isLiteral(?s))
     } UNION {
-        ?s ?reverseP <${iri}> .
-        FILTER (!isLiteral(?s))
-        VALUES ?reverseOp {
-            ${rdf.typePrefixed}
-            ${rdfs.labelPrefixed}
-            ${skos.prefLabelPrefixed}
-            ${schema.namePrefixed}
+        {
+            SELECT DISTINCT ?reversePredicate WHERE {
+                ?s1 ?reversePredicate <${iri}> .
+            }
         }
-        ?s ?reverseOp ?oo .
+        ?reversePredicate ?reverseOp ?oo .
     }
 }`;
     return query;

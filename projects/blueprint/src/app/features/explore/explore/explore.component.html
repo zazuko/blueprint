@@ -37,6 +37,8 @@
       @for(l of literalDetailElements(); track l.ruleIri) {
       <bp-literal @fadeIn [literal]="l"></bp-literal>
       }
+      <bp-node-relations @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+        (nodeSelected)="expandNode($event)" @fadeIn />
       <bp-neighbor-nodes @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
         (nodeSelected)="expandNode($event)" @fadeIn />
 

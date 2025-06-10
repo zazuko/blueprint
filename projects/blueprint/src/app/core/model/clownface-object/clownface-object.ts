@@ -18,7 +18,6 @@ export abstract class ClownfaceObject {
         const schemaFamilyNameTerm = graphPointer.out(schema.familyNameNamedNode).terms.filter((term) => term.termType === 'Literal');
         const shaclNameTerm = graphPointer.out(shacl.nameNamedNode).terms.filter((term) => term.termType === 'Literal');
 
-
         let label = '';
         if (skosPrefLabelTerm.length > 0) {
             label = sortLiteralsByBrowserLanguage(skosPrefLabelTerm as RdfTypes.Literal[])[0].value;
@@ -59,6 +58,38 @@ export abstract class ClownfaceObject {
         }
         return decodeURIComponent(label);
 
+    }
+
+    /**
+     * Get CBD - Concise Bounded Description for this node.
+     * https://www.w3.org/submissions/CBD/
+     * 
+     * @returns A dataset that contains the CBD for this node.
+     */
+    static describeCDBForNode(node: GraphPointer): RdfTypes.Dataset {
+
+        const result = rdfEnvironment.dataset();
+        const visited = new Set<string>();
+        const dataset = node.dataset;
+        function addTriples(subject: RdfTypes.Term) {
+            if (visited.has(subject.value)) {
+                return;
+            }
+            visited.add(subject.value);
+
+            const triples = dataset.match(subject, null, null, null);
+            for (const quad of triples) {
+                result.add(quad);
+
+                // If object is a blank node, recursively describe it
+                if (quad.object.termType === 'BlankNode') {
+                    addTriples(quad.object);
+                }
+            }
+        }
+
+        addTriples(node.term);
+        return result;
     }
 
 
@@ -126,5 +157,11 @@ export abstract class ClownfaceObject {
     logTable() {
         return ClownfaceObject.logNodeAsTable(this._node);
     }
+
+    describeCDB(): RdfTypes.Dataset {
+        return ClownfaceObject.describeCDBForNode(this._node);
+    }
+
+
 
 }

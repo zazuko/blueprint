@@ -7,7 +7,6 @@ import { rdfEnvironment } from '../rdf-environment';
 export class RdfPrefixPipe implements PipeTransform {
 
   transform(value: string, ...args: unknown[]): string {
-    console.log('RdfPrefixPipe transform', value, args);
     return rdfEnvironment.shrink(value);
 
   }

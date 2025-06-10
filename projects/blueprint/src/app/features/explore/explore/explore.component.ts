@@ -49,6 +49,7 @@ import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 import { LinkPanelComponent } from "../link-panel/link-panel.component";
+import { NodeRelationsComponent } from '@blueprint/component/node-relations/node-relations.component';
 
 type NodeExploreCommand = "expand" | "select";
 type SelectionKind = "node" | "link";
@@ -73,7 +74,8 @@ type SelectionKind = "node" | "link";
     LiteralComponent,
     DrawerModule,
     ButtonModule,
-    LinkPanelComponent
+    LinkPanelComponent,
+    NodeRelationsComponent
   ]
 })
 export class ExploreComponent implements OnDestroy {

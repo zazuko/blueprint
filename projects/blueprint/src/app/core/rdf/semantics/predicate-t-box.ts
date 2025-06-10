@@ -2,7 +2,7 @@ import { GraphPointer } from "clownface";
 
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 import { rdf, rdfs, schema } from "@blueprint/ontology";
-import { RdfTypes } from "../rdf-environment";
+import { rdfEnvironment, RdfTypes } from "../rdf-environment";
 import { sortLiteralsByBrowserLanguage } from "../../utils/language-prededence";
 import { createPredicateAboxQuery } from "./query/create-predicate-abox.query";
 
@@ -18,10 +18,12 @@ export class PredicateTBox extends ClownfaceObject {
     #domain: string[] | undefined = undefined;
     #range: string[] | undefined = undefined;
 
-    #type: string[] | undefined = undefined;
+    #type: string[] | undefined | null = null;
 
     #domainIncludes: string[] | undefined = undefined;
     #rangeIncludes: string[] | undefined = undefined;
+
+    #inverseOf: string | undefined = undefined;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -77,5 +79,23 @@ export class PredicateTBox extends ClownfaceObject {
             this.#rangeIncludes = this._node.out(schema.rangeIncludesNamedNode).values;
         }
         return this.#rangeIncludes;
+    }
+
+    get inverseOf(): string | undefined {
+        if (this.#inverseOf === undefined) {
+            const owlInverseOf = this._node.out(rdfEnvironment.namedNode('http://www.w3.org/2002/07/owl#inverseOf')).value;
+            if (owlInverseOf) {
+                this.#inverseOf = owlInverseOf;
+            } else {
+                const schemaInverseOf = this._node.out(rdfEnvironment.namedNode('http://schema.org/inverseOf')).value;
+                if (schemaInverseOf) {
+                    this.#inverseOf = schemaInverseOf;
+                } else {
+                    this.#inverseOf = undefined;
+                }
+            }
+        }
+        return this.#inverseOf;
+
     }
 }

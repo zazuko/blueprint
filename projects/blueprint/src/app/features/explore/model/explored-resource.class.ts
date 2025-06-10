@@ -2,7 +2,7 @@ import { DEFAULT_COLOR } from "@blueprint/constant/color";
 import { DEFAULT_ICON } from "@blueprint/constant/icon";
 import { ClownfaceObject } from "@blueprint/model/clownface-object/clownface-object";
 import { RdfUiClassMetadata } from "@blueprint/model/ui-class-metadata/ui-class-metadata";
-import { rdf, rdfs, shacl, skos } from "@blueprint/ontology";
+import { flux, rdf, rdfs, shacl, skos } from "@blueprint/ontology";
 import { GraphPointer } from "clownface";
 import { rdfEnvironment, RdfTypes } from "../../../core/rdf/rdf-environment";
 import { Avatar } from "../../../shared/component/ui/avatar/avatar.component";
@@ -17,6 +17,7 @@ export class ExploredResource extends ClownfaceObject {
     #avatars: Avatar[] | undefined = undefined;
     #classLabel: string | undefined = undefined;
     #rdfTypeIri: string[] | null = null;
+    #inferredTypes: string[] | undefined = undefined;
 
     constructor(node: GraphPointer) {
         super(node);
@@ -28,6 +29,15 @@ export class ExploredResource extends ClownfaceObject {
         }
         return this.#rdfTypeIri;
     }
+
+    get inferredTypes(): string[] {
+        if (this.#inferredTypes === undefined) {
+            const inferedTypes = this._node.out(flux.inferredTypeNamedNode).values;
+            this.#inferredTypes = inferedTypes;
+        }
+        return this.#inferredTypes;
+    }
+
 
     /**
      * Get the title of the resource. It will try to get the title from the following predicates in order:

@@ -1369,6 +1369,25 @@ class FluxOntology extends Ontology {
         return this.namespace('index');
     }
 
+    /**
+     * Get the inferredType predicate.
+     */
+    get inferredType(): string {
+        return this.namespace('inferredType').value;
+    }
+    /**
+     * Get the prefixed inferredType predicate.
+     */
+    get inferredTypePrefixed(): string {
+        return `${this.prefix()}:inferredType`;
+    }
+    /**
+     * Get the inferredType predicate as NamedNode.
+     */
+    get inferredTypeNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('inferredType');
+    }
+
 
 }
 
