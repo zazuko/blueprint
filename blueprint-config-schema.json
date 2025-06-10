@@ -42,6 +42,19 @@
             "required": [
                 "ftsEndpoint"
             ]
+        },
+        "ui": {
+            "type": "object",
+            "properties": {
+                "linkConfiguration": {
+                    "type": "string",
+                    "enum": [
+                        "app",
+                        "rdf",
+                        "both"
+                    ]
+                }
+            }
         }
     },
     "if": {

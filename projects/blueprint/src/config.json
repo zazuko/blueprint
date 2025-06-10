@@ -6,5 +6,8 @@
     "neptune": {
         "ftsEndpoint": " https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
     },
-    "skipAuthentication": true
+    "skipAuthentication": true,
+    "ui": {
+        "linkConfiguration": "both"
+    }
 }
