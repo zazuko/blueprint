@@ -32,6 +32,14 @@ export class ConfigService {
    */
   fetchConfig(): Observable<AppConfiguration> {
     return this.#httpClient.get<AppConfiguration>('/config.json').pipe(tap(config => {
+      const uiConfig = config.ui;
+
+      // if there is no ui configuration, default link configuration is set to both
+      if (!uiConfig) {
+        config.ui = {
+          linkConfiguration: LinkConfiguration.BOTH
+        } as UiConfiguration;
+      }
       this.#appConfig.set(config);
 
       if (!environment.production) {
@@ -63,6 +71,7 @@ export type AppConfiguration = {
   readonly fullTextSearchDialect: FullTextSearchDialect,
   readonly skipAuthentication?: boolean,
   readonly neptune?: NeptuneConfig,
+  ui: UiConfiguration,
 }
 
 type NeptuneConfig = {
@@ -75,4 +84,16 @@ export enum FullTextSearchDialect {
   NEPTUNE = 'neptune',
   GRAPHDB = 'graphdb',
   QLEVER = 'qlever'
+}
+
+export interface UiConfiguration {
+  linkConfiguration: LinkConfiguration;
+
+}
+
+
+export enum LinkConfiguration {
+  APP = 'app',
+  RDF = 'rdf',
+  BOTH = 'both'
 }

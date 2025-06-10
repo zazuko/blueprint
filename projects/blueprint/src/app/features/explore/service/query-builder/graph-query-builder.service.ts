@@ -15,6 +15,7 @@ import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-met
 import { PredicateTBox } from 'projects/blueprint/src/app/core/rdf/semantics/predicate-t-box';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
+import { ConfigService } from '@blueprint/service/config/config.service';
 
 
 @Injectable({
@@ -25,6 +26,8 @@ export class GraphQueryBuilderService {
   readonly #uiClassMetadataService = inject(UiClassMetadataService);
   readonly #uiLinkMetadataService = inject(UiLinkMetadataService);
   readonly #tBoxService = inject(TBoxService);
+
+  readonly #appConfig = inject(ConfigService);
 
   /**
   * Builds a SPARQL query based on the input string.
@@ -63,6 +66,7 @@ export class GraphQueryBuilderService {
     linkDefinitions: UiLinkDefinition[],
     classDefinitions: UiClassMetadata[]
   ): Observable<{ data: RdfTypes.Dataset; linkDefinitions: UiLinkDefinition[]; classDefinitions: UiClassMetadata[]; }> {
+    const appLinkConfiguration = this.#appConfig.getConfiguration().ui.linkConfiguration;
 
     this.#tBoxService.addPredicateTBoxes(dataset);
     const inputNode = rdfEnvironment.namedNode(input);
@@ -74,60 +78,61 @@ export class GraphQueryBuilderService {
     const inObjectPredicates = [...new Set([...dataset.match(null, null, inputNode)].filter(q => !q.predicate.equals(rdfEnvironment.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#first'))).map(q => q.predicate.value))];
 
     const inputNodeTypes = rdfGraph.node(inputNode).out(rdf.typeNamedNode).values;
-    const outLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowSource));
-    const inLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowTarget));
+    const appOutLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowSource));
+    const appInLinkDefinitions = linkDefinitions.filter(linkDefinition => inputNodeTypes.includes(linkDefinition.arrowTarget));
 
-    // remove object predicates that are already in the link definitions
-    outLinkDefinitions.forEach(link => {
-      const firstElementOfPath = link.propertyPathFragments[0];
+    if (appLinkConfiguration === 'both') {
+      // remove object predicates that are already in the link definitions
+      appOutLinkDefinitions.forEach(link => {
+        const firstElementOfPath = link.propertyPathFragments[0];
 
-      // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
-      if (firstElementOfPath && firstElementOfPath.length > 2) {
-        if (firstElementOfPath.startsWith('<')) {
-          const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
-          if (outObjectPredicates.includes(trimmedPredicate)) {
-            const index = outObjectPredicates.indexOf(trimmedPredicate);
-            if (index > -1) {
-              outObjectPredicates.splice(index, 1);
+        // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
+        if (firstElementOfPath && firstElementOfPath.length > 2) {
+          if (firstElementOfPath.startsWith('<')) {
+            const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
+            if (outObjectPredicates.includes(trimmedPredicate)) {
+              const index = outObjectPredicates.indexOf(trimmedPredicate);
+              if (index > -1) {
+                outObjectPredicates.splice(index, 1);
+              }
             }
-          }
-        } else if (firstElementOfPath.startsWith('^')) {
-          const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
-          if (inObjectPredicates.includes(trimmedPredicate)) {
-            const index = inObjectPredicates.indexOf(trimmedPredicate);
-            if (index > -1) {
-              inObjectPredicates.splice(index, 1);
-            }
-          }
-        }
-      }
-    });
-
-    inLinkDefinitions.forEach(link => {
-      const firstElementOfPath = link.inversePropertyPathFragments[0];
-
-      // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
-      if (firstElementOfPath && firstElementOfPath.length > 2) {
-        if (firstElementOfPath.startsWith('<')) {
-          const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
-          if (outObjectPredicates.includes(trimmedPredicate)) {
-            const index = outObjectPredicates.indexOf(trimmedPredicate);
-            if (index > -1) {
-              outObjectPredicates.splice(index, 1);
-            }
-          }
-        } else if (firstElementOfPath.startsWith('^')) {
-          const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
-          if (inObjectPredicates.includes(trimmedPredicate)) {
-            const index = inObjectPredicates.indexOf(trimmedPredicate);
-            if (index > -1) {
-              inObjectPredicates.splice(index, 1);
+          } else if (firstElementOfPath.startsWith('^')) {
+            const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
+            if (inObjectPredicates.includes(trimmedPredicate)) {
+              const index = inObjectPredicates.indexOf(trimmedPredicate);
+              if (index > -1) {
+                inObjectPredicates.splice(index, 1);
+              }
             }
           }
         }
-      }
-    });
+      });
 
+      appInLinkDefinitions.forEach(link => {
+        const firstElementOfPath = link.inversePropertyPathFragments[0];
+
+        // remove first and last character from the path (< and >) and remove it from the object predicates if it exists
+        if (firstElementOfPath && firstElementOfPath.length > 2) {
+          if (firstElementOfPath.startsWith('<')) {
+            const trimmedPredicate = firstElementOfPath.substring(1, firstElementOfPath.length - 1);
+            if (outObjectPredicates.includes(trimmedPredicate)) {
+              const index = outObjectPredicates.indexOf(trimmedPredicate);
+              if (index > -1) {
+                outObjectPredicates.splice(index, 1);
+              }
+            }
+          } else if (firstElementOfPath.startsWith('^')) {
+            const trimmedPredicate = firstElementOfPath.substring(2, firstElementOfPath.length - 1);
+            if (inObjectPredicates.includes(trimmedPredicate)) {
+              const index = inObjectPredicates.indexOf(trimmedPredicate);
+              if (index > -1) {
+                inObjectPredicates.splice(index, 1);
+              }
+            }
+          }
+        }
+      });
+    }
     // create synthetic links for object predicates
     const syntheticLinksOut = outObjectPredicates.flatMap(predicate => {
       const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
@@ -183,11 +188,6 @@ ${appLocal.turtlePrefix()}
     }
     );
 
-
-
-    outLinkDefinitions.push(...syntheticLinksOut);
-    linkDefinitions.push(...syntheticLinksOut);
-
     // create synthetic in links for object predicates
     const syntheticLinksIn = inObjectPredicates.flatMap(predicate => {
       const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
@@ -229,8 +229,25 @@ ${appLocal.turtlePrefix()}
     );
 
 
-    inLinkDefinitions.push(...syntheticLinksIn);
-    linkDefinitions.push(...syntheticLinksIn);
+
+    const outLinkDefinitions: UiLinkDefinition[] = [];
+    if (appLinkConfiguration === 'app' || appLinkConfiguration === 'both') {
+      outLinkDefinitions.push(...appOutLinkDefinitions);
+    };
+    if (appLinkConfiguration === 'rdf' || appLinkConfiguration === 'both') {
+      outLinkDefinitions.push(...syntheticLinksOut);
+      linkDefinitions.push(...syntheticLinksOut);
+    }
+
+    const inLinkDefinitions: UiLinkDefinition[] = [];
+    if (appLinkConfiguration === 'app' || appLinkConfiguration === 'both') {
+      inLinkDefinitions.push(...appInLinkDefinitions);
+    };
+    if (appLinkConfiguration === 'rdf' || appLinkConfiguration === 'both') {
+      inLinkDefinitions.push(...syntheticLinksIn);
+      linkDefinitions.push(...syntheticLinksIn);
+
+    }
 
     // create sub queries
     const inputQuery = getInputNodeQuery(inputNode);

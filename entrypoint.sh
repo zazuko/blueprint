@@ -37,6 +37,12 @@ if [ -z "${NEPTUNE_FTS_ENDPOINT}" ]; then
   NEPTUNE_FTS_ENDPOINT="http://example.com/"
 fi
 
+if [ -z "${LINK_CONFIGURATION}" ]; then
+  echo "LINK_CONFIGURATION is not set, let's use 'both' as default value."
+  LINK_CONFIGURATION="both"
+fi
+
+
 ########################################################
 # Generate config.json file from environment variables #
 ########################################################
@@ -47,6 +53,7 @@ echo "- SPARQL_CONSOLE_URL: ${SPARQL_CONSOLE_URL}"
 echo "- GRAPH_EXPLORER_URL: ${GRAPH_EXPLORER_URL}"
 echo "- FULL_TEXT_SEARCH_DIALECT: ${FULL_TEXT_SEARCH_DIALECT}"
 echo "- NEPTUNE_FTS_ENDPOINT: ${NEPTUNE_FTS_ENDPOINT}"
+echo "- LINK_CONFIGURATION: ${LINK_CONFIGURATION}"
 
 jq -n \
   --arg endpointUrl "${ENDPOINT_URL}" \
@@ -54,6 +61,7 @@ jq -n \
   --arg graphExplorerUrl "${GRAPH_EXPLORER_URL}" \
   --arg fullTextSearchDialect "${FULL_TEXT_SEARCH_DIALECT}" \
   --arg ftsEndpoint "${NEPTUNE_FTS_ENDPOINT}" \
+  --arg LINK_CONFIGURATION "${LINK_CONFIGURATION}" \
   '{
     "endpointUrl": $endpointUrl,
     "sparqlConsoleUrl": $sparqlConsoleUrl,
@@ -61,6 +69,9 @@ jq -n \
     "fullTextSearchDialect": $fullTextSearchDialect,
     "neptune": {
       "ftsEndpoint": $ftsEndpoint
+    },
+    "ui": {
+      "linkConfiguration": $LINK_CONFIGURATION
     }
   }' > /app/config.json
 
