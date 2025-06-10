@@ -42,6 +42,18 @@ if [ -z "${LINK_CONFIGURATION}" ]; then
   LINK_CONFIGURATION="both"
 fi
 
+if [ -z "${SKIP_AUTHENTICATION}" ]; then
+  echo "SKIP_AUTHENTICATION is not set, let's use 'false' as default value."
+  SKIP_AUTHENTICATION=false
+fi
+
+# Convert SKIP_AUTHENTICATION to a boolean for jq
+if [ "$SKIP_AUTHENTICATION" = "true" ] || [ "$SKIP_AUTHENTICATION" = "1" ]; then
+  SKIP_AUTHENTICATION_BOOL=true
+else
+  SKIP_AUTHENTICATION_BOOL=false
+fi
+
 
 ########################################################
 # Generate config.json file from environment variables #
@@ -54,6 +66,7 @@ echo "- GRAPH_EXPLORER_URL: ${GRAPH_EXPLORER_URL}"
 echo "- FULL_TEXT_SEARCH_DIALECT: ${FULL_TEXT_SEARCH_DIALECT}"
 echo "- NEPTUNE_FTS_ENDPOINT: ${NEPTUNE_FTS_ENDPOINT}"
 echo "- LINK_CONFIGURATION: ${LINK_CONFIGURATION}"
+echo "- SKIP_AUTHENTICATION: ${SKIP_AUTHENTICATION}"
 
 jq -n \
   --arg endpointUrl "${ENDPOINT_URL}" \
@@ -62,6 +75,7 @@ jq -n \
   --arg fullTextSearchDialect "${FULL_TEXT_SEARCH_DIALECT}" \
   --arg ftsEndpoint "${NEPTUNE_FTS_ENDPOINT}" \
   --arg LINK_CONFIGURATION "${LINK_CONFIGURATION}" \
+  --argjson SKIP_AUTHENTICATION ${SKIP_AUTHENTICATION_BOOL} \
   '{
     "endpointUrl": $endpointUrl,
     "sparqlConsoleUrl": $sparqlConsoleUrl,
@@ -70,6 +84,7 @@ jq -n \
     "neptune": {
       "ftsEndpoint": $ftsEndpoint
     },
+    "skipAuthentication": $SKIP_AUTHENTICATION,
     "ui": {
       "linkConfiguration": $LINK_CONFIGURATION
     }
