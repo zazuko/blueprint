@@ -12,6 +12,9 @@ import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils'
 import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-properties-for-iri.query';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
+import { PredicateTBox } from 'projects/blueprint/src/app/core/rdf/semantics/predicate-t-box';
+import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
+import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 
 
 @Injectable({
@@ -21,6 +24,7 @@ export class GraphQueryBuilderService {
   readonly #sparqlService = inject(SparqlService);
   readonly #uiClassMetadataService = inject(UiClassMetadataService);
   readonly #uiLinkMetadataService = inject(UiLinkMetadataService);
+  readonly #tBoxService = inject(TBoxService);
 
   /**
   * Builds a SPARQL query based on the input string.
@@ -35,6 +39,7 @@ export class GraphQueryBuilderService {
     const uiMetaDataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
     //  const linkMetaDataQuery = this.#uiLinkMetadataService.getLinkMetadataSparqlQueryForNode(input);
     const objectPropertiesQuery = getAllObjectPropertiesForIriQuery(input);
+
     // Merge the UI and link metadata queries into a single query
     const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery]);
 
@@ -59,6 +64,7 @@ export class GraphQueryBuilderService {
     classDefinitions: UiClassMetadata[]
   ): Observable<{ data: RdfTypes.Dataset; linkDefinitions: UiLinkDefinition[]; classDefinitions: UiClassMetadata[]; }> {
 
+    this.#tBoxService.addPredicateTBoxes(dataset);
     const inputNode = rdfEnvironment.namedNode(input);
     const rdfGraph = rdfEnvironment.clownface(dataset);
 
@@ -125,9 +131,22 @@ export class GraphQueryBuilderService {
     // create synthetic links for object predicates
     const syntheticLinksOut = outObjectPredicates.flatMap(predicate => {
       const bracketLessPredicate = predicate.replace(/^https?:\/\//, '');
-      // Extract label from predicate: last part after '/' or '#'
-      const labelMatch = predicate.match(/([^\/#]+)$/);
-      const label = labelMatch ? labelMatch[1] : predicate;
+      const tBoxPtr = rdfGraph.namedNode(predicate);
+      let tBox: PredicateTBox | undefined = undefined;
+      if (tBoxPtr.value) {
+        // Check if the predicate is a TBox
+        tBox = new PredicateTBox(tBoxPtr);
+      }
+
+      let label = '';
+      if (tBox && tBox.label) {
+        label = tBox.label;
+      } else {
+        // Extract label from predicate: last part after '/' or '#'
+        const labelMatch = predicate.match(/([^\/#]+)$/);
+        label = labelMatch ? labelMatch[1] : predicate;
+
+      }
       let tragetTypes = rdfGraph.node(inputNode).out(rdfEnvironment.namedNode(predicate)).out(rdf.typeNamedNode).values;
 
       // check if one of the target types is in the class definitions
@@ -157,7 +176,9 @@ ${appLocal.turtlePrefix()}
 
       `;
       dataset.addAll(rdfEnvironment.parseTurtle(ttl));
-      const syntheticLink = rdfEnvironment.clownface(dataset).namedNode(`${predicate}/link/synthetic`).map(l => new RdfUiLinkDefinition(l));
+      const syntheticLinkPtr = rdfEnvironment.clownface(dataset).namedNode(`${predicate}/link/synthetic`);
+      const syntheticLink = new RdfUiLinkDefinition(syntheticLinkPtr);
+
       return syntheticLink;
     }
     );
@@ -226,7 +247,7 @@ ${appLocal.turtlePrefix()}
 }
 
 function getInputNodeQuery(input: RdfTypes.NamedNode): string {
-  return `
+  const query = `
 ${rdf.sparqlPrefix()}
 ${rdfs.sparqlPrefix()}
 ${flux.sparqlPrefix()}
@@ -241,21 +262,24 @@ CONSTRUCT {
   ?input a ?inputClass .
 } WHERE {
   BIND (<${input.value}> as ?input)
- OPTIONAL {
-    ?input ${rdfs.labelPrefixed} ?targetLabel .
-  }
   OPTIONAL {
-    ?input ${schema.namePrefixed} ?targetName .
-  }
-  OPTIONAL {
-    ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  }
-  OPTIONAL {
-    ?input ${schema.familyNamePrefixed} ?familyName .
-  }  
-  ?input ${rdf.typePrefixed} ?inputClass .
+      ?input ${rdfs.labelPrefixed} ?targetLabel .
+    }
+    OPTIONAL {
+      ?input ${schema.namePrefixed} ?targetName .
+    }
+    OPTIONAL {
+      ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
+    }
+    OPTIONAL {
+      ?input ${schema.familyNamePrefixed} ?familyName .
+    }  
+    ?input ${rdf.typePrefixed} ?inputClass .
+
 }
 `;
+
+  return query;
 }
 
 function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
@@ -280,6 +304,7 @@ CONSTRUCT {
   ?target ${schema.namePrefixed} ?targetName .
   ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
   ?target ${schema.familyNamePrefixed} ?familyName .
+
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
@@ -304,13 +329,13 @@ CONSTRUCT {
   OPTIONAL {
     ?target ${schema.familyNamePrefixed} ?familyName .
   }
+
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
   BIND(IRI(CONCAT(STR(?link), MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
 }
 `;
-
   return query;
 }
 

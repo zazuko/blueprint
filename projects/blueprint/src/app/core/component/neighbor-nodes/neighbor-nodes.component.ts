@@ -7,8 +7,6 @@ import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-de
 import { labelAlphaSort } from '../../utils/sort-functions';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
 
-
-
 @Component({
   selector: 'bp-neighbor-nodes',
   imports: [

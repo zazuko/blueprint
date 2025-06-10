@@ -44,7 +44,7 @@ export class NeighborNodesListComponent {
 
 
   tBox = computed<PredicateTBox | undefined>(() => {
-    return this.nodeList().link.predicate;
+    return this.nodeList().link.predicateTbox;
   });
 
   showTbox = signal<boolean>(false);

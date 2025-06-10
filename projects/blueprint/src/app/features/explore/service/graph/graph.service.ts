@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 
-import { Observable, ReplaySubject, of, map } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 
 import { GraphQueryBuilderService } from '../query-builder/graph-query-builder.service';
 
@@ -8,6 +8,8 @@ import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/gra
 
 import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
+import { T } from 'node_modules/@angular/cdk/portal-directives.d-DbeNrI5D';
+import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 
 export interface QueryInput {
   nodeIri: string;
@@ -18,6 +20,7 @@ export interface QueryInput {
 })
 export class GraphService {
   readonly #queryBuilder = inject(GraphQueryBuilderService);
+  readonly #tBoxService = inject(TBoxService);
 
   #nodesMap = new Map<string, RdfUiGraphNode>();
   #linksMap = new Map<string, RdfUiLink>();
@@ -26,7 +29,6 @@ export class GraphService {
 
   // The graph$ observable is used to emit the current graph state.
   // It is a ReplaySubject with a buffer size of 1, meaning it will emit the last value to new subscribers.
-  public graph$ = new ReplaySubject<Graph>(1);
 
   #internalGraphSignal = signal<Graph>({
     nodes: [],
@@ -46,7 +48,6 @@ export class GraphService {
     this.#nodesMap.clear();
     this.#nodesMap = new Map<string, RdfUiGraphNode>();
     this.#linksMap = new Map<string, RdfUiLink>();
-    this.graph$.next({ nodes: [], links: [] });
     this.#internalGraphSignal.set({ nodes: [], links: [] });
 
   }
@@ -59,7 +60,6 @@ export class GraphService {
   public expandNode(iri: string): void {
     this.#query(iri).subscribe({
       next: (graph) => {
-        this.graph$.next(graph);
         this.#internalGraphSignal.set(graph);
       },
       error: (err) => {
@@ -91,6 +91,13 @@ export class GraphService {
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
         const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink, response.linkDefinitions.find(link => link.iri === rdfLink.out(flux.linkNamedNode).value)));
 
+        links.forEach(link => {
+          const linkDefinition = link.linkDefinition;
+          if (linkDefinition.prefixedPropertyPathFragments.length === 1) {
+            linkDefinition.predicateTbox = this.#tBoxService.getPredicateTBox(linkDefinition.prefixedPropertyPathFragments[0].predicateIri.slice(1, -1));
+
+          }
+        });
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');

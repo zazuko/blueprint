@@ -18,7 +18,7 @@ export interface UiLinkDefinition {
     arrowSource: string | null;
     arrowTarget: string | null;
     isSynthetic: boolean;
-    predicate: PredicateTBox;
+    predicateTbox: PredicateTBox;
 }
 
 export interface PrefixedPathFragment {
@@ -37,10 +37,13 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
     #inversePropertyPathFragments: string[] | undefined = undefined;
     #inversePropertyPath: string | null | undefined = undefined;
     #isSynthetic: boolean | undefined = undefined;
-    #predicate: PredicateTBox | undefined | null = null;
+    #predicateTbox: PredicateTBox | undefined = undefined;
 
-    constructor(node: GraphPointer) {
+    constructor(node: GraphPointer, tBox?: PredicateTBox) {
         super(node);
+        if (tBox) {
+            this.#predicateTbox = tBox;
+        }
     }
 
     /**
@@ -240,22 +243,12 @@ export class RdfUiLinkDefinition extends ClownfaceObject implements UiLinkDefini
         return this.#isSynthetic;
     }
 
-    get predicate(): PredicateTBox | undefined {
-        if (this.#predicate === null) {
-            const pathFragments = this.propertyPathFragments;
-            if (pathFragments.length === 1) {
-                const predicateIri = pathFragments[0].startsWith('^') ? pathFragments[0].slice(1) : pathFragments[0];
-                const predicateAboxPtr = this._node.namedNode(predicateIri);
-                if (predicateAboxPtr.value !== undefined) {
-                    this.#predicate = new PredicateTBox(predicateAboxPtr);
-                } else {
-                    this.#predicate = undefined;
-                }
-            } else {
-                this.#predicate = undefined;
-            }
-        }
-        return this.#predicate;
+    get predicateTbox(): PredicateTBox | undefined {
+        return this.#predicateTbox;
+    }
+
+    set predicateTbox(predicate: PredicateTBox | undefined) {
+        this.#predicateTbox = predicate;
     }
 
 

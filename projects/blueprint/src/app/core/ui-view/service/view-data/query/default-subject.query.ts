@@ -27,6 +27,8 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
     ?blankNodeS ?blankNodePO ?blankNodeO . 
 
     ?metaShape ?shapeP ?oo .
+
+    <${subject.value}> ${flux.inferredTypePrefixed} ?inferedTypes .
   }
   WHERE {
     {
@@ -65,9 +67,10 @@ export function defaultSubjectQuery(subject: RdfTypes.NamedNode): string {
       }
       ?metaShape ?shapeP ?oo .
 
+    } UNION {
+      <${subject.value}> (${rdf.typePrefixed})+ ?inferedTypes .
     }
   }
   `;
-
   return query;
 }
