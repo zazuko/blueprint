@@ -51,6 +51,19 @@ export class ConfigService {
     }))
   }
 
+
+  updateUiLinkConfiguration(linkConfiguration: LinkConfiguration): void {
+    const currentConfig = this.#appConfig();
+    const updatedConfig: AppConfiguration = {
+      ...currentConfig,
+      ui: {
+        ...currentConfig.ui,
+        linkConfiguration: linkConfiguration
+      }
+    };
+    this.#appConfig.set(updatedConfig);
+  }
+
   /**
    * This method returns the app configuration. 
    * There is a signal version if you need it.
