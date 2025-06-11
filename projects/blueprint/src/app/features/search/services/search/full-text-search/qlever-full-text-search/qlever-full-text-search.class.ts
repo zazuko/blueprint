@@ -11,8 +11,60 @@ export class QleverFullTextSearch extends FullTextSearch {
     super(searchContext);
   }
 
-  public searchQueryWithSearchTerm(metadata: UiClassMetadata[], pageNumber: number, pageSize: number): string {
+  public searchQueryWithoutSearchTerm(metadata: UiClassMetadata[], pageNumber: number, pageSize: number): string {
+    const query = `
+    # Search Quer Without Search Term, page: ${pageNumber}, pageSize: ${pageSize}
+${flux.sparqlPrefix()}
+CONSTRUCT {
+?subject ?p ?o . 
+?subject a ?class .
+?subject ${flux.scorePrefixed} 1 .
+?subject a ${flux.UiSearchResultItemPrefixed}.
+ ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+        ${flux.resultPrefixed} ?subject .
+ ${flux.queryPrefixed} a ${flux.UiSearchResultPrefixed} ;
+      ${flux.totalPrefixed} ?count .
 
+} WHERE {
+{
+  {
+    SELECT ?subject WHERE {
+      ?subject ?p ?o. 
+      FILTER(!isBlank(?subject))
+      FILTER(isLiteral(?o))
+    } ORDER BY ?subject LIMIT ${pageSize} OFFSET ${pageNumber * pageSize} 
+  }
+  ?subject ?p ?o . 
+  OPTIONAL {
+  ?subject a ?class .
+  }
+  FILTER(isLiteral(?o))
+} UNION {
+  {
+    SELECT (COUNT(DISTINCT ?subject) AS ?count) WHERE {
+      {
+        SELECT ?subject WHERE {
+          ?subject ?p ?o. 
+          FILTER(!isBlank(?subject))
+          FILTER(isLiteral(?o))
+        } 
+      }
+      ?subject ?p ?o . 
+      FILTER(isLiteral(?o))
+    }
+  }
+}
+}
+`;
+    console.log(query);
+    return query;
+
+  }
+
+  public searchQueryWithSearchTerm(metadata: UiClassMetadata[], pageNumber: number, pageSize: number): string {
+    if (this._searchContext.searchTerm.toString().length === 0) {
+      return this.searchQueryWithoutSearchTerm(metadata, pageNumber, pageSize);
+    }
     const fluxClassQueries = metadata
       .map(metaShape => fluxClassSubQuery(metaShape))
       .join(' UNION');

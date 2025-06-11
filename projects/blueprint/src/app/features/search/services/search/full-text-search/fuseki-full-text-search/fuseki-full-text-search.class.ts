@@ -36,6 +36,7 @@ export class FusekiFullTextSearch extends FullTextSearch {
       .join(' UNION');
 
     const totalQuery = countTotalQuery(this._searchContext.searchTerm.toString(), fluxClassQueries);
+    console.log('totalQuery', totalQuery);
     return totalQuery;
   }
 }

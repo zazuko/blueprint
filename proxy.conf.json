@@ -1,9 +1,10 @@
 {
   "/query": {
-    "target": "http://127.0.0.1:7001/",
+    "targetd": "http://127.0.0.1:7001/",
     "targetew": "https://ld.bafu.zazukoians.org/query",
     "targetf": "https://test.lindas.admin.ch/query",
     "targetdd": "https://lindas.admin.ch/query",
+    "target": "https://server.magdalena.prod.instances.qlever.az.zazukoians.org",
     "headers": {
       "Connection": "keep-alive"
     },
