@@ -272,6 +272,7 @@ ${schema.sparqlPrefix()}
 ${skos.sparqlPrefix()}
 
 CONSTRUCT {
+  ?input a ?bpNodeClass .
   ?input ${rdfs.labelPrefixed} ?inputObject .
   ?input ${schema.namePrefixed} ?targetName .
   ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
@@ -279,6 +280,8 @@ CONSTRUCT {
   ?input a ?inputClass .
 } WHERE {
   BIND (<${input.value}> as ?input)
+  BIND (${flux.UiNodePrefixed} as ?bpNodeClass) .
+
   OPTIONAL {
       ?input ${rdfs.labelPrefixed} ?targetLabel .
     }
@@ -291,8 +294,9 @@ CONSTRUCT {
     OPTIONAL {
       ?input ${schema.familyNamePrefixed} ?familyName .
     }  
-    ?input ${rdf.typePrefixed} ?inputClass .
-
+    OPTIONAL {
+      ?input ${rdf.typePrefixed} ?inputClass .
+    }
 }
 `;
 
