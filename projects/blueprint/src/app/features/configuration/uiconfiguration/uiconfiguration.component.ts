@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 
 import { SelectModule } from 'primeng/select';
@@ -8,8 +8,7 @@ import { UIConfigurationService } from './service/uiconfiguration.service';
 import { BreadcrumbPageComponent } from "../../../shared/component/page/breadcrumb-page/breadcrumb-page.component";
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { LinkConfiguration } from '@blueprint/service/config/config.service';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'bp-uiconfiguration',
