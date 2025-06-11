@@ -1,0 +1,25 @@
+<bp-breadcrumb-page [breadcrumbs]="breadcrumbs">
+    <h1>UI Configuration</h1>
+
+    <h2>Link Option</h2>
+
+
+    <form [formGroup]="uiConfigurationFormGroup">
+        <p-selectbutton [options]="stateOptions" formControlName="link" optionLabel="label" optionValue="value" />
+    </form>
+    <p>
+        @switch (currentLinkOption()) {
+        @case ("app") {
+        The Graph view shows only the links defined in the app configuration.
+        }
+        @case ("rdf") {
+        The Graph view shows all links from the RDF graph, regardless of configuration.
+        }
+        @default {
+        The Graph view shows both configured and RDF graph links.
+        }
+        }
+    </p>
+
+
+</bp-breadcrumb-page>
