@@ -52,7 +52,7 @@ export class SearchService {
       map(dataset => {
         const resultGraph = rdfEnvironment.clownface(dataset);
         const searchResultIris = resultGraph.node(flux.UiSearchResultNamedNode).in(rdf.typeNamedNode).values;
-        debugger
+
         if (searchResultIris.length === 0) {
           console.warn(`Invalid data: SearchResult.query is undefined`);
           return [];
@@ -62,7 +62,7 @@ export class SearchService {
           console.warn(`Invalid data: SearchResult.query has more than one value. Using first value`);
         }
         const searchResult = new SearchResult(resultGraph.namedNode(searchResultIris[0]));
-        debugger
+
         if (searchParams.page === 0) {
           this.totalCount$.next(searchResult.total);
           const classCounts = rdfEnvironment.clownface(dataset).node(flux.UiClassCountNamedNode).in(rdf.typeNamedNode).map(classCountNode => new UiClassCount(classCountNode));

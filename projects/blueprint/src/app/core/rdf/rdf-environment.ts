@@ -16,6 +16,13 @@ class RdfEnvironment {
         prefixes['cube'] = 'https://cube.link/';
         prefixes['cubeMeta'] = 'https://cube.link/meta/';
         prefixes['ex'] = 'http://example.com/';
+        prefixes['idmp-sub'] = 'https://spec.pistoiaalliance.org/idmp/ontology/ISO/ISO11238-Substances/';
+        prefixes['idmp-nara'] = 'https://spec.pistoiaalliance.org/idmp/ontology/ISO/NorthAmericanJurisdiction/NorthAmericanRegistrationAuthorities/'
+        prefixes['cmns-av'] = 'https://www.omg.org/spec/Commons/AnnotationVocabulary/'
+        prefixes['cmns-txt'] = 'https://www.omg.org/spec/Commons/TextDatatype/';
+        prefixes['cmns-col'] = 'https://www.omg.org/spec/Commons/Collections/';
+        prefixes['cmns-dsg'] = 'https://www.omg.org/spec/Commons/Designators/';
+        prefixes['cmns-id'] = 'https://www.omg.org/spec/Commons/Identifiers/';
     }
 
     /**
