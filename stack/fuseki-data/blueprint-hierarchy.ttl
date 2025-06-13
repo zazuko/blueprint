@@ -1,0 +1,149 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bp: <https://flux.described.at/>
+PREFIX data: <https://ld.flux.zazuko.com/blueprint/app/>
+PREFIX oci: <https://oci.described.at/>
+PREFIX k8s: <https://k8s.described.at/>
+
+
+bp:Aggregate a rdfs:Class ;
+    rdfs:label "Aggregate" ;
+    rdfs:comment "An aggregate is a collection of things, such as a list of items, a set of items, or a group of items." ;
+.
+
+bp:Composition a rdfs:Class ;
+    rdfs:subClassOf bp:Aggregate ;
+    rdfs:label "Composition" ;
+    rdfs:comment "A composition is a collection of things, that compose a higher level thing." ;
+.
+
+bp:Container a rdfs:Class ;
+    rdfs:subClassOf bp:Aggregate ;
+    rdfs:label "Container" ;
+    rdfs:comment "A container is a collection of things, that are contained in a another thing but it is not composed by them." ;
+.
+
+
+## OCI registry hierarchy
+
+data:OciRegistryHierarchyShape a sh:NodeShape ;
+    rdfs:label "OCI Registry Hierarchy";
+    sh:targetClass <https://oci.described.at/Registry>;
+    sh:group data:OciTree ;
+    sh:property [
+        sh:name "Origin";
+        sh:path [ sh:inversePath oci:registry ] ; 
+        sh:node data:OciRepositoryHierarchyShape;
+    ]
+.
+
+data:OciRepositoryHierarchyShape a sh:NodeShape ;
+    rdfs:label "Registry";
+    sh:targetClass <https://oci.described.at/Repository>;
+    sh:group data:OciTree ;
+    sh:property [
+        sh:path [ sh:inversePath oci:repository ] ;
+        sh:node data:ImageHierarchyShape ;
+    ] ;
+.
+
+data:ImageHierarchyShape a sh:NodeShape ;
+    rdfs:label "Origin";
+    sh:targetClass <https://oci.described.at/Image>;
+    sh:group data:OciTree ;
+.
+
+data:OciTree a sh:Group, bp:Hierarchy, bp:Container;
+    rdfs:label "OCI Registries" ;
+    rdfs:comment "This structure holds key information about where the image comes from, including details about the registry and repository. OCI stands for Open Container Initiative, which is a standard for container images." ;
+    bp:hasRoot data:OciRegistryHierarchyShape ;
+.
+
+## k8s namespace hierarchy
+
+data:K8SNamespaceHierarchyShape a sh:NodeShape ;
+    rdfs:label "K8S Namespace Hierarchy";
+    sh:targetClass k8s:Namespace;
+    sh:group data:K8SNamespaceTree ;
+    sh:property [
+        sh:name "Origin";
+        sh:path [ sh:inversePath k8s:namespace ] ; 
+        sh:node data:K8SIngressHierarchyShape;
+    ] ,
+    [
+       sh:name "Origin";
+       sh:path [ sh:inversePath k8s:namespace ] ; 
+       sh:node data:K8SDeploymentHierarchyShape;
+    ],
+    [
+       sh:name "Origin";
+      sh:path [ sh:inversePath k8s:namespace ] ; 
+       sh:node data:K8SStatefulSetHierarchyShape;
+    ]
+.
+
+# level 1 - Ingress
+data:K8SIngressHierarchyShape a sh:NodeShape ;
+    rdfs:label "Namespace";
+    sh:targetClass k8s:Ingress;
+    sh:group data:K8SNamespaceTree ;
+    sh:property [
+        sh:path k8s:host ;
+        sh:node data:K8SIngressHostHierarchyShape ;
+    ] ;
+.
+
+# level 2 - Ingress - Host
+data:K8SIngressHostHierarchyShape a sh:NodeShape ;
+    rdfs:label "Ingress";
+    sh:targetClass k8s:Host;
+    sh:group data:K8SNamespaceTree ;
+   .
+
+# level 1 - Deployment
+data:K8SDeploymentHierarchyShape a sh:NodeShape, bp:ConnectionPoint;
+    rdfs:label "Namespace";
+    sh:targetClass k8s:Deployment;
+    sh:group data:K8SNamespaceTree ;
+.
+
+# level 1 - StatefulSet
+data:K8SStatefulSetHierarchyShape a sh:NodeShape, bp:ConnectionPoint;
+    rdfs:label "Namespace";
+    sh:targetClass k8s:StatefulSet;
+    sh:group data:K8SNamespaceTree ;
+.
+
+data:K8SNamespaceTree a sh:Group, bp:Hierarchy, bp:Composition;
+    rdfs:label "K8S Namespaces" ;
+    rdfs:comment "Information about Kubernetes namespaces, including details about the ingress, deployment and statefulset." ;
+    bp:hasRoot data:K8SNamespaceHierarchyShape;
+.
+
+## k8s cluster hierarchy
+
+data:K8SClusterHierarchyShape a sh:NodeShape ;
+    rdfs:label "K8S Cluster Hierarchy";
+    sh:targetClass k8s:Cluster;
+    sh:group data:K8SClusterTree ;
+    sh:property [
+        sh:name "";
+        sh:path [ sh:inversePath k8s:cluster ] ; 
+        sh:node data:K8NamespaceClusterShape;
+    ]
+.
+
+data:K8NamespaceClusterShape a sh:NodeShape ;
+    rdfs:label "Cluster";
+    sh:targetClass k8s:Namespace;
+    sh:group data:K8SClusterTree ;
+.
+
+data:K8SClusterTree a sh:Group, bp:Hierarchy ;
+    rdfs:label "K8S Clusters" ;
+    rdfs:comment "This structure holds information about the Kubernetes cluster, including the namespaces." ;
+    bp:hasRoot data:K8SClusterHierarchyShape;
+.
+
+

@@ -5,7 +5,8 @@
 
 
     <form [formGroup]="uiConfigurationFormGroup">
-        <p-selectbutton [options]="stateOptions" formControlName="link" optionLabel="label" optionValue="value" />
+        <p-selectbutton [options]="stateOptions" [allowEmpty]="false" formControlName="link" optionLabel="label"
+            optionValue="value" />
     </form>
     <p>
         @switch (currentLinkOption()) {

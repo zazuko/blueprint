@@ -1,11 +1,25 @@
 # Docker stack
 
+## Table of Contents
+
+- [Docker stack](#docker-stack)
+- [Generate triples](#generate-triples)
+    - [Kubernetes triples](#kubernetes-triples)
+        - [Without a Kubernetes cluster](#without-a-kubernetes-cluster)
+        - [Using an existing Kubernetes cluster](#using-an-existing-kubernetes-cluster)
+- [Reset everything](#reset-everything)
+
+## Run the stack
+
+
+### Full demo dataset
 You can start the stack with a [full demo dataset](https://download.zazukoians.org/blueprint/demo-data.nt):
 
 ```sh
 docker compose --profile full-demo-dataset up -d --build
 ```
 
+## Basic Kubernetes + OCI dataset
 You can also add a basic Kubernetes + OCI demo dataset, by running the following command:
 
 ```sh
