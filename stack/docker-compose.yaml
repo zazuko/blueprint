@@ -33,6 +33,8 @@ services:
       - SPARQL_CONSOLE_URL=http://127.0.0.1:8080/sparql/#query
       - GRAPH_EXPLORER_URL=http://127.0.0.1:8080/graph-explorer/?resource
       - FULL_TEXT_SEARCH_DIALECT=fuseki
+      - SKIP_AUTHENTICATION=true
+      - LINK_CONFIGURATION=app
 
   trifid:
     image: ghcr.io/zazuko/trifid:v5

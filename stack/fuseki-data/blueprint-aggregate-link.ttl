@@ -1,0 +1,26 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bp: <https://flux.described.at/>
+PREFIX data: <https://ld.flux.zazuko.com/blueprint/app/>
+PREFIX oci: <https://oci.described.at/>
+PREFIX k8s: <https://k8s.described.at/>
+
+
+data:K8SNamespaceTreeToOciTreeLink a bp:CompositionToNodeLink ;
+    sh:targetClass data:K8SNamespaceTree ;
+    bp:target oci:Image ;
+    rdfs:label "Depends on OCI Images" ;
+    bp:inverseLabel "OCI Images are used by" ;
+    sh:property [
+        sh:targetClass k8s:Deployment ;
+        sh:path k8s:image ;
+        sh:class oci:Image ;
+    ];
+     sh:property [
+        sh:targetClass k8s:StatefulSet ;
+        sh:path k8s:image ;
+        sh:class oci:Image ;
+    ]
+.
+
