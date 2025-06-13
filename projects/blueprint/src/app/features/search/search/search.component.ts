@@ -162,11 +162,13 @@ export class SearchComponent implements OnInit {
   }
 
   onFilterChange(newFilter: SearchFilter[]): void {
+    this.currentPage = 0;
     this.#loadingIndicatorService.start();
     this.activeFilters = newFilter;
     this.#filterService.activeFilter = this.activeFilters;
     this.searchResult.set([]);
     this.searchParam.filter = this.activeFilters;
+    this.searchParam.page = 0;
     this.#search();
   }
 
