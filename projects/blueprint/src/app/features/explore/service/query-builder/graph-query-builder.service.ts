@@ -16,6 +16,9 @@ import { PredicateTBox } from 'projects/blueprint/src/app/core/rdf/semantics/pre
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 import { ConfigService } from '@blueprint/service/config/config.service';
+import { getInputNodeGraphQuery } from './query/get-input-node-graph.query';
+import { getOutgoingLinkQuery } from './query/get-outgoing-link.query';
+import { getIncomingLinkQuery } from './query/get-incoming-link.query';
 
 
 @Injectable({
@@ -250,168 +253,16 @@ ${appLocal.turtlePrefix()}
     }
 
     // create sub queries
-    const inputQuery = getInputNodeQuery(inputNode);
-    const outgoingLinkQueries = outLinkDefinitions.filter(link => link.propertyPath !== null).map(link => getOutgoingLinksQuery(inputNode, link));
-    const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinksQuery(inputNode, link));
+    const inputQuery = getInputNodeGraphQuery(inputNode);
+    const outgoingLinkQueries = outLinkDefinitions.filter(link => link.propertyPath !== null).map(link => getOutgoingLinkQuery(inputNode, link));
+    const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinkQuery(inputNode, link));
 
 
 
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
+    console.log(sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries]));
     return forkJoin({ data: this.#sparqlService.construct(query), linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
   }
 
-}
-
-function getInputNodeQuery(input: RdfTypes.NamedNode): string {
-  const query = `
-${rdf.sparqlPrefix()}
-${rdfs.sparqlPrefix()}
-${flux.sparqlPrefix()}
-${schema.sparqlPrefix()}
-${skos.sparqlPrefix()}
-
-CONSTRUCT {
-  ?input a ?bpNodeClass .
-  ?input ${rdfs.labelPrefixed} ?inputObject .
-  ?input ${schema.namePrefixed} ?targetName .
-  ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  ?input ${schema.familyNamePrefixed} ?familyName .
-  ?input a ?inputClass .
-} WHERE {
-  BIND (<${input.value}> as ?input)
-  BIND (${flux.UiNodePrefixed} as ?bpNodeClass) .
-
-  OPTIONAL {
-      ?input ${rdfs.labelPrefixed} ?targetLabel .
-    }
-    OPTIONAL {
-      ?input ${schema.namePrefixed} ?targetName .
-    }
-    OPTIONAL {
-      ?input ${skos.prefLabelPrefixed} ?skowPrefLabel .
-    }
-    OPTIONAL {
-      ?input ${schema.familyNamePrefixed} ?familyName .
-    }  
-    OPTIONAL {
-      ?input ${rdf.typePrefixed} ?inputClass .
-    }
-}
-`;
-
-  return query;
-}
-
-function getOutgoingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
-  const query = `
-  ${shacl.sparqlPrefix()}
-  ${rdf.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${flux.sparqlPrefix()}
-  ${schema.sparqlPrefix()}
-  ${skos.sparqlPrefix()}
-
-CONSTRUCT {
-  ?input a ?fluxUiType .
-  ?input ${flux.hasUiLinkPrefixed} ?linkIri .
-  ?linkIri ${flux.linkPrefixed} ?link ;
-    ${flux.linkLabelPrefixed} ?linkLabel ;
-    ${flux.hasUiLinkPrefixed} ?target .
-  # Get type of the target node
-  ?target a ?targetType .
-  ?target a ?fluxUiType.
-  ?target ${rdfs.labelPrefixed} ?targetLabel.
-  ?target ${schema.namePrefixed} ?targetName .
-  ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  ?target ${schema.familyNamePrefixed} ?familyName .
-
-} WHERE {
-  BIND (<${input.value}> as ?input)
-  BIND (<${link.iri}> as ?link)
-  BIND (${flux.UiNodePrefixed} as ?fluxUiType)
-  ${link.isSynthetic ? `` : `BIND (<${link.arrowTarget}> as ?targetType)`}
-  OPTIONAL {
-    ?target a ?targetType .
-  }  
-  ?input ${link.propertyPath}  ?target .
-  FILTER (!isLiteral(?target))
-  FILTER (!isBlank(?target))
-
-  OPTIONAL {
-  ?target ${rdfs.labelPrefixed} ?targetLabel .
-  }
-  OPTIONAL {
-  ?target ${schema.namePrefixed} ?targetName .
-  }
-  OPTIONAL {
-    ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  }
-  OPTIONAL {
-    ?target ${schema.familyNamePrefixed} ?familyName .
-  }
-
-  BIND ("${link.label}" as ?linkLabel) .
-  
-  # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
-}
-`;
-  return query;
-}
-
-function getIncomingLinksQuery(input: RdfTypes.NamedNode, link: UiLinkDefinition): string {
-  return `
-  ${shacl.sparqlPrefix()}
-  ${rdf.sparqlPrefix()}
-  ${rdfs.sparqlPrefix()}
-  ${flux.sparqlPrefix()}
-  ${schema.sparqlPrefix()}
-  ${skos.sparqlPrefix()}
-
-CONSTRUCT {
-  ?input a ?fluxUiType .
-  ?linkIri ${flux.linkPrefixed} ?link ;
-    ${flux.linkLabelPrefixed} ?linkLabel ;
-    ${flux.hasUiLinkPrefixed} ?input .
-  # Get type of the target node
-  ?target a ?targetType .
-  ?target a ?fluxUiType.
-  ?target ${rdfs.labelPrefixed} ?targetLabel.
-  ?target ${schema.namePrefixed} ?targetName .
-  ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  ?target ${schema.familyNamePrefixed} ?familyName .
-  ?target  ${flux.hasUiLinkPrefixed} ?linkIri .
-} WHERE {
-  BIND (<${input.value}> as ?input)
-  BIND (<${link.iri}> as ?link)
-  BIND (${flux.UiNodePrefixed} as ?fluxUiType)
-
-  ${link.isSynthetic ? `` : `BIND (<${link.arrowSource}> as ?targetType)`}
-
-  OPTIONAL {
-    ?target a ?targetType .
-  }
-  ?target ${link.propertyPath}  ?input  .
-  FILTER (!isLiteral(?target))
-  FILTER (!isBlank(?target))
-
-  OPTIONAL {
-    ?target ${rdfs.labelPrefixed} ?targetLabel .
-  }
-  OPTIONAL {
-    ?target ${schema.namePrefixed} ?targetName .
-  }
-  OPTIONAL {
-    ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
-  }
-  OPTIONAL {
-    ?target ${schema.familyNamePrefixed} ?familyName .
-  }
-  BIND ("${link.label}" as ?linkLabel) .
-  
-  # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), MD5(STR(?target)), '/', MD5(STR(?input)))) as ?linkIri )
-}
-`;
 }
