@@ -6,14 +6,14 @@ import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
-import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
 
 
 import { GraphComponent } from "../../../core/component/graph/graph/graph.component";
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { Avatar } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
+import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
+import { Avatar } from '../../../shared/component/ui/avatar/avatar.component';
 
 
 @Component({
@@ -40,6 +40,8 @@ export class ConceptRelationsComponent {
 
   readonly nodeDefinitions = toSignal<UiClassMetadata[] | undefined>(this.#classMetadataService.getClassMetadata(), { initialValue: undefined });
   readonly linkDefinitions = toSignal<UiLinkDefinition[] | undefined>(this.#linkMetadataService.getLinkMetadata(), { initialValue: undefined });
+
+
 
 
   /**
@@ -94,10 +96,11 @@ export class ConceptRelationsComponent {
       const link: IUiLink = {
         id: linkDefinition.iri,
         iri: linkDefinition.iri,
-        label: linkDefinition.label,
         source: nodeMap.get(linkDefinition.arrowSource),
         target: nodeMap.get(linkDefinition.arrowTarget),
-        linkDefinition
+        outgoingSubLinks: [],
+        incomingSubLinks: [],
+        isBidirectional: false
       };
 
       if (link.source && link.target) {
@@ -113,21 +116,9 @@ export class ConceptRelationsComponent {
 
   });
 
-
   constructor() {
 
-    // This effect is used to trigger and stop the loading indicator
-    // when the node and link definitions are being loaded.
-    effect(() => {
-      const nodeDefinitions = this.nodeDefinitions();
-      const linkDefinitions = this.linkDefinitions();
 
-      if (nodeDefinitions == undefined || linkDefinitions === undefined) {
-        this.#loadingIndicatorService.start();
-      } else {
-        this.#loadingIndicatorService.done();
-      }
-    });
 
   }
 

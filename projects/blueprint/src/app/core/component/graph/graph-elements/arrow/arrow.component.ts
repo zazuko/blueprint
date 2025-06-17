@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ConsolidatedLink } from '../../model/graph.model';
+import { IUiLink } from '../../model/graph.model';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -23,10 +23,10 @@ export class ArrowComponent {
   readonly x2 = input.required<number>();
   readonly y1 = input.required<number>();
   readonly y2 = input.required<number>();
-  readonly link = input.required<ConsolidatedLink>();
+  readonly link = input.required<IUiLink>();
   readonly isSelected = input<boolean>(false);
 
-  linkSelected = output<ConsolidatedLink>();
+  linkSelected = output<IUiLink>();
 
   isSourceAndTargetSame = computed(() => {
     const link = this.link();
@@ -55,13 +55,14 @@ export class ArrowComponent {
 
   incomingLabels = computed(() => {
     const link = this.link();
-    const labels = link.incomingLabels;
+    const labels = ['in'];
     return labels;
 
   });
+
   outgoingLabels = computed(() => {
     const link = this.link();
-    const labels = link.outgoingLabels;
+    const labels = 'out';
     return labels;
   });
 

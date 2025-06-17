@@ -32,7 +32,7 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 
 import { flux, nileaUi, rdf, } from '@blueprint/ontology';
-import { ConsolidatedLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { IUiLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
@@ -48,7 +48,7 @@ import { PanelModule } from 'primeng/panel';
 import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
-import { LinkPanelComponent } from "../link-panel/link-panel.component";
+//import { LinkPanelComponent } from "../link-panel/link-panel.component";
 import { NodeRelationsComponent } from '@blueprint/component/node-relations/node-relations.component';
 
 type NodeExploreCommand = "expand" | "select";
@@ -74,7 +74,7 @@ type SelectionKind = "node" | "link";
     LiteralComponent,
     DrawerModule,
     ButtonModule,
-    LinkPanelComponent,
+    // LinkPanelComponent,
     NodeRelationsComponent
   ]
 })
@@ -109,7 +109,7 @@ export class ExploreComponent implements OnDestroy {
 
   selectionKind = signal<SelectionKind>('node');
   showLinks = signal<boolean>(false);
-  selectedLink = signal<ConsolidatedLink | null>(null);
+  selectedLink = signal<IUiLink | null>(null);
 
   selectedLinkIri = computed(() => {
     const link = this.selectedLink();
@@ -338,7 +338,7 @@ export class ExploreComponent implements OnDestroy {
     this.#clipboard.copy(text);
   };
 
-  selectLink(link: ConsolidatedLink): void {
+  selectLink(link: IUiLink): void {
     this.selectedLink.set(link);
 
     this.showLinks.set(true);

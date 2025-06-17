@@ -14,10 +14,15 @@ export function getOutgoingLinkQuery(input: RdfTypes.NamedNode, link: UiLinkDefi
 
 CONSTRUCT {
   ?input a ?fluxUiType .
-  ?input ${flux.hasUiLinkPrefixed} ?linkIri .
-  ?linkIri ${flux.linkPrefixed} ?link ;
-    ${flux.linkLabelPrefixed} ?linkLabel ;
-    ${flux.hasUiLinkPrefixed} ?target .
+
+  ?linkIri ${flux.linkPrefixed} ?linkSource .
+  ?linkSource ${flux.linkPrefixed} ?link .
+  ?linkSource ${flux.targetPrefixed} ?target .
+  ?linkSource ${flux.sourcePrefixed} ?input .
+  ?linkSource ${flux.labelPrefixed} ?linkLabel .
+
+  ?linkIri ${flux.sourcePrefixed} ?input .
+  ?linkIri ${flux.targetPrefixed} ?target .
   # Get type of the target node
   ?target a ?targetType .
   ?target a ?fluxUiType.
@@ -54,7 +59,10 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), MD5(STR(?input)), '/', MD5(STR(?target)))) as ?linkIri )
+  BIND(((MD5(STR(?target))) + (MD5(STR(?input)))) as ?md5)
+  BIND(IRI(CONCAT('urn:consolidated_link/', str(?md5))) as ?linkIri )
+  BIND(IRI(CONCAT(str(?linkIri), '/', '${link.iri}')) as ?linkSource )
+
 }
 `;
   console.log(query);

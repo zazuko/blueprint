@@ -13,9 +13,15 @@ export function getIncomingLinkQuery(input: RdfTypes.NamedNode, link: UiLinkDefi
 
 CONSTRUCT {
   ?input a ?fluxUiType .
-  ?linkIri ${flux.linkPrefixed} ?link ;
-    ${flux.linkLabelPrefixed} ?linkLabel ;
-    ${flux.hasUiLinkPrefixed} ?input .
+
+  ?linkIri  ${flux.sourcePrefixed} ?target.
+  ?linkIri ${flux.targetPrefixed} ?input .
+  ?linkIri ${flux.linkPrefixed} ?linkSource .
+
+  ?linkSource ${flux.linkPrefixed} ?link .
+  ?linkSource ${flux.targetPrefixed} ?input .
+  ?linkSource ${flux.sourcePrefixed} ?target .
+  ?linkSource ${flux.labelPrefixed} ?linkLabel .
   # Get type of the target node
   ?target a ?targetType .
   ?target a ?fluxUiType.
@@ -23,7 +29,6 @@ CONSTRUCT {
   ?target ${schema.namePrefixed} ?targetName .
   ?target ${skos.prefLabelPrefixed} ?skowPrefLabel .
   ?target ${schema.familyNamePrefixed} ?familyName .
-  ?target  ${flux.hasUiLinkPrefixed} ?linkIri .
 } WHERE {
   BIND (<${input.value}> as ?input)
   BIND (<${link.iri}> as ?link)
@@ -53,7 +58,10 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-  BIND(IRI(CONCAT(STR(?link), MD5(STR(?target)), '/', MD5(STR(?input)))) as ?linkIri )
+  BIND(((MD5(STR(?target))) + (MD5(STR(?input)))) as ?md5)
+  BIND(IRI(CONCAT('urn:consolidated_link/', str(?md5))) as ?linkIri )
+  BIND(IRI(CONCAT(str(?linkIri), '/', '${link.iri}')) as ?linkSource )
+
 }
 `;
   console.log(query);

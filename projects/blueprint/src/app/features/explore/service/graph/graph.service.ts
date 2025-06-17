@@ -8,7 +8,6 @@ import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/gra
 
 import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { T } from 'node_modules/@angular/cdk/portal-directives.d-DbeNrI5D';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 
 export interface QueryInput {
@@ -89,8 +88,9 @@ export class GraphService {
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
-        const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink, response.linkDefinitions.find(link => link.iri === rdfLink.out(flux.linkNamedNode).value)));
+        const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink));
 
+        /*
         links.forEach(link => {
           const linkDefinition = link.linkDefinition;
           if (linkDefinition.prefixedPropertyPathFragments.length === 1) {
@@ -98,15 +98,10 @@ export class GraphService {
 
           }
         });
+        */
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');
-
-        nodes.forEach(node => {
-          if (node.isBlankNode) {
-            node.logTable();
-          }
-        });
 
         // node position
         // if the current node does not have a position, set it to (0, 0)
@@ -120,6 +115,12 @@ export class GraphService {
 
         // set the postion of the neighbors to the current node position if they do not have a position
         // this makes the new expanded nodes appear in the same position as the current node
+
+        links.forEach(link => {
+          console.log('Link:', link.iri);
+          console.log('Source:', link.source.iri);
+          console.log('Target:', link.target.iri);
+        });
         const neighborNodes = links.filter(link => link.source.iri === currentNode.iri || link.target.iri === currentNode.iri).flatMap(link => [link.source, link.target]).filter(node => node.iri !== currentNode.iri);
         neighborNodes.forEach(node => {
           if (node.x === undefined || node.y === undefined) {
