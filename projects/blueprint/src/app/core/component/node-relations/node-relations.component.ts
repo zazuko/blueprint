@@ -1,11 +1,16 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { Graph, IUiGraphNode, IUiLink, RdfUiLink } from '../graph/model/graph.model';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
+import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
+import { httpResource } from '@angular/common/http';
+import { ConfigService } from '@blueprint/service/config/config.service';
+import { getNodeRelationsQuery } from './query/node-relations.query';
+
 @Component({
   selector: 'bp-node-relations',
-  imports: [],
+  // imports: [],
   templateUrl: './node-relations.component.html',
   styleUrl: './node-relations.component.scss'
 })
@@ -13,24 +18,52 @@ export class NodeRelationsComponent {
   readonly graph = input.required<Graph>();
   readonly exploredResource = input.required<ExploredResource>();
 
-  nodeSelected = output<IUiGraphNode>();
+  readonly nodeSelected = output<IUiGraphNode>();
 
-  relations = computed<any[]>(() => {
-    // totdo: implement relations logic
-    // the graph service is providing links and nodes but it's too compicated to handle it here
-    // think about providing another data structure for this. 
+  // Services
+  readonly #config = inject(ConfigService);
 
-    return [];
+
+  sparqlQuery = computed(() => {
+    const iri = this.exploredResource().iri;
+    return getNodeRelationsQuery(iri);
+  });
+
+  querySearchParam = computed(() => {
+    const body = new URLSearchParams();
+    body.set('query', this.sparqlQuery());
+    return body.toString();
+  });
+
+  nodeRelations = httpResource.text<RdfTypes.Dataset>(() => ({
+    url: `${this.#config.getConfiguration().endpointUrl}`,
+    method: "POST",
+    body: this.querySearchParam(),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'text/turtle'
+    }
+  }), {
+    defaultValue: rdfEnvironment.dataset(),
+    parse: (response: string) => {
+      return rdfEnvironment.parseTurtle(response);
+    }
   });
 
 
   constructor() {
-    effect(() => {
-      const g = this.relations();
-      console.log('relations changed', g);
-    });
 
+    effect(() => {
+      const dataset = this.nodeRelations.value();
+      console.log(rdfEnvironment.serialize(dataset));
+    })
+
+
+    effect(() => {
+      console.log(this.nodeRelations.error());
+    });
   }
+
 }
 
 interface IUiLinkWithDirection extends RdfUiLink {
