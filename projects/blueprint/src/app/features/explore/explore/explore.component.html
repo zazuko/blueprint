@@ -37,8 +37,6 @@
       @for(l of literalDetailElements(); track l.ruleIri) {
       <bp-literal @fadeIn [literal]="l"></bp-literal>
       }
-      <bp-node-relations @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
-        (nodeSelected)="expandNode($event)" @fadeIn />
       <bp-neighbor-nodes @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
         (nodeSelected)="expandNode($event)" @fadeIn />
 
@@ -50,6 +48,9 @@
 
   } @else if (routeFragment() === 'Relations' && !loadingIndicatorService.isLoading()) {
   <div style="margin-top: 24px">
+    <bp-node-relations @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
+      (nodeSelected)="expandNode($event)" @fadeIn />
+
     <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
       (nodeSelected)="expandNode($event)" @fadeIn />
   </div>

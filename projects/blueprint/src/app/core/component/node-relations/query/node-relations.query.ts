@@ -9,15 +9,22 @@ export function getNodeRelationsQuery(iri: string): string {
   ${flux.sparqlPrefix()}
   
   CONSTRUCT {
-    ?subject ?predicate ?literal .
+    # the center is the predicate
+    ?ppp a <${flux.namespace['Predicate'].value}> .
+    ?ppp ?tboxPredicate ?tboxO .
 
-    ?subject ?po ?object .
+    ?po <${flux.namespace['goesTo'].value}> ?object .
+    ?po <${flux.namespace['comesFrom'].value}> ?subject .
+  
+    # fill with content
+    ?subject ?predicate ?literal .
     ?object ?poo ?ooLiteral .
 
     ?subject ${rdf.typePrefixed} ?type .
     # change this to tranitive type
     ?subject ${flux.inferredTypePrefixed} ?transitiveType .
 
+    ?ppp  a <${flux.namespace['Predicate'].value}> .
     ?ppp ?tboxPredicate ?tboxO .
 
     ?object3 ${flux.inferredTypePrefixed} ?transitiveType3 .
@@ -28,7 +35,9 @@ export function getNodeRelationsQuery(iri: string): string {
     ?inSubject ${flux.inferredTypePrefixed} ?transitiveType3 .
     ?inSubject ${rdf.typePrefixed} ?type3 .
 
-    ?inSubject ?pi ?subject .
+    ?pi <${flux.namespace['comesFrom'].value}> ?inSubject .
+    ?pi <${flux.namespace['goesTo'].value}> ?subject .
+    
     ?inSubject ?poo ?ooLiteral .
         
 

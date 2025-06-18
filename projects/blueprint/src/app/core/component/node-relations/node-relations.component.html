@@ -1,0 +1,25 @@
+@for(p of nodeRelations.value(); track p.iri ) {
+<div class="row">
+
+    <div class="domain">
+        <div>Domain</div>
+        <div>{{p.domain.join(', ')}}</div>
+
+    </div>
+    <div class="predicate">
+        <div>Predicate</div>
+        <div>{{p.predicate}}</div>
+        <div>{{p.label}}</div>
+    </div>
+    <div class="range">
+        <div>Range</div>
+        <div>{{p.range.join(', ')}}</div>
+    </div>
+</div>
+<div>
+    @for(node of p.to; track node ) {
+    <div>{{node}}</div>
+    }
+
+</div>
+}
