@@ -68,7 +68,6 @@ export class ConceptRelationsComponent {
         icon: nodeMetadata.icon,
       };
 
-
       const node: IUiGraphNode = {
         iri: nodeMetadata.targetNode.value,
         id: nodeMetadata.targetNode.value,
@@ -100,7 +99,15 @@ export class ConceptRelationsComponent {
         rdfType: flux.ConsolidatedLinkNamedNode.value,
         source: nodeMap.get(linkDefinition.arrowSource),
         target: nodeMap.get(linkDefinition.arrowTarget),
-        outgoingChildLinks: [],
+        outgoingChildLinks: [
+          {
+            iri: linkDefinition.iri + '-out',
+            rdfType: flux.ChildLinkNamedNode.value,
+            linkDefinition: linkDefinition,
+            source: nodeMap.get(linkDefinition.arrowSource),
+            target: nodeMap.get(linkDefinition.arrowTarget),
+          }
+        ],
         incomingChildLinks: [],
         isBidirectional: false
       };

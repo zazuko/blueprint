@@ -347,7 +347,6 @@ export class ExploreComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('%cExploreComponent ngOnDestroy', 'color: red; font-weight: bold;');
     this.#graphService.clearGraph();
     this.#selectionService.clearSelection();
   }

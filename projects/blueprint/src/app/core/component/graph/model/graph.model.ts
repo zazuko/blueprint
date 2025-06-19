@@ -5,6 +5,7 @@ import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
+import { U } from 'node_modules/@angular/cdk/unique-selection-dispatcher.d-DSFqf1MM';
 
 
 export interface Graph {
@@ -311,10 +312,10 @@ export class RdfConsolidatedLink extends ClownfaceObject implements IUConsolidat
 
 export interface IChildLink {
   iri: string;
-  type: string;
+  rdfType: string;
   source: IUiGraphNode;
   target: IUiGraphNode;
-  linkDefinition: RdfUiLinkDefinition;
+  linkDefinition: UiLinkDefinition;
 }
 
 export class RdfChildLink extends ClownfaceObject implements IChildLink {
@@ -330,7 +331,7 @@ export class RdfChildLink extends ClownfaceObject implements IChildLink {
     }
   }
 
-  get type(): string {
+  get rdfType(): string {
     return flux.ChildLinkNamedNode.value;
   }
 
