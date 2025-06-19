@@ -4,11 +4,10 @@ import { Observable, of, map } from 'rxjs';
 
 import { GraphQueryBuilderService } from '../query-builder/graph-query-builder.service';
 
-import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
+import { Graph, RdfUiGraphNode, RdfConsolidatedLink } from '../../../../core/component/graph/model/graph.model';
 
 import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { T } from 'node_modules/@angular/cdk/portal-directives.d-DbeNrI5D';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 
 export interface QueryInput {
@@ -23,7 +22,7 @@ export class GraphService {
   readonly #tBoxService = inject(TBoxService);
 
   #nodesMap = new Map<string, RdfUiGraphNode>();
-  #linksMap = new Map<string, RdfUiLink>();
+  #linksMap = new Map<string, RdfConsolidatedLink>();
 
   #currentDataset = rdfEnvironment.dataset();
 
@@ -47,7 +46,7 @@ export class GraphService {
     this.#linksMap.clear();
     this.#nodesMap.clear();
     this.#nodesMap = new Map<string, RdfUiGraphNode>();
-    this.#linksMap = new Map<string, RdfUiLink>();
+    this.#linksMap = new Map<string, RdfConsolidatedLink>();
     this.#internalGraphSignal.set({ nodes: [], links: [] });
 
   }
@@ -86,27 +85,15 @@ export class GraphService {
     return this.#queryBuilder.buildQuery(expandedNodeIri).pipe(
       map((response) => {
         this.#currentDataset.addAll(response.data);
+
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
-        const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink, response.linkDefinitions.find(link => link.iri === rdfLink.out(flux.linkNamedNode).value)));
+        const links = cfGraph.node(flux.ConsolidatedLinkNamedNode).in(rdf.typeNamedNode).map(rdfLink => new RdfConsolidatedLink(rdfLink));
 
-        links.forEach(link => {
-          const linkDefinition = link.linkDefinition;
-          if (linkDefinition.prefixedPropertyPathFragments.length === 1) {
-            linkDefinition.predicateTbox = this.#tBoxService.getPredicateTBox(linkDefinition.prefixedPropertyPathFragments[0].predicateIri.slice(1, -1));
-
-          }
-        });
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');
-
-        nodes.forEach(node => {
-          if (node.isBlankNode) {
-            node.logTable();
-          }
-        });
 
         // node position
         // if the current node does not have a position, set it to (0, 0)
@@ -120,6 +107,8 @@ export class GraphService {
 
         // set the postion of the neighbors to the current node position if they do not have a position
         // this makes the new expanded nodes appear in the same position as the current node
+
+
         const neighborNodes = links.filter(link => link.source.iri === currentNode.iri || link.target.iri === currentNode.iri).flatMap(link => [link.source, link.target]).filter(node => node.iri !== currentNode.iri);
         neighborNodes.forEach(node => {
           if (node.x === undefined || node.y === undefined) {

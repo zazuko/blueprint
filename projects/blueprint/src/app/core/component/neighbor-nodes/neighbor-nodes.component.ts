@@ -1,7 +1,7 @@
 import { Component, computed, output, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
-import { Graph, IUiGraphNode, RdfUiLink } from '../graph/model/graph.model';
+import { Graph, IUiGraphNode, RdfConsolidatedLink } from '../graph/model/graph.model';
 import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { labelAlphaSort } from '../../utils/sort-functions';
@@ -11,7 +11,7 @@ import { ExploredResource } from '../../../features/explore/model/explored-resou
   selector: 'bp-neighbor-nodes',
   imports: [
     CommonModule,
-    NeighborNodesListComponent,
+    //  NeighborNodesListComponent,
   ],
   templateUrl: './neighbor-nodes.component.html',
   styleUrl: './neighbor-nodes.component.scss',
@@ -25,6 +25,7 @@ export class NeighborNodesComponent {
 
   nodeSelected = output<IUiGraphNode>();
 
+  /**
   nodeList = computed<NeighborNodeList[]>(() => {
     const graph = this.graph();
     const nodes = graph.nodes;
@@ -105,11 +106,14 @@ export class NeighborNodesComponent {
     return list;
 
   });
+   */
 
   /**
    * Returns a list of outgoing nodes, sorted by link label.
    * If a link has no label, it is sorted to the end of the list.
    */
+
+  /**
   outgoingNodeList = computed<NeighborNodeList[]>(() => {
     return this.nodeList()
       .filter(nodeList => nodeList.isOutgoing)
@@ -125,12 +129,13 @@ export class NeighborNodesComponent {
         return aLabel.localeCompare(bLabel);
       });
   });
-
+ */
   /**
    * Returns a list of incoming nodes, sorted by link label.
    * If a link has no label, it is sorted to the end of the list.
    */
-  incomingNodeList = computed<NeighborNodeList[]>(() => {
+
+  /**  incomingNodeList = computed<NeighborNodeList[]>(() => {
     return this.nodeList().filter(nodeList => !nodeList.isOutgoing).sort((a, b) => {
       const aLabel = a.link.label || '';
       const bLabel = b.link.label || '';
@@ -143,6 +148,7 @@ export class NeighborNodesComponent {
       return aLabel.localeCompare(bLabel);
     });
   });
+ */
 
   public emitNodeSelected(node: IUiGraphNode): void {
     this.nodeSelected.emit(node);

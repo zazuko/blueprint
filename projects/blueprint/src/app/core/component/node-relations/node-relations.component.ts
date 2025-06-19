@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
-import { Graph, IUiGraphNode, IUiLink, RdfUiLink } from '../graph/model/graph.model';
+import { Graph, IUiGraphNode, IUConsolidatedLink, RdfConsolidatedLink } from '../graph/model/graph.model';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
@@ -52,76 +52,23 @@ export class NodeRelationsComponent {
     parse: (response: string) => {
       const ds = rdfEnvironment.parseTurtle(response);
       const graph = rdfEnvironment.clownface(ds);
-      return graph.node(flux.namespace['Predicate']).in(rdf.typeNamedNode).map(node => new RdfNodeRelation(node)).sort((a, b) => a.label.localeCompare(b.label));
+      //   return graph.node(flux.namespace['Predicate']).in(rdf.typeNamedNode).map(node => new RdfNodeRelation(node)).sort((a, b) => a.label.localeCompare(b.label));
+      return []
     }
   });
 
-}
-
-interface IUiLinkWithDirection extends RdfUiLink {
-  direction: 'forward' | 'backward' | 'both';
 }
 
 interface INodeRelation {
   iri: string;
   domain: string[],
   range: string[],
-  predicate: string;
-  label: string;
-  from: string[],
-  to: string[],
-}
-
-class RdfNodeRelation extends ClownfaceObject implements INodeRelation {
-  #domain: string[] | undefined = undefined;
-  #range: string[] | undefined = undefined;
-  #predicate: string | undefined = undefined;
-  #label: string | undefined = undefined;
-  #from: string[] | undefined = undefined;
-  #to: string[] | undefined = undefined;
-  constructor(node: GraphPointer) {
-    super(node);
-  }
-
-  get domain(): string[] {
-    if (this.#domain === undefined) {
-      this.#domain = this._node.out(rdfs.domainNamedNode).values
-    }
-    return this.#domain;
-  }
-
-  get range(): string[] {
-    if (this.#range === undefined) {
-      this.#range = this._node.out(rdfs.rangeNamedNode).values;
-    }
-    return this.#range;
-  }
-
-  get predicate(): string {
-    if (this.#predicate === undefined) {
-      this.#predicate = rdfEnvironment.shrink(this._node.value);
-    }
-    return this.#predicate;
-  }
-
-  get label(): string {
-    if (this.#label === undefined) {
-      this.#label = ClownfaceObject.getLabelForNode(this._node);
-    }
-    return this.#label;
-  }
-
-  get from(): string[] {
-    if (this.#from === undefined) {
-      this.#from = this._node.out(flux.namespace['comesFrom']).values.map(v => rdfEnvironment.shrink(v));
-    }
-    return this.#from;
-  }
-
-  get to(): string[] {
-    if (this.#to === undefined) {
-      this.#to = this._node.out(flux.namespace['goesTo']).values.map(v => rdfEnvironment.shrink(v));
-    }
-    return this.#to;
-  }
+  link: IUConsolidatedLink[],
+  domainIncludes: string[],
+  rangeIncludes: string[],
+  linkLabel: string,
+  linkPath: string,
+  direction: 'forward' | 'backward' | 'both'
+  inversePredicate: string | undefined;
+  linkDefinition: UiLinkDefinition;
 }

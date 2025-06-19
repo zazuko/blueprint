@@ -1,15 +1,16 @@
 import { INodeElement, NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { GraphPointer } from 'clownface';
-import { flux } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
-import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
+import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
+import { U } from 'node_modules/@angular/cdk/unique-selection-dispatcher.d-DSFqf1MM';
 
 
 export interface Graph {
   nodes: IUiGraphNode[];
-  links: IUiLink[];
+  links: IUConsolidatedLink[];
 }
 
 export interface IUiGraphNode extends INodeElement {
@@ -171,56 +172,210 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
 }
 
 
-export interface IUiLink extends cola.Link<IUiGraphNode> {
+/**
+ * This is a consolidated link
+ */
+export interface IUConsolidatedLink extends cola.Link<IUiGraphNode> {
   iri: string;
+  rdfType: string;
   source: IUiGraphNode;
   target: IUiGraphNode;
   id: string;
-  label: string;
-  linkDefinition: UiLinkDefinition | null;
+  outgoingChildLinks: IChildLink[];
+  incomingChildLinks: IChildLink[];
+  isBidirectional: boolean;
 }
 
 
-export class RdfUiLink extends ClownfaceObject implements IUiLink {
-  constructor(node: GraphPointer, public linkDefinition: UiLinkDefinition) {
+export class RdfConsolidatedLink extends ClownfaceObject implements IUConsolidatedLink {
+  #source: RdfUiGraphNode | undefined = undefined;
+  #target: RdfUiGraphNode | undefined = undefined;
+  #isBidirectional: boolean | undefined = undefined;
+  #firstLinkNode: GraphPointer | undefined = undefined;
+  #_childLinks: IChildLink[] | undefined = undefined;
+  #incomingSubLinks: IChildLink[] | undefined = undefined;
+  #outgoingSubLinks: IChildLink[] | undefined = undefined;
+
+  constructor(node: GraphPointer) {
     super(node);
+    // check type
+    if (!node.out(rdf.typeNamedNode).has(flux.ConsolidatedLinkNamedNode)) {
+      throw new Error('Node is not a consolidated link: ' + node.value);
+    }
   }
 
+  get rdfType(): string {
+    return flux.ConsolidatedLinkNamedNode.value;
+  }
+
+  #getFirstLinkNode(): GraphPointer {
+    if (this.#firstLinkNode === undefined) {
+      this.#firstLinkNode = this._node.out(flux.hasChildLinkNamedNode).toArray().sort((a, b) => a.value.localeCompare(b.value))[0];
+      if (this.#firstLinkNode === undefined) {
+        throw new Error('No link node found for link: ' + this._node.value);
+      }
+    }
+    return this.#firstLinkNode;
+  }
+
+  get isBidirectional(): boolean {
+    if (this.#isBidirectional === undefined) {
+      this.#isBidirectional = this._node.out(flux.sourceNamedNode).values.length === 2
+    }
+
+    return this.#isBidirectional;
+  };
+
   get source(): RdfUiGraphNode {
-    const sourceNode = this._node.in(flux.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
-    return sourceNode[0];
+    if (this.#source === undefined) {
+      if (!this.isBidirectional) {
+        const sources = this._node.out(flux.sourceNamedNode).map(x => new RdfUiGraphNode(x));
+        if (sources.length === 0) {
+          throw new Error('No source node found for link: ' + this._node.value);
+        }
+        if (sources.length > 1) {
+          throw new Error('Multiple source nodes found for link: ' + this._node.value);
+        }
+        this.#source = sources[0];
+      } else {
+        const sources = this.#getFirstLinkNode().out(flux.sourceNamedNode).map(x => new RdfUiGraphNode(x));
+        if (sources.length === 0) {
+          throw new Error('No source node found for link: ' + this._node.value);
+        }
+        if (sources.length > 1) {
+          throw new Error('Multiple source nodes found for link: ' + this._node.value);
+        }
+        this.#source = sources[0];
+      }
+    }
+    return this.#source;
   }
 
   get target(): RdfUiGraphNode {
-    const targetNode = this._node.out(flux.hasUiLinkNamedNode).map(x => new RdfUiGraphNode(x));
-    return targetNode[0];
+    if (this.#target === undefined) {
+      if (!this.isBidirectional) {
+        const targets = this._node.out(flux.targetNamedNode).map(x => new RdfUiGraphNode(x));
+        if (targets.length === 0) {
+          throw new Error('No source node found for link: ' + this._node.value);
+        }
+        if (targets.length > 1) {
+          throw new Error('Multiple source nodes found for link: ' + this._node.value);
+        }
+        this.#target = targets[0];
+      } else {
+        const targets = this.#getFirstLinkNode().out(flux.targetNamedNode).map(x => new RdfUiGraphNode(x));
+        if (targets.length === 0) {
+          throw new Error('No target node found for link: ' + this._node.value);
+        }
+        if (targets.length > 1) {
+          throw new Error('Multiple target nodes found for link: ' + this._node.value);
+        }
+        this.#target = targets[0];
+      }
+    }
+    return this.#target;
   }
 
-  get label(): string {
-    return this._node.out(flux.linkLabelNamedNode).values.join(' ,') ?? 'no label';
+  get incomingChildLinks(): IChildLink[] {
+    if (this.#incomingSubLinks === undefined) {
+      this.#incomingSubLinks = this.#childLinks.filter(childLink => childLink.target.iri === this.source.iri);
+    }
+    return this.#incomingSubLinks;
+  }
+
+  get outgoingChildLinks(): IChildLink[] {
+
+    if (this.#outgoingSubLinks === undefined) {
+      this.#outgoingSubLinks = this.#childLinks.filter(childLink => childLink.source.iri === this.source.iri);
+    }
+    return this.#outgoingSubLinks;
   }
 
   get id(): string {
     return this._node.value;
   }
+
+
+  get #childLinks(): IChildLink[] {
+    if (this.#_childLinks === undefined) {
+      this.#_childLinks = this._node.out(flux.hasChildLinkNamedNode).map(child => new RdfChildLink(child));
+      if (this.#_childLinks.length === 0) {
+        throw new Error('No sub link found for link: ' + this._node.value);
+      }
+    }
+    return this.#_childLinks;
+  }
+
+
 }
 
 
-
-
-export interface ConsolidatedLink extends IUiLink {
-  incomingLabels: LabelWithLinkDefinition[];
-  outgoingLabels: LabelWithLinkDefinition[];
-  direction: 'outgoing' | 'bidirectional';
-}
-
-
-export interface ConsolidatedGraph {
-  nodes: IUiGraphNode[];
-  links: ConsolidatedLink[];
-};
-
-export interface LabelWithLinkDefinition {
-  label: string;
+export interface IChildLink {
+  iri: string;
+  rdfType: string;
+  source: IUiGraphNode;
+  target: IUiGraphNode;
   linkDefinition: UiLinkDefinition;
+}
+
+export class RdfChildLink extends ClownfaceObject implements IChildLink {
+  #source: RdfUiGraphNode | undefined = undefined;
+  #target: RdfUiGraphNode | undefined = undefined;
+  #linkDefinition: RdfUiLinkDefinition | undefined = undefined;
+
+  constructor(node: GraphPointer) {
+    super(node);
+    // check type
+    if (!node.out(rdf.typeNamedNode).has(flux.ChildLinkNamedNode)) {
+      throw new Error('Node is not a child link: ' + node.value);
+    }
+  }
+
+  get rdfType(): string {
+    return flux.ChildLinkNamedNode.value;
+  }
+
+  get source(): RdfUiGraphNode {
+    if (this.#source === undefined) {
+      const sources = this._node.out(flux.sourceNamedNode).map(x => new RdfUiGraphNode(x));
+      if (sources.length === 0) {
+        throw new Error('No source node found for link: ' + this._node.value);
+      }
+      if (sources.length > 1) {
+        throw new Error('Multiple source nodes found for link: ' + this._node.value);
+      }
+      this.#source = sources[0];
+    }
+    return this.#source;
+  }
+
+  get target(): RdfUiGraphNode {
+    if (this.#target === undefined) {
+      const targets = this._node.out(flux.targetNamedNode).map(x => new RdfUiGraphNode(x));
+      if (targets.length === 0) {
+        throw new Error('No target node found for link: ' + this._node.value);
+      }
+      if (targets.length > 1) {
+        throw new Error('Multiple target nodes found for link: ' + this._node.value);
+      }
+      this.#target = targets[0];
+    }
+    return this.#target;
+  }
+
+
+  get linkDefinition(): RdfUiLinkDefinition {
+    if (this.#linkDefinition === undefined) {
+      const linkDefs = this._node.out(flux.linkNamedNode).map(linkDef => new RdfUiLinkDefinition(linkDef));
+      if (linkDefs.length === 0) {
+        throw new Error('No link definition found for link: ' + this._node.value);
+      }
+      if (linkDefs.length > 1) {
+        throw new Error('Multiple link definitions found for link: ' + this._node.value);
+      }
+      this.#linkDefinition = linkDefs[0];
+    }
+    return this.#linkDefinition;
+  }
+
 }

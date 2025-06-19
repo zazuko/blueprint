@@ -5,7 +5,7 @@
     "target": "https://test.lindas.admin.ch/query",
     "targetdd": "https://lindas.admin.ch/query",
     "targetdded": "https://server.magdalena.prod.instances.qlever.az.zazukoians.org",
-    "targetdds": "http://localhost:3030/blueprint/sparql",
+    "targetddd": "http://localhost:3030/blueprint/sparql",
     "headers": {
       "Connection": "keep-alive"
     },
