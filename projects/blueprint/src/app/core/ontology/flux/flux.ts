@@ -1388,6 +1388,83 @@ class FluxOntology extends Ontology {
         return this.namespace('inferredType');
     }
 
+    /**
+     * Get ConsolidatedLink class.
+     * 
+     * @readonly
+     */
+    get ConsolidatedLink(): string {
+        return this.namespace('ConsolidatedLink').value;
+    }
+    /**
+     * Get the prefixed ConsolidatedLink class.
+     * 
+     * @readonly
+     */
+    get ConsolidatedLinkPrefixed(): string {
+        return `${this.prefix()}:ConsolidatedLink`;
+    }
+    /**
+     * Get the ConsolidatedLink class as NamedNode.
+     * 
+     * @readonly
+     */
+    get ConsolidatedLinkNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('ConsolidatedLink');
+    }
+
+    /**
+     * Get the hasChildLink predicate.
+     * 
+     * @readonly
+     */
+    get hasChildLink(): string {
+        return this.namespace('hasChildLink').value;
+    }
+
+    /**
+     * Get the prefixed hasChildLink predicate.
+     * 
+     * @readonly
+     */
+    get hasChildLinkPrefixed(): string {
+        return `${this.prefix()}:hasChildLink`;
+    }
+    /**
+     * Get the hasChildLink predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasChildLinkNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('hasChildLink');
+    }
+
+    /**
+     * Get ChildLink class . 
+     * 
+     * @readonly
+     */
+    get ChildLink(): string {
+        return this.namespace('ChildLink').value;
+    }
+
+    /**
+     * Get the prefixed ChildLink class.
+     * 
+     * @readonly
+     */
+    get ChildLinkPrefixed(): string {
+        return `${this.prefix()}:ChildLink`;
+    }
+
+    /**
+     * Get the ChildLink class as NamedNode.
+     * 
+     * @readonly
+     */
+    get ChildLinkNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('ChildLink');
+    }
 
 }
 

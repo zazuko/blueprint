@@ -1,7 +1,7 @@
 import { Component, computed, output, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
-import { Graph, IUiGraphNode, RdfUiLink } from '../graph/model/graph.model';
+import { Graph, IUiGraphNode, RdfConsolidatedLink } from '../graph/model/graph.model';
 import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { labelAlphaSort } from '../../utils/sort-functions';

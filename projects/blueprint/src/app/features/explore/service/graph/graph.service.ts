@@ -4,7 +4,7 @@ import { Observable, of, map } from 'rxjs';
 
 import { GraphQueryBuilderService } from '../query-builder/graph-query-builder.service';
 
-import { Graph, RdfUiGraphNode, RdfUiLink } from '../../../../core/component/graph/model/graph.model';
+import { Graph, RdfUiGraphNode, RdfConsolidatedLink } from '../../../../core/component/graph/model/graph.model';
 
 import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
@@ -22,7 +22,7 @@ export class GraphService {
   readonly #tBoxService = inject(TBoxService);
 
   #nodesMap = new Map<string, RdfUiGraphNode>();
-  #linksMap = new Map<string, RdfUiLink>();
+  #linksMap = new Map<string, RdfConsolidatedLink>();
 
   #currentDataset = rdfEnvironment.dataset();
 
@@ -46,7 +46,7 @@ export class GraphService {
     this.#linksMap.clear();
     this.#nodesMap.clear();
     this.#nodesMap = new Map<string, RdfUiGraphNode>();
-    this.#linksMap = new Map<string, RdfUiLink>();
+    this.#linksMap = new Map<string, RdfConsolidatedLink>();
     this.#internalGraphSignal.set({ nodes: [], links: [] });
 
   }
@@ -85,11 +85,14 @@ export class GraphService {
     return this.#queryBuilder.buildQuery(expandedNodeIri).pipe(
       map((response) => {
         this.#currentDataset.addAll(response.data);
+        console.log(rdfEnvironment.serialize(this.#currentDataset));
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
-        const links = cfGraph.in(flux.linkNamedNode).map(rdfLink => new RdfUiLink(rdfLink));
+        const links = cfGraph.node(flux.ConsolidatedLinkNamedNode).in(rdf.typeNamedNode).map(rdfLink => new RdfConsolidatedLink(rdfLink));
 
+        console.log('Nodes:', nodes);
+        console.log('Links:', links);
         /*
         links.forEach(link => {
           const linkDefinition = link.linkDefinition;

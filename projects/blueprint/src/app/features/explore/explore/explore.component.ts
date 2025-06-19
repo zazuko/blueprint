@@ -32,7 +32,7 @@ import { LoadingIndicatorService } from '../../../core/component/loading-indicat
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 
 import { flux, nileaUi, rdf, } from '@blueprint/ontology';
-import { IUiLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { IUConsolidatedLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
@@ -109,7 +109,7 @@ export class ExploreComponent implements OnDestroy {
 
   selectionKind = signal<SelectionKind>('node');
   showLinks = signal<boolean>(false);
-  selectedLink = signal<IUiLink | null>(null);
+  selectedLink = signal<IUConsolidatedLink | null>(null);
 
   selectedLinkIri = computed(() => {
     const link = this.selectedLink();
@@ -338,7 +338,7 @@ export class ExploreComponent implements OnDestroy {
     this.#clipboard.copy(text);
   };
 
-  selectLink(link: IUiLink): void {
+  selectLink(link: IUConsolidatedLink): void {
     this.selectedLink.set(link);
 
     this.showLinks.set(true);

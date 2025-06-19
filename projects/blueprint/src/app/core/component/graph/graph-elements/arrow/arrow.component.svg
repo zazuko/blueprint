@@ -16,7 +16,7 @@
           </line>
           <svg:g class="link-label-layer">
             <text t y="-150" text-anchor="middle" [attr.transform]="calculateLoopLinkLabelTransform()">
-              @for(l of link().outgoingSubLinks; track l.iri) {
+              @for(l of link().outgoingChildLinks; track l.iri) {
               <tspan class="left" x="0" dy="-1.2em">{{l.linkDefinition.label}}</tspan>
               }
             </text>
@@ -30,7 +30,7 @@
                 </line>
                 <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
                   <text y="10" text-anchor="middle">
-                    @for(l of link().outgoingSubLinks; track l.iri) {
+                    @for(l of link().outgoingChildLinks; track l.iri) {
 
                     <tspan font-size="12px" class="left" x="0" dy="-1.2em">{{l.linkDefinition.label}} </tspan>
 
@@ -48,7 +48,7 @@
                       [attr.y1]="y1()" [attr.x2]="x2()" [attr.y2]="y2()">
                       </line>
                       <svg:g x="50%" y="50%" class="link-label-layer" [attr.transform]="calculateLinkLabelTransform()">
-                        @for(l of link().outgoingSubLinks; track l.iri) {
+                        @for(l of link().outgoingChildLinks; track l.iri) {
                         @if($last) {
                         @if(x1() >= x2()) {
                         <svg:text [attr.y]="- 1 * (($index * 12) + 12 + 5)" font-size="12px" text-anchor="middle">
@@ -66,7 +66,7 @@
 
                                 }
                                 }
-                                @for(l of link().incomingSubLinks; track l.iri) {
+                                @for(l of link().incomingChildLinks; track l.iri) {
                                 @if($first) {
                                 <svg:text [attr.y]="((incomingLabels().length - $index) * 12)" font-size="12px"
                                   text-anchor="middle">{{l.linkDefinition.label}}</text>

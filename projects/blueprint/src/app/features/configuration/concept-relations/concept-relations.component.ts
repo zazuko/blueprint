@@ -12,8 +12,9 @@ import { GraphComponent } from "../../../core/component/graph/graph/graph.compon
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
-import { Graph, IUiGraphNode, IUiLink } from '@blueprint/component/graph/model/graph.model';
+import { Graph, IUiGraphNode, IUConsolidatedLink } from '@blueprint/component/graph/model/graph.model';
 import { Avatar } from '../../../shared/component/ui/avatar/avatar.component';
+import { flux } from '@blueprint/ontology';
 
 
 @Component({
@@ -89,17 +90,18 @@ export class ConceptRelationsComponent {
       nodeMap.set(node.iri, node);
     });
 
-    const uiLinks: IUiLink[] = [];
+    const uiLinks: IUConsolidatedLink[] = [];
 
     linkDefinitions.forEach(linkDefinition => {
 
-      const link: IUiLink = {
+      const link: IUConsolidatedLink = {
         id: linkDefinition.iri,
         iri: linkDefinition.iri,
+        rdfType: flux.ConsolidatedLinkNamedNode.value,
         source: nodeMap.get(linkDefinition.arrowSource),
         target: nodeMap.get(linkDefinition.arrowTarget),
-        outgoingSubLinks: [],
-        incomingSubLinks: [],
+        outgoingChildLinks: [],
+        incomingChildLinks: [],
         isBidirectional: false
       };
 

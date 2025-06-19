@@ -1,6 +1,6 @@
 import { INodeElement, NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { GraphPointer } from 'clownface';
-import { flux } from '@blueprint/ontology';
+import { flux, rdf } from '@blueprint/ontology';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
@@ -9,7 +9,7 @@ import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-
 
 export interface Graph {
   nodes: IUiGraphNode[];
-  links: IUiLink[];
+  links: IUConsolidatedLink[];
 }
 
 export interface IUiGraphNode extends INodeElement {
@@ -174,39 +174,55 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
 /**
  * This is a consolidated link
  */
-export interface IUiLink extends cola.Link<IUiGraphNode> {
+export interface IUConsolidatedLink extends cola.Link<IUiGraphNode> {
   iri: string;
+  rdfType: string;
   source: IUiGraphNode;
   target: IUiGraphNode;
   id: string;
-  outgoingSubLinks: ISubLink[];
-  incomingSubLinks: ISubLink[];
+  outgoingChildLinks: IChildLink[];
+  incomingChildLinks: IChildLink[];
   isBidirectional: boolean;
 }
 
 
-export class RdfUiLink extends ClownfaceObject implements IUiLink {
+export class RdfConsolidatedLink extends ClownfaceObject implements IUConsolidatedLink {
   #source: RdfUiGraphNode | undefined = undefined;
   #target: RdfUiGraphNode | undefined = undefined;
   #isBidirectional: boolean | undefined = undefined;
   #firstLinkNode: GraphPointer | undefined = undefined;
-  #outLabels: string[] | undefined = undefined;
-  #_subLinks: ISubLink[] | undefined = undefined;
-  #incomingSubLinks: ISubLink[] | undefined = undefined;
-  #outgoingSubLinks: ISubLink[] | undefined = undefined;
-
+  #_childLinks: IChildLink[] | undefined = undefined;
+  #incomingSubLinks: IChildLink[] | undefined = undefined;
+  #outgoingSubLinks: IChildLink[] | undefined = undefined;
 
   constructor(node: GraphPointer) {
     super(node);
+    // check type
+    if (!node.out(rdf.typeNamedNode).has(flux.ConsolidatedLinkNamedNode)) {
+      throw new Error('Node is not a consolidated link: ' + node.value);
+    }
+
+    if (this.isBidirectional) {
+      console.log('%cLink is bidirectional: ', 'color: green', this._node.value);
+      console.log('%cSource: ', 'color: green', this.source.iri);
+      console.log('%cTarget: ', 'color: green', this.target.iri);
+    } else {
+      console.log('%cLink is unidirectional: ', 'color: red', this._node.value);
+    }
+  }
+
+  get rdfType(): string {
+    return flux.ConsolidatedLinkNamedNode.value;
   }
 
   #getFirstLinkNode(): GraphPointer {
     if (this.#firstLinkNode === undefined) {
-      this.#firstLinkNode = this._node.out(flux.linkNamedNode).toArray()[0];
+      this.#firstLinkNode = this._node.out(flux.hasChildLinkNamedNode).toArray().sort((a, b) => a.value.localeCompare(b.value))[0];
       if (this.#firstLinkNode === undefined) {
         throw new Error('No link node found for link: ' + this._node.value);
       }
     }
+    console.log('first', this.#firstLinkNode.value);
     return this.#firstLinkNode;
   }
 
@@ -214,6 +230,7 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
     if (this.#isBidirectional === undefined) {
       this.#isBidirectional = this._node.out(flux.sourceNamedNode).values.length === 2
     }
+
     return this.#isBidirectional;
   };
 
@@ -229,7 +246,7 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
         }
         this.#source = sources[0];
       } else {
-        const sources = this.#getFirstLinkNode().out(flux.targetNamedNode).map(x => new RdfUiGraphNode(x));
+        const sources = this.#getFirstLinkNode().out(flux.sourceNamedNode).map(x => new RdfUiGraphNode(x));
         if (sources.length === 0) {
           throw new Error('No source node found for link: ' + this._node.value);
         }
@@ -267,24 +284,17 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
     return this.#target;
   }
 
-  get outLinkDefinitions(): string[] {
-    if (this.#outLabels === undefined) {
-      this.#outLabels = this._node.out(flux.linkNamedNode).has(flux.sourceNamedNode, rdfEnvironment.namedNode(this.source.iri)).out(flux.labelNamedNode).values;
-    }
-    return this.#outLabels;
-  }
-
-
-  get incomingSubLinks(): ISubLink[] {
+  get incomingChildLinks(): IChildLink[] {
     if (this.#incomingSubLinks === undefined) {
-      this.#incomingSubLinks = this.#subLinks.filter(subLink => subLink.target.iri === this.target.iri);
+      this.#incomingSubLinks = this.#childLinks.filter(childLink => childLink.target.iri === this.source.iri);
     }
     return this.#incomingSubLinks;
   }
 
-  get outgoingSubLinks(): ISubLink[] {
+  get outgoingChildLinks(): IChildLink[] {
+
     if (this.#outgoingSubLinks === undefined) {
-      this.#outgoingSubLinks = this.#subLinks.filter(subLink => subLink.source.iri === this.source.iri);
+      this.#outgoingSubLinks = this.#childLinks.filter(childLink => childLink.source.iri === this.source.iri);
     }
     return this.#outgoingSubLinks;
   }
@@ -294,32 +304,43 @@ export class RdfUiLink extends ClownfaceObject implements IUiLink {
   }
 
 
-  get #subLinks(): ISubLink[] {
-    if (this.#_subLinks === undefined) {
-      this.#_subLinks = this._node.out(flux.linkNamedNode).map(subLink => new RdfSubLink(subLink));
-      if (this.#_subLinks.length === 0) {
+  get #childLinks(): IChildLink[] {
+    if (this.#_childLinks === undefined) {
+      this.#_childLinks = this._node.out(flux.hasChildLinkNamedNode).map(child => new RdfChildLink(child));
+      if (this.#_childLinks.length === 0) {
         throw new Error('No sub link found for link: ' + this._node.value);
       }
     }
-    return this.#_subLinks;
+    return this.#_childLinks;
   }
+
+
 }
 
 
-export interface ISubLink {
+export interface IChildLink {
   iri: string;
+  type: string;
   source: IUiGraphNode;
   target: IUiGraphNode;
   linkDefinition: RdfUiLinkDefinition;
 }
 
-export class RdfSubLink extends ClownfaceObject implements ISubLink {
+export class RdfChildLink extends ClownfaceObject implements IChildLink {
   #source: RdfUiGraphNode | undefined = undefined;
   #target: RdfUiGraphNode | undefined = undefined;
   #linkDefinition: RdfUiLinkDefinition | undefined = undefined;
 
   constructor(node: GraphPointer) {
     super(node);
+    // check type
+    if (!node.out(rdf.typeNamedNode).has(flux.ChildLinkNamedNode)) {
+      throw new Error('Node is not a child link: ' + node.value);
+    }
+  }
+
+  get type(): string {
+    return flux.ChildLinkNamedNode.value;
   }
 
   get source(): RdfUiGraphNode {
@@ -353,7 +374,7 @@ export class RdfSubLink extends ClownfaceObject implements ISubLink {
 
   get linkDefinition(): RdfUiLinkDefinition {
     if (this.#linkDefinition === undefined) {
-      const linkDefs = this._node.out(flux.linkNamedNode).out(flux.linkNamedNode).map(linkDef => new RdfUiLinkDefinition(linkDef));
+      const linkDefs = this._node.out(flux.linkNamedNode).map(linkDef => new RdfUiLinkDefinition(linkDef));
       if (linkDefs.length === 0) {
         throw new Error('No link definition found for link: ' + this._node.value);
       }
@@ -366,24 +387,3 @@ export class RdfSubLink extends ClownfaceObject implements ISubLink {
   }
 
 }
-
-/*
-
-export interface ConsolidatedLink extends IUiLink {
-  incomingLabels: LabelWithLinkDefinition[];
-  outgoingLabels: LabelWithLinkDefinition[];
-  direction: 'outgoing' | 'bidirectional';
-}
-
-
-export interface ConsolidatedGraph {
-  nodes: IUiGraphNode[];
-  links: ConsolidatedLink[];
-};
-
-export interface LabelWithLinkDefinition {
-  label: string;
-  linkDefinition: UiLinkDefinition;
-}
-
-*/

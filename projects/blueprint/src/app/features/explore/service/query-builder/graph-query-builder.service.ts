@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Observable, forkJoin, switchMap, of } from 'rxjs';
+import { Observable, forkJoin, switchMap, of, map } from 'rxjs';
 
 import { rdf, flux, shacl, rdfs, schema, skos, appLocal } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
@@ -43,11 +43,11 @@ export class GraphQueryBuilderService {
 
     // Get the SPARQL queries for retrieving UI and link metadata
     const uiMetaDataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
-    //  const linkMetaDataQuery = this.#uiLinkMetadataService.getLinkMetadataSparqlQueryForNode(input);
+    const linkMetaDataQuery = this.#uiLinkMetadataService.getLinkMetadataSparqlQueryForNode(input);
     const objectPropertiesQuery = getAllObjectPropertiesForIriQuery(input);
 
     // Merge the UI and link metadata queries into a single query
-    const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery]);
+    const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
 
     // Execute the merged query to retrieve link metadata
     return forkJoin({ data: this.#sparqlService.construct(mergedQuery), linkDefinition: this.#uiLinkMetadataService.getLinkMetadata(), classDefinition: this.#uiClassMetadataService.getClassMetadata() }).pipe(
@@ -166,7 +166,6 @@ export class GraphQueryBuilderService {
         tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
       const ttl = `
-@prefix vorlon: <https://vorlon.described.at/ontology#> .
 @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -208,7 +207,6 @@ ${appLocal.turtlePrefix()}
         tragetTypes = [...targetTypesWithClassDefinitions, ...targetTypesWithoutClassDefinitions];
       }
       const ttl = `
-@prefix vorlon: <https://vorlon.described.at/ontology#> .
 @prefix blueprintShape: <https://ld.flux.zazuko.com/shapes/metadata/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -262,7 +260,8 @@ ${appLocal.turtlePrefix()}
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
     console.log(sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries]));
-    return forkJoin({ data: this.#sparqlService.construct(query), linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
+    const sparqlQuery = this.#sparqlService.construct(query).pipe(map(data => data.addAll(dataset)));
+    return forkJoin({ data: sparqlQuery, linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
   }
 
 }

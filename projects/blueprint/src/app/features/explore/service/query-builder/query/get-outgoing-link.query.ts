@@ -15,12 +15,13 @@ export function getOutgoingLinkQuery(input: RdfTypes.NamedNode, link: UiLinkDefi
 CONSTRUCT {
   ?input a ?fluxUiType .
 
-  ?linkIri ${flux.linkPrefixed} ?linkSource .
+  ?linkIri a ${flux.ConsolidatedLinkPrefixed} .
+  ?linkIri ${flux.hasChildLinkPrefixed} ?linkSource .
   ?linkSource ${flux.linkPrefixed} ?link .
   ?linkSource ${flux.targetPrefixed} ?target .
   ?linkSource ${flux.sourcePrefixed} ?input .
   ?linkSource ${flux.labelPrefixed} ?linkLabel .
-
+  ?link a ${flux.ChildLinkPrefixed} .
   ?linkIri ${flux.sourcePrefixed} ?input .
   ?linkIri ${flux.targetPrefixed} ?target .
   # Get type of the target node
@@ -59,8 +60,19 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-  BIND(((MD5(STR(?target))) + (MD5(STR(?input)))) as ?md5)
-  BIND(IRI(CONCAT('urn:consolidated_link/', str(?md5))) as ?linkIri )
+   BIND(str(?input) AS ?inputStr)
+  BIND(str(?target) AS ?targetStr)
+
+  BIND(
+    IF(?inputStr < ?targetStr,
+      CONCAT(?inputStr, "-", ?targetStr),
+      CONCAT(?targetStr, "-", ?inputStr)
+    ) AS ?orderedConcat
+  )
+
+  BIND(SHA256(?orderedConcat) AS ?hash)
+
+  BIND(IRI(CONCAT("urn:consolidated_link/", ?hash)) AS ?linkIri)
   BIND(IRI(CONCAT(str(?linkIri), '/', '${link.iri}')) as ?linkSource )
 
 }

@@ -22,11 +22,12 @@ import * as cola from 'webcola';
 import { LayoutAdaptor } from './layout-adapter';
 
 import { DraggableDirective } from './draggable/draggable.directive';
-import { Graph, IUiGraphNode, IUiLink } from '../model/graph.model';
+import { Graph, IUiGraphNode, IUConsolidatedLink } from '../model/graph.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
 import { NodeComponent } from '../graph-elements/node/node.component';
 import { ColorUtil } from '../../../utils/color-util';
+import { flux } from '@blueprint/ontology';
 
 type SelectionType = 'node' | 'link';
 @Component({
@@ -54,13 +55,13 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeExpanded = output<IUiGraphNode>();
   readonly nodeFocused = output<IUiGraphNode>();
   readonly nodeMore = output<IUiGraphNode>();
-  readonly linkSelected = output<IUiLink>();
+  readonly linkSelected = output<IUConsolidatedLink>();
 
 
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
-  readonly linksSignal = signal<IUiLink[]>([]);
+  readonly linksSignal = signal<IUConsolidatedLink[]>([]);
   readonly nodesSignal = signal<IUiGraphNode[]>([]);
 
   selectionType = signal<SelectionType>('node');
@@ -168,14 +169,15 @@ export class GraphComponent implements OnInit, OnDestroy {
         const firstNode = group[0];
         const firstNextGroupNode = nextGroup[0];
 
-        const fakeLink: IUiLink = {
+        const fakeLink: IUConsolidatedLink = {
           id: `fake-link-${index}`,
           iri: `fake-link-${index}`,
+          rdfType: flux.ConsolidatedLinkNamedNode.value,
           source: firstNode,
           target: firstNextGroupNode,
           isBidirectional: false,
-          outgoingSubLinks: [],
-          incomingSubLinks: [],
+          outgoingChildLinks: [],
+          incomingChildLinks: [],
 
         };
         links.push(fakeLink);
@@ -187,7 +189,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     }
   }
 
-  #disconnectedNodeGroups(links: IUiLink[]): IUiGraphNode[][] {
+  #disconnectedNodeGroups(links: IUConsolidatedLink[]): IUiGraphNode[][] {
     const disconnectedGroups: IUiGraphNode[][] = [];
     for (const link of links) {
       if (disconnectedGroups.length === 0) {
@@ -245,7 +247,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     this.nodeMore.emit(node);
   }
 
-  emitLinkSelected(link: IUiLink): void {
+  emitLinkSelected(link: IUConsolidatedLink): void {
     this.selectionType.set('link');
     this.linkSelected.emit(link);
   }
@@ -392,6 +394,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 }
 
 
-interface UiLinkWithDirection extends IUiLink {
+interface UiLinkWithDirection extends IUConsolidatedLink {
   direction: 'incoming' | 'outgoing';
 }
