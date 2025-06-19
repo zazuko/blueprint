@@ -214,7 +214,6 @@ export class RdfConsolidatedLink extends ClownfaceObject implements IUConsolidat
         throw new Error('No link node found for link: ' + this._node.value);
       }
     }
-    console.log('first', this.#firstLinkNode.value);
     return this.#firstLinkNode;
   }
 

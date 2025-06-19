@@ -229,8 +229,6 @@ ${appLocal.turtlePrefix()}
     }
     );
 
-
-
     const outLinkDefinitions: UiLinkDefinition[] = [];
     if (appLinkConfiguration === 'app' || appLinkConfiguration === 'both') {
       outLinkDefinitions.push(...appOutLinkDefinitions);
@@ -254,8 +252,6 @@ ${appLocal.turtlePrefix()}
     const inputQuery = getInputNodeGraphQuery(inputNode);
     const outgoingLinkQueries = outLinkDefinitions.filter(link => link.propertyPath !== null).map(link => getOutgoingLinkQuery(inputNode, link));
     const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinkQuery(inputNode, link));
-
-
 
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
