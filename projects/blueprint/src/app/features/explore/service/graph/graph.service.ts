@@ -85,23 +85,12 @@ export class GraphService {
     return this.#queryBuilder.buildQuery(expandedNodeIri).pipe(
       map((response) => {
         this.#currentDataset.addAll(response.data);
-        console.log(rdfEnvironment.serialize(this.#currentDataset));
+
         const cfGraph = rdfEnvironment.clownface(this.#currentDataset);
 
         const nodes = cfGraph.node(flux.UiNodeNamedNode).in(rdf.typeNamedNode).map(n => new RdfUiGraphNode(n));
         const links = cfGraph.node(flux.ConsolidatedLinkNamedNode).in(rdf.typeNamedNode).map(rdfLink => new RdfConsolidatedLink(rdfLink));
 
-        console.log('Nodes:', nodes);
-        console.log('Links:', links);
-        /*
-        links.forEach(link => {
-          const linkDefinition = link.linkDefinition;
-          if (linkDefinition.prefixedPropertyPathFragments.length === 1) {
-            linkDefinition.predicateTbox = this.#tBoxService.getPredicateTBox(linkDefinition.prefixedPropertyPathFragments[0].predicateIri.slice(1, -1));
-
-          }
-        });
-        */
         // find the expanded (current) node
         const currentNode = nodes.find(node => node.iri === expandedNodeIri);
         console.assert(currentNode !== undefined, 'Current node should be defined');
@@ -119,11 +108,7 @@ export class GraphService {
         // set the postion of the neighbors to the current node position if they do not have a position
         // this makes the new expanded nodes appear in the same position as the current node
 
-        links.forEach(link => {
-          console.log('Link:', link.iri);
-          console.log('Source:', link.source.iri);
-          console.log('Target:', link.target.iri);
-        });
+
         const neighborNodes = links.filter(link => link.source.iri === currentNode.iri || link.target.iri === currentNode.iri).flatMap(link => [link.source, link.target]).filter(node => node.iri !== currentNode.iri);
         neighborNodes.forEach(node => {
           if (node.x === undefined || node.y === undefined) {

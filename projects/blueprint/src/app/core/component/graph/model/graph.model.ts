@@ -201,14 +201,6 @@ export class RdfConsolidatedLink extends ClownfaceObject implements IUConsolidat
     if (!node.out(rdf.typeNamedNode).has(flux.ConsolidatedLinkNamedNode)) {
       throw new Error('Node is not a consolidated link: ' + node.value);
     }
-
-    if (this.isBidirectional) {
-      console.log('%cLink is bidirectional: ', 'color: green', this._node.value);
-      console.log('%cSource: ', 'color: green', this.source.iri);
-      console.log('%cTarget: ', 'color: green', this.target.iri);
-    } else {
-      console.log('%cLink is unidirectional: ', 'color: red', this._node.value);
-    }
   }
 
   get rdfType(): string {

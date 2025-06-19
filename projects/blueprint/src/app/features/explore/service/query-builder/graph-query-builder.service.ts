@@ -259,7 +259,6 @@ ${appLocal.turtlePrefix()}
 
     // merge all queries into one
     const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
-    console.log(sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries]));
     const sparqlQuery = this.#sparqlService.construct(query).pipe(map(data => data.addAll(dataset)));
     return forkJoin({ data: sparqlQuery, linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
   }

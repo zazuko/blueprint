@@ -77,6 +77,5 @@ CONSTRUCT {
 
 }
 `;
-  console.log(query);
   return query;
 }

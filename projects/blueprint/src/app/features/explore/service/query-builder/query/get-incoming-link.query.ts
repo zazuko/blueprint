@@ -78,7 +78,5 @@ CONSTRUCT {
 
 }
 `;
-  console.log('getIncomingLinkQuery');
-  console.log(query);
   return query;
 }
