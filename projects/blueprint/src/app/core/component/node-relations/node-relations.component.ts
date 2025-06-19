@@ -1,5 +1,5 @@
 import { Component, computed, effect, input, output } from '@angular/core';
-import { Graph, IUiGraphNode, IUiLink, RdfUiLink } from '../graph/model/graph.model';
+import { Graph, IUiGraphNode, IUConsolidatedLink, RdfConsolidatedLink } from '../graph/model/graph.model';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
@@ -33,14 +33,14 @@ export class NodeRelationsComponent {
   }
 }
 
-interface IUiLinkWithDirection extends RdfUiLink {
+interface IUiLinkWithDirection extends RdfConsolidatedLink {
   direction: 'forward' | 'backward' | 'both';
 }
 
 interface NodeRelation {
   domain: string[],
   range: string[],
-  link: IUiLink[],
+  link: IUConsolidatedLink[],
   domainIncludes: string[],
   rangeIncludes: string[],
   linkLabel: string,

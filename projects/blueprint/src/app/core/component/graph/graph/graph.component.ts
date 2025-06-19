@@ -9,7 +9,6 @@ import {
   output,
   DestroyRef,
   effect,
-  computed
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
@@ -23,11 +22,12 @@ import * as cola from 'webcola';
 import { LayoutAdaptor } from './layout-adapter';
 
 import { DraggableDirective } from './draggable/draggable.directive';
-import { Graph, IUiGraphNode, IUiLink, ConsolidatedLink, ConsolidatedGraph, LabelWithLinkDefinition } from '../model/graph.model';
+import { Graph, IUiGraphNode, IUConsolidatedLink } from '../model/graph.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ArrowComponent } from '../graph-elements/arrow/arrow.component';
 import { NodeComponent } from '../graph-elements/node/node.component';
 import { ColorUtil } from '../../../utils/color-util';
+import { flux } from '@blueprint/ontology';
 
 type SelectionType = 'node' | 'link';
 @Component({
@@ -55,13 +55,13 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeExpanded = output<IUiGraphNode>();
   readonly nodeFocused = output<IUiGraphNode>();
   readonly nodeMore = output<IUiGraphNode>();
-  readonly linkSelected = output<ConsolidatedLink>();
+  readonly linkSelected = output<IUConsolidatedLink>();
 
 
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
-  readonly linksSignal = signal<ConsolidatedLink[]>([]);
+  readonly linksSignal = signal<IUConsolidatedLink[]>([]);
   readonly nodesSignal = signal<IUiGraphNode[]>([]);
 
   selectionType = signal<SelectionType>('node');
@@ -86,119 +86,12 @@ export class GraphComponent implements OnInit, OnDestroy {
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
 
-  consolidatedGraph = computed<ConsolidatedGraph>(() => {
-    const graph = this.graph();
 
-    const nodes = graph.nodes;
-    const links = graph.links;
-    const linkMap = new Map<string, UiLinkWithDirection[]>();
-
-    for (const link of links) {
-      const sourceIri = link.source.iri;
-      const targetIri = link.target.iri;
-      const outgoingKey = `${sourceIri}-${targetIri}`;
-      const incomingKey = `${targetIri}-${sourceIri}`;
-
-      const outgoingLink = linkMap.get(outgoingKey);
-      const incomingLink = linkMap.get(incomingKey);
-      if (outgoingLink === undefined && incomingLink === undefined) {
-        // if there is no link in the map, add it
-        const directionalLink = (link as UiLinkWithDirection);
-        directionalLink.direction = 'outgoing';
-        linkMap.set(outgoingKey, [directionalLink]);
-      } else if (outgoingLink !== undefined) {
-        // if there is an outgoing link, add the link to the outgoing link array
-        const directionalLink = (link as UiLinkWithDirection);
-        directionalLink.direction = 'outgoing'; outgoingLink.push(directionalLink);
-      } else if (incomingLink !== undefined) {
-        // if there is an incoming link, add the link to the incoming link array
-        const directionalLink = (link as UiLinkWithDirection);
-        directionalLink.direction = 'incoming'; incomingLink.push(directionalLink);
-
-      }
-    };
-
-    const consolidatedLinks: ConsolidatedLink[] = [...linkMap.keys()].flatMap((key, index) => {
-      const links = linkMap.get(key);
-
-      if (links === undefined) {
-        // this will never happen
-        return [];
-      }
-      if (links.length === 1) {
-        // if there is only one link, return it
-        const link = links[0];
-        const consolidatedLink: ConsolidatedLink = {
-          id: link.iri,
-          label: link.label,
-          source: link.source,
-          target: link.target,
-          iri: link.iri,
-          incomingLabels: [],
-          outgoingLabels: [{ label: link.label, linkDefinition: link.linkDefinition }],
-          direction: 'outgoing',
-          linkDefinition: link.linkDefinition,
-        };
-        return consolidatedLink
-      }
-      // if there are multiple links, consolidate them
-      const incomingLabels: LabelWithLinkDefinition[] = [];
-      const outgoingLabels: LabelWithLinkDefinition[] = [];
-      links.forEach(link => {
-        if (link.direction === 'incoming') {
-          incomingLabels.push({ label: link.label, linkDefinition: link.linkDefinition });
-        } else {
-          outgoingLabels.push({ label: link.label, linkDefinition: link.linkDefinition });
-        }
-      }
-      );
-      if (incomingLabels.length > 0 && outgoingLabels.length > 0) {
-        // if there are both incoming and outgoing links, return a bidirectional link
-        const consolidatedLink: ConsolidatedLink = {
-          id: links[0].iri,
-          label: [...incomingLabels, ...outgoingLabels].join(', '),
-          source: links[0].direction === 'outgoing' ? links[0].source : links[0].target,
-          target: links[0].direction === 'outgoing' ? links[0].target : links[0].source,
-          iri: links[0].iri,
-          incomingLabels: incomingLabels,
-          outgoingLabels: outgoingLabels,
-          direction: 'bidirectional',
-          linkDefinition: links[0].linkDefinition,
-        };
-        return consolidatedLink
-      }
-      if (incomingLabels.length > 0) {
-        // if there are only incoming links, return an incoming link
-        console.error('incoming link', links);
-        console.error('incoming links are not possible');
-        return [];
-      }
-      if (outgoingLabels.length > 0) {
-        // if there are only outgoing links, return an outgoing link
-        const consolidatedLink: ConsolidatedLink = {
-          id: links[0].iri,
-          label: [...incomingLabels, ...outgoingLabels].join(', '),
-          source: links[0].direction === 'outgoing' ? links[0].source : links[0].target,
-          target: links[0].direction === 'outgoing' ? links[0].target : links[0].source,
-          iri: links[0].iri,
-          incomingLabels: incomingLabels,
-          outgoingLabels: outgoingLabels,
-          direction: 'outgoing',
-          linkDefinition: links[0].linkDefinition,
-        };
-        return consolidatedLink
-      }
-      // this will never happen
-      return [];
-    });
-
-    return { nodes, links: consolidatedLinks };
-  });
 
   constructor() {
 
     effect(() => {
-      const graph = this.consolidatedGraph();
+      const graph = this.graph();
 
       if (this.layout) {
         this.layout.stop();
@@ -226,7 +119,7 @@ export class GraphComponent implements OnInit, OnDestroy {
         this.layout.stop();
       }
       this.layout = this.#createLayout();
-      this.#createChart(this.consolidatedGraph());
+      this.#createChart(this.graph());
     });
 
     this.#resizeObserver = new window.ResizeObserver(() => {
@@ -253,7 +146,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   #createChart(graph: Graph): void {
 
-    if (this.layout && this.consolidatedGraph()) {
+    if (this.layout && this.graph()) {
 
       const disconnectedGroups = this.#disconnectedNodeGroups(graph.links);
       if (disconnectedGroups.length < 2) {
@@ -276,13 +169,16 @@ export class GraphComponent implements OnInit, OnDestroy {
         const firstNode = group[0];
         const firstNextGroupNode = nextGroup[0];
 
-        const fakeLink: IUiLink = {
+        const fakeLink: IUConsolidatedLink = {
           id: `fake-link-${index}`,
           iri: `fake-link-${index}`,
+          rdfType: flux.ConsolidatedLinkNamedNode.value,
           source: firstNode,
           target: firstNextGroupNode,
-          label: '',
-          linkDefinition: null,
+          isBidirectional: false,
+          outgoingChildLinks: [],
+          incomingChildLinks: [],
+
         };
         links.push(fakeLink);
       });
@@ -293,7 +189,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     }
   }
 
-  #disconnectedNodeGroups(links: IUiLink[]): IUiGraphNode[][] {
+  #disconnectedNodeGroups(links: IUConsolidatedLink[]): IUiGraphNode[][] {
     const disconnectedGroups: IUiGraphNode[][] = [];
     for (const link of links) {
       if (disconnectedGroups.length === 0) {
@@ -351,7 +247,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     this.nodeMore.emit(node);
   }
 
-  emitLinkSelected(link: ConsolidatedLink): void {
+  emitLinkSelected(link: IUConsolidatedLink): void {
     this.selectionType.set('link');
     this.linkSelected.emit(link);
   }
@@ -393,14 +289,14 @@ export class GraphComponent implements OnInit, OnDestroy {
     layout.jaccardLinkLengths(280, 1);
 
     layout.on(cola.EventType.start, () => {
-      const graph = this.consolidatedGraph();
+      const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
       this.layoutIsRunning = true;
     });
 
     layout.on(cola.EventType.tick, () => {
-      const graph = this.consolidatedGraph();
+      const graph = this.graph();
       this.linksSignal.set(graph.links.map(l => l));
       this.nodesSignal.set(graph.nodes.map(n => n));
 
@@ -408,7 +304,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
     layout.on(cola.EventType.end, () => {
 
-      const graphValue = this.consolidatedGraph();
+      const graphValue = this.graph();
       this.linksSignal.set(graphValue.links.map(l => l));
       this.nodesSignal.set(graphValue.nodes.map(n => n));
       this.layoutIsRunning = false;
@@ -498,6 +394,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 }
 
 
-interface UiLinkWithDirection extends IUiLink {
+interface UiLinkWithDirection extends IUConsolidatedLink {
   direction: 'incoming' | 'outgoing';
 }
