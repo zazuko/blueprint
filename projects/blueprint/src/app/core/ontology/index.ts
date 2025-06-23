@@ -7,3 +7,4 @@ export { shacl } from './shacl/shacl';
 export { skos } from './skos/skos';
 export { schema } from './schema/schema';
 export { appLocal } from './app/app';
+export { owl } from './owl/owl';

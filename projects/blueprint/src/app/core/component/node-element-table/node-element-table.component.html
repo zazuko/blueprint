@@ -1,0 +1,6 @@
+<div class="row">
+    @for(p of nodeElements(); track p.iri ){
+    <bp-hierarchy-card (click)="emitNodeSelected(p)" [avatars]="p.avatars" [firstLine]="p.label"
+        [secondLine]="p.classLabel.join(', ')" />
+    }
+</div>

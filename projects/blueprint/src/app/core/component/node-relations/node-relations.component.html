@@ -1,0 +1,73 @@
+<form [formGroup]="formGroup">
+    <p-selectbutton [options]="predicateOptions" formControlName="value" optionLabel="label" optionValue="value" />
+</form>
+
+@if(bidirectionalRelations().length > 0) {
+
+<div class="row">
+
+    <div class="subject">
+        <span>{{exploredResource().title}}</span>
+    </div>
+
+    <div style="width: 100%;">
+        @for(p of bidirectionalRelations(); track p.iri ) {
+        <bp-relation (nodeSelected)="emitNodeSelected($event)" [relation]="p" [showAsRdf]="showAsRdf()"
+            [exploredResource]="exploredResource()" />
+        }
+    </div>
+    <div class="subject">
+        <span>Source</span>
+        <span>&</span>
+        <span>Target</span>
+    </div>
+</div>
+}
+
+<br>
+<br>
+<br>
+
+<br>
+
+
+
+@if(outgoingRelations().length > 0) {
+
+<div class="row">
+
+    <div class="subject">
+        <span>{{exploredResource().title}}</span>
+    </div>
+    <div style="width: 100%;">
+
+        @for(p of outgoingRelations(); track p.iri ) {
+        <bp-relation (nodeSelected)="emitNodeSelected($event)" [relation]="p" [showAsRdf]="showAsRdf()"
+            [exploredResource]="exploredResource()" /> }
+    </div>
+    <div class="subject">
+        <span>Target</span>
+    </div>
+</div>
+}
+
+<br>
+<br>
+<br>
+
+@if(incomingRelations().length > 0) {
+
+<div class="row">
+    <div class="subject">
+        <span>{{exploredResource().title}}</span>
+    </div>
+    <div style="width: 100%;">
+        @for(p of incomingRelations(); track p.iri ) {
+        <bp-relation (nodeSelected)="emitNodeSelected($event)" [relation]="p" [showAsRdf]="showAsRdf()"
+            [exploredResource]="exploredResource()" /> }
+    </div>
+    <div class="subject">
+        <span>Source</span>
+    </div>
+</div>
+}

@@ -1466,6 +1466,246 @@ class FluxOntology extends Ontology {
         return this.namespace('ChildLink');
     }
 
+    /**
+     * Get the from predicate.
+     * 
+     * @readonly
+     */
+    get from(): string {
+        return this.namespace('from').value;
+    }
+
+    /**
+     * Get the prefixed from predicate.
+     * 
+     * @readonly
+     */
+    get fromPrefixed(): string {
+        return `${this.prefix()}:from`;
+    }
+
+    /**
+     * Get the from predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get fromNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('from');
+    }
+
+    /**
+     * Get the to predicate.
+     * 
+     * @readonly
+     */
+    get to(): string {
+        return this.namespace('to').value;
+    }
+    /**
+     * Get the prefixed to predicate.
+     * 
+     * @readonly
+     */
+    get toPrefixed(): string {
+        return `${this.prefix()}:to`;
+    }
+
+    /**
+     * Get the to predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get toNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('to');
+    }
+
+    /**
+     * Get the Relation predicate.
+     * 
+     * @readonly
+     */
+    get Relation(): string {
+        return this.namespace('Relation').value;
+    }
+
+    /**
+     * Get the prefixed Relation predicate.
+     * 
+     * @readonly
+     */
+    get RelationPrefixed(): string {
+        return `${this.prefix()}:Relation`;
+    }
+
+    /**
+     * Get the Relation predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get RelationNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('Relation');
+    }
+
+    /**
+     * Get the hasRelation predicate.
+     * 
+     * @readonly
+     */
+    get hasRelation(): string {
+        return this.namespace('hasRelation').value;
+    }
+    /**
+     * Get the prefixed hasRelation predicate.
+     * 
+     * @readonly
+     */
+    get hasRelationPrefixed(): string {
+        return `${this.prefix()}:hasRelation`;
+    }
+
+    /**
+     * Get the hasRelation predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasRelationNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('hasRelation');
+    }
+
+    /**
+     * Get the hasIncomingPredicate predicate.
+     * 
+     * @readonly
+     */
+    get hasIncomingPredicate(): string {
+        return this.namespace('hasIncomingPredicate').value;
+    }
+
+    /**
+     * Get the prefixed hasIncomingPredicate predicate.
+     * 
+     * @readonly
+     */
+    get hasIncomingPredicatePrefixed(): string {
+        return `${this.prefix()}:hasIncomingPredicate`;
+    }
+
+    /**
+     * Get the hasIncomingPredicate predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasIncomingPredicateNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('hasIncomingPredicate');
+    }
+
+    /**
+     * Get the hasOutgoingPredicate predicate.
+     * 
+     * @readonly
+     */
+    get hasOutgoingPredicate(): string {
+        return this.namespace('hasOutgoingPredicate').value;
+    }
+
+    /**
+     * Get the prefixed hasOutgoingPredicate predicate.
+     * 
+     * @readonly
+     */
+    get hasOutgoingPredicatePrefixed(): string {
+        return `${this.prefix()}:hasOutgoingPredicate`;
+    }
+
+    /**
+     * Get the hasOutgoingPredicate predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasOutgoingPredicateNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('hasOutgoingPredicate');
+    }
+
+    /**
+     * Get the BidirectionalRelation class.
+     * 
+     * @readonly
+     */
+    get BidirectionalRelation(): string {
+        return this.namespace('BidirectionalRelation').value;
+    }
+
+    /**
+     * Get the prefixed BidirectionalRelation class.
+     * 
+     * @readonly
+     */
+    get BidirectionalRelationPrefixed(): string {
+        return `${this.prefix()}:BidirectionalRelation`;
+    }
+
+    /**
+     * Get the BidirectionalRelation class as NamedNode.
+     * 
+     * @readonly
+     */
+    get BidirectionalRelationNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('BidirectionalRelation');
+    }
+
+
+    /**
+     * Get the OutgoingRelation class.
+     * 
+     * @readonly
+     */
+    get OutgoingRelation(): string {
+        return this.namespace('OutgoingRelation').value;
+    }
+
+    /**
+     * Get the prefixed OutgoingRelation class.
+     * 
+     * @readonly
+     */
+    get OutgoingRelationPrefixed(): string {
+        return `${this.prefix()}:OutgoingRelation`;
+    }
+
+    /**
+     * Get the OutgoingRelation class as NamedNode.
+     * 
+     * @readonly
+     */
+    get OutgoingRelationNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('OutgoingRelation');
+    }
+
+    /**
+     * Get the IncomingRelation class.
+     * 
+     * @readonly
+     */
+    get IncomingRelation(): string {
+        return this.namespace('IncomingRelation').value;
+    }
+    /**
+     * Get the prefixed IncomingRelation class.
+     * 
+     * @readonly
+     */
+    get IncomingRelationPrefixed(): string {
+        return `${this.prefix()}:IncomingRelation`;
+    }
+    /**
+     * Get the IncomingRelation class as NamedNode.
+     * 
+     * @readonly
+     */
+    get IncomingRelationNamedNode(): RdfTypes.NamedNode {
+        return this.namespace('IncomingRelation');
+    }
+
 }
 
 export const flux = new FluxOntology();
