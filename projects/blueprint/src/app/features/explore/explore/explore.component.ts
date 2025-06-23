@@ -308,13 +308,13 @@ export class ExploreComponent implements OnDestroy {
     this.#router.navigate(['explore', iri], { fragment: this.routeFragment() });
   }
 
-  expandNode(node: IUiGraphNode): void {
+  expandNode(node: IUiGraphNode | NodeElement): void {
     this.nodeExploreCommand = 'expand';
-    if (this.selectedNodeIri() === node.id) {
-      this.#graphService.expandNode(node.id);
+    if (this.selectedNodeIri() === node.iri) {
+      this.#graphService.expandNode(node.iri);
       return;
     }
-    this.selectByIri(node.id);
+    this.selectByIri(node.iri);
   }
 
   focusNode(node: IUiGraphNode): void {

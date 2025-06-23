@@ -48,8 +48,8 @@
 
   } @else if (routeFragment() === 'Relations' && !loadingIndicatorService.isLoading()) {
   <div style="margin-top: 24px">
-    <bp-node-relations @fadeIn [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
-      (nodeSelected)="expandNode($event)" @fadeIn />
+    <bp-node-relations @fadeIn [exploredResource]="currentGraphResource()" (nodeSelected)="expandNode($event)"
+      @fadeIn />
 
     <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
       (nodeSelected)="expandNode($event)" @fadeIn />

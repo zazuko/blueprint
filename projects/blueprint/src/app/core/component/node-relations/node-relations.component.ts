@@ -1,36 +1,54 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
-import { Graph, IUiGraphNode, IUConsolidatedLink, RdfConsolidatedLink } from '../graph/model/graph.model';
+import { Component, computed, DestroyRef, inject, input, model, output, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+
+import { IUiGraphNode } from '../graph/model/graph.model';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
-import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 import { httpResource } from '@angular/common/http';
 import { ConfigService } from '@blueprint/service/config/config.service';
-import { getNodeRelationsQuery } from './query/node-relations.query';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
-import { GraphPointer } from 'clownface';
-import { flux, rdf, rdfs } from '@blueprint/ontology';
+
+import { flux, rdf, } from '@blueprint/ontology';
+import { BidiractionalRelation, OutgoingRelation, IncomingRelation, RdfNodeRelation } from './model/node-relation';
+import { getPredicatesWithCount } from './query/bidirecational-predicates.query';
+import { RelationComponent } from "./relation/relation.component";
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
 @Component({
   selector: 'bp-node-relations',
-  // imports: [],
   templateUrl: './node-relations.component.html',
-  styleUrl: './node-relations.component.scss'
+  styleUrl: './node-relations.component.scss',
+  imports: [RelationComponent, SelectButtonModule, ReactiveFormsModule]
 })
 export class NodeRelationsComponent {
-  readonly graph = input.required<Graph>();
   readonly exploredResource = input.required<ExploredResource>();
 
-  readonly nodeSelected = output<IUiGraphNode>();
+  readonly nodeSelected = output<NodeElement>();
 
   // Services
   readonly #config = inject(ConfigService);
+  readonly #destroyRef = inject(DestroyRef);
 
-  showShortTBox = signal(true);
+  formGroup = new FormGroup({
+    value: new FormControl('label')
+  });
+
+  predicateOptions: { label: string; value: string }[] = [
+    { label: 'RDF', value: 'rdf' },
+    { label: 'Label', value: 'label' }
+  ];
+
+  showAsRdf = signal<boolean>(false);
+
 
   sparqlQuery = computed(() => {
     const iri = this.exploredResource().iri;
-    return getNodeRelationsQuery(iri);
+
+    return getPredicatesWithCount(iri);
+
   });
 
   querySearchParam = computed(() => {
@@ -39,7 +57,7 @@ export class NodeRelationsComponent {
     return body.toString();
   });
 
-  nodeRelations = httpResource.text<INodeRelation[]>(() => ({
+  nodeRelations = httpResource.text<RdfTypes.Dataset>(() => ({
     url: `${this.#config.getConfiguration().endpointUrl}`,
     method: "POST",
     body: this.querySearchParam(),
@@ -48,27 +66,42 @@ export class NodeRelationsComponent {
       'Accept': 'text/turtle'
     }
   }), {
-    defaultValue: [],
+    defaultValue: rdfEnvironment.dataset(),
     parse: (response: string) => {
-      const ds = rdfEnvironment.parseTurtle(response);
-      const graph = rdfEnvironment.clownface(ds);
-      //   return graph.node(flux.namespace['Predicate']).in(rdf.typeNamedNode).map(node => new RdfNodeRelation(node)).sort((a, b) => a.label.localeCompare(b.label));
-      return []
+      return rdfEnvironment.parseTurtle(response);
     }
   });
 
-}
+  bidirectionalRelations = computed<BidiractionalRelation[]>(() => {
+    const bidiNodes = rdfEnvironment.clownface(this.nodeRelations.value()).node(flux.BidirectionalRelationNamedNode).in(rdf.typeNamedNode);
+    return bidiNodes.map(node => new BidiractionalRelation(node));
+  });
 
-interface INodeRelation {
-  iri: string;
-  domain: string[],
-  range: string[],
-  link: IUConsolidatedLink[],
-  domainIncludes: string[],
-  rangeIncludes: string[],
-  linkLabel: string,
-  linkPath: string,
-  direction: 'forward' | 'backward' | 'both'
-  inversePredicate: string | undefined;
-  linkDefinition: UiLinkDefinition;
+  outgoingRelations = computed<OutgoingRelation[]>(() => {
+    const outNodes = rdfEnvironment.clownface(this.nodeRelations.value()).node(flux.OutgoingRelationNamedNode).in(rdf.typeNamedNode);
+    return outNodes.map(node => new OutgoingRelation(node));
+  });
+
+  incomingRelations = computed<IncomingRelation[]>(() => {
+    const inNodes = rdfEnvironment.clownface(this.nodeRelations.value()).node(flux.IncomingRelationNamedNode).in(rdf.typeNamedNode);
+    return inNodes.map(node => new IncomingRelation(node));
+  });
+
+  relations = computed<RdfNodeRelation[]>(() => {
+    return [...this.bidirectionalRelations(), ...this.outgoingRelations(), ...this.incomingRelations()];
+  });
+
+  constructor() {
+    this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(value => {
+      if (value.value === 'rdf') {
+        this.showAsRdf.set(true);
+      } else if (value.value === 'label') {
+        this.showAsRdf.set(false);
+      }
+    });
+  }
+
+  emitNodeSelected(node: NodeElement): void {
+    this.nodeSelected.emit(node);
+  }
 }

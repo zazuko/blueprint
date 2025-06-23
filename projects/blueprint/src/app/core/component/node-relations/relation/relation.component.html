@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="arrow" (click)="toggleShowDetails()">
+        @if(relation().relationType === 'Incoming') {
+        <div class="arrow-left"></div>
+        } @else if (relation().relationType === 'Bidirectional') {
+        <div class="arrow-left"> </div>
+        } @else {
+        <div class="arrow-right-start">
+        </div>
+        }
+        <div class="center">
+            @switch (relation().relationType) {
+            @case('Bidirectional') {
+            @if( showAsRdf() ) {
+            <div> &#8594; {{castToBidiractionalRelation(relation()).outgoingPredicate | rdfPrefix}}</div>
+            <div> &#8592; {{castToBidiractionalRelation(relation()).incomingPredicate| rdfPrefix}}</div>
+            } @else {
+            <div> &#8594; {{castToBidiractionalRelation(relation()).outgoingPredicateLabel}}</div>
+            <div> &#8592; {{castToBidiractionalRelation(relation()).incomingPredicateLabel}}</div>
+            }
+
+            }
+            @case('Outgoing') {
+            @if( showAsRdf() ) {
+            <div> &#8594; {{castToOutgoingRelation(relation()).outgoingPredicate | rdfPrefix}}</div>
+            } @else {
+            <div> &#8594; {{castToOutgoingRelation(relation()).outgoingPredicateLabel}}</div>
+            }
+            }
+            @case('Incoming') {
+            @if( showAsRdf() ) {
+            <div> &#8592; {{castToIncomingRelation(relation()).incomingPredicate | rdfPrefix}}</div>
+
+            } @else {
+            <div> &#8592; {{castToIncomingRelation(relation()).incomingPredicateLabel}}</div>
+            }
+            }
+            }
+
+
+        </div>
+        @if(relation().relationType !== 'Incoming') {
+        <div class="arrow-right">
+            <p-badge [value]="relation().count"></p-badge>
+        </div>
+        } @else {
+        <div class="arrow-left-start">
+            <p-badge [value]="relation().count"></p-badge>
+        </div>
+        }
+    </div>
+</div>
+
+@if(showRelationDetails()) {
+<bp-relation-detail (nodeSelected)="emitNodeSelected($event)" [relation]="relation()"
+    [exploredResource]="exploredResource()" />
+}
