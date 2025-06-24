@@ -1,6 +1,16 @@
 <div class="row">
     @for(p of nodeElements(); track p.iri ){
-    <bp-hierarchy-card (click)="emitNodeSelected(p)" [avatars]="p.avatars" [firstLine]="p.label"
-        [secondLine]="p.classLabel.join(', ')" />
+    <div style="position: relative;" [ngClass]="highlightedIri() === p.iri ? 'highlight' : ''">
+        <div style="position:absolute; right: 0; top: 0">
+            <p-button icon="pi pi-sun" [rounded]="true"
+                [severity]="forcedHighlightIri() === p.iri ? 'info' : 'secondary'" [text]="true"
+                (click)="forceHighlight(p.iri)" />
+
+        </div>
+
+        <bp-hierarchy-card (click)="emitNodeSelected(p)" (mouseenter)="setHoveredIri(p.iri) "
+            (mouseleave)="setHoveredIri()" [avatars]="p.avatars" [firstLine]="p.label"
+            [secondLine]="p.classLabel.join(', ')" />
+    </div>
     }
 </div>
