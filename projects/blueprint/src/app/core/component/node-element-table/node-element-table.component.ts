@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, output } from '@angular/core';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
 import { ButtonModule } from 'primeng/button';
@@ -15,6 +15,7 @@ import { NgClass } from '@angular/common';
   styleUrl: './node-element-table.component.scss'
 })
 export class NodeElementTableComponent {
+
   nodeElements = input.required<NodeElement[]>();
 
   nodeSelect = output<NodeElement>();
@@ -45,6 +46,7 @@ export class NodeElementTableComponent {
     }
     this.#highlighterService.forceHighlight(iri);
   }
+
 }
 
 interface TableColumn {
