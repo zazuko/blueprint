@@ -8,7 +8,7 @@
     <p-tablist>
       @for(tab of tabNavItems; track tab.label){
       <p-tab [value]="tab.fragment" routerLinkActive routerLink="./" [fragment]="tab.fragment"
-        class="flex items-center !gap-2 text-inherit">
+        style="display: flex; align-items: center; justify-content: center; gap: 0.6rem;">
         <i [class]="tab.icon"></i>
         <span>{{ tab.label }}</span>
       </p-tab>
