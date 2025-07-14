@@ -1,38 +1,34 @@
-import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import {
     provideRouter, withComponentInputBinding, withInMemoryScrolling,
 } from '@angular/router';
 
-import { routes } from './app.routes';
-import { APP_INITIALIZER } from '@angular/core';
-
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+
+import { firstValueFrom } from 'rxjs';
+
+import { providePrimeNG } from 'primeng/config';
+
+import { AppTheme } from './app-theme';
+import { routes } from './app.routes';
 import { ConfigService } from './core/service/config/config.service';
 import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.function';
 
-import { providePrimeNG } from 'primeng/config';
-import { AppTheme } from './app-theme';
-
-function initializeAppFactory(configService: ConfigService): () => void {
-    return () => configService.fetchConfig()
-}
-
 export const appConfig: ApplicationConfig = {
     providers: [
+        provideBrowserGlobalErrorListeners(),
         provideZonelessChangeDetection(),
-        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
         provideRouter(routes,
             withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
             withComponentInputBinding()
         ),
         provideAnimations(),
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initializeAppFactory,
-            deps: [ConfigService],
-            multi: true
-        },
+        provideAppInitializer(() => {
+            const configService = inject(ConfigService);
+            return firstValueFrom(configService.fetchConfig());
+        }),
         providePrimeNG({
             theme: {
                 preset: AppTheme,
