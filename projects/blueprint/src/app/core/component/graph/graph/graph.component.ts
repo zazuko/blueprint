@@ -151,13 +151,13 @@ export class GraphComponent implements OnInit, OnDestroy {
       const disconnectedGroups = this.#disconnectedNodeGroups(graph.links);
       if (disconnectedGroups.length < 2) {
         this.layout.nodes(graph.nodes);
-        this.layout.links(graph.links as any);
+        this.layout.links(graph.links);
         this.layout.start(0, 0, 0, 0, true, false);
         return
       }
 
       // if there are disconnected groups, we need to add fake links to connect them
-      const links = graph.links.map(x => x) as any;
+      const links = graph.links.map(x => x);
 
       disconnectedGroups.forEach((group, index) => {
         if (index === disconnectedGroups.length - 1) {
@@ -391,9 +391,4 @@ export class GraphComponent implements OnInit, OnDestroy {
       this.#resizeObserver = null;
     }
   }
-}
-
-
-interface UiLinkWithDirection extends IUConsolidatedLink {
-  direction: 'incoming' | 'outgoing';
 }

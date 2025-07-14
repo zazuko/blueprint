@@ -4,7 +4,6 @@ import {
   input,
   computed,
   output,
-  effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -54,18 +53,6 @@ export class ArrowComponent {
     return `translate(${x1},${y1}) rotate(${rotation})`;
   });
 
-  incomingLabels = computed(() => {
-    const link = this.link();
-    const labels = ['in'];
-    return labels;
-
-  });
-
-  outgoingLabels = computed(() => {
-    const link = this.link();
-    const labels = 'out';
-    return labels;
-  });
 
   emitLinkSelected(event: Event): void {
     event.stopPropagation();
