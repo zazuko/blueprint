@@ -5,7 +5,6 @@ import { rdfEnvironment } from '../../../rdf/rdf-environment';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import * as cola from 'webcola';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
-import { U } from 'node_modules/@angular/cdk/unique-selection-dispatcher.d-DSFqf1MM';
 
 
 export interface Graph {
@@ -47,7 +46,7 @@ export class RdfUiGraphNode extends NodeElement implements cola.Node, IUiGraphNo
 
   /**
    * this is the same as .iri
-   * 
+   *
    * @deprecated
    */
   get id(): string {
