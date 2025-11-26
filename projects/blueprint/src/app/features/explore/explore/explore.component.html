@@ -54,7 +54,25 @@
     <bp-neighbor-nodes [graph]="bubbleGraph()" [exploredResource]="currentGraphResource()"
       (nodeSelected)="expandNode($event)" @fadeIn />
   </div>
-  } @else if (routeFragment() === 'Context' && !loadingIndicatorService.isLoading()) {
+  } @else if (routeFragment() === 'Sigma' && !loadingIndicatorService.isLoading()) {
+  <div class="graph">
+
+    <div class="content-size content-style">
+
+      <bp-sigma-graph @fadeIn [graph]="sigmaGraph()" />
+
+
+    </div>
+
+
+
+
+
+
+  </div>
+
+  }
+  @else if (routeFragment() === 'Context' && !loadingIndicatorService.isLoading()) {
 
   <div class="subject-view" @fadeIn>
 

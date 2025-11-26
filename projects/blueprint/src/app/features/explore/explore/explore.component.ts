@@ -50,7 +50,14 @@ import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 //import { LinkPanelComponent } from "../link-panel/link-panel.component";
 import { NodeRelationsComponent } from '@blueprint/component/node-relations/node-relations.component';
+import { SigmaGraphComponent } from '@blueprint/component/sigma-graph/sigma-graph.component';
 
+
+// test 
+import Graph from "graphology";
+import circularLayout from "graphology-layout/circular";
+
+//
 type NodeExploreCommand = "expand" | "select";
 type SelectionKind = "node" | "link";
 
@@ -75,7 +82,8 @@ type SelectionKind = "node" | "link";
     DrawerModule,
     ButtonModule,
     // LinkPanelComponent,
-    NodeRelationsComponent
+    NodeRelationsComponent,
+    SigmaGraphComponent
   ]
 })
 export class ExploreComponent implements OnDestroy {
@@ -90,12 +98,14 @@ export class ExploreComponent implements OnDestroy {
   readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #messageChannelServie = inject(MessageChannelService);
 
+
   readonly selectedNodeIri = this.#selectionService.selectedNodeIriSignal;
   tabNavItems: MenuItem[] = [
     { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
     { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
     { label: 'Relations', icon: 'pi pi-arrow-right-arrow-left', fragment: 'Relations' },
     { label: 'Graph', icon: 'fa-solid fa-circle-nodes', fragment: 'Graph' },
+    { label: 'Sigma', icon: 'fa-solid fa-circle-nodes', fragment: 'Sigma' },
   ];
 
   public activeItem = this.tabNavItems[0];
@@ -122,7 +132,32 @@ export class ExploreComponent implements OnDestroy {
 
   public bubbleGraph = this.#graphService.graphSignal;
 
+  public sigmaGraph = computed(() => {
+    const graph = new Graph();
+    const bubbleGraph = this.bubbleGraph();
 
+    // Add nodes with their IDs and attributes
+    bubbleGraph.nodes.forEach((node) => {
+      graph.addNode(node.id, {
+        label: node.label,
+        x: node.x ?? Math.random() * 100,
+        y: node.y ?? Math.random() * 100,
+        size: 10,
+        color: node.color ?? '#0ea5e9'
+      });
+    });
+
+    // Add edges using the node IDs
+    bubbleGraph.links.forEach((edge) => {
+      graph.addEdge(edge.source.id, edge.target.id, {
+        label: edge.id
+      });
+    });
+
+    // Apply circular layout if needed
+    circularLayout(graph);
+    return graph;
+  });
 
   term: string;
 
