@@ -1,9 +1,11 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import { CardModule } from 'primeng/card';
+
 @Component({
     selector: 'bp-configuration-card',
-    imports: [NgClass],
+    imports: [NgClass, CardModule],
     templateUrl: './configuration-card.component.html',
     styleUrl: './configuration-card.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush

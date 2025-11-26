@@ -1,12 +1,12 @@
 <div style="display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%">
     @if(isLoading()) {
-    <p-skeleton shape="circle" styleClass="mr-2"></p-skeleton>
-
+    <p-skeleton shape="circle" height="64px" width="64px" class="mr-2"></p-skeleton>
 
     <div style="display: flex; flex-direction: column; gap: 12px;">
-        <p-skeleton width="10rem" styleClass="mb-2" />
-        <p-skeleton height="2rem" width="30rem" styleClass="mb-2" />
+        <p-skeleton height="1rem" width="10rem"  class="mb-2" />
+        <p-skeleton height="1rem" width="30rem" class="mb-2" />
     </div>
+
     }@else {
     <bp-avatar [avatars]="avatars()" @fadeIn />
 
@@ -43,7 +43,7 @@
             </ng-template>
 
         </p-menu>
-        <p-button icon="pi pi-ellipsis-v" (click)="menu.toggle($event)" [rounded]="true" [outlined]="true"></p-button>
+        <p-button icon="pi pi-ellipsis-v" (click)="menu.toggle($event)" [rounded]="true" [outlined]="true"/>
     </div>
 
 </div>

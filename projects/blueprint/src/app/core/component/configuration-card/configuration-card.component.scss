@@ -6,10 +6,10 @@ $card-padding: 12px;
 
 
 .card {
-    background-color: var(--surface-card);
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--p-surface-300);
     color: var(--text-color);
     border-radius: var(--border-radius);
+
     width: $card-width;
     max-width: $card-width;
     display: flex;
@@ -17,8 +17,7 @@ $card-padding: 12px;
     overflow: hidden;
 
     .head {
-        background-color: var(--surface-card);
-        border-bottom: 1px solid var(--surface-border);
+        border-bottom: 1px solid var(--p-surface-300);
         display: flex;
         flex-direction: row;
         justify-content: center;

@@ -10,10 +10,11 @@ import { firstValueFrom } from 'rxjs';
 
 import { providePrimeNG } from 'primeng/config';
 
-import { AppTheme } from './app-theme';
+import { AuraSky } from './app-theme';
 import { routes } from './app.routes';
 import { ConfigService } from './core/service/config/config.service';
 import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.function';
+
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -31,9 +32,9 @@ export const appConfig: ApplicationConfig = {
         }),
         providePrimeNG({
             theme: {
-                preset: AppTheme,
+                preset: AuraSky,
                 options: {
-                    darkModeSelector: '.bp-dark-mode',
+                    darkModeSelector: '.bp-dark-mode'
                 }
             }
         })
