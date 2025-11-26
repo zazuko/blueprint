@@ -22,15 +22,15 @@ import { SearchFilter } from '../../../features/search/model/search-filter.model
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 
 @Component({
-    selector: 'bp-filter-panel',
-    templateUrl: './filter-panel.component.html',
-    styleUrls: ['./filter-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: fadeInOut,
-    imports: [FormsModule, CheckboxModule, FilterItemComponent]
+  selector: 'bp-filter-panel',
+  templateUrl: './filter-panel.component.html',
+  styleUrls: ['./filter-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: fadeInOut,
+  imports: [FormsModule, CheckboxModule, FilterItemComponent]
 })
 export class FilterPanelComponent implements OnChanges, OnDestroy {
-  filtersChange = output<SearchFilter[]>();
+  readonly filtersChange = output<SearchFilter[]>();
 
   // TODO: Skipped for migration because:
   //  Your application code writes to the input. This prevents migration.

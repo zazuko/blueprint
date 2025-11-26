@@ -30,7 +30,7 @@
     display: none;
     gap: 0.75rem;
     backdrop-filter: blur(16px);
-    background-color: color-mix(in srgb, var(--page-background) 70%, transparent);
+    background-color: var(--p-content-background);
     position: relative;
     width: 100%;
     max-width: 100%;
@@ -64,7 +64,7 @@
     max-height: 100vh;
     overflow: auto;
     backdrop-filter: blur(16px);
-    background-color: color-mix(in srgb, var(--page-background) 70%, transparent);
+    background-color: var(--p-content-background);
     // render primary nav / mini menu above tablet secondary bar
     z-index: 250;
     position: relative;
@@ -87,7 +87,7 @@
     @include mq.for-phone-only {
         position: absolute;
         top: 0;
-        background-color: var(--page-background);
+        background-color: var(--p-content-background);
         box-shadow: 10px 4px 3px 0 rgba(0, 0, 0, 0.001);
 
         transform: translateX(-100%);

@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ConfigurationCardComponent } from '../../../core/component/configuration-card/configuration-card.component';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
@@ -15,8 +15,7 @@ import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcru
   ]
 })
 export class ConfigurationComponent {
-  readonly #router = inject(Router);
-  public readonly breadcrumbs: Breadcrumb[] = [
+  protected readonly breadcrumbs: Breadcrumb[] = [
     {
       label: 'Settings',
       route: '.',

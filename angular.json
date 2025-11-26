@@ -29,7 +29,7 @@
               "projects/blueprint/src/config.json"
             ],
             "styles": [
-              "projects/blueprint/src/styles.scss",
+              "projects/blueprint/src/styles.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": []
@@ -98,7 +98,7 @@
               "projects/blueprint/src/assets"
             ],
             "styles": [
-              "projects/blueprint/src/styles.scss"
+              "projects/blueprint/src/styles.css"
             ],
             "scripts": []
           }
@@ -140,5 +140,8 @@
     "@schematics/angular:resolver": {
       "typeSeparator": "."
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
