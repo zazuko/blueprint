@@ -31,7 +31,7 @@
     background-color: var(--surface-card);
     border: 1px solid var(--surface-border);
     color: var(--text-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--p-border-radius-md);
 
     .line1 {
         max-width: calc(200px - (48px + 24px));

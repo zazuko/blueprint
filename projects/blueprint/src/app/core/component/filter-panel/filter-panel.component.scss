@@ -1,8 +1,8 @@
 .filter-panel {
   background-color: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  color: var(--text-color);
-  border-radius: var(--border-radius);
+  border: 1px solid var(--p-content-border-color);
+  color: var(--p-text-color);
+  border-radius: var(--p-border-radius-md);
   overflow: hidden;
 
   padding: 12px;
@@ -38,7 +38,7 @@
 }
 
 .all {
-  border-bottom: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--p-content-border-color);
   margin-bottom: 10px;
   padding-bottom: 10px;
 }

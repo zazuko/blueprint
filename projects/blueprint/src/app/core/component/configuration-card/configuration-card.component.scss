@@ -6,9 +6,9 @@ $card-padding: 12px;
 
 
 .card {
-    border: 1px solid var(--p-surface-300);
-    color: var(--text-color);
-    border-radius: var(--border-radius);
+    border: 1px solid var(--p-content-border-color);
+    color: var(--p-text-color);
+    border-radius: var(--p-border-radius-md);
 
     width: $card-width;
     max-width: $card-width;
@@ -17,7 +17,7 @@ $card-padding: 12px;
     overflow: hidden;
 
     .head {
-        border-bottom: 1px solid var(--p-surface-300);
+        border-bottom: 1px solid var(--p-content-border-color);
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -72,9 +72,9 @@ $card-padding: 12px;
 
 .card:hover {
     cursor: pointer;
-    background-color: var(--surface-hover);
+    background-color: var(--p-content-hover-background);
 
     .head {
-        background-color: var(--surface-hover);
+        background-color: var(--p-content-hover-background);
     }
 }

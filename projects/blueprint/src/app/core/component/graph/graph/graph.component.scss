@@ -6,16 +6,13 @@
 .graph-component {
   max-width: 100%;
   display: block;
-  background-color: light-dark(rgb(249, 250, 251), rgb(17, 24, 39));
+  background-color: transparent;
   position: relative;
 }
 
 svg {
   cursor: move;
 }
-
-
-
 
 .tool-bar {
   position: absolute;

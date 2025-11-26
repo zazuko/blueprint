@@ -8,7 +8,7 @@ import { Avatar, AvatarComponent } from 'projects/blueprint/src/app/shared/compo
   styleUrl: './hierarchy-card.component.scss'
 })
 export class HierarchyCardComponent {
-  firstLine = input.required<string>();
-  secondLine = input<string>('');
-  avatars = input.required<Avatar[]>();
+  readonly firstLine = input.required<string>();
+  readonly secondLine = input<string>('');
+  readonly avatars = input.required<Avatar[]>();
 }

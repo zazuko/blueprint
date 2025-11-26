@@ -1,4 +1,28 @@
-
 @import "tailwindcss";
 @import "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
+
+@layer base {
+    h1 {
+        @apply text-4xl font-bold mb-4 mt-5;
+    }
+
+    h2 {
+        @apply text-3xl font-semibold mb-3 mt-4;
+    }
+
+    h3 {
+        @apply text-2xl font-semibold mb-2 mt-3;
+    }
+
+    p {
+        @apply text-base mb-4 mt-4;
+    }
+}
+
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/font/orbitron.woff2') format('woff2');
+}

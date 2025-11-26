@@ -34,7 +34,11 @@ export const appConfig: ApplicationConfig = {
             theme: {
                 preset: AuraSky,
                 options: {
-                    darkModeSelector: '.bp-dark-mode'
+                    darkModeSelector: '.bp-dark-mode',
+                    cssLayer: {
+                        name: 'primeng',
+                        order: 'theme, base, primeng'
+                    }
                 }
             }
         })

@@ -2,7 +2,7 @@
     "$schema": "../../../blueprint-config-schema.json",
     "endpointUrl": "https://ld.bafu.zazukoians.org/query",
     "sparqlConsoleUrl": "https://ld.flux.zazuko.com/sparql/#query",
-    "fullTextSearchDialect": "qlever",
+    "fullTextSearchDialect": "stardog",
     "neptune": {
         "ftsEndpoint": " https://vpc-opensearch-zazuko-blueprint-glbaecqrcqwr5om3z5jj2duuiq.eu-central-1.es.amazonaws.com"
     },
