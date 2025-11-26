@@ -1,5 +1,86 @@
 @if(data().length > 0 && data()[0].children.length > 0) {
 <h2>{{label()}}</h2>
+<div class="aggregates">@for (aggregate of typeAggregate(); track aggregate.label) {
+    <div class="aggregate-button">
+        <p-avatar (click)="selectClassIri(aggregate.avatar.classIri)" [icon]="aggregate.avatar.icon" pBadge
+            [value]="aggregate.count" size="xlarge" badgeSize="large"
+            [style]="{'background-color':aggregate.avatar.color}" />
+        <p> {{aggregate.label}}@if(aggregate.count > 1) {s
+            }
+        </p>
+    </div>
+    }
+</div>
+@if(selectedClassIri() !== null) {
+
+
+<p-table [columns]="table().columns" [value]="table().rows" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            @for(column of columns; track column.iri) {
+            <th>
+                {{ column.label }}
+            </th>
+            }
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+
+        <tr>
+            @for(column of table().columns; track column.iri) {
+            @let cell = rowData.cells.get(column.iri);
+            @let showAs = cell.showAs;
+            <td>
+
+                @switch (showAs) {
+                @case (LiteralViewType.LINK) {
+
+                <i class="pi pi-external-link"></i>&nbsp;&nbsp;<a class="value" [href]="cell.value" target="_blank">{{
+                    cell.value
+                    }}</a>
+                }
+                @case (LiteralViewType.EMAIL) {
+
+                <i class="pi pi-at"></i>&nbsp;&nbsp;<a class="value" [href]="'mailto:' + cell.value">{{ cell.value}}</a>
+
+                }
+                @case (LiteralViewType.PHONE) {
+
+                <i class="pi pi-phone"></i>&nbsp;&nbsp;<a class="value" [href]="'tel:' + cell.value">{{ cell.vale}}</a>
+                }
+
+                @case (LiteralViewType.PLAIN || LiteralViewType.BOOLEAN) {
+
+                <span>{{ cell.value }}</span>
+
+                }
+                @case (LiteralViewType.BOOLEAN ) {
+
+
+                @if(cell.value === 'true') {
+                <span style="color: lightgreen" class="pi pi-check-circle"></span>
+
+                } @else {
+                <span style="color: lightcoral" class="pi pi-times-circle"></span>
+                }
+
+
+                }
+
+                }
+
+
+            </td>
+            }
+        </tr>
+
+    </ng-template>
+</p-table>
+
+
+}
+
+<p>hello world</p>
 <p-tree [value]="data()" selectionMode="single" (onNodeSelect)="emitNodeSelected($event)">
     <ng-template let-node pTemplate="default">
         <div class="content">

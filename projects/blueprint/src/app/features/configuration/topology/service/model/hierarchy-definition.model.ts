@@ -79,7 +79,8 @@ export class HierarchyDefinition extends Aggregation {
                 return {
                     label: uiClassMetadata.label,
                     icon: uiClassMetadata.icon,
-                    color: uiClassMetadata.color
+                    color: uiClassMetadata.color,
+                    classIri: uiClassMetadata.targetNode.value
                 };
             });
 
@@ -101,7 +102,8 @@ export class HierarchyDefinition extends Aggregation {
                 avatar: {
                     label: meta.label,
                     icon: meta.icon,
-                    color: meta.color
+                    color: meta.color,
+                    classIri: meta.targetNode.value
                 }
             };
         });

@@ -138,6 +138,9 @@ CONSTRUCT {
 }
 
 function getIncomingLinksQuery(input: NamedNode, link: UiLinkDefinition): string {
+  if (link.propertyPath.length > 1) {
+    debugger;
+  }
   return `
   ${shacl.sparqlPrefix()}
   ${rdf.sparqlPrefix()}

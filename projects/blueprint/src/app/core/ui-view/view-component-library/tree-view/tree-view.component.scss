@@ -25,3 +25,50 @@ bp-avatar {
     display: flex;
     flex-direction: row;
 }
+
+
+// ---- 
+.aggregates {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 24px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.aggregate-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 150px;
+
+    .p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+
+}
+
+:host ::ng-deep .p-avatar {
+    opacity: 1;
+    transition: box-shadow 500ms out;
+    transition: opacity 500ms out;
+
+}
+
+html.bp-light-mode :host ::ng-deep .p-avatar:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+}
+
+
+
+html.bp-dark-mode :host ::ng-deep .p-avatar:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}

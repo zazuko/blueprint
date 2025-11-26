@@ -1293,6 +1293,37 @@ class BlueprintOntology extends Ontology {
         return this.namespace('CompositionLinkResult');
     }
 
+
+    /**
+     * Get the hasColumn predicate.
+     * 
+     * @readonly
+     */
+    get hasColumn(): string {
+        return this.namespace('hasColumn').value;
+    }
+
+    /**
+     * Get the prefixed hasColumn predicate.
+     * 
+     * @readonly
+     */
+    get hasColumnPrefixed(): string {
+        return `${this.prefix()}:hasColumn`;
+    }
+
+    /**
+     * Get the hasColumn predicate as NamedNode.
+     * 
+     * @readonly
+     */
+    get hasColumnNamedNode(): NamedNode {
+        return this.namespace('hasColumn');
+    }
+
+
+
+
 }
 
 export const blueprint = new BlueprintOntology();

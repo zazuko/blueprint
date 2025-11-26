@@ -151,7 +151,8 @@ export class NodeElement extends ClownfaceObject implements INodeElement {
                 return {
                     label: uiMetadata.label,
                     icon: uiMetadata.icon,
-                    color: uiMetadata.color
+                    color: uiMetadata.color,
+                    classIri: uiMetadata.targetNode.value
                 }
             })
         }

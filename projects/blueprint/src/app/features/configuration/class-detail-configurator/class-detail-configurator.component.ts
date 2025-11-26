@@ -63,6 +63,7 @@ export class ClassDetailConfiguratorComponent implements OnChanges {
         label: classMetadata.label,
         color: classMetadata.color,
         icon: classMetadata.icon,
+        classIri: classMetadata.targetNode.value
       }];
     }
     return [];

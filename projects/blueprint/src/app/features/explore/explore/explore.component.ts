@@ -210,7 +210,8 @@ export class ExploreComponent implements OnInit, OnDestroy, AfterViewInit {
             const icon = uiClassMetaData.icon;
             const color = uiClassMetaData.color;
             const label = uiClassMetaData.label;
-            return { label, icon, color };
+            const classIri = uiClassMetaData.targetNode.value;
+            return { label, icon, color, classIri };
           });
           this.subjectAvatars.set(avatarArray);
           // 

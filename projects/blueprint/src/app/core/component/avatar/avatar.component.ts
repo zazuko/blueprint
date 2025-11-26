@@ -21,4 +21,5 @@ export interface Avatar {
   label: string;
   icon: string;
   color: string;
+  classIri: string;
 }

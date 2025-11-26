@@ -6,6 +6,7 @@ export interface UiDetailConfigurationElement {
     label: string;
     iri: string;
     order: number;
+    path: string;
 }
 
 export class RdfDetailConfigurationElement implements UiDetailConfigurationElement {
@@ -60,11 +61,19 @@ export class RdfDetailConfigurationElement implements UiDetailConfigurationEleme
         return this._renderLiteralAs;
     }
 
+    get renderLiteralAsNode(): string {
+        return this._node.out(blueprint.showAsNamedNode).value;
+    }
+
     get order(): number {
         if (this._order === null) {
             this._order = Number(this._node.out(shacl.orderNamedNode).value);
         }
         return this._order;
+    }
+
+    get path(): string {
+        return this._node.out(shacl.pathNamedNode).value;
     }
 
     getSparqlDetailQueryForSubject(subjectIri: string): string {

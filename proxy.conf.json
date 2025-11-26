@@ -1,10 +1,10 @@
 {
   "/query": {
-    "target_1": "https://ld.aws.zazukoians.org/query",
-    "target_334": "https://ld.flux.zazuko.com/query",
+    "target": "https://ld.bafu.zazukoians.org/query",
+    "target_22": "https://ld.flux.zazuko.com/query",
     "target_12": "http://localhost:8080/query",
     "target_4": "https://ld.aws.zazukoians.org/query",
-    "target": "http://127.0.0.1:7200/repositories/blueprint",
+    "target_33": "http://127.0.0.1:7200/repositories/blueprint",
     "headers": {
       "Connection": "keep-alive"
     },
