@@ -1,6 +1,6 @@
 {
     "$schema": "../../../blueprint-config-schema.json",
-    "endpointUrl": "http://localhost:4200/query",
+    "endpointUrl": "https://ld.bafu.zazukoians.org/query",
     "sparqlConsoleUrl": "https://ld.flux.zazuko.com/sparql/#query",
     "fullTextSearchDialect": "qlever",
     "neptune": {

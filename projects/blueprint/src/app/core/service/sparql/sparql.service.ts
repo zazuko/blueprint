@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 
 import { SparqlResult, SparqlResultTerm, transformToRecords } from './model/sparql-result-json';
 
 import { rdfEnvironment, RdfTypes } from '../../rdf/rdf-environment';
 import { ConfigService } from '../config/config.service';
+import { MessageChannelService } from '../message-channel/message-channel.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ import { ConfigService } from '../config/config.service';
 export class SparqlService {
   readonly #http = inject(HttpClient);
   readonly #appConfig = inject(ConfigService).getConfiguration();
+  readonly messanger = inject(MessageChannelService);
 
   /**
    * Execute a SPARQL SELECT query
@@ -68,6 +70,7 @@ export class SparqlService {
     body.set('query', query);
     return this.#http.post(endpoint, body.toString(), options)
       .pipe(
+
         map(response => {
           const dataset = rdfEnvironment.dataset();
           try {
@@ -80,7 +83,14 @@ export class SparqlService {
             throw error;
           }
           return dataset
-        })
-      );
+        }),
+        catchError(err  =>{
+          const error = err as HttpErrorResponse;
+          console.error('SPARQL Error:', error.status, error.statusText);
+          this.messanger.error('SPARQL HTTP Error', error, 'Check your configuration or the endpoint is not reachable.');
+           return of(rdfEnvironment.dataset())
+        }  )
+         
+      )
   }
 }
