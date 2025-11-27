@@ -150,7 +150,8 @@ export class ExploreComponent implements OnDestroy {
     // Add edges using the node IDs
     bubbleGraph.links.forEach((edge) => {
       graph.addEdge(edge.source.id, edge.target.id, {
-        label: edge.id
+        label: edge.outgoingChildLinks.map(l => l.linkDefinition.label).join(', '),
+        size: 3,
       });
     });
 
