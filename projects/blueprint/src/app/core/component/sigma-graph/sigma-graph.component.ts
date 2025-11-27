@@ -29,6 +29,8 @@ export class SigmaGraphComponent implements OnDestroy {
           labelColor: { color: this.#getLabelColor() },
           labelSize: 12,
           labelWeight: 'normal',
+          defaultEdgeType: 'arrow',
+          renderEdgeLabels: true,
         });
 
         // Listen to theme changes and update label color
