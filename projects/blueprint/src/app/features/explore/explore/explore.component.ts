@@ -53,11 +53,7 @@ import { NodeRelationsComponent } from '@blueprint/component/node-relations/node
 import { SigmaGraphComponent } from '@blueprint/component/sigma-graph/sigma-graph.component';
 
 
-// test 
-import Graph from "graphology";
-import circularLayout from "graphology-layout/circular";
 
-//
 type NodeExploreCommand = "expand" | "select";
 type SelectionKind = "node" | "link";
 
@@ -131,34 +127,6 @@ export class ExploreComponent implements OnDestroy {
 
 
   public bubbleGraph = this.#graphService.graphSignal;
-
-  public sigmaGraph = computed(() => {
-    const graph = new Graph();
-    const bubbleGraph = this.bubbleGraph();
-
-    // Add nodes with their IDs and attributes
-    bubbleGraph.nodes.forEach((node) => {
-      graph.addNode(node.id, {
-        label: node.label,
-        x: node.x ?? Math.random() * 100,
-        y: node.y ?? Math.random() * 100,
-        size: 10,
-        color: node.color ?? '#0ea5e9'
-      });
-    });
-
-    // Add edges using the node IDs
-    bubbleGraph.links.forEach((edge) => {
-      graph.addEdge(edge.source.id, edge.target.id, {
-        label: edge.outgoingChildLinks.map(l => l.linkDefinition.label).join(', '),
-        size: 3,
-      });
-    });
-
-    // Apply circular layout if needed
-    circularLayout(graph);
-    return graph;
-  });
 
   term: string;
 

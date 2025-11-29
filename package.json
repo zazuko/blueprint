@@ -39,6 +39,7 @@
     "d3": "^7.9.0",
     "graphology": "^0.26.0",
     "graphology-layout": "^0.6.1",
+    "graphology-layout-forceatlas2": "^0.10.1",
     "mermaid": "^10.9.1",
     "n3": "^1.25.2",
     "postcss": "^8.5.6",

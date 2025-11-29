@@ -2,8 +2,6 @@ import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject, signal, DOCUMENT } from '@angular/core';
 import { LOCAL_STORAGE } from 'projects/blueprint/src/app/core/providers/storage/local-storage';
 
-import { Subject } from 'rxjs';
-
 export type Theme = 'dark' | 'light' | 'auto';
 
 export const THEME_PREFERENCE_LOCAL_STORAGE_KEY = 'themePreference';
@@ -19,9 +17,10 @@ export class ThemeManager {
   readonly #localStorage = inject(LOCAL_STORAGE);
   readonly #platformId = inject(PLATFORM_ID);
 
-  readonly theme = signal<Theme | null>(this.#getThemeFromLocalStorageValue());
-  // Zoneless - it's required to notify that theme was changed. It could be removed when signal-based components will be available.
-  readonly themeChanged$ = new Subject<void>();
+  readonly #writableThemeSignal = signal<Theme | null>(this.#getThemeFromLocalStorageValue());
+
+  // this is the public readonly signal
+  readonly theme = this.#writableThemeSignal.asReadonly();
 
   constructor() {
 
@@ -34,7 +33,7 @@ export class ThemeManager {
   }
 
   setTheme(theme: Theme): void {
-    this.theme.set(theme);
+    this.#writableThemeSignal.set(theme);
     this.#setThemeInLocalStorage();
     this.setThemeBodyClasses(theme === 'auto' ? preferredScheme() : theme);
 
@@ -54,7 +53,7 @@ export class ThemeManager {
   private loadThemePreference(): void {
     const savedUserPreference = this.#getThemeFromLocalStorageValue();
     const useTheme = savedUserPreference ?? 'auto';
-    this.theme.set(useTheme);
+    this.#writableThemeSignal.set(useTheme);
     this.setThemeBodyClasses(useTheme === 'auto' ? preferredScheme() : useTheme);
   }
 
@@ -72,8 +71,6 @@ export class ThemeManager {
 
     }
     this.switchPrimeNgTheme(theme);
-
-    this.themeChanged$.next();
   }
 
   #getThemeFromLocalStorageValue(): Theme | null {
