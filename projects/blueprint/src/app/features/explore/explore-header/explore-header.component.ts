@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 import { Clipboard } from '@angular/cdk/clipboard';
 
@@ -19,7 +19,7 @@ import { ConfigService } from '@blueprint/service/config/config.service';
   selector: 'bp-explore-header',
   templateUrl: './explore-header.component.html',
   styleUrls: ['./explore-header.component.scss'],
-  imports: [CommonModule, MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
+  imports: [MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
   animations: [fadeIn],
   providers: [MessageService]
 })

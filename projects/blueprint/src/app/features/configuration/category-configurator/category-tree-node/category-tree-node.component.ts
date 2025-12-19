@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { SkosConcept } from '../model/skos.model';
 
 @Component({
     selector: 'bp-category-tree-node',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './category-tree-node.component.html',
     styleUrl: './category-tree-node.component.scss'
 })

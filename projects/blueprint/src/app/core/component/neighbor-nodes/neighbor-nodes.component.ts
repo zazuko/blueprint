@@ -1,5 +1,5 @@
 import { Component, computed, output, input, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { Graph, IUiGraphNode, RdfConsolidatedLink } from '../graph/model/graph.model';
 import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
@@ -9,10 +9,7 @@ import { ExploredResource } from '../../../features/explore/model/explored-resou
 
 @Component({
   selector: 'bp-neighbor-nodes',
-  imports: [
-    CommonModule,
-    //  NeighborNodesListComponent,
-  ],
+  imports: [],
   templateUrl: './neighbor-nodes.component.html',
   styleUrl: './neighbor-nodes.component.scss',
   animations: [
