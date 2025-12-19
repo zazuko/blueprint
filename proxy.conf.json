@@ -2,10 +2,11 @@
   "/query": {
     "targetd": "http://127.0.0.1:7001/",
     "targetdd": "https://ld.bafu.zazukoians.org/query",
-    "target": "https://test.lindas.admin.ch/query",
+    "targetddddde": "https://test.lindas.admin.ch/query",
     "targetddddd": "https://lindas.admin.ch/query",
     "targetddd": "https://server.benjamin.prod.instances.qlever.az.zazukoians.org",
     "targedt": "http://localhost:3030/blueprint/sparql",
+    "target": "http://localhost:7200/repositories/blueprint",
     "headers": {
       "Connection": "keep-alive"
     },
