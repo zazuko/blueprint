@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
@@ -21,7 +21,7 @@ import { flux } from '@blueprint/ontology';
   selector: 'bp-concept-relations',
   templateUrl: './concept-relations.component.html',
   styleUrl: './concept-relations.component.scss',
-  imports: [CommonModule, GraphComponent, BreadcrumbPageComponent]
+  imports: [GraphComponent, BreadcrumbPageComponent]
 })
 export class ConceptRelationsComponent {
   readonly #classMetadataService = inject(UiClassMetadataService);

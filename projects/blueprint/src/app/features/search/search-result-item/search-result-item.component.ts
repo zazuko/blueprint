@@ -1,12 +1,12 @@
 import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 import { AvatarComponent } from '../../../shared/component/ui/avatar/avatar.component';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 
 @Component({
   selector: 'bp-search-result-item',
-  imports: [CommonModule, AvatarComponent],
+  imports: [AvatarComponent],
   templateUrl: './search-result-item.component.html',
   styleUrl: './search-result-item.component.scss'
 })

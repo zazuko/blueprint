@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, output, DestroyRef, effect, input, viewChild, ViewContainerRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { UiViewComponent } from '../model/ui-view.model';
 import { ArchiDiagramComponent } from '../view-component-library/archi-diagram/archi-diagram.component';
 import {
@@ -22,7 +22,7 @@ import { outputToObservable, takeUntilDestroyed } from '@angular/core/rxjs-inter
 import { labelAlphaSort } from '../../utils/sort-functions';
 @Component({
   selector: 'bp-ui-view-component',
-  imports: [CommonModule, DashHostDirective],
+  imports: [DashHostDirective],
   templateUrl: './ui-view-component.component.html',
   styleUrls: ['./ui-view-component.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,5 +1,5 @@
 import { Component, output, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 import { ButtonModule } from 'primeng/button';
 
@@ -11,7 +11,7 @@ import { SearchResultItemComponent } from '../search-result-item/search-result-i
   selector: 'bp-search-result-list',
   templateUrl: './search-result-list.component.html',
   styleUrl: './search-result-list.component.scss',
-  imports: [CommonModule, SearchResultItemComponent, ButtonModule],
+  imports: [SearchResultItemComponent, ButtonModule],
   animations: [fadeInOut]
 })
 export class SearchResultListComponent {

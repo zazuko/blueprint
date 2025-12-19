@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { UiView, UiViewContainer } from '../model/ui-view.model';
 import { UiViewComponentComponent } from "../ui-view-component/ui-view-component.component";
 
@@ -7,7 +7,7 @@ import { UiViewComponentComponent } from "../ui-view-component/ui-view-component
     selector: 'bp-ui-view',
     templateUrl: './ui-view.component.html',
     styleUrls: ['./ui-view.component.scss'],
-    imports: [CommonModule, UiViewComponentComponent],
+    imports: [UiViewComponentComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiViewComponent implements OnChanges {

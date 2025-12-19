@@ -1,5 +1,5 @@
 import { Component, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { OrganizationChartModule } from 'primeng/organizationchart';
 import { TreeNode } from 'primeng/api';
 import { HierarchyService } from '../service/hierarchy.service';
@@ -12,7 +12,7 @@ import { BreadcrumbPageComponent } from 'projects/blueprint/src/app/shared/compo
 @Component({
   templateUrl: './tree-detail.component.html',
   styleUrl: './tree-detail.component.scss',
-  imports: [CommonModule, BreadcrumbPageComponent, OrganizationChartModule]
+  imports: [BreadcrumbPageComponent, OrganizationChartModule]
 })
 export class TreeDetailComponent implements OnChanges {
   readonly id = input.required<string>();

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { toObservable } from '@angular/core/rxjs-interop';
 
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
@@ -42,14 +42,13 @@ const NAVIGATION_ITEMS: NavigationMenuItem[] = [
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss', './nav-item.scss'],
   imports: [
-    CommonModule,
     RouterLink,
     ThemePickerMenuComponent,
     MobileLogoButtonComponent,
     BrandLogoComponent,
     NavMenuItemComponent,
     PopoverModule
-  ]
+]
 })
 export class NavigationComponent {
   private readonly navigationState = inject(NavigationState);

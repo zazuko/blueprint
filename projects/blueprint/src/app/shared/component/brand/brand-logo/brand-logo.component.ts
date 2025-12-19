@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { LogoComponent } from '../logo/logo.component';
 
 @Component({
     selector: 'bp-brand-logo',
-    imports: [CommonModule, LogoComponent],
+    imports: [LogoComponent],
     templateUrl: './brand-logo.component.html',
     styleUrl: './brand-logo.component.scss'
 })
