@@ -68,7 +68,6 @@ export class HierarchyTreeDataService {
 
   private getQueryFor(rootNode: HierarchyNode): string {
     const pathToLeaves = this._pathsToLeaves(rootNode);
-
     // iterate over all nodes in the path
     const rdfClassesSet = new Set<string>();
     pathToLeaves.forEach(hierarchyPath => hierarchyPath.forEach(node => rdfClassesSet.add(node.targetClass)));

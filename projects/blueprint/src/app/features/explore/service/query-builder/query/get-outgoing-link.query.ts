@@ -37,9 +37,7 @@ CONSTRUCT {
   BIND (<${link.iri}> as ?link)
   BIND (${flux.UiNodePrefixed} as ?fluxUiType)
   ${link.isSynthetic ? `` : `BIND (<${link.arrowTarget}> as ?targetType)`}
-  OPTIONAL {
-    ?target a ?targetType .
-  }  
+  ?target a ?targetType .
   ?input ${link.propertyPath}  ?target .
   FILTER (!isLiteral(?target))
   FILTER (!isBlank(?target))
@@ -60,7 +58,7 @@ CONSTRUCT {
   BIND ("${link.label}" as ?linkLabel) .
   
   # create a unique iri for the link (reification)
-   BIND(str(?input) AS ?inputStr)
+  BIND(str(?input) AS ?inputStr)
   BIND(str(?target) AS ?targetStr)
 
   BIND(

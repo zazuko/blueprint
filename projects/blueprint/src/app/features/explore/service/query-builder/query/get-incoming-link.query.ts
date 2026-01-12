@@ -39,9 +39,8 @@ CONSTRUCT {
 
   ${link.isSynthetic ? `` : `BIND (<${link.arrowSource}> as ?targetType)`}
 
-  OPTIONAL {
-    ?target a ?targetType .
-  }
+  ?target a ?targetType .
+
   ?target ${link.propertyPath}  ?input  .
   FILTER (!isLiteral(?target))
   FILTER (!isBlank(?target))

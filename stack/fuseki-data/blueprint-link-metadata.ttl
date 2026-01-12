@@ -20,12 +20,18 @@ flux:NamespaceToClusterLink a sh:PropertyShape, fluxSchema:Link ;
 
 
 flux:DeploymentToNamespaceLink a sh:PropertyShape, fluxSchema:Link ;
-   sh:name "belonogs to" ;
+   sh:name "belongs to" ;
    sh:path k8s:namespace ;
    sh:class k8s:Namespace ;
    sh:targetClass k8s:Deployment ;
 .
 
+flux:PodDisruptionBudgetToNamespaceLink a sh:PropertyShape, fluxSchema:Link ;
+   sh:name "belongs to" ;
+   sh:path k8s:namespace ;
+   sh:class k8s:Namespace ;
+   sh:targetClass k8s:PodDisruptionBudget ;
+.
 
 flux:DeploymentToImageLink a sh:PropertyShape, fluxSchema:Link ;
    sh:name "container image" ;
@@ -48,4 +54,12 @@ flux:OciRepositoryToRegistryLink a sh:PropertyShape, fluxSchema:Link ;
    sh:path oci:registry ;
    sh:class oci:Registry ;
    sh:targetClass oci:Repository ;
+.
+
+
+flux:PodDisruptionBudgetToDeploymentLink a sh:PropertyShape, fluxSchema:Link ;
+   sh:name "applies to" ;
+   sh:path k8s:appliesTo ;
+   sh:class k8s:Deployment ;
+   sh:targetClass k8s:PodDisruptionBudget ;
 .

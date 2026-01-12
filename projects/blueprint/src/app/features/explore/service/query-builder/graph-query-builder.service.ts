@@ -49,6 +49,7 @@ export class GraphQueryBuilderService {
     // Merge the UI and link metadata queries into a single query
     const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
 
+
     // Execute the merged query to retrieve link metadata
     return forkJoin({ data: this.#sparqlService.construct(mergedQuery), linkDefinition: this.#uiLinkMetadataService.getLinkMetadata(), classDefinition: this.#uiClassMetadataService.getClassMetadata() }).pipe(
       switchMap(response => {
@@ -254,7 +255,10 @@ ${appLocal.turtlePrefix()}
     const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinkQuery(inputNode, link));
 
     // merge all queries into one
-    const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()])
+    const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()]);
+
+    console.log('Generated SPARQL Query:');
+    console.log(query);
     const sparqlQuery = this.#sparqlService.construct(query).pipe(map(data => data.addAll(dataset)));
     return forkJoin({ data: sparqlQuery, linkDefinitions: of(linkDefinitions), classDefinitions: of(classDefinitions) });
   }
