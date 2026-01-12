@@ -166,8 +166,8 @@ flux:RegistryFluxClassInstance a fluxShape:ClassMetadataShape ;
 
 flux:LabelFluxClassInstance a fluxShape:ClassMetadataShape ;
    sh:targetNode k8s:Label ;
-   rdfs:label "OCI Label" ;
-   rdfs:comment "OCI Labels" ;
+   rdfs:label "K8S Label" ;
+   rdfs:comment "K8S Labels" ;
    fluxSchema:faIcon "fa-solid fa-tag" ;
    fluxSchema:colorIndex 7 ;
    fluxSchema:searchPrio 3 ;
@@ -175,9 +175,19 @@ flux:LabelFluxClassInstance a fluxShape:ClassMetadataShape ;
 
 flux:AnnotationFluxClassInstance a fluxShape:ClassMetadataShape ;
    sh:targetNode k8s:Annotation ;
-   rdfs:label "OCI Annotation" ;
-   rdfs:comment "OCI Annotations" ;
+   rdfs:label "K8S Annotation" ;
+   rdfs:comment "K8S Annotations" ;
    fluxSchema:faIcon "fa-solid fa-lightbulb" ;
    fluxSchema:colorIndex 8 ;
+   fluxSchema:searchPrio 3 ;
+.
+
+
+flux:PodDisruptionBudgetFluxClassInstance a fluxShape:ClassMetadataShape ;
+   sh:targetNode k8s:PodDisruptionBudget ;
+   rdfs:label "Pod Disruption Budget" ;
+   rdfs:comment "K8S Pod Disruption Budgets" ;
+   fluxSchema:faIcon "fas fa-shield-alt" ;
+   fluxSchema:colorIndex 9 ;
    fluxSchema:searchPrio 3 ;
 .
