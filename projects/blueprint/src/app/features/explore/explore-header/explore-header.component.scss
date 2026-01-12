@@ -8,6 +8,7 @@ $title-height: 118px;
     justify-content: space-between;
 }
 
+
 .title {
     font-family: var(--inter-tight-font);
     font-weight: 500;
@@ -15,6 +16,13 @@ $title-height: 118px;
     color: var(--primary-contrast);
     margin-top: 0;
     margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    /* line-clamp for compatibility, but -webkit-line-clamp is primary */
 }
 
 p {
