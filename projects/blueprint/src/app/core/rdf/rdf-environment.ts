@@ -13,7 +13,6 @@ class RdfEnvironment {
     #rdfEnv = env;
 
     constructor() {
-        prefixes['cube'] = 'https://cube.link/';
         prefixes['cubeMeta'] = 'https://cube.link/meta/';
         prefixes['ex'] = 'http://example.com/';
         prefixes['idmp-sub'] = 'https://spec.pistoiaalliance.org/idmp/ontology/ISO/ISO11238-Substances/';
