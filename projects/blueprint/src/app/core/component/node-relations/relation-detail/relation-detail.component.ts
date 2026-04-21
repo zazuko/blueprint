@@ -10,7 +10,7 @@ import { ConfigService } from '@blueprint/service/config/config.service';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { NodeElementTableComponent } from "../../node-element-table/node-element-table.component";
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { sparqlUtils } from '../../../utils/sparql-utils';
+import { mergeConstructQueries } from '../../../utils/sparql-merge-construct';
 
 @Component({
   selector: 'bp-relation-detail',
@@ -32,11 +32,11 @@ export class RelationDetailComponent {
     const relation = this.relation();
 
     if (relation.relationType === 'Bidirectional') {
-      return sparqlUtils.mergeConstruct([getBidirectionalQuery(subjectIri, (relation as BidiractionalRelation).outgoingPredicate, (relation as BidiractionalRelation).incomingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()])
+      return mergeConstructQueries([getBidirectionalQuery(subjectIri, (relation as BidiractionalRelation).outgoingPredicate, (relation as BidiractionalRelation).incomingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()])
     } else if (relation.relationType === 'Outgoing') {
-      return sparqlUtils.mergeConstruct([getOutgoingQuery(subjectIri, (relation as OutgoingRelation).outgoingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()]);
+      return mergeConstructQueries([getOutgoingQuery(subjectIri, (relation as OutgoingRelation).outgoingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()]);
     } else
-      return sparqlUtils.mergeConstruct([getIncomingQuery(subjectIri, (relation as IncomingRelation).incomingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()]);
+      return mergeConstructQueries([getIncomingQuery(subjectIri, (relation as IncomingRelation).incomingPredicate), this.#classMetadat.getClassMetadataSparqlQuery()]);
 
   });
 

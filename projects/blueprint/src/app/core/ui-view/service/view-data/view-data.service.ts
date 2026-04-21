@@ -13,11 +13,11 @@ import { UiDetailService } from '../../../service/ui-config/ui-detail/ui-detail.
 import { flux, rdf, shacl, nileaUi, blueprintShape } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
-import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.service';
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 import { defaultSubjectQuery } from './query/default-subject.query';
+import { mergeConstructQueries } from '../../../utils/sparql-merge-construct';
 
 @Injectable({
   providedIn: 'root'
@@ -72,7 +72,7 @@ export class ViewDataService {
         const uiClassMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
 
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
+        const mergedMetaQuery = mergeConstructQueries([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
         return this.#sparql.construct(mergedMetaQuery);
       }),
@@ -185,7 +185,7 @@ export class ViewDataService {
         const queries = [defaultSubjectQuery(subject), ...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
-        const mergedQuery = sparqlUtils.mergeConstruct(queries);
+        const mergedQuery = mergeConstructQueries(queries);
 
         return this.#sparql.construct(mergedQuery);
       }

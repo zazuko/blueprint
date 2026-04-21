@@ -2,23 +2,22 @@ import { Injectable, inject } from '@angular/core';
 
 import { Observable, forkJoin, switchMap, of, map } from 'rxjs';
 
-import { rdf, flux, shacl, rdfs, schema, skos, appLocal } from '@blueprint/ontology';
+import { rdf, appLocal } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-properties-for-iri.query';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { PredicateTBox } from 'projects/blueprint/src/app/core/rdf/semantics/predicate-t-box';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 import { ConfigService } from '@blueprint/service/config/config.service';
 import { getInputNodeGraphQuery } from './query/get-input-node-graph.query';
 import { getOutgoingLinkQuery } from './query/get-outgoing-link.query';
 import { getIncomingLinkQuery } from './query/get-incoming-link.query';
+import { mergeConstructQueries } from 'projects/blueprint/src/app/core/utils/sparql-merge-construct';
 
 
 @Injectable({
@@ -47,7 +46,7 @@ export class GraphQueryBuilderService {
     const objectPropertiesQuery = getAllObjectPropertiesForIriQuery(input);
 
     // Merge the UI and link metadata queries into a single query
-    const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
+    const mergedQuery = mergeConstructQueries([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
 
 
     // Execute the merged query to retrieve link metadata
@@ -255,7 +254,7 @@ ${appLocal.turtlePrefix()}
     const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinkQuery(inputNode, link));
 
     // merge all queries into one
-    const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()]);
+    const query = mergeConstructQueries([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()]);
 
     console.log('Generated SPARQL Query:');
     console.log(query);
