@@ -18,6 +18,7 @@ import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-obj
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { labelAlphaSort } from 'projects/blueprint/src/app/core/utils/sort-functions';
+import { mergeConstructQueries } from 'projects/blueprint/src/app/core/utils/sparql-merge-construct';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class HierarchyTreeDataService {
       switchMap(hierarchy => {
         const query = this.getQueryFor(hierarchy.rootNode);
         const metadataQuery = this.uiClassMetadataService.getClassMetadataSparqlQuery();
-        return this.sparqlService.construct(sparqlUtils.mergeConstruct([query, metadataQuery]));
+        return this.sparqlService.construct(mergeConstructQueries([query, metadataQuery]));
 
       }),
       map(dataset => {

@@ -19,6 +19,7 @@ import { ConfigService } from '@blueprint/service/config/config.service';
 import { getInputNodeGraphQuery } from './query/get-input-node-graph.query';
 import { getOutgoingLinkQuery } from './query/get-outgoing-link.query';
 import { getIncomingLinkQuery } from './query/get-incoming-link.query';
+import { mergeConstructQueries } from 'projects/blueprint/src/app/core/utils/sparql-merge-construct';
 
 
 @Injectable({
@@ -47,7 +48,7 @@ export class GraphQueryBuilderService {
     const objectPropertiesQuery = getAllObjectPropertiesForIriQuery(input);
 
     // Merge the UI and link metadata queries into a single query
-    const mergedQuery = sparqlUtils.mergeConstruct([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
+    const mergedQuery = mergeConstructQueries([uiMetaDataQuery, objectPropertiesQuery, linkMetaDataQuery]);
 
 
     // Execute the merged query to retrieve link metadata
@@ -255,7 +256,7 @@ ${appLocal.turtlePrefix()}
     const incomingLinkQueries = inLinkDefinitions.filter(link => link.inversePropertyPath !== null).map(link => getIncomingLinkQuery(inputNode, link));
 
     // merge all queries into one
-    const query = sparqlUtils.mergeConstruct([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()]);
+    const query = mergeConstructQueries([inputQuery, ...outgoingLinkQueries, ...incomingLinkQueries, this.#uiClassMetadataService.getClassMetadataSparqlQuery()]);
 
     console.log('Generated SPARQL Query:');
     console.log(query);

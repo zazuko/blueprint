@@ -18,6 +18,7 @@ import { AggregateService } from '@blueprint/service/graph/aggregate/aggregate.s
 import { HierarchyDefinition } from 'projects/blueprint/src/app/features/configuration/topology/service/model/hierarchy-definition.model';
 import { rdfEnvironment, RdfTypes } from '../../../rdf/rdf-environment';
 import { defaultSubjectQuery } from './query/default-subject.query';
+import { mergeConstructQueries } from '../../../utils/sparql-merge-construct';
 
 @Injectable({
   providedIn: 'root'
@@ -72,7 +73,7 @@ export class ViewDataService {
         const uiClassMetadataQuery = this.#uiClassMetadataService.getClassMetadataSparqlQuery();
 
 
-        const mergedMetaQuery = sparqlUtils.mergeConstruct([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
+        const mergedMetaQuery = mergeConstructQueries([...viewMetaQueries, hierarchyQueries, uiClassMetadataQuery, ...aggregateToNodeLinkQueries, ...aggregateToAggregateLinkQueries]);
 
         return this.#sparql.construct(mergedMetaQuery);
       }),
@@ -185,7 +186,7 @@ export class ViewDataService {
         const queries = [defaultSubjectQuery(subject), ...hierarchyViewQueries, ...uiViewQueries, ...hierarchyQueries, ...uiDetailQueries, ...compositionToCompositionQueries, ...compositionToNodeLinkQueries];
 
         // merge all queries
-        const mergedQuery = sparqlUtils.mergeConstruct(queries);
+        const mergedQuery = mergeConstructQueries(queries);
 
         return this.#sparql.construct(mergedQuery);
       }
