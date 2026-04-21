@@ -2,18 +2,16 @@ import { Injectable, inject } from '@angular/core';
 
 import { Observable, forkJoin, switchMap, of, map } from 'rxjs';
 
-import { rdf, flux, shacl, rdfs, schema, skos, appLocal } from '@blueprint/ontology';
+import { rdf, appLocal } from '@blueprint/ontology';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-link-metadata.service';
 
 import { rdfEnvironment, RdfTypes } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { getAllObjectPropertiesForIriQuery } from './query/get-all-object-properties-for-iri.query';
 import { RdfUiLinkDefinition, UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { PredicateTBox } from 'projects/blueprint/src/app/core/rdf/semantics/predicate-t-box';
-import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { TBoxService } from 'projects/blueprint/src/app/core/rdf/semantics/service/tbox.service';
 import { ConfigService } from '@blueprint/service/config/config.service';
 import { getInputNodeGraphQuery } from './query/get-input-node-graph.query';

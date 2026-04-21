@@ -4,7 +4,6 @@ import { Observable, map } from 'rxjs';
 
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 
 import { flux, rdf, rdfs, shacl } from '@blueprint/ontology';
 import { HierarchyDefinition } from './model/hierarchy-definition.model';

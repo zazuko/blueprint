@@ -50,7 +50,6 @@
     "primeng": "^21.1.6",
     "rxjs": "~7.8.2",
     "sigma": "^3.0.2",
-    "sparqljs": "^3.7.3",
     "tailwindcss": "^4.1.17",
     "tailwindcss-primeui": "^0.6.1",
     "tslib": "^2.5.0",

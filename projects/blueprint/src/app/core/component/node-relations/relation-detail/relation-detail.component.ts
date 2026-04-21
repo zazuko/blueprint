@@ -10,7 +10,6 @@ import { ConfigService } from '@blueprint/service/config/config.service';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 import { NodeElementTableComponent } from "../../node-element-table/node-element-table.component";
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
-import { sparqlUtils } from '../../../utils/sparql-utils';
 import { mergeConstructQueries } from '../../../utils/sparql-merge-construct';
 
 @Component({

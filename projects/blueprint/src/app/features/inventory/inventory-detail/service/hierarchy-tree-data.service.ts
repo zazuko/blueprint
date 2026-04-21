@@ -16,7 +16,6 @@ import { flux, rdf, rdfs } from '@blueprint/ontology';
 import { UiClassMetadataService } from '@blueprint/service/ui-class-metadata/ui-class-metadata.service';
 import { ClownfaceObject } from '@blueprint/model/clownface-object/clownface-object';
 import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
-import { sparqlUtils } from 'projects/blueprint/src/app/core/utils/sparql-utils';
 import { labelAlphaSort } from 'projects/blueprint/src/app/core/utils/sort-functions';
 import { mergeConstructQueries } from 'projects/blueprint/src/app/core/utils/sparql-merge-construct';
 
