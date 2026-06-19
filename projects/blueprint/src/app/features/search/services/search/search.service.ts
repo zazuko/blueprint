@@ -143,7 +143,6 @@ export class SearchService {
           // - search query
           const queries: string[] = [];
 
-          debugger
           // metadata query
           queries.push(this.uiClassMetadataService.getClassMetadataSparqlQuery())
           // count total query and count query if needed

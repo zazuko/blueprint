@@ -94,6 +94,7 @@ export class HierarchyNode extends ClownfaceObject {
         return '';
     }
 
+    // refactor 
     get pathFromRoot(): string {
         const path = this._node.in(shacl.nodeNamedNode).out(shacl.pathNamedNode);
         if (path.isList()) {
@@ -101,6 +102,9 @@ export class HierarchyNode extends ClownfaceObject {
         }
 
 
+        if (path.values.length !== 1) {
+            return '';
+        }
         if (path.term.termType === 'BlankNode') {
             const inverse = path.out(shacl.inversePathNamedNode);
             if (inverse.values.length === 1) {
