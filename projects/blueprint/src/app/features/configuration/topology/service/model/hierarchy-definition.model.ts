@@ -390,16 +390,18 @@ export class HierarchyDefinition extends Aggregation {
         for (const path of pathToLeaves) {
             // iterate over all nodes in the path
             let query = '';
+
             path.forEach((node, index) => {
-                maxIndex = Math.max(maxIndex, index);
-                const subject = index > 0 ? `?var_${index}` : '?subject';
-                const parentVar = index - 1 > 0 ? `?var_${index - 1}` : '?subject';
+                if (node.pathFromRoot !== '') {
+                    maxIndex = Math.max(maxIndex, index);
+                    const subject = index > 0 ? `?var_${index}` : '?subject';
+                    const parentVar = index - 1 > 0 ? `?var_${index - 1}` : '?subject';
 
-                query += index > 0 ? `${parentVar} ${node.pathFromRoot} ${subject}.\n` : '';
-                query += `BIND(<${node.targetClass}> as ?class_${index})\n${subject} a ?class_${index} .\n`;
-                query += `${subject} ${rdfs.labelPrefixed} ?label_${index} .\n`;
-                query += `BIND (IRI(CONCAT(str(${subject}), '${viewIri}/viewContainer'))  AS ?child_${index})\n`;
-
+                    query += index > 0 ? `${parentVar} ${node.pathFromRoot} ${subject}.\n` : '';
+                    query += `BIND(<${node.targetClass}> as ?class_${index})\n${subject} a ?class_${index} .\n`;
+                    query += `${subject} ${rdfs.labelPrefixed} ?label_${index} .\n`;
+                    query += `BIND (IRI(CONCAT(str(${subject}), '${viewIri}/viewContainer'))  AS ?child_${index})\n`;
+                }
             });
             queriesForBranches.push(query);
         }

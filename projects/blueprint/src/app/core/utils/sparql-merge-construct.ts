@@ -114,11 +114,20 @@ export function mergeConstructQueries(queries: string[]): string {
             triples: templateTriples,
             loc: F.gen()
         },
-        // Combine all WHERE group graph patterns into one main group
+        // Combine all WHERE group graph patterns into one main group, merging with UNION if there are multiple patterns
         where: {
             type: "pattern",
             subType: "group",
-            patterns: wherePatterns,
+            patterns: wherePatterns.length > 1
+                ? [
+                    {
+                        type: "pattern",
+                        subType: "union",
+                        patterns: wherePatterns,
+                        loc: F.gen()
+                    }
+                ]
+                : wherePatterns,
             loc: F.gen()
         },
         solutionModifiers: {},
