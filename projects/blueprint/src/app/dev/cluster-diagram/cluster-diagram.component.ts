@@ -1,7 +1,16 @@
-import { Component, OnChanges, SimpleChanges, signal, computed, output, input } from '@angular/core';
-import { TreeNode } from 'primeng/api';
-import { PanelModule } from 'primeng/panel';
-import { TooltipModule } from 'primeng/tooltip';
+import {
+  Component,
+  OnChanges,
+  SimpleChanges,
+  signal,
+  computed,
+  output,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { TreeNode } from '../../core/model/tree-node.model';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { NodeElement } from '../../core/model/node-element/node-element.class';
 import { NgStyle } from '@angular/common';
@@ -9,9 +18,10 @@ import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/
 
 @Component({
   selector: 'bp-cluster-diagram',
-  imports: [AvatarComponent, PanelModule, TooltipModule],
+  imports: [AvatarComponent, MatExpansionModule, MatTooltipModule],
   templateUrl: './cluster-diagram.component.html',
-  styleUrl: './cluster-diagram.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './cluster-diagram.component.scss',
 })
 export class ClusterDiagramComponent implements OnChanges {
   readonly data = input.required<TreeNode<NodeElement> | null>();
@@ -28,7 +38,10 @@ export class ClusterDiagramComponent implements OnChanges {
     if (this.treeNodeSignal() === null) {
       return [];
     }
-    const leaves = this.treeNodeSignal().children?.filter(node => !node.children || node.children.length === 0) ?? [];
+    const leaves =
+      this.treeNodeSignal().children?.filter(
+        (node) => !node.children || node.children.length === 0
+      ) ?? [];
     return leaves;
   });
 
@@ -36,10 +49,12 @@ export class ClusterDiagramComponent implements OnChanges {
     if (this.treeNodeSignal() === null) {
       return [];
     }
-    const nodes = this.treeNodeSignal().children?.filter(node => node.children && node.children.length > 0) ?? [];
+    const nodes =
+      this.treeNodeSignal().children?.filter(
+        (node) => node.children && node.children.length > 0
+      ) ?? [];
     return nodes;
   });
-
 
   public emitNodeSelected(iri: string): void {
     this.nodeSelected.emit(iri);
@@ -52,10 +67,8 @@ export class ClusterDiagramComponent implements OnChanges {
     }
   }
 
-
   onCollapsedChange(isCollapsed: boolean) {
     this.treeNodeSignal().expanded = !isCollapsed;
     this.isCollapsedSignal.set(isCollapsed);
   }
-
 }

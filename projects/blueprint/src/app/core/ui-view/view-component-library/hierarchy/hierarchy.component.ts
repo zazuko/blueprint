@@ -1,12 +1,18 @@
-import { Component, output, input } from '@angular/core';
+import {
+  Component,
+  output,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AvatarComponent } from '../../../../shared/component/ui/avatar/avatar.component';
-import { TooltipModule } from 'primeng/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'bp-hierarchy',
-  imports: [AvatarComponent, TooltipModule],
+  imports: [AvatarComponent, MatTooltipModule],
   templateUrl: './hierarchy.component.html',
-  styleUrl: './hierarchy.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './hierarchy.component.scss',
 })
 export class HierarchyComponent {
   readonly hierarchy = input<HierarchyElement[]>([]);
@@ -16,12 +22,11 @@ export class HierarchyComponent {
   emitNodeSelected(iri: string) {
     this.nodeSelected.emit(iri);
   }
-
 }
 
 export interface HierarchyElement {
   iri: string;
-  classIri: string,
+  classIri: string;
   label: string;
   classLabel: string;
   icon: string;

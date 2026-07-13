@@ -2,9 +2,11 @@
     @if(hierarchyDefinition() !== null && hierarchyDefinition() !== undefined) {
     @defer (when hierarchyDefinition() !== null) {
     <h1>{{hierarchyDefinition().label}}</h1>
-    <p-tree layout="horizontal" [value]="hierarchy()">
-
-    </p-tree>
+    <div class="flex flex-col justify-start items-start overflow-auto py-8">
+      @for (node of hierarchy(); track node.label) {
+        <ng-container *ngTemplateOutlet="horNodeTmpl; context: { $implicit: node }"></ng-container>
+      }
+    </div>
     }
     } @else if(hierarchyDefinition() === null) {
     <h1>Topology</h1>
@@ -12,3 +14,35 @@
     }
 
 </bp-breadcrumb-page>
+
+<ng-template #horNodeTmpl let-node>
+  <div class="flex items-center">
+    <!-- Node Box -->
+    <div class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-lg shadow-sm px-4 py-2.5 min-w-[140px] z-10 flex flex-col justify-center">
+      <div class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{node.data.label}}</div>
+      <div class="text-[10px] text-zinc-500 font-mono mt-1 break-all max-w-[180px]">&lt;{{node.label}}&gt;</div>
+    </div>
+    
+    @if (node.children && node.children.length > 0) {
+      <!-- Connecting horizontal line -->
+      <div class="w-6 h-[2px] bg-zinc-300 dark:bg-zinc-700 shrink-0"></div>
+      
+      <!-- Children Container -->
+      <div class="flex flex-col gap-4 relative">
+        @for (child of node.children; track child.label; let first = $first; let last = $last) {
+          <div class="flex items-center relative py-1">
+            <!-- Sibling vertical line to connect paths -->
+            <div class="absolute left-0 w-[2px] bg-zinc-300 dark:bg-zinc-700"
+                 [style.top]="first ? '50%' : '0'"
+                 [style.bottom]="last ? '50%' : '0'"
+                 [class.hidden]="first && last"></div>
+            <!-- Connecting line from vertical connector to child -->
+            <div class="w-6 h-[2px] bg-zinc-300 dark:bg-zinc-700 shrink-0"></div>
+            
+            <ng-container *ngTemplateOutlet="horNodeTmpl; context: { $implicit: child }"></ng-container>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

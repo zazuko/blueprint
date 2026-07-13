@@ -1,11 +1,10 @@
 import { Component, signal, computed, OnChanges, SimpleChanges, input } from '@angular/core';
-import { TableModule } from 'primeng/table';
 import { Table } from '../../features/inventory/inventory-detail/service/hierarchy-table.service';
 
 
 @Component({
     selector: 'bp-group-table',
-    imports: [TableModule],
+    imports: [],
     templateUrl: './group-table.component.html',
     styleUrl: './group-table.component.scss'
 })

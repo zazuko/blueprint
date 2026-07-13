@@ -1,9 +1,15 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { TooltipModule } from 'primeng/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
@@ -20,9 +26,10 @@ import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcru
     RouterLink,
     BreadcrumbPageComponent,
     HierarchyCardComponent,
-    TooltipModule
+    MatTooltipModule,
   ],
-  animations: [fadeInOut]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [fadeInOut],
 })
 export class InventoryComponent {
   readonly #hierarchyService = inject(HierarchyService);
@@ -36,20 +43,22 @@ export class InventoryComponent {
     {
       label: 'Inventory',
       route: '/inventory',
-      disabled: false
-    }
+      disabled: false,
+    },
   ];
 
   constructor() {
     this.#loadingIndicatorService.start();
-    this.#hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(
-      {
-        next: hierarchies => {
+    this.#hierarchyService
+      .getAllHierarchies()
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe({
+        next: (hierarchies) => {
           this.hierarchySignal.set(hierarchies);
           this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
         },
-        error: error => {
+        error: (error) => {
           console.error(error);
           this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
@@ -57,10 +66,7 @@ export class InventoryComponent {
         complete: () => {
           this.#loadingIndicatorService.done();
           this.showContentSignal.set(true);
-        }
-      }
-    );
+        },
+      });
   }
-
-
 }

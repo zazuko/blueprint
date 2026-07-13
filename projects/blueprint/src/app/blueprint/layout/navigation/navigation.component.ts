@@ -1,38 +1,40 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { toObservable } from '@angular/core/rxjs-interop';
 
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
 
-import { PopoverModule } from 'primeng/popover';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { NavigationState } from './service/navigation-state.service';
 
 import { ThemePickerMenuComponent } from '../theme-picker-menu/theme-picker-menu.component';
-import { MobileLogoButtonComponent } from "../mobile-logo-button/mobile-logo-button.component";
+import { MobileLogoButtonComponent } from '../mobile-logo-button/mobile-logo-button.component';
 import { BrandLogoComponent } from '../../../shared/component/brand/brand-logo/brand-logo.component';
 import { Router, RouterLink } from '@angular/router';
-import { NavigationMenuItem, NavMenuItemComponent } from './nav-menu-item/nav-menu-item.component';
+import {
+  NavigationMenuItem,
+  NavMenuItemComponent,
+} from './nav-menu-item/nav-menu-item.component';
 import { ThemeManager } from '../service/theme-manager/theme-manager.service';
 
 type MenuType = 'theme-picker';
-
 
 const NAVIGATION_ITEMS: NavigationMenuItem[] = [
   {
     label: 'Search',
     route: '/search',
-    icon: 'pi pi-search',
+    icon: 'fas fa-search',
   },
   {
     label: 'Inventory',
     route: '/inventory',
-    icon: 'pi pi-box',
+    icon: 'fas fa-box',
   },
   {
     label: 'Settings',
     route: '/configurator',
-    icon: 'pi pi-cog',
+    icon: 'fas fa-cog',
   },
 ];
 
@@ -41,14 +43,15 @@ const NAVIGATION_ITEMS: NavigationMenuItem[] = [
   selector: 'div.bp-nav',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss', './nav-item.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     ThemePickerMenuComponent,
     MobileLogoButtonComponent,
     BrandLogoComponent,
     NavMenuItemComponent,
-    PopoverModule
-]
+    MatMenuModule,
+  ],
 })
 export class NavigationComponent {
   private readonly navigationState = inject(NavigationState);
@@ -60,21 +63,19 @@ export class NavigationComponent {
   isMobileNavigationOpened = this.navigationState.isMobileNavVisible;
   isMobileNavigationOpened$ = toObservable(this.isMobileNavigationOpened);
 
-
   activeRouteItem = this.navigationState.primaryActiveRouteItem;
   theme = this.#themeManager.theme;
-
 
   openedMenu: MenuType | null = null;
 
   miniMenuPositions = [
     new ConnectionPositionPair(
       { originX: 'end', originY: 'center' },
-      { overlayX: 'start', overlayY: 'center' },
+      { overlayX: 'start', overlayY: 'center' }
     ),
     new ConnectionPositionPair(
       { originX: 'end', originY: 'top' },
-      { overlayX: 'start', overlayY: 'top' },
+      { overlayX: 'start', overlayY: 'top' }
     ),
   ];
 
@@ -100,5 +101,4 @@ export class NavigationComponent {
   onNavigationItemSelected(item: NavigationMenuItem): void {
     this.#router.navigate([item.route]);
   }
-
 }

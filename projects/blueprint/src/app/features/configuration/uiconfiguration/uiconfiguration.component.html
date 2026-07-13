@@ -5,8 +5,11 @@
 
 
     <form [formGroup]="uiConfigurationFormGroup">
-        <p-selectbutton [options]="stateOptions" [allowEmpty]="false" formControlName="link" optionLabel="label"
-            optionValue="value" />
+        <mat-button-toggle-group formControlName="link" aria-label="Link Option Mode">
+            @for (opt of stateOptions; track opt.value) {
+            <mat-button-toggle [value]="opt.value">{{opt.label}}</mat-button-toggle>
+            }
+        </mat-button-toggle-group>
     </form>
     <p>
         @switch (currentLinkOption()) {

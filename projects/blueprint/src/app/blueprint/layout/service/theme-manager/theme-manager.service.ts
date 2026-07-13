@@ -39,15 +39,6 @@ export class ThemeManager {
 
   }
 
-  private switchPrimeNgTheme(theme: Theme): void {
-    const color = 'blue';
-    const mode = theme === 'auto' ? preferredScheme() : theme;
-    const linkElement = this.#document.getElementById('app-theme') as HTMLLinkElement;
-    if (linkElement) {
-      linkElement.href = `blueprint-${mode}-${color}.css`;
-    }
-  }
-
   // 1. Read theme preferences stored in localStorage
   // 2. In case when there are no stored user preferences, then read them from device preferences.
   private loadThemePreference(): void {
@@ -70,7 +61,6 @@ export class ThemeManager {
       this.#document.documentElement.style.colorScheme = 'light';
 
     }
-    this.switchPrimeNgTheme(theme);
   }
 
   #getThemeFromLocalStorageValue(): Theme | null {

@@ -1,18 +1,36 @@
-@if(avatars().length > 1) {
-
-<p-avatarGroup>
+@if (avatars().length > 1) {
+<div class="flex -space-x-2 overflow-hidden items-center justify-center inline-flex">
     @for(avatar of uniqueAvatars(); track avatar.id) {
-    <p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()" [style]="{'background-color': avatar.color}"
-        [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
+    <div [style.background-color]="avatar.color"
+         class="inline-flex items-center justify-center text-white border-2 border-white dark:border-zinc-950 font-bold"
+         [class.w-12]="size() === 'xlarge'" [class.h-12]="size() === 'xlarge'" [class.text-base]="size() === 'xlarge'"
+         [class.w-9]="size() === 'large'" [class.h-9]="size() === 'large'" [class.text-sm]="size() === 'large'"
+         [class.w-7]="size() === 'normal'" [class.h-7]="size() === 'normal'" [class.text-xs]="size() === 'normal'"
+         [class.rounded-full]="shape() === 'circle'" [class.rounded-md]="shape() === 'square'"
+         [class.ring-2]="selected()" [class.ring-blue-500]="selected()">
+         <i [class]="avatar.icon"></i>
+    </div>
     }
-</p-avatarGroup>
-}@else if(uniqueAvatars().length === 1) {
+</div>
+} @else if (uniqueAvatars().length === 1) {
 @for(avatar of uniqueAvatars(); track avatar.id) {
-
-<p-avatar [icon]="avatar.icon" [size]="size()" [shape]="shape()" [style]="{'background-color': avatar.color}"
-    [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
+<div [style.background-color]="avatar.color"
+     class="inline-flex items-center justify-center text-white font-bold"
+     [class.w-12]="size() === 'xlarge'" [class.h-12]="size() === 'xlarge'" [class.text-base]="size() === 'xlarge'"
+     [class.w-9]="size() === 'large'" [class.h-9]="size() === 'large'" [class.text-sm]="size() === 'large'"
+     [class.w-7]="size() === 'normal'" [class.h-7]="size() === 'normal'" [class.text-xs]="size() === 'normal'"
+     [class.rounded-full]="shape() === 'circle'" [class.rounded-md]="shape() === 'square'"
+     [class.ring-2]="selected()" [class.ring-blue-500]="selected()">
+     <i [class]="avatar.icon"></i>
+</div>
 }
 } @else {
-<p-avatar [size]="size()" [styleClass]="selected() ? 'selected-avatar' : ''"></p-avatar>
-
+<div class="inline-flex items-center justify-center bg-zinc-200 dark:bg-zinc-800 text-zinc-500 font-bold"
+     [class.w-12]="size() === 'xlarge'" [class.h-12]="size() === 'xlarge'"
+     [class.w-9]="size() === 'large'" [class.h-9]="size() === 'large'"
+     [class.w-7]="size() === 'normal'" [class.h-7]="size() === 'normal'"
+     [class.rounded-full]="shape() === 'circle'" [class.rounded-md]="shape() === 'square'"
+     [class.ring-2]="selected()" [class.ring-blue-500]="selected()">
+     <i class="fas fa-user text-xs"></i>
+</div>
 }

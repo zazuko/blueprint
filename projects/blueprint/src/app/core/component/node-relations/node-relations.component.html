@@ -1,5 +1,9 @@
 <form [formGroup]="formGroup">
-    <p-selectbutton [options]="predicateOptions" formControlName="value" optionLabel="label" optionValue="value" />
+    <mat-button-toggle-group formControlName="value" aria-label="Predicate View Mode">
+        @for (opt of predicateOptions; track opt.value) {
+        <mat-button-toggle [value]="opt.value">{{opt.label}}</mat-button-toggle>
+        }
+    </mat-button-toggle-group>
 </form>
 <br>
 <br>

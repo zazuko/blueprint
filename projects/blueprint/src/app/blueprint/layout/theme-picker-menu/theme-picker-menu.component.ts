@@ -1,26 +1,28 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationMenuItem } from '../navigation/nav-menu-item/nav-menu-item.component';
-import { ThemePickerMenuItemComponent } from "./theme-picker-menu-item/theme-picker-menu-item.component";
-import { Theme, ThemeManager } from '../service/theme-manager/theme-manager.service';
-
+import { ThemePickerMenuItemComponent } from './theme-picker-menu-item/theme-picker-menu-item.component';
+import {
+  Theme,
+  ThemeManager,
+} from '../service/theme-manager/theme-manager.service';
 
 const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [
   {
     label: 'System',
     route: 'Set the theme to system mode.',
-    icon: 'pi pi-desktop',
+    icon: 'fas fa-desktop',
     theme: 'auto',
   },
   {
     label: 'Light',
     route: 'Set the theme to light mode.',
-    icon: 'pi pi-sun',
+    icon: 'fas fa-sun',
     theme: 'light',
   },
   {
     label: 'Dark',
     route: 'Set the theme to dark mode.',
-    icon: 'pi pi-moon',
+    icon: 'fas fa-moon',
     theme: 'dark',
   },
 ];
@@ -29,7 +31,8 @@ const THEME_PICKER_MENU_ITEMS: ThemeMenuItem[] = [
   selector: 'bp-theme-picker-menu',
   templateUrl: './theme-picker-menu.component.html',
   styleUrl: './theme-picker-menu.component.scss',
-  imports: [ThemePickerMenuItemComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ThemePickerMenuItemComponent],
 })
 export class ThemePickerMenuComponent {
   readonly #themeManager = inject(ThemeManager);
@@ -40,9 +43,7 @@ export class ThemePickerMenuComponent {
   setTheme(theme: Theme): void {
     this.#themeManager.setTheme(theme);
   }
-
 }
-
 
 interface ThemeMenuItem extends NavigationMenuItem {
   theme: Theme;

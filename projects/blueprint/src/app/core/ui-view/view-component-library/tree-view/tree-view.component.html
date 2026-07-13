@@ -1,14 +1,37 @@
 @if(data().length > 0 && data()[0].children.length > 0) {
 <h2>{{label()}}</h2>
-<p-tree [value]="data()" selectionMode="single" (onNodeSelect)="emitNodeSelected($event)">
-    <ng-template let-node pTemplate="default">
-        <div class="content">
-            <bp-avatar size="normal" [avatars]="node.data.avatars" />
-            <div>
-                <div class="big">{{node.label}}</div>
-                <div class="small">{{node.data.classLabel}}</div>
-            </div>
-        </div>
-    </ng-template>
-</p-tree>
+<div class="space-y-1 w-full">
+  @for (node of data(); track node.key || node.label) {
+    <ng-container *ngTemplateOutlet="treeNodeTmpl; context: { $implicit: node }"></ng-container>
+  }
+</div>
 }
+
+<ng-template #treeNodeTmpl let-node>
+  <div class="flex flex-col">
+    <div class="flex items-center gap-2 py-1.5 px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded cursor-pointer transition-colors duration-150"
+         (click)="emitNodeSelected({ node: node })">
+      @if (node.children && node.children.length > 0) {
+        <button mat-icon-button (click)="$event.stopPropagation(); node.expanded = !node.expanded" class="w-6 h-6 flex items-center justify-center p-0 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+          <i class="fas" [class.fa-chevron-down]="node.expanded" [class.fa-chevron-right]="!node.expanded"></i>
+        </button>
+      } @else {
+        <div class="w-6"></div>
+      }
+      <div class="content flex items-center gap-2">
+        <bp-avatar size="normal" [avatars]="node.data.avatars" />
+        <div>
+          <div class="big font-medium text-zinc-800 dark:text-zinc-200 text-sm">{{node.label}}</div>
+          <div class="small text-xs text-zinc-500 dark:text-zinc-400">{{node.data.classLabel}}</div>
+        </div>
+      </div>
+    </div>
+    @if (node.children && node.children.length > 0 && node.expanded) {
+      <div class="pl-6 border-l border-zinc-200 dark:border-zinc-800 ml-3.5 flex flex-col space-y-1 mt-1">
+        @for (child of node.children; track child.key || child.label) {
+          <ng-container *ngTemplateOutlet="treeNodeTmpl; context: { $implicit: child }"></ng-container>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

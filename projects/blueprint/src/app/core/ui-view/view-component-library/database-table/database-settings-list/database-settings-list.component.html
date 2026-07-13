@@ -1,10 +1,9 @@
 @for (item of list(); track item) {
-@if (item.isKey) {
-<p-chip [label]="item.label" icon="pi pi-key"
-    [style]="{'background-color': item.isPrimaryKey ? '#ff4081' : item.isKey ? '#03A9F4' : '#009688' }" />
-} @else {
-<p-chip [label]="item.label"
-    [style]="{'background-color': item.isPrimaryKey ? '#ff4081' : item.isKey ? '#03A9F4' : '#009688' }" />
-
-}
+<span [style.background-color]="item.isPrimaryKey ? '#ff4081' : item.isKey ? '#03A9F4' : '#009688'"
+      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white text-xs font-semibold shadow-sm border border-black/10 mr-1.5 mb-1.5">
+  @if (item.isKey) {
+    <i class="fas fa-key text-[10px]"></i>
+  }
+  {{item.label}}
+</span>
 }

@@ -7,7 +7,7 @@
 
 <nav class="bp-nav-primary bp-scroll-hide" [class.bp-nav-primary--open]="isMobileNavigationOpened()" #e>
   <button type="button" class="bp-close-nav" (click)="closeMobileNav()" aria-label="Close navigation">
-    <i class="pi pi-times"></i>
+    <i class="fas fa-times"></i>
   </button>
   <!-- Top section of primary nav -->
   <a aria-label="Blueprint homepage" routerLink="/" class="brand">
@@ -26,17 +26,17 @@
 
   <!-- Bottom section of primary nav -->
   <div class="bottom-items">
-    <p-popover #op [styleClass]="'theme-select'">
+    <mat-menu #op="matMenu" class="theme-select">
       <bp-theme-picker-menu></bp-theme-picker-menu>
-    </p-popover>
-    <div (click)="op.toggle($event)" tabindex="10" (keyup.enter)="op.toggle($event)">
+    </mat-menu>
+    <div [matMenuTriggerFor]="op" tabindex="10">
       @switch (theme()) {
       @case ('light') {
-      <i class="pi pi-sun"></i>
+      <i class="fas fa-sun"></i>
       } @case ('dark') {
-      <i class="pi pi-moon"></i>
+      <i class="fas fa-moon"></i>
       } @case ('auto') {
-      <i class="pi pi-desktop"></i>
+      <i class="fas fa-desktop"></i>
       } }
 
     </div>

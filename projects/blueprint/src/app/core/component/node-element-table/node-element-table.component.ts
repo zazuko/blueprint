@@ -1,8 +1,15 @@
-import { Component, computed, inject, input, OnDestroy, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
-import { ButtonModule } from 'primeng/button';
-
+import { MatButtonModule } from '@angular/material/button';
 
 import { HierarchyCardComponent } from '../../../features/inventory/inventory/hierarchy-card/hierarchy-card.component';
 import { NodeHighligherService } from './service/node-highligher.service';
@@ -10,24 +17,23 @@ import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'bp-node-element-table',
-  imports: [HierarchyCardComponent, NgClass, ButtonModule],
+  imports: [HierarchyCardComponent, NgClass, MatButtonModule],
   templateUrl: './node-element-table.component.html',
-  styleUrl: './node-element-table.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './node-element-table.component.scss',
 })
 export class NodeElementTableComponent {
-
   nodeElements = input.required<NodeElement[]>();
 
   nodeSelect = output<NodeElement>();
   #highlighterService = inject(NodeHighligherService);
-  highlightedIri = this.#highlighterService.highlightedNodeIri
+  highlightedIri = this.#highlighterService.highlightedNodeIri;
   forcedHighlightIri = this.#highlighterService.forcedHighlightIri;
 
   tableColumns = computed<TableColumn[]>(() => {
     if (this.nodeElements().length === 0) {
     }
     return [];
-
   });
 
   emitNodeSelected(node: NodeElement): void {
@@ -46,7 +52,6 @@ export class NodeElementTableComponent {
     }
     this.#highlighterService.forceHighlight(iri);
   }
-
 }
 
 interface TableColumn {

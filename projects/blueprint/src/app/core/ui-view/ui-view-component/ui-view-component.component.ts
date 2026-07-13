@@ -10,7 +10,7 @@ import { DatabaseTableComponent } from '../view-component-library/database-table
 import { DatabaseColumn, DatabaseTable } from '../view-component-library/database-table/model/database.model';
 
 
-import { TreeNode } from 'primeng/api';
+import { TreeNode } from '../../model/tree-node.model';
 import { NodeElement } from '../../model/node-element/node-element.class';
 import { GraphPointer } from 'clownface';
 import { nileaUi, rdfs, flux } from '@blueprint/ontology';

@@ -15,23 +15,29 @@
     <button (click)="getProps()">Get Props</button>
 
     <h2>Select Predicates</h2>
-    <div style="display: flex; flex-direction: row;">
-        <div>
-
-
+    <div style="display: flex; flex-direction: row; gap: 24px;" cdkDropListGroup>
+        <div id="availableList"
+             cdkDropList
+             [cdkDropListData]="availablePredicates()"
+             (cdkDropListDropped)="onDrop($event)"
+             class="border border-zinc-200 dark:border-zinc-800 rounded p-4 w-1/2 min-h-[200px] bg-zinc-50/50 dark:bg-zinc-900/30">
             @for(availablePredicate of availablePredicates(); track availablePredicate.iri) {
-            <div pDraggable="props" (onDragStart)="dragStart(availablePredicate)">
-                <h3>{{availablePredicate.label}}</h3>
-                <p class="small">{{availablePredicate.iri}}</p>
+            <div cdkDrag class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded p-3 mb-2 cursor-move shadow-sm active:cursor-grabbing">
+                <h3 class="text-sm font-semibold m-0 text-zinc-800 dark:text-zinc-200">{{availablePredicate.label}}</h3>
+                <p class="text-xs text-zinc-500 m-0 break-all">{{availablePredicate.iri}}</p>
             </div>
             }
         </div>
 
-        <div style="margin-left: 12px; border: 1px dashed white; flex-grow: 1;" pDroppable="props" (onDrop)="drop()">
+        <div id="selectedList"
+             cdkDropList
+             [cdkDropListData]="selectedPredicates()"
+             (cdkDropListDropped)="onDrop($event)"
+             class="border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded p-4 w-1/2 min-h-[200px] bg-zinc-50/20 dark:bg-zinc-900/10">
             @for(predicate of selectedPredicates(); track predicate.iri) {
-            <div>
-                <h3>{{predicate.label}}</h3>
-                <p class="small">{{predicate.iri}}</p>
+            <div cdkDrag class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded p-3 mb-2 cursor-move shadow-sm active:cursor-grabbing">
+                <h3 class="text-sm font-semibold m-0 text-zinc-800 dark:text-zinc-200">{{predicate.label}}</h3>
+                <p class="text-xs text-zinc-500 m-0 break-all">{{predicate.iri}}</p>
             </div>
             }
         </div>

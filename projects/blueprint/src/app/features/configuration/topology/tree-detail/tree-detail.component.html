@@ -2,13 +2,11 @@
     @if(hierarchyDefinition() !== null && hierarchyDefinition() !== undefined) {
     @defer (when hierarchyDefinition() !== null) {
     <h1>{{hierarchyDefinition().label}}</h1>
-    <p-organizationChart [value]="hierarchy()">
-        <ng-template let-node pTemplate="default">
-            <div> {{node.data.classLabel}}</div>
-            <div>&lt;{{node.label}}&gt;</div>
-
-        </ng-template>
-    </p-organizationChart>
+    <div class="flex flex-col items-center overflow-auto py-8">
+      @for (node of hierarchy(); track node.label) {
+        <ng-container *ngTemplateOutlet="orgNodeTmpl; context: { $implicit: node }"></ng-container>
+      }
+    </div>
     }
     } @else if(hierarchyDefinition() === null) {
     <h1>Topology</h1>
@@ -16,3 +14,35 @@
     }
 
 </bp-breadcrumb-page>
+
+<ng-template #orgNodeTmpl let-node>
+  <div class="flex flex-col items-center">
+    <!-- Node Box -->
+    <div class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-lg shadow-sm px-4 py-2.5 text-center min-w-[140px] z-10">
+      <div class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{{node.data.label}}</div>
+      <div class="text-[10px] text-zinc-500 font-mono mt-1 break-all max-w-[180px]">&lt;{{node.label}}&gt;</div>
+    </div>
+    
+    @if (node.children && node.children.length > 0) {
+      <!-- Vertical line down from parent -->
+      <div class="w-[2px] h-6 bg-zinc-300 dark:bg-zinc-700"></div>
+      
+      <!-- Children columns -->
+      <div class="flex gap-8">
+        @for (child of node.children; track child.label; let first = $first; let last = $last) {
+          <div class="flex flex-col items-center relative">
+            <!-- Connecting lines -->
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-zinc-300 dark:bg-zinc-700"
+                 [class.left-1/2]="first"
+                 [class.right-1/2]="last"
+                 [class.hidden]="first && last"></div>
+            <!-- Vertical line down to child -->
+            <div class="w-[2px] h-6 bg-zinc-300 dark:bg-zinc-700 z-0"></div>
+            
+            <ng-container *ngTemplateOutlet="orgNodeTmpl; context: { $implicit: child }"></ng-container>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

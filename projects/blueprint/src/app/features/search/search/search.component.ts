@@ -17,10 +17,6 @@ import {
 
 import { Subject, Observable, map, debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
 import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
 
@@ -35,7 +31,6 @@ import { SearchService } from '../services/search/search.service';
 import { SearchQueryParam } from '../model/search-query-param.model';
 import { SearchFilter } from '../model/search-filter.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-'src/shapes/entity/flux-search-result-entity/flux-search-model/entity/ui-class-count-entity/ui-class-count.entity';
 
 @Component({
   templateUrl: './search.component.html',
@@ -45,9 +40,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CommonModule,
     FilterPanelComponent,
     SearchResultListComponent,
-    InputTextModule,
-    IconFieldModule,
-    InputIconModule,
     FormsModule,
   ]
 })

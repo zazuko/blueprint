@@ -1,17 +1,24 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { InputIcon } from 'primeng/inputicon';
-import { IconField } from 'primeng/iconfield';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
-import { HierarchyCardComponent } from "../../../../features/inventory/inventory/hierarchy-card/hierarchy-card.component";
+import { HierarchyCardComponent } from '../../../../features/inventory/inventory/hierarchy-card/hierarchy-card.component';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
-import { Tooltip } from 'primeng/tooltip';
 import { ExploredResource } from 'projects/blueprint/src/app/features/explore/model/explored-resource.class';
-import { AvatarComponent, Avatar } from "../../../../shared/component/ui/avatar/avatar.component";
+import {
+  AvatarComponent,
+  Avatar,
+} from '../../../../shared/component/ui/avatar/avatar.component';
 import { PredicateTBox } from '../../../rdf/semantics/predicate-t-box';
 import { RdfPrefixPipe } from '../../../rdf/prefix/rdf-prefix.pipe';
 
@@ -21,17 +28,15 @@ const SHOW_FILTER_IF_MORE_THAN = 10;
   selector: 'bp-neighbor-nodes-list',
   imports: [
     HierarchyCardComponent,
-    InputIcon,
-    IconField,
-    InputTextModule,
     FormsModule,
-    Tooltip,
+    MatTooltipModule,
     AvatarComponent,
-    ButtonModule,
-    RdfPrefixPipe
+    MatButtonModule,
+    RdfPrefixPipe,
   ],
   templateUrl: './neighbor-nodes-list.component.html',
-  styleUrl: './neighbor-nodes-list.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './neighbor-nodes-list.component.scss',
 })
 export class NeighborNodesListComponent {
   nodeList = input.required<NeighborNodeList>();
@@ -40,8 +45,6 @@ export class NeighborNodesListComponent {
 
   nodeSelected = output<IUiGraphNode>();
   moreInformation = output<IUiGraphNode>();
-
-
 
   tBox = computed<PredicateTBox | undefined>(() => {
     return this.nodeList().link.predicateTbox;
@@ -57,7 +60,9 @@ export class NeighborNodesListComponent {
   });
 
   targetAvatars = computed(() => {
-    const avatarSet = new Set<Avatar>(this.nodeList().nodes.flatMap(node => node.avatars));
+    const avatarSet = new Set<Avatar>(
+      this.nodeList().nodes.flatMap((node) => node.avatars)
+    );
     return Array.from(avatarSet);
   });
 
@@ -67,7 +72,6 @@ export class NeighborNodesListComponent {
     if (!showFilter) {
       return nodes;
     }
-
 
     const filterTerm = this.filterTerm();
     if (filterTerm.length > 0) {
@@ -99,15 +103,13 @@ export class NeighborNodesListComponent {
   }
 
   toggleShowTBox(): void {
-    this.showTbox.update(current => !current);
+    this.showTbox.update((current) => !current);
   }
 }
-
 
 export interface NeighborNodeList {
   link: UiLinkDefinition;
   nodes: IUiGraphNode[];
   isOutgoing: boolean;
   id: string;
-
 }

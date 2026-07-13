@@ -9,13 +9,14 @@ import {
   output,
   DestroyRef,
   effect,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
 import { select, zoom, ZoomBehavior, Selection, BaseType } from 'd3';
 
-import { ButtonModule } from 'primeng/button';
+import { MatButtonModule } from '@angular/material/button';
 
 import * as cola from 'webcola';
 
@@ -34,12 +35,8 @@ type SelectionType = 'node' | 'link';
   selector: 'bp-graph',
   templateUrl: './graph.component.html',
   styleUrl: './graph.component.scss',
-  imports: [
-    ArrowComponent,
-    NodeComponent,
-    DraggableDirective,
-    ButtonModule
-  ]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ArrowComponent, NodeComponent, DraggableDirective, MatButtonModule],
 })
 export class GraphComponent implements OnInit, OnDestroy {
   readonly graph = input.required<Graph>();
@@ -57,7 +54,6 @@ export class GraphComponent implements OnInit, OnDestroy {
   readonly nodeMore = output<IUiGraphNode>();
   readonly linkSelected = output<IUConsolidatedLink>();
 
-
   readonly #element = inject(ElementRef).nativeElement;
   readonly #destroyRef = inject(DestroyRef);
 
@@ -69,7 +65,8 @@ export class GraphComponent implements OnInit, OnDestroy {
   public layout: LayoutAdaptor | null = null;
   private d3zoom; // ZoomBehavior<Element, unknown> | null = null;
   private svg: Selection<BaseType, unknown, null, undefined> | null = null;
-  private zoomLayer: Selection<BaseType, unknown, null, undefined> | null = null;
+  private zoomLayer: Selection<BaseType, unknown, null, undefined> | null =
+    null;
 
   #resizeObserver: ResizeObserver | null = null;
   #resize$ = new Subject<void>();
@@ -86,10 +83,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   layoutIsRunning = false;
   layoutQueue: Graph[] = [];
 
-
-
   constructor() {
-
     effect(() => {
       const graph = this.graph();
 
@@ -103,18 +97,14 @@ export class GraphComponent implements OnInit, OnDestroy {
           this.#createChart(graph);
         }
       }
-    }
-    );
+    });
   }
 
   ngOnInit(): void {
-
     if (!window.ResizeObserver) {
       throw new Error('please install a polyfill for ResizeObserver');
     }
-    this.#resize$.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-    ).subscribe(() => {
+    this.#resize$.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
       if (this.layoutIsRunning) {
         this.layout.stop();
       }
@@ -137,27 +127,22 @@ export class GraphComponent implements OnInit, OnDestroy {
     // this enables the panning of the graph
     this.svg.call(this.d3zoom).on('dblclick.zoom', null);
 
-    // zoom out 
+    // zoom out
     this.svg.transition().call(this.d3zoom.scaleBy, 0.618);
-
   }
 
-
-
   #createChart(graph: Graph): void {
-
     if (this.layout && this.graph()) {
-
       const disconnectedGroups = this.#disconnectedNodeGroups(graph.links);
       if (disconnectedGroups.length < 2) {
         this.layout.nodes(graph.nodes);
         this.layout.links(graph.links);
         this.layout.start(0, 0, 0, 0, true, false);
-        return
+        return;
       }
 
       // if there are disconnected groups, we need to add fake links to connect them
-      const links = graph.links.map(x => x);
+      const links = graph.links.map((x) => x);
 
       disconnectedGroups.forEach((group, index) => {
         if (index === disconnectedGroups.length - 1) {
@@ -178,14 +163,13 @@ export class GraphComponent implements OnInit, OnDestroy {
           isBidirectional: false,
           outgoingChildLinks: [],
           incomingChildLinks: [],
-
         };
         links.push(fakeLink);
       });
       this.layout.nodes(graph.nodes);
       this.layout.links(links);
       this.layout.start(0, 0, 0, 0, true, false);
-      return
+      return;
     }
   }
 
@@ -200,8 +184,8 @@ export class GraphComponent implements OnInit, OnDestroy {
       const targetNode = link.target;
       let found = false;
       for (const group of disconnectedGroups) {
-        const findSource = group.find(node => node.id === sourceNode.id);
-        const findTarget = group.find(node => node.id === targetNode.id);
+        const findSource = group.find((node) => node.id === sourceNode.id);
+        const findTarget = group.find((node) => node.id === targetNode.id);
         if (findSource && findTarget) {
           // both nodes are in the same group
           found = true;
@@ -223,9 +207,8 @@ export class GraphComponent implements OnInit, OnDestroy {
         disconnectedGroups.push([sourceNode, targetNode]);
       }
     }
-    return disconnectedGroups
+    return disconnectedGroups;
   }
-
 
   emitNodeSelected(node: IUiGraphNode): void {
     this.selectionType.set('node');
@@ -270,7 +253,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   #createLayout(): LayoutAdaptor {
     if (!this.#element.parentNode) {
-      throw new Error('no parent node')
+      throw new Error('no parent node');
     }
 
     if (this.layout) {
@@ -283,30 +266,27 @@ export class GraphComponent implements OnInit, OnDestroy {
     this.svgWidthSignal.set(elementDimensions.width);
     this.svgHeightSignal.set(elementDimensions.height);
 
-
     const layout = new LayoutAdaptor();
     layout.size([elementDimensions.width, elementDimensions.height]);
     layout.jaccardLinkLengths(280, 1);
 
     layout.on(cola.EventType.start, () => {
       const graph = this.graph();
-      this.linksSignal.set(graph.links.map(l => l));
-      this.nodesSignal.set(graph.nodes.map(n => n));
+      this.linksSignal.set(graph.links.map((l) => l));
+      this.nodesSignal.set(graph.nodes.map((n) => n));
       this.layoutIsRunning = true;
     });
 
     layout.on(cola.EventType.tick, () => {
       const graph = this.graph();
-      this.linksSignal.set(graph.links.map(l => l));
-      this.nodesSignal.set(graph.nodes.map(n => n));
-
+      this.linksSignal.set(graph.links.map((l) => l));
+      this.nodesSignal.set(graph.nodes.map((n) => n));
     });
 
     layout.on(cola.EventType.end, () => {
-
       const graphValue = this.graph();
-      this.linksSignal.set(graphValue.links.map(l => l));
-      this.nodesSignal.set(graphValue.nodes.map(n => n));
+      this.linksSignal.set(graphValue.links.map((l) => l));
+      this.nodesSignal.set(graphValue.nodes.map((n) => n));
       this.layoutIsRunning = false;
       if (this.layoutQueue.length > 0) {
         // run the next layout
@@ -324,7 +304,6 @@ export class GraphComponent implements OnInit, OnDestroy {
     // Create a new zoom behavior
     const d3zoom = zoom();
 
-
     // Set the minimum and maximum zoom levels
     d3zoom.scaleExtent([0.05, 1]);
 
@@ -335,9 +314,6 @@ export class GraphComponent implements OnInit, OnDestroy {
 
     return d3zoom;
   }
-
-
-
 
   dragStart(event: DragEvent, node: IUiGraphNode): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -360,7 +336,7 @@ export class GraphComponent implements OnInit, OnDestroy {
     // otherwise, simply clicking on a fixed node will un-fix it.
     if (
       Math.pow(event.x - this.dragstart.x, 2) +
-      Math.pow(event.y - this.dragstart.y, 2) >
+        Math.pow(event.y - this.dragstart.y, 2) >
       30
     ) {
       node.isPinned = this.pinNodes;
@@ -373,7 +349,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   /**
    * This method is called when the component is destroyed.
-   * 
+   *
    * It stops the layout and disconnects the resize observer.
    */
   ngOnDestroy(): void {

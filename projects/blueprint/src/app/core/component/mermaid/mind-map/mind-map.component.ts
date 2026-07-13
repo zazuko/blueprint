@@ -1,5 +1,14 @@
-import { Component, ElementRef, OnDestroy, effect, inject, output, signal, viewChild } from '@angular/core';
-
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  effect,
+  inject,
+  output,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { MermaidService } from '../service/mermaid/mermaid.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
@@ -8,7 +17,6 @@ import { rdf } from '../../../ontology/rdf/rdf';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { rdfEnvironment } from '../../../rdf/rdf-environment';
-
 
 const projectIri = 'https://ld.flux.zazuko.com/project/work-in-progress-34';
 const query = `
@@ -96,12 +104,12 @@ CONSTRUCT {
 
 }`;
 
-
 @Component({
   selector: 'bp-mind-map',
   imports: [],
   templateUrl: './mind-map.component.html',
-  styleUrl: './mind-map.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './mind-map.component.scss',
 })
 export class MindMapComponent implements OnDestroy {
   selected = output<string>();
@@ -114,48 +122,80 @@ export class MindMapComponent implements OnDestroy {
   private readonly mermaidCodeSignal = toSignal(
     this._sparqlService.construct(query).pipe(
       map((result) => {
-
-        const center = rdfEnvironment.clownface(result, rdfEnvironment.namedNode(projectIri));
+        const center = rdfEnvironment.clownface(
+          result,
+          rdfEnvironment.namedNode(projectIri)
+        );
         const rootLabel = center.out(rdfs.labelNamedNode).values[0] ?? '';
-        const persons: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('https://schema.org/Person')).in(rdf.typeNamedNode).map(n => {
-          const label = n.out(rdfs.labelNamedNode).values.join(', ');
-          const iri = n.value;
-          return { iri, label };
-        });
-        const repositories: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('http://schema.example.org/Repository')).in(rdf.typeNamedNode).map(n => {
-          const label = n.out(rdfs.labelNamedNode).values.join(', ');
-          const iri = n.value;
-          return { iri, label };
-        });
-        const customer: GraphValue[] = rdfEnvironment.clownface(result, rdfEnvironment.namedNode('https://schema.org/Organization')).in(rdf.typeNamedNode).map(n => {
-          const label = n.out(rdfs.labelNamedNode).values.join(', ');
-          const iri = n.value;
-          return { iri, label };
-        });
+        const persons: GraphValue[] = rdfEnvironment
+          .clownface(
+            result,
+            rdfEnvironment.namedNode('https://schema.org/Person')
+          )
+          .in(rdf.typeNamedNode)
+          .map((n) => {
+            const label = n.out(rdfs.labelNamedNode).values.join(', ');
+            const iri = n.value;
+            return { iri, label };
+          });
+        const repositories: GraphValue[] = rdfEnvironment
+          .clownface(
+            result,
+            rdfEnvironment.namedNode('http://schema.example.org/Repository')
+          )
+          .in(rdf.typeNamedNode)
+          .map((n) => {
+            const label = n.out(rdfs.labelNamedNode).values.join(', ');
+            const iri = n.value;
+            return { iri, label };
+          });
+        const customer: GraphValue[] = rdfEnvironment
+          .clownface(
+            result,
+            rdfEnvironment.namedNode('https://schema.org/Organization')
+          )
+          .in(rdf.typeNamedNode)
+          .map((n) => {
+            const label = n.out(rdfs.labelNamedNode).values.join(', ');
+            const iri = n.value;
+            return { iri, label };
+          });
         const mmCode = `mindmap
 root)${rootLabel ? rootLabel : 'empty'}(
 ${'\t'.repeat(1)}(People)
 ${'\t'.repeat(1)}::icon(fas fa-person)
-${persons.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`).join(`\n`)}
+${persons
+  .map(
+    (v) =>
+      `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`
+  )
+  .join(`\n`)}
 ${'\t'.repeat(1)}(Repository)
 ${'\t'.repeat(1)}::icon(fa-brands fa-git)
-${repositories.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`).join(`\n`)}
+${repositories
+  .map(
+    (v) =>
+      `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`
+  )
+  .join(`\n`)}
 ${'\t'.repeat(1)}(Customer)
 ${'\t'.repeat(1)}::icon(fa-solid fa-building)
-${customer.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`).join(`\n`)}
+${customer
+  .map(
+    (v) =>
+      `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.iri} bp-node`
+  )
+  .join(`\n`)}
 `;
         console.log(mmCode);
         return mmCode;
       })
-    ));
-
+    )
+  );
 
   readonly #listenedElements: Element[] = [];
 
   constructor() {
-
-
-
     effect(() => {
       const nodeElements = this.clickableElements();
       if (!nodeElements) {
@@ -163,13 +203,17 @@ ${customer.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.ir
       }
       const clickableElements = Array.from(nodeElements);
       for (let i = 0; i < clickableElements.length; ++i) {
-        const cssClasses = Array.from(clickableElements[i].classList).filter(c => c.startsWith('http'));
+        const cssClasses = Array.from(clickableElements[i].classList).filter(
+          (c) => c.startsWith('http')
+        );
         const firstClass = cssClasses[0];
         if (firstClass) {
           this.#listenedElements.push(clickableElements[i]);
           (clickableElements[i] as HTMLElement).style.cursor = 'pointer';
 
-          clickableElements[i].addEventListener('click', () => this.clickFunction(firstClass));
+          clickableElements[i].addEventListener('click', () =>
+            this.clickFunction(firstClass)
+          );
         }
       }
     });
@@ -180,9 +224,14 @@ ${customer.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.ir
       if (!element || !mermaidCode) {
         return;
       }
-      this._mermaidService.render(0, mermaidCode, element, '.mindmap-node', this.clickableElements);
+      this._mermaidService.render(
+        0,
+        mermaidCode,
+        element,
+        '.mindmap-node',
+        this.clickableElements
+      );
     });
-
   }
 
   clickFunction(iri: string) {
@@ -190,10 +239,9 @@ ${customer.map(v => `${'\t'.repeat(2)}["${v.label}"]\n${'\t'.repeat(2)}:::${v.ir
   }
 
   ngOnDestroy(): void {
-    this.#listenedElements.forEach(e => (e as any).removeAllListeners());
+    this.#listenedElements.forEach((e) => (e as any).removeAllListeners());
   }
 }
-
 
 interface GraphValue {
   iri: string;

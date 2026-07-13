@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 
 import { Observable, map, switchMap } from 'rxjs';
 
-import { TreeNode } from 'primeng/api';
+import { TreeNode } from '../../../../core/model/tree-node.model';
 
 
 import { HierarchyService } from '../../../configuration/topology/service/hierarchy.service';

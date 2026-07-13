@@ -1,6 +1,5 @@
 @import "tailwindcss";
-@import "tailwindcss-primeui";
-@import "primeicons/primeicons.css";
+@import "@angular/material/prebuilt-themes/azure-blue.css";
 
 @layer base {
     h1 {

@@ -12,6 +12,6 @@
 </div>
 
 @if( searchResult().length > 0 && searchResult().length < total()) { <div class="center">
-    <p-button (click)="emitMore()" label="Show more" />
+    <button mat-flat-button color="primary" (click)="emitMore()">Show more</button>
     </div>
     }

@@ -1,21 +1,25 @@
 <div>
-  <div>
+  <div class="mb-4">
     <bp-brand-logo/>
   </div>
-  <br>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <input size="small" type="text" pInputText formControlName="username" placeholder="Username" autocomplete="username" />
-    <br>
-    <input size="small" type="text" pInputText type="password" formControlName="password" placeholder="Password"
-      autocomplete="password" />
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-2 w-72">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" placeholder="Username" autocomplete="username" />
+    </mat-form-field>
 
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" placeholder="Password" autocomplete="current-password" />
+    </mat-form-field>
 
-    <p class="error">
-      {{errorMessage}}&nbsp;
+    <p class="error min-h-[20px]">
+      {{errorMessage}}
     </p>
 
-    <p-button label="Login" size="small" [disabled]="!loginForm.valid" type="submit"/>
-
+    <button mat-flat-button [disabled]="!loginForm.valid" type="submit" class="w-full">
+      Login
+    </button>
   </form>
 </div>

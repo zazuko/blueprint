@@ -1,19 +1,28 @@
-import { Component, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
+import {
+  Component,
+  OnChanges,
+  SimpleChanges,
+  computed,
+  inject,
+  signal,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
-import { OrganizationChartModule } from 'primeng/organizationchart';
-import { TreeModule } from 'primeng/tree';
-import { TreeNode } from 'primeng/api';
+import { TreeNode } from '@blueprint/model/tree-node.model';
 import { HierarchyService } from '../service/hierarchy.service';
 import { HierarchyNode } from '../service/model/hierarchy-node.model';
 import { LoadingIndicatorService } from '../../../../core/component/loading-indicator/service/loading-indicator.service';
 import { HierarchyDefinition } from '../service/model/hierarchy-definition.model';
 import { Breadcrumb } from 'projects/blueprint/src/app/shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from 'projects/blueprint/src/app/shared/component/page/breadcrumb-page/breadcrumb-page.component';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   templateUrl: './horizontal-tree-detail.component.html',
   styleUrl: './horizontal-tree-detail.component.scss',
-  imports: [BreadcrumbPageComponent, OrganizationChartModule, TreeModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [BreadcrumbPageComponent, NgTemplateOutlet],
 })
 export class HorizontalTreeDetailComponent implements OnChanges {
   readonly id = input.required<string>();
@@ -21,10 +30,15 @@ export class HorizontalTreeDetailComponent implements OnChanges {
   private readonly hierarchyService = inject(HierarchyService);
   private readonly loadingIndicator = inject(LoadingIndicatorService);
 
-  public hierarchyDefinition = signal<HierarchyDefinition | null | undefined>(undefined);
+  public hierarchyDefinition = signal<HierarchyDefinition | null | undefined>(
+    undefined
+  );
 
   hierarchy = computed<TreeNode[]>(() => {
-    if (this.hierarchyDefinition() === null || this.hierarchyDefinition() === undefined) {
+    if (
+      this.hierarchyDefinition() === null ||
+      this.hierarchyDefinition() === undefined
+    ) {
       return [];
     }
     const rootNode = this.hierarchyDefinition()!.rootNode;
@@ -35,10 +49,10 @@ export class HorizontalTreeDetailComponent implements OnChanges {
       label: rootNode.label,
       expanded: true,
       data: rootNode,
-      children: []
+      children: [],
     };
 
-    rootNode.children.forEach(child => {
+    rootNode.children.forEach((child) => {
       this.createChildUiNodeFromTopologyTreeNode(child, uiTreeNode);
     });
 
@@ -49,48 +63,50 @@ export class HorizontalTreeDetailComponent implements OnChanges {
     {
       label: 'Settings',
       route: '../../..',
-      disabled: false
+      disabled: false,
     },
     {
       label: 'Topology',
       route: '../..',
-      disabled: false
+      disabled: false,
     },
     {
       label: 'Detail',
       route: '.',
-      disabled: false
-    }
+      disabled: false,
+    },
   ];
 
   ngOnChanges(changes: SimpleChanges): void {
     const id = changes['id']?.currentValue;
     if (id) {
       this.loadingIndicator.start();
-      this.hierarchyService.getHierarchyByIri(id).subscribe((hierarchyDefinition) => {
-        this.hierarchyDefinition.set(hierarchyDefinition);
-        this.loadingIndicator.done();
-      }
-      );
+      this.hierarchyService
+        .getHierarchyByIri(id)
+        .subscribe((hierarchyDefinition) => {
+          this.hierarchyDefinition.set(hierarchyDefinition);
+          this.loadingIndicator.done();
+        });
     }
   }
 
-  private createChildUiNodeFromTopologyTreeNode(childNode: HierarchyNode, parentUiNode: TreeNode<HierarchyNode>): TreeNode<HierarchyNode> {
-
+  private createChildUiNodeFromTopologyTreeNode(
+    childNode: HierarchyNode,
+    parentUiNode: TreeNode<HierarchyNode>
+  ): TreeNode<HierarchyNode> {
     const childUiNode = {
       label: childNode.label,
       expanded: true,
       data: childNode,
-      children: []
+      children: [],
     };
     if (parentUiNode.children === undefined) {
       parentUiNode.children = [];
     }
     parentUiNode.children.push(childUiNode);
-    childNode.children.forEach(child => {
+    childNode.children.forEach((child) => {
       this.createChildUiNodeFromTopologyTreeNode(child, childUiNode);
     });
     return childUiNode;
   }
-
 }

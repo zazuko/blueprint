@@ -1,10 +1,10 @@
 <div style="display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%">
     @if(isLoading()) {
-    <p-skeleton shape="circle" height="64px" width="64px" class="mr-2"></p-skeleton>
+    <div class="w-[64px] h-[64px] rounded-full bg-zinc-200 dark:bg-zinc-800 animate-pulse mr-2"></div>
 
     <div style="display: flex; flex-direction: column; gap: 12px;">
-        <p-skeleton height="1rem" width="10rem"  class="mb-2" />
-        <p-skeleton height="1rem" width="30rem" class="mb-2" />
+        <div class="h-4 w-40 bg-zinc-200 dark:bg-zinc-800 animate-pulse rounded mb-2"></div>
+        <div class="h-4 w-96 bg-zinc-200 dark:bg-zinc-800 animate-pulse rounded mb-2"></div>
     </div>
 
     }@else {
@@ -25,25 +25,24 @@
 
     </div>
     <div>
-        <p-toast></p-toast>
-        <p-menu #menu [model]="items()" [popup]="true">
-            <ng-template pTemplate="item" let-item>
-                @if(item.url) {
-                <a pRipple [href]="item.url" target="_blank" class="p-menu-item-link" [tabIndex]="item.tabIndex">
-                    <span class="p-menuitem-icon" [class]="item.icon"></span>
-                    <span class="ml-2"> {{ item.label }}</span>
+        <mat-menu #menu="matMenu">
+            @for (item of items(); track item.label) {
+                @if (item.url) {
+                <a mat-menu-item [href]="item.url" target="_blank">
+                    <i [class]="item.icon" class="mr-2"></i>
+                    <span>{{ item.label }}</span>
                 </a>
                 } @else {
-                <a pRipple class="flex align-items-center p-menu-item-link" (click)="item.command"
-                    [tabindex]="item.tabindex" (keyup.enter)="item.command">
-                    <span class="p-menuitem-icon" [class]="item.icon"></span>
-                    <span class="ml-2">{{ item.label }}</span>
-                </a>
+                <button mat-menu-item (click)="item.command()">
+                    <i [class]="item.icon" class="mr-2"></i>
+                    <span>{{ item.label }}</span>
+                </button>
                 }
-            </ng-template>
-
-        </p-menu>
-        <p-button icon="pi pi-ellipsis-v" (click)="menu.toggle($event)" [rounded]="true" [outlined]="true"/>
+            }
+        </mat-menu>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="More actions" class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
     </div>
 
 </div>

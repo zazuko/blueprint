@@ -36,11 +36,13 @@
 
     <!-- the zoom menu -->
 
-    <p-button icon="pi pi-search-plus" [rounded]="true" [outlined]="true" aria-label="Zoom in"
-      (click)="zoomInOneStep()" />
+    <button mat-icon-button (click)="zoomInOneStep()" aria-label="Zoom in" class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+      <i class="fas fa-search-plus"></i>
+    </button>
 
-    <p-button icon="pi pi-search-minus" [rounded]="true" [outlined]="true" aria-label="Zoom out"
-      (click)="zoomOutOneStep()" />
+    <button mat-icon-button (click)="zoomOutOneStep()" aria-label="Zoom out" class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+      <i class="fas fa-search-minus"></i>
+    </button>
 
     <!-- end zoom menu -->
   </div>

@@ -4,17 +4,16 @@
     [subjectLabel]="currentGraphResource()?.title?? ''" [subjectClassLabel]="currentGraphResource()?.classLabel ?? ''"
     [avatars]="currentGraphResource()?.avatars ?? []" />
 
-  <p-tabs [value]="routeFragment()">
-    <p-tablist>
-      @for(tab of tabNavItems; track tab.label) {
-      <p-tab [value]="tab.fragment" routerLinkActive routerLink="./" [fragment]="tab.fragment"
-        class="flex items-center !gap-2 text-inherit">
-        <i [class]="tab.icon"></i>
-        <span>{{ tab.label }}</span>
-      </p-tab>
-      }
-    </p-tablist>
-  </p-tabs>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="border-b border-zinc-200 dark:border-zinc-800">
+    @for(tab of tabNavItems; track tab.label) {
+    <a mat-tab-link [active]="routeFragment() === tab.fragment" routerLink="./" [fragment]="tab.fragment"
+      class="flex items-center !gap-2 text-inherit">
+      <i [class]="tab.icon"></i>
+      <span>{{ tab.label }}</span>
+    </a>
+    }
+  </nav>
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
 
 
 
@@ -103,35 +102,33 @@
   <div class="graph" [ngClass]="routeFragment() === 'Graph' ? '' : 'weg'">
 
     <div class="content-size content-style">
-      @if(canIOpenInformationPanel()) {
-      <p-drawer [(visible)]="isInformationPanelOpen" [modal]="false" position="right">
-        <ng-template #header>
-          <div class="drawer-header">
-
-            <div style="display: flex; flex-direction: column;">
-              <h1 class="drawer-title">{{selectionKind() === 'node' ? 'Subject' : 'Link'}}</h1>
-
-            </div>
-
+      @if(canIOpenInformationPanel() && isInformationPanelOpen()) {
+      <div class="fixed top-0 right-0 h-full w-96 bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl z-50 flex flex-col" @fadeInOut>
+        <div class="flex items-center justify-between p-4 border-b border-zinc-150 dark:border-zinc-900">
+          <h2 class="text-lg font-semibold m-0">{{selectionKind() === 'node' ? 'Subject' : 'Link'}}</h2>
+          <button mat-icon-button (click)="isInformationPanelOpen.set(false)" aria-label="Close panel">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="p-4 overflow-y-auto flex-grow text-sm">
+          @if(selectionKind() === 'node') {
+          <div>
+            @if(currentGraphResource()) {
+            <p [matTooltip]="currentGraphResource().iri"
+              class="font-mono text-xs text-blue-600 dark:text-blue-400 break-all cursor-pointer hover:underline mb-4" (click)="copyToClipboard(currentGraphResource().iri)">
+              &lt;{{currentGraphResource().iri}}&gt;</p>
+            }
+            @for(l of literalDetailElements(); track l.ruleIri) {
+            <bp-literal [literal]="l"></bp-literal>
+            }
           </div>
-        </ng-template>
-        @if(selectionKind() === 'node') {
-        <div style="font-size: 0.8em;">
-          @if(currentGraphResource()) {
-          <p [pTooltip]="currentGraphResource().iri" tooltipPosition="left" tooltipStyleClass="tooltip-one-line"
-            class="iri" (click)="copyToClipboard(currentGraphResource().iri)">
-            &lt;{{currentGraphResource().iri}}&gt;</p>
+          } @else {
+          @if(selectedLink()) {
+          <!--   <bp-link-panel [link]="selectedLink()" /> -->
           }
-          @for(l of literalDetailElements(); track l.ruleIri) {
-          <bp-literal [literal]="l"></bp-literal>
           }
         </div>
-        } @else {
-        @if(selectedLink()) {
-        <!--   <bp-link-panel [link]="selectedLink()" /> -->
-        }
-        }
-      </p-drawer>
+      </div>
       }
       <bp-graph (nodeSelected)="onNodeSelected($event)" [selectedNodeId]="selectedNodeIri()"
         [selectedLinkId]="selectedLinkIri()" (nodeExpanded)="expandNode($event)" (nodeFocused)="focusNode($event)"

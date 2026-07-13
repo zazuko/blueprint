@@ -1,10 +1,22 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { AuthService } from '@blueprint/service/auth/auth.service';
 import { SparqlService } from '@blueprint/service/sparql/sparql.service';
@@ -12,16 +24,17 @@ import { SparqlService } from '@blueprint/service/sparql/sparql.service';
 import { MessageChannelService } from '../core/service/message-channel/message-channel.service';
 import { BrandLogoComponent } from '../shared/component/brand/brand-logo/brand-logo.component';
 
-
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReactiveFormsModule, //
-    InputTextModule,
-    ButtonModule,
-    BrandLogoComponent
-  ]
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    BrandLogoComponent,
+  ],
 })
 export class LoginComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
@@ -49,15 +62,15 @@ export class LoginComponent implements OnInit {
     }
     this.returnUrl = this.#route.snapshot.queryParams['returnUrl'] || '/';
 
-    this.loginForm.valueChanges.pipe(
-      takeUntilDestroyed(this.#destroyRef)
-    ).subscribe(() => this.errorMessage = '');
+    this.loginForm.valueChanges
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => (this.errorMessage = ''));
   }
 
   onSubmit(): void {
     const credentials = {
       username: this.loginForm.controls.username.value ?? '',
-      password: this.loginForm.controls.password.value ?? ''
+      password: this.loginForm.controls.password.value ?? '',
     };
     this.#authService.updateCredentials(credentials);
 
@@ -74,9 +87,8 @@ export class LoginComponent implements OnInit {
           this.#authService.clear();
           this.#messageChannel.debug('Wrong username or password');
         },
-        complete: () => this.#messageChannel.debug('Login Test SPARQL Query completed')
-
-      }
-      );
+        complete: () =>
+          this.#messageChannel.debug('Login Test SPARQL Query completed'),
+      });
   }
 }
