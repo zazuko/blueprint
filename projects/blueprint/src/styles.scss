@@ -1,5 +1,40 @@
+@use '@angular/material' as mat;
+
 @import "tailwindcss";
-@import "@angular/material/prebuilt-themes/azure-blue.css";
+
+// Customize Tailwind's dark: variant to work with the app's dark mode class
+@custom-variant dark (&:where(.bp-dark-mode, .bp-dark-mode *));
+
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Define the light theme using M3 colors (azure as primary, blue as tertiary)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+// Define the dark theme using M3 colors
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+// Apply core Angular Material theme styles at the root level
+html {
+  @include mat.theme($light-theme);
+
+  &.bp-dark-mode {
+    @include mat.theme($dark-theme);
+  }
+}
 
 @layer base {
     h1 {
