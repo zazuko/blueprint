@@ -32,7 +32,14 @@
               "projects/blueprint/src/styles.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": [
+                  "import"
+                ]
+              }
+            }
           },
           "configurations": {
             "production": {

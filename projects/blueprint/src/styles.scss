@@ -34,7 +34,7 @@ html {
   @include c.root-definitions();
 
   &.bp-dark-mode {
-    @include mat.all-component-themes($dark-theme);
+    @include mat.all-component-colors($dark-theme);
     @include c.dark-mode-definitions();
   }
 }
