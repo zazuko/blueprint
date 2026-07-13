@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use './styles/colors.scss' as c;
 
 @import "tailwindcss";
 
@@ -30,13 +31,31 @@ $dark-theme: mat.define-theme((
 // Apply core Angular Material theme styles at the root level
 html {
   @include mat.theme($light-theme);
+  @include c.root-definitions();
 
   &.bp-dark-mode {
     @include mat.theme($dark-theme);
+    @include c.dark-mode-definitions();
   }
 }
 
+// Page background colors (slightly darker off-white in light mode, dark gray in dark mode)
+html, body {
+  background-color: #f5f6f8;
+  color: var(--primary-contrast);
+  min-height: 100vh;
+  margin: 0;
+}
+
+html.bp-dark-mode, html.bp-dark-mode body {
+  background-color: #0f0f11;
+}
+
 @layer base {
+    h1, h2, h3, h4, h5, h6, p {
+        color: inherit;
+    }
+
     h1 {
         @apply text-4xl font-bold mb-4 mt-5;
     }
