@@ -110,6 +110,12 @@ html.bp-dark-mode, html.bp-dark-mode body {
             font-size: 1.1rem !important;
         }
     }
+
+    .mdc-tab__text-label {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
     
     /* Active indicator */
     .mdc-tab-indicator__active-indicator {
@@ -228,5 +234,20 @@ html.bp-dark-mode, html.bp-dark-mode body {
 
     .mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
         color: var(--color-zinc-100) !important;
+    }
+}
+
+/* Global Mat Icon Button Overrides to Center Custom Icons (like FontAwesome) */
+button.mat-mdc-icon-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    i, .fas, .far, .fa-solid {
+        font-size: 1.15rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 }
