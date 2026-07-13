@@ -17,6 +17,10 @@
     p {
         @apply text-base mb-4 mt-4;
     }
+
+    input[type="text"], input[type="search"], input:not([type]) {
+        @apply text-zinc-900 dark:text-zinc-100;
+    }
 }
 
 @font-face {

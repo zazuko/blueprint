@@ -5,7 +5,7 @@
       <span class="absolute inset-y-0 left-0 flex items-center pl-3">
         <i class="fas fa-search text-zinc-400"></i>
       </span>
-      <input type="text" [ngModel]="searchTerm()" (ngModelChange)="onSearchInput($event)" placeholder="Search..." class="w-full pl-10 pr-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 text-base" />
+      <input type="text" [ngModel]="searchTerm()" (ngModelChange)="onSearchInput($event)" placeholder="Search..." class="w-full pl-10 pr-4 py-2 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 text-base" />
     </div>
     <span class="text-sm text-zinc-500 font-medium">{{ resultCount() }} Results</span>
   </div>
