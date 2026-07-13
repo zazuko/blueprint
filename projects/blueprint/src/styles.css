@@ -109,3 +109,20 @@
         }
     }
 }
+
+/* Theme picker dropdown menu overrides */
+.mat-mdc-menu-panel.theme-select {
+    background-color: #ffffff !important;
+    border: 1px solid #e4e3e6 !important;
+    border-radius: 8px !important;
+    
+    .mat-mdc-menu-content {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+}
+
+.bp-dark-mode .mat-mdc-menu-panel.theme-select {
+    background-color: #0f0f11 !important;
+    border: 1px solid #413e46 !important;
+}
