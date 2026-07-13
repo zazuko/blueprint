@@ -1,4 +1,10 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -7,21 +13,24 @@ import { UiLinkMetadataService } from '@blueprint/service/ui-link-metadata/ui-li
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 
-
-import { GraphComponent } from "../../../core/component/graph/graph/graph.component";
+import { GraphComponent } from '../../../core/component/graph/graph/graph.component';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
-import { Graph, IUiGraphNode, IUConsolidatedLink } from '@blueprint/component/graph/model/graph.model';
+import {
+  Graph,
+  IUiGraphNode,
+  IUConsolidatedLink,
+} from '@blueprint/component/graph/model/graph.model';
 import { Avatar } from '../../../shared/component/ui/avatar/avatar.component';
 import { flux } from '@blueprint/ontology';
-
 
 @Component({
   selector: 'bp-concept-relations',
   templateUrl: './concept-relations.component.html',
   styleUrl: './concept-relations.component.scss',
-  imports: [GraphComponent, BreadcrumbPageComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [GraphComponent, BreadcrumbPageComponent],
 })
 export class ConceptRelationsComponent {
   readonly #classMetadataService = inject(UiClassMetadataService);
@@ -31,19 +40,23 @@ export class ConceptRelationsComponent {
     {
       label: 'Inventory',
       route: '..',
-      disabled: false
-    }, {
+      disabled: false,
+    },
+    {
       label: 'Concepts',
       route: '.',
-      disabled: false
-    }
+      disabled: false,
+    },
   ];
 
-  readonly nodeDefinitions = toSignal<UiClassMetadata[] | undefined>(this.#classMetadataService.getClassMetadata(), { initialValue: undefined });
-  readonly linkDefinitions = toSignal<UiLinkDefinition[] | undefined>(this.#linkMetadataService.getLinkMetadata(), { initialValue: undefined });
-
-
-
+  readonly nodeDefinitions = toSignal<UiClassMetadata[] | undefined>(
+    this.#classMetadataService.getClassMetadata(),
+    { initialValue: undefined }
+  );
+  readonly linkDefinitions = toSignal<UiLinkDefinition[] | undefined>(
+    this.#linkMetadataService.getLinkMetadata(),
+    { initialValue: undefined }
+  );
 
   /**
    * Turn node and links definitions into a graph object containing UiGraphNode[] and UiLink[]
@@ -57,7 +70,7 @@ export class ConceptRelationsComponent {
     }
     const nodeMap = new Map<string, IUiGraphNode>();
 
-    nodeDefinitions.forEach(nodeMetadata => {
+    nodeDefinitions.forEach((nodeMetadata) => {
       if (nodeMap.has(nodeMetadata.targetNode.value)) {
         return;
       }
@@ -91,8 +104,7 @@ export class ConceptRelationsComponent {
 
     const uiLinks: IUConsolidatedLink[] = [];
 
-    linkDefinitions.forEach(linkDefinition => {
-
+    linkDefinitions.forEach((linkDefinition) => {
       const link: IUConsolidatedLink = {
         id: linkDefinition.iri,
         iri: linkDefinition.iri,
@@ -106,10 +118,10 @@ export class ConceptRelationsComponent {
             linkDefinition: linkDefinition,
             source: nodeMap.get(linkDefinition.arrowSource),
             target: nodeMap.get(linkDefinition.arrowTarget),
-          }
+          },
         ],
         incomingChildLinks: [],
-        isBidirectional: false
+        isBidirectional: false,
       };
 
       if (link.source && link.target) {
@@ -119,16 +131,10 @@ export class ConceptRelationsComponent {
 
     const graph: Graph = {
       nodes: [...nodeMap.values()],
-      links: uiLinks
+      links: uiLinks,
     };
-    return graph
-
+    return graph;
   });
 
-  constructor() {
-
-
-
-  }
-
+  constructor() {}
 }

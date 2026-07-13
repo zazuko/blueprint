@@ -1,7 +1,14 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { RouterLink } from '@angular/router';
-import { ConfigurationCardComponent } from "../../../core/component/configuration-card/configuration-card.component";
+import { ConfigurationCardComponent } from '../../../core/component/configuration-card/configuration-card.component';
 import { HierarchyService } from './service/hierarchy.service';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,12 +17,12 @@ import { HierarchyDefinition } from './service/model/hierarchy-definition.model'
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
 
-
 @Component({
   selector: 'bp-topology',
   templateUrl: './topology.component.html',
   styleUrl: './topology.component.scss',
-  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterLink, BreadcrumbPageComponent, ConfigurationCardComponent],
 })
 export class TopologyComponent implements OnInit {
   private readonly messageChannel = inject(MessageChannelService);
@@ -25,25 +32,33 @@ export class TopologyComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   public hierarchiesSignal = signal<HierarchyDefinition[]>([]);
-  public graphSignal = signal<GraphDefinition[]>([{ iri: 'https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree', label: 'Graph', comment: 'Graph' }]);
+  public graphSignal = signal<GraphDefinition[]>([
+    {
+      iri: 'https://ld.flux.zazuko.com/blueprint/app/K8SNamespaceTree',
+      label: 'Graph',
+      comment: 'Graph',
+    },
+  ]);
 
   public readonly breadcrumbs: Breadcrumb[] = [
     {
       label: 'Settings',
       route: '..',
-      disabled: false
+      disabled: false,
     },
     {
       label: 'Topology',
       route: '.',
-      disabled: false
-    }
+      disabled: false,
+    },
   ];
 
   ngOnInit(): void {
     this.loadingIndicatorService.start();
-    this.hierarchyService.getAllHierarchies().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-      {
+    this.hierarchyService
+      .getAllHierarchies()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (result) => {
           this.hierarchiesSignal.set(result);
           this.loadingIndicatorService.done();
@@ -51,17 +66,19 @@ export class TopologyComponent implements OnInit {
         },
         error: (error) => {
           this.loadingIndicatorService.done();
-          this.messageChannel.error('Hierarchies load failed', error, 'Check your hierarchy configuration');
-
+          this.messageChannel.error(
+            'Hierarchies load failed',
+            error,
+            'Check your hierarchy configuration'
+          );
         },
         complete: () => {
           this.loadingIndicatorService.done();
           this.messageChannel.debug('Hierarchies load completed');
-        }
+        },
       });
   }
 }
-
 
 export interface GraphDefinition {
   iri: string;

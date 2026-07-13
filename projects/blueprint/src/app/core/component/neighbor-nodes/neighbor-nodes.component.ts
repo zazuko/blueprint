@@ -1,8 +1,22 @@
-import { Component, computed, output, input, effect } from '@angular/core';
+import {
+  Component,
+  computed,
+  output,
+  input,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { fadeInOut } from '@blueprint/animation/fade-in-out/fade-in-out';
-import { Graph, IUiGraphNode, RdfConsolidatedLink } from '../graph/model/graph.model';
-import { NeighborNodeList, NeighborNodesListComponent } from './neighbor-nodes-list/neighbor-nodes-list.component';
+import {
+  Graph,
+  IUiGraphNode,
+  RdfConsolidatedLink,
+} from '../graph/model/graph.model';
+import {
+  NeighborNodeList,
+  NeighborNodesListComponent,
+} from './neighbor-nodes-list/neighbor-nodes-list.component';
 import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import { labelAlphaSort } from '../../utils/sort-functions';
 import { ExploredResource } from '../../../features/explore/model/explored-resource.class';
@@ -12,9 +26,8 @@ import { ExploredResource } from '../../../features/explore/model/explored-resou
   imports: [],
   templateUrl: './neighbor-nodes.component.html',
   styleUrl: './neighbor-nodes.component.scss',
-  animations: [
-    fadeInOut
-  ]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [fadeInOut],
 })
 export class NeighborNodesComponent {
   readonly graph = input.required<Graph>();
@@ -150,5 +163,4 @@ export class NeighborNodesComponent {
   public emitNodeSelected(node: IUiGraphNode): void {
     this.nodeSelected.emit(node);
   }
-
 }

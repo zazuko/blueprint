@@ -11,7 +11,7 @@
             </div>
             <div class="line"></div>
         </div>
-        <div [pTooltip]="element.label" class="label-container link" (click)="emitNodeSelected(element.iri)"
+        <div [matTooltip]="element.label" class="label-container link" (click)="emitNodeSelected(element.iri)"
             (keyup.enter)="emitNodeSelected(element.iri)" tabindex="0">
             <div class="label">{{element.label}}</div>
             <div class="sub-label">{{element.classLabel}}</div>
@@ -21,7 +21,7 @@
         <div class="el"></div>
         <bp-avatar size="normal" shape="circle" [avatars]="[{label:'',icon: element.icon, color: element.color}]" />
 
-        <div [pTooltip]="element.label" class="label-container last">
+        <div [matTooltip]="element.label" class="label-container last">
             <div class="label">{{element.label}}</div>
             <div class="sub-label">{{element.classLabel}}</div>
         </div>

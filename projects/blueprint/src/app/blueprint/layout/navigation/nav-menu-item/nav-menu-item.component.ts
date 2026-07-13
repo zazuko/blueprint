@@ -1,11 +1,17 @@
 import { NgClass } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
-    selector: 'bp-nav-menu-item',
-    imports: [NgClass],
-    templateUrl: './nav-menu-item.component.html',
-    styleUrl: './nav-menu-item.component.scss'
+  selector: 'bp-nav-menu-item',
+  imports: [NgClass],
+  templateUrl: './nav-menu-item.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './nav-menu-item.component.scss',
 })
 export class NavMenuItemComponent {
   item = input.required<NavigationMenuItem>();
@@ -17,7 +23,6 @@ export class NavMenuItemComponent {
     this.selected.emit(this.item());
   }
 }
-
 
 export interface NavigationMenuItem {
   label: string;

@@ -1,3 +1,16 @@
+:host {
+    --card-border: var(--color-zinc-200);
+    --card-text: var(--color-zinc-800);
+    --card-radius: var(--radius-md, 8px);
+    --card-hover-bg: var(--color-zinc-50);
+
+    :host-context(.bp-dark-mode) {
+        --card-border: var(--color-zinc-800);
+        --card-text: var(--color-zinc-200);
+        --card-hover-bg: var(--color-zinc-900);
+    }
+}
+
 // variable for icon size
 $icon-size: 48px;
 $card-width: 200px;
@@ -6,9 +19,9 @@ $card-padding: 12px;
 
 
 .card {
-    border: 1px solid var(--p-content-border-color);
-    color: var(--p-text-color);
-    border-radius: var(--p-border-radius-md);
+    border: 1px solid var(--card-border);
+    color: var(--card-text);
+    border-radius: var(--card-radius);
 
     width: $card-width;
     max-width: $card-width;
@@ -17,7 +30,7 @@ $card-padding: 12px;
     overflow: hidden;
 
     .head {
-        border-bottom: 1px solid var(--p-content-border-color);
+        border-bottom: 1px solid var(--card-border);
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -72,9 +85,9 @@ $card-padding: 12px;
 
 .card:hover {
     cursor: pointer;
-    background-color: var(--p-content-hover-background);
+    background-color: var(--card-hover-bg);
 
     .head {
-        background-color: var(--p-content-hover-background);
+        background-color: var(--card-hover-bg);
     }
 }

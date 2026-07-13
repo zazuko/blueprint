@@ -28,8 +28,8 @@ text {
 }
 
 .selected {
-  fill:  var(--p-tabs-tab-active-color);;
-  stroke: var(--p-tabs-tab-active-color);
-  filter: drop-shadow(0 0 8px var(--p-tabs-tab-active-color));
+  fill: var(--color-blue-500);
+  stroke: var(--color-blue-500);
+  filter: drop-shadow(0 0 8px var(--color-blue-500));
   stroke-opacity: 0.5;
-  }
+}

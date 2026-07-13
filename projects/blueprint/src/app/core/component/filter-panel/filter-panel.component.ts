@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { CheckboxModule } from 'primeng/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { Subject } from 'rxjs';
 
@@ -27,7 +27,7 @@ import { UiClassCount } from '@blueprint/model/ui-class-count/ui-class-count';
   styleUrls: ['./filter-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: fadeInOut,
-  imports: [FormsModule, CheckboxModule, FilterItemComponent]
+  imports: [FormsModule, MatCheckboxModule, FilterItemComponent]
 })
 export class FilterPanelComponent implements OnChanges, OnDestroy {
   readonly filtersChange = output<SearchFilter[]>();

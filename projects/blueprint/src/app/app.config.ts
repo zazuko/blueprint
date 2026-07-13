@@ -8,9 +8,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { firstValueFrom } from 'rxjs';
 
-import { providePrimeNG } from 'primeng/config';
-
-import { AuraSky } from './app-theme';
 import { routes } from './app.routes';
 import { ConfigService } from './core/service/config/config.service';
 import { authInterceptor } from '@blueprint/http-interceptor/auth-interceptor/auth-interceptor.function';
@@ -29,18 +26,6 @@ export const appConfig: ApplicationConfig = {
         provideAppInitializer(() => {
             const configService = inject(ConfigService);
             return firstValueFrom(configService.fetchConfig());
-        }),
-        providePrimeNG({
-            theme: {
-                preset: AuraSky,
-                options: {
-                    darkModeSelector: '.bp-dark-mode',
-                    cssLayer: {
-                        name: 'primeng',
-                        order: 'theme, base, primeng'
-                    }
-                }
-            }
         })
     ],
 };

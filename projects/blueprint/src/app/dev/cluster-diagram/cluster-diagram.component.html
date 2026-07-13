@@ -1,44 +1,41 @@
 @if(treeNodeSignal() !== null) {
-<p-panel [toggleable]="true" [collapsed]="collapsed()" (collapsedChange)="onCollapsedChange($event)">
-    <ng-template pTemplate="header">
-        <bp-avatar size="normal" [avatars]="treeNodeSignal().data.avatars" />
-        <div>
-            <div class="node" (click)="emitNodeSelected(treeNodeSignal().data.iri)">
-                {{treeNodeSignal().label}}</div>
+<mat-expansion-panel [expanded]="!isCollapsedSignal()" (expandedChange)="onCollapsedChange(!$event)" class="mb-4">
+    <mat-expansion-panel-header>
+        <mat-panel-title class="flex items-center gap-3">
+            <bp-avatar size="normal" [avatars]="treeNodeSignal().data.avatars" />
             <div>
-                @for(classLabel of treeNodeSignal().data.classLabel; track classLabel) {
-                <span>{{classLabel}}</span>
-                }
+                <div class="node font-semibold" (click)="emitNodeSelected(treeNodeSignal().data.iri); $event.stopPropagation();">
+                    {{treeNodeSignal().label}}</div>
+                <div class="text-xs text-zinc-500">
+                    @for(classLabel of treeNodeSignal().data.classLabel; track classLabel) {
+                    <span class="mr-1 last:mr-0">{{classLabel}}</span>
+                    }
+                </div>
             </div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
 
-        </div>
-    </ng-template>
-
-    @if(isExpanded()) {
-    <!-- render leaves -->
-    @if(leaveSignal().length > 0) {
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, 200px); grid-gap: 10px; margin-bottom: 20px">
-        @for(leave of leaveSignal(); track leave.key) {
-        <div class="single-element" (click)="emitNodeSelected(leave.data.iri)" [pTooltip]="leave.label">
-            <bp-avatar size="normal" [avatars]="leave.data.avatars" />
-            <div>
-                <div class="line1">{{leave.label}}</div>
-                <div class="line2">{{leave.data.classLabel}}</div>
+    <div class="pt-4">
+        <!-- render leaves -->
+        @if(leaveSignal().length > 0) {
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, 200px); grid-gap: 10px; margin-bottom: 20px">
+            @for(leave of leaveSignal(); track leave.key) {
+            <div class="single-element" (click)="emitNodeSelected(leave.data.iri)" [matTooltip]="leave.label">
+                <bp-avatar size="normal" [avatars]="leave.data.avatars" />
+                <div>
+                    <div class="line1">{{leave.label}}</div>
+                    <div class="line2">{{leave.data.classLabel}}</div>
+                </div>
             </div>
+            }
         </div>
         }
+
+        <!-- render nodes -->
+        @for(node of nodeSignal(); track node.key) {
+        <bp-cluster-diagram (nodeSelected)="emitNodeSelected($event)" [data]="node" [collapsed]="true" />
+        <br>
+        }
     </div>
-
-    }
-
-    <!-- render nodes -->
-
-    @for(node of nodeSignal(); track node.key) {
-    <bp-cluster-diagram (nodeSelected)="emitNodeSelected($event)" [data]="node" [collapsed]="true" />
-    <br>
-    }
-    }
-</p-panel>
-
-
+</mat-expansion-panel>
 }

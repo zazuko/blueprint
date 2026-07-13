@@ -14,7 +14,7 @@
                 </div>
                 <div class="arrow-with-label">
                     @for(businessObject of inFlow.businessObjectsTransported; track businessObject.iri) {
-                    <div class="label" [pTooltip]="inFlow.label + '\n' + inFlow.flowType"
+                    <div class="label" [matTooltip]="inFlow.label + '\n' + inFlow.flowType"
                         (click)="emitNodeSelected(businessObject.iri)"
                         (keyup.enter)="emitNodeSelected(businessObject.iri)" role="button" tabindex="2">
                         {{businessObject.label}}
@@ -50,7 +50,7 @@
 
             <div class="arrow-with-label">
                 @for(businessObject of outFlow.businessObjectsTransported; track businessObject.iri) {
-                <div class="label" [pTooltip]="outFlow.label + '\n' + outFlow.flowType"
+                <div class="label" [matTooltip]="outFlow.label + '\n' + outFlow.flowType"
                     (click)="emitNodeSelected(businessObject.iri)" (keyup.enter)="emitNodeSelected(businessObject.iri)"
                     role="button" tabindex="2">
                     {{businessObject.label}}

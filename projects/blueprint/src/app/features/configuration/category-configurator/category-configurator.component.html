@@ -2,11 +2,35 @@
     <h1>Category</h1>
     <p>View the Category tree</p>
     <h2>Things without category</h2>
-    <p-tree [value]="treeSignal()">
-        <ng-template let-node pTemplate="concept">
-            @defer(when node.data !== null) {
-            <bp-category-tree-node [concept]="node.data" />
-            }
-        </ng-template>
-    </p-tree>
+    <div class="space-y-1 w-full">
+      @for (node of treeSignal(); track node.key || node.label) {
+        <ng-container *ngTemplateOutlet="treeNodeTmpl; context: { $implicit: node }"></ng-container>
+      }
+    </div>
 </bp-breadcrumb-page>
+
+<ng-template #treeNodeTmpl let-node>
+  <div class="flex flex-col">
+    <div class="flex items-center gap-2 py-1.5 px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded cursor-pointer transition-colors duration-150">
+      @if (node.children && node.children.length > 0) {
+        <button mat-icon-button (click)="$event.stopPropagation(); node.expanded = !node.expanded" class="w-6 h-6 flex items-center justify-center p-0 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+          <i class="fas" [class.fa-chevron-down]="node.expanded" [class.fa-chevron-right]="!node.expanded"></i>
+        </button>
+      } @else {
+        <div class="w-6"></div>
+      }
+      <div class="flex-grow">
+        @defer(when node.data !== null) {
+          <bp-category-tree-node [concept]="node.data" />
+        }
+      </div>
+    </div>
+    @if (node.children && node.children.length > 0 && node.expanded) {
+      <div class="pl-6 border-l border-zinc-200 dark:border-zinc-800 ml-3.5 flex flex-col space-y-1 mt-1">
+        @for (child of node.children; track child.key || child.label) {
+          <ng-container *ngTemplateOutlet="treeNodeTmpl; context: { $implicit: child }"></ng-container>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

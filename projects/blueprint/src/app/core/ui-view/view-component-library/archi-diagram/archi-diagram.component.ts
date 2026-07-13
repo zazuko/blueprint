@@ -1,15 +1,23 @@
-import { Component, input, output } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
-import { TooltipModule } from 'primeng/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { ArchimateApplication, ArchimateDataFlow } from './model/archimate-data-flow';
-
+import {
+  ArchimateApplication,
+  ArchimateDataFlow,
+} from './model/archimate-data-flow';
 
 @Component({
-    selector: 'bp-archi-diagram',
-    imports: [TooltipModule],
-    templateUrl: './archi-diagram.component.html',
-    styleUrl: './archi-diagram.component.scss'
+  selector: 'bp-archi-diagram',
+  imports: [MatTooltipModule],
+  templateUrl: './archi-diagram.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './archi-diagram.component.scss',
 })
 export class ArchiDiagramComponent {
   incomingFlows = input.required<ArchimateDataFlow[]>();
@@ -22,4 +30,3 @@ export class ArchiDiagramComponent {
     this.nodeSelected.emit(iri);
   }
 }
-

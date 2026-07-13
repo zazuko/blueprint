@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { LogoComponent } from '../../../shared/component/brand/logo/logo.component';
 
 @Component({
-    selector: 'bp-mobile-logo-button',
-    imports: [LogoComponent],
-    templateUrl: './mobile-logo-button.component.html',
-    styleUrl: './mobile-logo-button.component.scss'
+  selector: 'bp-mobile-logo-button',
+  imports: [LogoComponent],
+  templateUrl: './mobile-logo-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './mobile-logo-button.component.scss',
 })
-export class MobileLogoButtonComponent {
-
-}
+export class MobileLogoButtonComponent {}

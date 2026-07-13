@@ -1,14 +1,15 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-
+import {
+  Component,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
-    selector: 'bp-logo',
-    imports: [],
-    templateUrl: './logo.component.html',
-    styleUrl: './logo.component.scss',
-    encapsulation: ViewEncapsulation.ShadowDom
+  selector: 'bp-logo',
+  imports: [],
+  templateUrl: './logo.component.html',
+  styleUrl: './logo.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class LogoComponent {
-
-
-}
+export class LogoComponent {}

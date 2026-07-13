@@ -1,15 +1,21 @@
-import { Component, computed, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
-import { CardModule } from 'primeng/card';
+import { MatCardModule } from '@angular/material/card';
 import { IUiLink } from '@blueprint/component/graph/model/graph.model';
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
-import { LinkListItemComponent } from "./link-list-item/link-list-item.component";
+import { LinkListItemComponent } from './link-list-item/link-list-item.component';
 
 @Component({
   selector: 'bp-link-panel',
-  imports: [LinkListItemComponent, CardModule],
+  imports: [LinkListItemComponent, MatCardModule],
   templateUrl: './link-panel.component.html',
-  styleUrl: './link-panel.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './link-panel.component.scss',
 })
 export class LinkPanelComponent {
   link = input.required<IUiLink>();
@@ -35,9 +41,6 @@ export class LinkPanelComponent {
     });
     */
 }
-
-
-
 
 interface PropertyPathSegment {
   predicateIri: string;

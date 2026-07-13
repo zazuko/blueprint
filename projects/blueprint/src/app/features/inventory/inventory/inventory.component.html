@@ -12,8 +12,8 @@
             @for(hierarchy of hierarchySignal(); track hierarchy.iri) {
             <a [routerLink]="['hierarchy', hierarchy.iri,]">
                 <bp-hierarchy-card [firstLine]="hierarchy.label" [secondLine]="hierarchy.description"
-                    [pTooltip]="hierarchy.contentLabels.join(', ')" tooltipPosition="bottom" tooltip
-                    [avatars]="hierarchy.avatars" [showDelay]="800" />
+                    [matTooltip]="hierarchy.contentLabels.join(', ')"
+                    [avatars]="hierarchy.avatars" [matTooltipShowDelay]="800" />
 
             </a>
             }

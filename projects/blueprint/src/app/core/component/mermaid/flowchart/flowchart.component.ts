@@ -1,11 +1,21 @@
-import { Component, DestroyRef, ElementRef, effect, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  effect,
+  inject,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MermaidService } from '../service/mermaid/mermaid.service';
 
 @Component({
-    selector: 'bp-flowchart',
-    imports: [],
-    templateUrl: './flowchart.component.html',
-    styleUrl: './flowchart.component.scss'
+  selector: 'bp-flowchart',
+  imports: [],
+  templateUrl: './flowchart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './flowchart.component.scss',
 })
 export class FlowchartComponent {
   private readonly mermaidElementRefSignal = viewChild<ElementRef>(`mermaid`);
@@ -16,13 +26,14 @@ export class FlowchartComponent {
   private readonly _mermaidService = inject(MermaidService);
 
   constructor() {
-
     effect(() => {
       const nodeElements = this.clickableElements();
       if (!nodeElements) {
         return;
       }
-      const clickableElements = Array.from(nodeElements).filter((element) => element.getAttribute('data-id').startsWith('http://'));
+      const clickableElements = Array.from(nodeElements).filter((element) =>
+        element.getAttribute('data-id').startsWith('http://')
+      );
       for (let i = 0; i < clickableElements.length; ++i) {
         clickableElements[i].addEventListener('click', (e) => {
           console.log('click', e);
@@ -45,11 +56,13 @@ export class FlowchartComponent {
            `;
       //       click A call mermaidFunction("http://someir/abc", "${this.mermaidComponentId}")
 
-      this._mermaidService.render(1, graphDefinition, element, '.node', this.clickableElements);
-
-
-
+      this._mermaidService.render(
+        1,
+        graphDefinition,
+        element,
+        '.node',
+        this.clickableElements
+      );
     });
   }
-
 }

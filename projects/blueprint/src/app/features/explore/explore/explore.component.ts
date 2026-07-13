@@ -7,60 +7,75 @@ import {
   effect,
   OnDestroy,
   model,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 
 import { map, of, switchMap, tap } from 'rxjs';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { TabsModule } from 'primeng/tabs';
-import { TooltipModule } from 'primeng/tooltip';
-import { MenuItem } from 'primeng/api';
-import { DrawerModule } from 'primeng/drawer';
-import { ButtonModule } from 'primeng/button'
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 import { ExploreHeaderComponent } from '../explore-header/explore-header.component';
 import { GraphComponent } from '../../../core/component/graph/graph/graph.component';
-import { NeighborNodesComponent } from "../../../core/component/neighbor-nodes/neighbor-nodes.component";
+import { NeighborNodesComponent } from '../../../core/component/neighbor-nodes/neighbor-nodes.component';
 import { UiViewComponent } from '../../../core/ui-view/ui-view/ui-view.component';
 import { ViewDataService } from '../../../core/ui-view/service/view-data/view-data.service';
 import { RdfUiView, UiView } from '../../../core/ui-view/model/ui-view.model';
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
 import { UiHierarchyViewComponent } from '../../../core/ui-view/ui-hierarchy-view/ui-hierarchy-view.component';
 
-import { flux, nileaUi, rdf, } from '@blueprint/ontology';
-import { IUConsolidatedLink, IUiGraphNode } from '@blueprint/component/graph/model/graph.model';
+import { flux, nileaUi, rdf } from '@blueprint/ontology';
+import {
+  IUConsolidatedLink,
+  IUiGraphNode,
+} from '@blueprint/component/graph/model/graph.model';
 import { CompositionLinkResult } from '@blueprint/service/graph/aggregate/model/composition-link-result/composition-result';
 import { NodeElement } from '@blueprint/model/node-element/node-element.class';
 
 import { UiDetailService } from '../../../core/service/ui-config/ui-detail/ui-detail.service';
-import { RdfUiHierarchyView, UiHierarchyView } from '../../../core/ui-view/ui-hierarchy-view/model/ui-hierarchy-view';
+import {
+  RdfUiHierarchyView,
+  UiHierarchyView,
+} from '../../../core/ui-view/ui-hierarchy-view/model/ui-hierarchy-view';
 import { GraphService } from '../service/graph/graph.service';
 import { SelectionService } from '../service/selection/selection.service';
-import { AggregateRelationComponent } from "../../../core/ui-view/view-component-library/aggregate-relation/aggregate-relation.component";
+import { AggregateRelationComponent } from '../../../core/ui-view/view-component-library/aggregate-relation/aggregate-relation.component';
 
 import { rdfEnvironment, RdfTypes } from '../../../core/rdf/rdf-environment';
-import { fadeInOut, fadeIn } from '../../../core/animation/fade-in-out/fade-in-out';
-import { PanelModule } from 'primeng/panel';
-import { UILiteral, LiteralComponent, LiteralRenderType } from '../../../core/ui-view/ui-detail-view/literal/literal.component';
+import {
+  fadeInOut,
+  fadeIn,
+} from '../../../core/animation/fade-in-out/fade-in-out';
+
+import {
+  UILiteral,
+  LiteralComponent,
+  LiteralRenderType,
+} from '../../../core/ui-view/ui-detail-view/literal/literal.component';
 import { ExploredResource } from '../model/explored-resource.class';
 import { MessageChannelService } from '@blueprint/service/message-channel/message-channel.service';
 //import { LinkPanelComponent } from "../link-panel/link-panel.component";
 import { NodeRelationsComponent } from '@blueprint/component/node-relations/node-relations.component';
 import { SigmaGraphComponent } from '@blueprint/component/sigma-graph/sigma-graph.component';
 
-
-
-type NodeExploreCommand = "expand" | "select";
-type SelectionKind = "node" | "link";
+type NodeExploreCommand = 'expand' | 'select';
+type SelectionKind = 'node' | 'link';
 
 @Component({
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
   animations: [fadeInOut, fadeIn],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     RouterModule,
@@ -71,16 +86,14 @@ type SelectionKind = "node" | "link";
     NeighborNodesComponent,
     UiHierarchyViewComponent,
     AggregateRelationComponent,
-    TooltipModule,
-    TabsModule,
-    PanelModule,
+    MatTooltipModule,
+    MatTabsModule,
     LiteralComponent,
-    DrawerModule,
-    ButtonModule,
+    MatButtonModule,
     // LinkPanelComponent,
     NodeRelationsComponent,
-    SigmaGraphComponent
-  ]
+    SigmaGraphComponent,
+  ],
 })
 export class ExploreComponent implements OnDestroy {
   readonly #route = inject(ActivatedRoute);
@@ -94,18 +107,35 @@ export class ExploreComponent implements OnDestroy {
   readonly loadingIndicatorService = inject(LoadingIndicatorService);
   readonly #messageChannelServie = inject(MessageChannelService);
 
-
   readonly selectedNodeIri = this.#selectionService.selectedNodeIriSignal;
-  tabNavItems: MenuItem[] = [
-    { label: 'Information', icon: 'pi pi-info-circle', fragment: 'Information' },
-    { label: 'Context', icon: 'pi pi-sitemap', fragment: 'Context' },
-    { label: 'Relations', icon: 'pi pi-arrow-right-arrow-left', fragment: 'Relations' },
-    { label: 'Graph', icon: 'fa-solid fa-circle-nodes', fragment: 'Graph' },
-    { label: 'Sigma', icon: 'fa-solid fa-circle-nodes', fragment: 'Sigma' },
+  tabNavItems = [
+    {
+      label: 'Information',
+      icon: 'fas fa-info-circle',
+      fragment: 'Information',
+    },
+    { label: 'Context', icon: 'fas fa-sitemap', fragment: 'Context' },
+    {
+      label: 'Relations',
+      icon: 'fas fa-exchange-alt',
+      fragment: 'Relations',
+    },
+    { label: 'Graph', icon: 'fas fa-circle-nodes', fragment: 'Graph' },
+    { label: 'Sigma', icon: 'fas fa-circle-nodes', fragment: 'Sigma' },
   ];
 
   public activeItem = this.tabNavItems[0];
-  routeFragment = toSignal(this.#route.fragment.pipe(map(f => { if (f === null) { return 'Information' } return f })), { initialValue: 'Information' });
+  routeFragment = toSignal(
+    this.#route.fragment.pipe(
+      map((f) => {
+        if (f === null) {
+          return 'Information';
+        }
+        return f;
+      })
+    ),
+    { initialValue: 'Information' }
+  );
 
   isInformationPanelOpen = model<boolean>(false);
 
@@ -125,7 +155,6 @@ export class ExploreComponent implements OnDestroy {
     return link.iri;
   });
 
-
   public bubbleGraph = this.#graphService.graphSignal;
 
   term: string;
@@ -136,7 +165,6 @@ export class ExploreComponent implements OnDestroy {
   nodeExploreCommand: NodeExploreCommand = 'expand'; // default command is expand
 
   constructor() {
-
     effect(() => {
       const selectedNodeIri = this.selectedNodeIri();
       if (selectedNodeIri && this.nodeExploreCommand === 'expand') {
@@ -149,14 +177,19 @@ export class ExploreComponent implements OnDestroy {
       if (subject) {
         this.#selectionService.setSelectedNode(subject);
       }
-    })
+    });
   }
 
-  literalConfigurationRules = toSignal(toObservable(computed(() => {
-    return this.currentGraphResource()?.rdfTypeIri ?? [];
-  })).pipe(
-    switchMap((rdfTypeIri) => this.#uiDetailService.getLiteralRulesForClasses(rdfTypeIri)),
-  )
+  literalConfigurationRules = toSignal(
+    toObservable(
+      computed(() => {
+        return this.currentGraphResource()?.rdfTypeIri ?? [];
+      })
+    ).pipe(
+      switchMap((rdfTypeIri) =>
+        this.#uiDetailService.getLiteralRulesForClasses(rdfTypeIri)
+      )
+    )
   );
 
   // create literal elements from the current graph resource
@@ -170,7 +203,9 @@ export class ExploreComponent implements OnDestroy {
     const literalElements: UILiteral[] = [];
 
     [...literalMap.keys()].forEach((key) => {
-      const literalValues = literalMap.get(key).map(q => q.object as RdfTypes.Literal);
+      const literalValues = literalMap
+        .get(key)
+        .map((q) => q.object as RdfTypes.Literal);
 
       if (!literalRules) {
         console.warn('No literal rules found for key:', key);
@@ -183,14 +218,14 @@ export class ExploreComponent implements OnDestroy {
             label: literalRule.label,
             order: literalRule.order,
             value: literalValues,
-            renderer: literalRule.renderLiteralAs
-          }
+            renderer: literalRule.renderLiteralAs,
+          };
           literalElements.push(literalElement);
         }
       } else {
         // add a default value
         // here we go: The key is the IRI of the predicate
-        // we have to transform this to a label 
+        // we have to transform this to a label
         // - get the TBOX rdfs:label or skos:prefLabel
         // - if not found Create a label from it's IRI.
         // - if not found use the key as label
@@ -198,47 +233,51 @@ export class ExploreComponent implements OnDestroy {
         const predicateAbox = currentResource.getPrdicateAbox(key);
         const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
 
-
         const literalElement: UILiteral = {
           ruleIri: key,
           label: capitalizedLabel,
           order: 10,
           value: literalValues,
           renderer: LiteralRenderType.PLAIN,
-          predicate: predicateAbox
-        }
+          predicate: predicateAbox,
+        };
         literalElements.push(literalElement);
       }
     });
     return literalElements;
   });
 
+  subjectIri = toSignal<string | undefined>(
+    this.#route.paramMap.pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      map((params) => params.get('subject')),
+      map((subject) => {
+        if (subject === null) {
+          this.#router.navigate(['explore']);
+          return '';
+        }
+        return subject;
+      })
+    ),
+    { initialValue: undefined }
+  );
 
-  subjectIri = toSignal<string | undefined>(this.#route.paramMap.pipe(
-    takeUntilDestroyed(this.#destroyRef),
-    map((params) => params.get('subject')),
-    map((subject) => {
-      if (subject === null) {
-        this.#router.navigate(['explore']);
-        return '';
-      }
-      return subject;
-    })
-  ), { initialValue: undefined });
-
-  viewGraphDataset = toSignal(toObservable<string | undefined>(this.subjectIri).pipe(
-    switchMap((subjectIri) => {
-      if (subjectIri === undefined) {
-        return of(rdfEnvironment.dataset());
-      }
-      this.loadingIndicatorService.start();
-      return this.#viewData.getViewForSubject(rdfEnvironment.namedNode(subjectIri))
-    }),
-    takeUntilDestroyed(this.#destroyRef),
-    tap(() => {
-      this.loadingIndicatorService.done();
-    })
-  )
+  viewGraphDataset = toSignal(
+    toObservable<string | undefined>(this.subjectIri).pipe(
+      switchMap((subjectIri) => {
+        if (subjectIri === undefined) {
+          return of(rdfEnvironment.dataset());
+        }
+        this.loadingIndicatorService.start();
+        return this.#viewData.getViewForSubject(
+          rdfEnvironment.namedNode(subjectIri)
+        );
+      }),
+      takeUntilDestroyed(this.#destroyRef),
+      tap(() => {
+        this.loadingIndicatorService.done();
+      })
+    )
   );
 
   currentGraphResource = computed<ExploredResource | undefined>(() => {
@@ -248,7 +287,9 @@ export class ExploreComponent implements OnDestroy {
       return undefined;
     }
 
-    const currentNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    const currentNode = rdfEnvironment
+      .clownface(viewGraphDataset)
+      .namedNode(this.subjectIri());
     if (!currentNode) {
       return undefined;
     }
@@ -258,8 +299,14 @@ export class ExploreComponent implements OnDestroy {
 
   compositionLinks = computed<CompositionLinkResult[]>(() => {
     const viewGraphDataset = this.viewGraphDataset();
-    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
-    return cfViewGraph.node(flux.CompositionLinkResultNamedNode).in(rdf.typeNamedNode).map((node) => new CompositionLinkResult(node));
+    const cfViewGraph = rdfEnvironment.clownface(
+      viewGraphDataset,
+      nileaUi.UiViewNamedNode
+    );
+    return cfViewGraph
+      .node(flux.CompositionLinkResultNamedNode)
+      .in(rdf.typeNamedNode)
+      .map((node) => new CompositionLinkResult(node));
   });
 
   thisNodeElement = computed<NodeElement | null>(() => {
@@ -268,13 +315,14 @@ export class ExploreComponent implements OnDestroy {
       return null;
     }
     const viewGraphDataset = this.viewGraphDataset();
-    const thisNode = rdfEnvironment.clownface(viewGraphDataset).namedNode(this.subjectIri());
+    const thisNode = rdfEnvironment
+      .clownface(viewGraphDataset)
+      .namedNode(this.subjectIri());
     if (!thisNode.value) {
       return null;
     }
     return new NodeElement(thisNode);
-  }
-  );
+  });
 
   uiView = computed<UiView[]>(() => {
     const subjectIri = this.subjectIri();
@@ -283,8 +331,13 @@ export class ExploreComponent implements OnDestroy {
     }
 
     const viewGraphDataset = this.viewGraphDataset();
-    const cfViewGraph = rdfEnvironment.clownface(viewGraphDataset, nileaUi.UiViewNamedNode);
-    const uiView = cfViewGraph.in(rdf.typeNamedNode).map(view => new RdfUiView(view));
+    const cfViewGraph = rdfEnvironment.clownface(
+      viewGraphDataset,
+      nileaUi.UiViewNamedNode
+    );
+    const uiView = cfViewGraph
+      .in(rdf.typeNamedNode)
+      .map((view) => new RdfUiView(view));
 
     return uiView;
   });
@@ -296,9 +349,18 @@ export class ExploreComponent implements OnDestroy {
     }
 
     const viewGraphDataset = this.viewGraphDataset();
-    return rdfEnvironment.clownface(viewGraphDataset).node(flux.HierarchyNamedNode).in(rdf.typeNamedNode).map(view => new RdfUiHierarchyView(rdfEnvironment.namedNode(view.value), viewGraphDataset));
+    return rdfEnvironment
+      .clownface(viewGraphDataset)
+      .node(flux.HierarchyNamedNode)
+      .in(rdf.typeNamedNode)
+      .map(
+        (view) =>
+          new RdfUiHierarchyView(
+            rdfEnvironment.namedNode(view.value),
+            viewGraphDataset
+          )
+      );
   });
-
 
   // graph events
   onNodeSelected(node: IUiGraphNode): void {
@@ -340,7 +402,7 @@ export class ExploreComponent implements OnDestroy {
 
   copyToClipboard(text: string): void {
     this.#clipboard.copy(text);
-  };
+  }
 
   selectLink(link: IUConsolidatedLink): void {
     this.selectedLink.set(link);

@@ -29,10 +29,17 @@
               "projects/blueprint/src/config.json"
             ],
             "styles": [
-              "projects/blueprint/src/styles.css",
+              "projects/blueprint/src/styles.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": [
+                  "import"
+                ]
+              }
+            }
           },
           "configurations": {
             "production": {
@@ -67,7 +74,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.json"
           },
@@ -98,7 +105,7 @@
               "projects/blueprint/src/assets"
             ],
             "styles": [
-              "projects/blueprint/src/styles.css"
+              "projects/blueprint/src/styles.scss"
             ],
             "scripts": []
           }

@@ -1,8 +1,21 @@
+:host {
+  --panel-bg: var(--color-white);
+  --panel-border: var(--color-zinc-200);
+  --panel-text: var(--color-zinc-800);
+  --panel-radius: var(--radius-md, 8px);
+
+  :host-context(.bp-dark-mode) {
+    --panel-bg: var(--color-zinc-950);
+    --panel-border: var(--color-zinc-800);
+    --panel-text: var(--color-zinc-200);
+  }
+}
+
 .filter-panel {
-  background-color: var(--surface-card);
-  border: 1px solid var(--p-content-border-color);
-  color: var(--p-text-color);
-  border-radius: var(--p-border-radius-md);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--panel-text);
+  border-radius: var(--panel-radius);
   overflow: hidden;
 
   padding: 12px;
@@ -38,7 +51,7 @@
 }
 
 .all {
-  border-bottom: 1px solid var(--p-content-border-color);
+  border-bottom: 1px solid var(--panel-border);
   margin-bottom: 10px;
   padding-bottom: 10px;
 }

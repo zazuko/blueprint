@@ -1,27 +1,36 @@
-import { Component, computed, inject, input } from '@angular/core';
-
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { MenuModule } from 'primeng/menu';
-import { ToastModule } from 'primeng/toast';
-import { ButtonModule } from 'primeng/button';
-import { MenuItem, MessageService } from 'primeng/api';
-import { SkeletonModule } from 'primeng/skeleton';
-import { RippleModule } from 'primeng/ripple';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { Avatar, AvatarComponent } from '../../../shared/component/ui/avatar/avatar.component';
+import {
+  Avatar,
+  AvatarComponent,
+} from '../../../shared/component/ui/avatar/avatar.component';
 import { fadeIn } from '@blueprint/animation/fade-in-out/fade-in-out';
 import { ConfigService } from '@blueprint/service/config/config.service';
-
 
 @Component({
   selector: 'bp-explore-header',
   templateUrl: './explore-header.component.html',
   styleUrls: ['./explore-header.component.scss'],
-  imports: [MenuModule, ButtonModule, ToastModule, AvatarComponent, SkeletonModule, RippleModule],
+  imports: [
+    MatMenuModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    AvatarComponent,
+  ],
   animations: [fadeIn],
-  providers: [MessageService]
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ExploreHeaderComponent {
   readonly iri = input.required<string>();
@@ -30,51 +39,40 @@ export class ExploreHeaderComponent {
   readonly avatars = input.required<Avatar[]>();
   readonly isLoading = input<boolean>(true);
 
-  readonly messageService = inject(MessageService);
+  readonly #snackBar = inject(MatSnackBar);
   readonly #clipboard = inject(Clipboard);
   readonly #appConfig = inject(ConfigService);
 
-
-
-  items = computed<MenuItem[]>(() => {
+  items = computed<any[]>(() => {
     const appConfiguration = this.#appConfig.configuration();
     const iri = this.iri();
     return [
       {
         label: 'Copy IRI',
-        icon: 'pi pi-copy',
+        icon: 'fas fa-copy',
         command: () => {
           this.copyIriToClipboard();
         },
-        tabindex: '-1',
       },
       {
         label: 'Dereference',
-        icon: 'pi pi-link',
+        icon: 'fas fa-link',
         url: iri,
-        target: '_blank',
-        tabindex: '-1',
       },
       {
         label: 'SPARQL',
-        icon: 'pi pi-share-alt',
+        icon: 'fas fa-share-alt',
         url: this.sparqlConsoleUrl(),
-        target: '_blank',
         visible: appConfiguration.sparqlConsoleUrl !== null,
-        tabindex: '-1',
       },
       {
         label: 'Graph Explorer',
-        icon: 'pi pi-compass',
+        icon: 'fas fa-compass',
         url: this.graphExplorerUrl(),
         visible: this.graphExplorerUrl() !== null,
-        target: '_blank',
-        tabindex: '-1',
-      }
-    ]
+      },
+    ].filter(item => item.visible !== false);
   });
-
-
 
   sparqlConsoleUrl = computed<string>(() => {
     const appConfiguration = this.#appConfig.configuration();
@@ -94,14 +92,14 @@ export class ExploreHeaderComponent {
       endpoint: appConfiguration.endpointUrl,
       outputFormat: 'table',
       requestMethod: 'POST',
-      query
+      query,
     });
 
     const url = new URL(appConfiguration.sparqlConsoleUrl);
     url.hash = '#' + params.toString();
 
-    return url.toString()
-  })
+    return url.toString();
+  });
 
   graphExplorerUrl = computed<string | null>(() => {
     const appConfiguration = this.#appConfig.configuration();
@@ -110,25 +108,19 @@ export class ExploreHeaderComponent {
     }
     const url = new URL(appConfiguration.graphExplorerUrl);
     url.searchParams.set('resource', this.iri());
-    return url.toString()
+    return url.toString();
   });
-
 
   /**
    * Copy the IRI to the clipboard.
-   * 
+   *
    * @returns {void}
    */
   public copyIriToClipboard(): void {
     this.#clipboard.copy(this.iri());
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Copied IRI',
-      detail: this.iri(),
-      life: 2000
+    this.#snackBar.open('Copied IRI: ' + this.iri(), 'Dismiss', {
+      duration: 2000,
     });
   }
-
 }
-

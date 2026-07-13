@@ -1,4 +1,10 @@
-import { Component, Input, output, input } from '@angular/core';
+import {
+  Component,
+  Input,
+  output,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgClass } from '@angular/common';
 
 import { IUiGraphNode } from '../../model/graph.model';
@@ -8,7 +14,8 @@ import { IUiGraphNode } from '../../model/graph.model';
   selector: 'g[bp-node]',
   templateUrl: './node.component.svg',
   styleUrls: ['./node.component.scss'],
-  imports: [NgClass]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [NgClass],
 })
 export class NodeComponent {
   // inputs
@@ -26,7 +33,6 @@ export class NodeComponent {
   // constants
   readonly nodeRadius = 50;
   readonly menuCircleRadius = 15;
-
 
   emitNodeSelected(event: Event) {
     event.stopPropagation();

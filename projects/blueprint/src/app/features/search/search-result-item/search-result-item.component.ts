@@ -1,5 +1,9 @@
-import { Component, input, output } from '@angular/core';
-
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { AvatarComponent } from '../../../shared/component/ui/avatar/avatar.component';
 import { SearchResultItem } from '@blueprint/model/search-result-item/search-result-item';
@@ -8,7 +12,8 @@ import { SearchResultItem } from '@blueprint/model/search-result-item/search-res
   selector: 'bp-search-result-item',
   imports: [AvatarComponent],
   templateUrl: './search-result-item.component.html',
-  styleUrl: './search-result-item.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './search-result-item.component.scss',
 })
 export class SearchResultItemComponent {
   item = input.required<SearchResultItem>();

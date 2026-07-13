@@ -8,9 +8,9 @@
 
     <div class="label">
         @if(tBox() && showTbox()) {
-        <span (click)="toggleShowTBox()" [pTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
+        <span (click)="toggleShowTBox()" [matTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
         } @else {
-        <span (click)="toggleShowTBox()" [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
+        <span (click)="toggleShowTBox()" [matTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
             nodeList().link.label :
             '{no label}'}}</span>
         }
@@ -26,9 +26,9 @@
     <span style="font-size: 1rem; align-self: center;">&#8592;</span>
     <div class="label">
         @if(tBox() && showTbox()) {
-        <span (click)="toggleShowTBox()" [pTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
+        <span (click)="toggleShowTBox()" [matTooltip]="tBox().iri">{{tBox().iri | rdfPrefix}}</span>
         } @else {
-        <span (click)="toggleShowTBox()" [pTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
+        <span (click)="toggleShowTBox()" [matTooltip]="nodeList().link.propertyPath">{{nodeList().link.label ?
             nodeList().link.label :
             '{no label}'}}</span>
         }
@@ -39,18 +39,22 @@
 </div>
 }
 @if(showFilter()) {
-<p-iconfield>
-    <p-inputicon styleClass="pi pi-search" />
-    <input type="text" pInputText placeholder="Search" (input)="setFilterTerm($event)" />
-</p-iconfield>
+<div class="relative w-full mb-3 px-1">
+  <span class="absolute inset-y-0 left-1 flex items-center pl-3">
+    <i class="fas fa-search text-zinc-400 text-sm"></i>
+  </span>
+  <input type="text" placeholder="Search" (input)="setFilterTerm($event)" class="w-full pl-9 pr-3 py-1.5 text-sm bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:border-blue-500" />
+</div>
 }
 <div class="node-list">
 
     @for(node of filteredNodes(); track node.iri) {
     <div style="position: relative;">
         @if(showPreviewButton()) {
-        <div style="position: absolute; left:0; top:0;">
-            <p-button icon="pi pi-info" [rounded]="true" [text]="true" />
+        <div style="position: absolute; left:0; top:0; z-index: 10;">
+            <button mat-icon-button (click)="moreInformation.emit(node)" aria-label="Info">
+                <i class="fas fa-info-circle"></i>
+            </button>
         </div>
         }
         <bp-hierarchy-card [avatars]="node.avatars" [firstLine]="node.label" (click)="emitNodeSelected(node)"

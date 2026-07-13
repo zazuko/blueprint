@@ -1,28 +1,37 @@
-import { Component, DestroyRef, OnChanges, SimpleChanges, computed, inject, signal, input } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnChanges,
+  SimpleChanges,
+  computed,
+  inject,
+  signal,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
-
-import { TreeNode } from 'primeng/api';
-import { ToolbarModule } from 'primeng/toolbar';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { TreeModule, TreeNodeSelectEvent } from 'primeng/tree';
-import { InputTextModule } from 'primeng/inputtext';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
+import { TreeNode, TreeNodeSelectEvent } from '@blueprint/model/tree-node.model';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { LoadingIndicatorService } from '../../../core/component/loading-indicator/service/loading-indicator.service';
-import { ClusterDiagramComponent } from "../../../dev/cluster-diagram/cluster-diagram.component";
+import { ClusterDiagramComponent } from '../../../dev/cluster-diagram/cluster-diagram.component';
 import { HierarchyTreeDataService } from './service/hierarchy-tree-data.service';
 import { NodeElement } from '../../../core/model/node-element/node-element.class';
 import { HierarchyService } from '../../configuration/topology/service/hierarchy.service';
 import { MessageChannelService } from '../../../core/service/message-channel/message-channel.service';
 import { AvatarComponent } from 'projects/blueprint/src/app/shared/component/ui/avatar/avatar.component';
 import { fadeInOut } from '../../../core/animation/fade-in-out/fade-in-out';
-import { ContentItem, HierarchyDefinition } from '../../configuration/topology/service/model/hierarchy-definition.model';
+import {
+  ContentItem,
+  HierarchyDefinition,
+} from '../../configuration/topology/service/model/hierarchy-definition.model';
 import { labelAlphaSort } from '../../../core/utils/sort-functions';
 import { Breadcrumb } from '../../../shared/component/breadcrumb-navigation/model/breadcrumb.model';
 import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcrumb-page/breadcrumb-page.component';
@@ -35,14 +44,12 @@ import { BreadcrumbPageComponent } from '../../../shared/component/page/breadcru
     AvatarComponent,
     FormsModule,
     ClusterDiagramComponent,
-    ToolbarModule,
-    SelectButtonModule,
-    TreeModule,
-    InputTextModule,
-    InputIconModule,
-    IconFieldModule
+    MatButtonToggleModule,
+    MatButtonModule,
+    NgTemplateOutlet,
   ],
-  animations: [fadeInOut]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  animations: [fadeInOut],
 })
 export class InventoryDetailComponent implements OnChanges {
   public readonly id = input.required<string | null>();
@@ -54,11 +61,20 @@ export class InventoryDetailComponent implements OnChanges {
   readonly #hierarchyService = inject(HierarchyService);
   readonly #messageChannel = inject(MessageChannelService);
 
-  hierarchyDefinitionSignal = signal<HierarchyDefinition | null | undefined>(undefined);
-  labelSignal = computed<string>(() => this.hierarchyDefinitionSignal()?.label ?? '');
-  commentSignal = computed<string>(() => this.hierarchyDefinitionSignal()?.description ?? '');
+  hierarchyDefinitionSignal = signal<HierarchyDefinition | null | undefined>(
+    undefined
+  );
+  labelSignal = computed<string>(
+    () => this.hierarchyDefinitionSignal()?.label ?? ''
+  );
+  commentSignal = computed<string>(
+    () => this.hierarchyDefinitionSignal()?.description ?? ''
+  );
 
-  stateOptions: SelectButtonState[] = [{ label: 'Tree', value: 'tree' }, { label: 'Cluster', value: 'cluster' }];
+  stateOptions: SelectButtonState[] = [
+    { label: 'Tree', value: 'tree' },
+    { label: 'Cluster', value: 'cluster' },
+  ];
 
   readonly stateSignal = signal<string>('tree');
   state = 'tree';
@@ -77,9 +93,7 @@ export class InventoryDetailComponent implements OnChanges {
 
     const filterTermLower = filterTerm.toLowerCase();
     return this._filterNodes(treeData, filterTermLower);
-
   });
-
 
   dataSignal = signal<TreeNode<NodeElement>[] | null>(null);
 
@@ -89,23 +103,24 @@ export class InventoryDetailComponent implements OnChanges {
       console.error('No definition');
       return [];
     }
-    return definition.contentList
-  })
+    return definition.contentList;
+  });
   readonly breadcrumbs: Breadcrumb[] = [
     {
       label: 'Inventory',
       route: '../..',
-      disabled: false
-    }, {
+      disabled: false,
+    },
+    {
       label: 'Detail',
       route: '.',
-      disabled: false
-    }
+      disabled: false,
+    },
   ];
 
   private _countNodes(nodes: TreeNode<NodeElement>[], label: string): number {
     let count = 0;
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (node.data.classLabel.includes(label)) {
         count++;
       }
@@ -117,48 +132,49 @@ export class InventoryDetailComponent implements OnChanges {
   }
 
   constructor() {
-    this.filterTermSubject.pipe(
-      takeUntilDestroyed(this.#destroyRef),
-      debounceTime(400),
-      distinctUntilChanged()
-    ).subscribe(term => {
-      this.filterTerm.set(term);
-
-    });
+    this.filterTermSubject
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        debounceTime(400),
+        distinctUntilChanged()
+      )
+      .subscribe((term) => {
+        this.filterTerm.set(term);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const id = changes['id']?.currentValue ?? null;
     if (id) {
-      this.#hierarchyService.getHierarchyByIri(id).pipe(
-        takeUntilDestroyed(this.#destroyRef)
-      ).subscribe({
-        next: hierarchy => {
-          this.hierarchyDefinitionSignal.set(hierarchy);
-        },
-        error: error => {
-          this.#messageChannel.error(`Error loading Hierarchy ${id}`, error);
-        }
-      });
+      this.#hierarchyService
+        .getHierarchyByIri(id)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe({
+          next: (hierarchy) => {
+            this.hierarchyDefinitionSignal.set(hierarchy);
+          },
+          error: (error) => {
+            this.#messageChannel.error(`Error loading Hierarchy ${id}`, error);
+          },
+        });
 
       this.#loadingIndicatorService.start();
-      this.#hierarchyTreeDataService.getTreeDataForHierarchy(id).pipe(
-        takeUntilDestroyed(this.#destroyRef)
-      ).subscribe(
-        {
-          next: x => {
+      this.#hierarchyTreeDataService
+        .getTreeDataForHierarchy(id)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe({
+          next: (x) => {
             this.#loadingIndicatorService.done();
             this.dataSignal.set(x.sort(labelAlphaSort));
           },
-          error: error => {
+          error: (error) => {
             this.#loadingIndicatorService.done();
             console.error(`Error loading table for Hierarchy ${id}`, error);
           },
           complete: () => {
             this.#loadingIndicatorService.done();
-          }
+          },
         });
-
     }
   }
 
@@ -174,18 +190,24 @@ export class InventoryDetailComponent implements OnChanges {
     console.log('event', state);
   }
 
-
   onFilterInputChanged(filterTerm: string) {
     this.filterTermSubject.next(filterTerm);
   }
 
-
-  // tree filter methods 
-  private _filterNodes(nodes: TreeNode<NodeElement>[], filterTerm: string): TreeNode<NodeElement>[] {
+  // tree filter methods
+  private _filterNodes(
+    nodes: TreeNode<NodeElement>[],
+    filterTerm: string
+  ): TreeNode<NodeElement>[] {
     const filteredNodes: TreeNode<NodeElement>[] = [];
-    nodes.forEach(node => {
-      const childNodes = node.children ? this._filterNodes(node.children, filterTerm) : [];
-      if (node.label.toLowerCase().includes(filterTerm) || childNodes.length > 0) {
+    nodes.forEach((node) => {
+      const childNodes = node.children
+        ? this._filterNodes(node.children, filterTerm)
+        : [];
+      if (
+        node.label.toLowerCase().includes(filterTerm) ||
+        childNodes.length > 0
+      ) {
         // set the nodes to be shown
         node.expanded = true;
         filteredNodes.push({ ...node, children: childNodes });
@@ -198,7 +220,7 @@ export class InventoryDetailComponent implements OnChanges {
   }
 
   private _collapseAll(nodes: TreeNode<NodeElement>[]) {
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       node.expanded = false;
       if (node.children) {
         this._collapseAll(node.children);
@@ -210,4 +232,4 @@ export class InventoryDetailComponent implements OnChanges {
 interface SelectButtonState {
   label: string;
   value: string;
-} 
+}

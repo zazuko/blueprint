@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { BreadcrumbNavigationComponent } from '../../breadcrumb-navigation/breadcrumb-navigation/breadcrumb-navigation.component';
 import { Breadcrumb } from '../../breadcrumb-navigation/model/breadcrumb.model';
 
@@ -10,7 +10,8 @@ import { Breadcrumb } from '../../breadcrumb-navigation/model/breadcrumb.model';
   selector: 'bp-breadcrumb-page',
   templateUrl: './breadcrumb-page.component.html',
   styleUrl: './breadcrumb-page.component.scss',
-  imports: [BreadcrumbNavigationComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [BreadcrumbNavigationComponent],
 })
 export class BreadcrumbPageComponent {
   readonly breadcrumbs = input.required<Breadcrumb[]>();

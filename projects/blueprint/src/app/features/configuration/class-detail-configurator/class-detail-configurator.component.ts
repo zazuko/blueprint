@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { map } from 'rxjs';
 
-import { DragDropModule } from 'primeng/dragdrop';
+import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import { rdfs } from '@blueprint/ontology';
 import { UiClassMetadata } from '@blueprint/model/ui-class-metadata/ui-class-metadata';
@@ -80,23 +80,33 @@ export class ClassDetailConfiguratorComponent implements OnChanges {
     }
   ]);
 
-  draggedPredicate: Predicate | undefined | null;
-
   selectedPredicateSignal = signal<Predicate | null>(null);
-  /** dnd */
-  dragStart(predicate: Predicate) {
-    this.draggedPredicate = predicate;
-  }
 
-  dragEnd() {
-    this.draggedPredicate = null;
-  }
-
-  drop() {
-    if (this.draggedPredicate) {
-      this.selectedPredicates.set([...(this.selectedPredicates()), this.draggedPredicate]);
-      this.availablePredicates.set(this.availablePredicates().filter(p => p.iri != this.draggedPredicate.iri));
-      this.draggedPredicate = null;
+  onDrop(event: CdkDragDrop<Predicate[]>) {
+    if (event.previousContainer === event.container) {
+      const list = [...event.container.data];
+      moveItemInArray(list, event.previousIndex, event.currentIndex);
+      if (event.container.id === 'availableList') {
+        this.availablePredicates.set(list);
+      } else {
+        this.selectedPredicates.set(list);
+      }
+    } else {
+      const previousList = [...event.previousContainer.data];
+      const currentList = [...event.container.data];
+      transferArrayItem(
+        previousList,
+        currentList,
+        event.previousIndex,
+        event.currentIndex
+      );
+      if (event.previousContainer.id === 'availableList') {
+        this.availablePredicates.set(previousList);
+        this.selectedPredicates.set(currentList);
+      } else {
+        this.availablePredicates.set(currentList);
+        this.selectedPredicates.set(previousList);
+      }
     }
   }
 

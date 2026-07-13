@@ -92,7 +92,7 @@
 
     p>a,
     td>a,
-    div>a:not(.docs-card),
+    div>a:not(.docs-card):not(.mat-mdc-tab-link),
     li:not(.adev-faceted-list *) a {
         color: var(--bright-blue);
 

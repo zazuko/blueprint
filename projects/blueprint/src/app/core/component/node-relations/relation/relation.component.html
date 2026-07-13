@@ -41,11 +41,11 @@
         </div>
         @if(relation().relationType !== 'Incoming') {
         <div class="arrow-right">
-            <p-badge [value]="relation().count"></p-badge>
+            <span class="inline-flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[10px] font-bold rounded-full px-1.5 min-w-[18px] h-4.5 border border-zinc-200 dark:border-zinc-700">{{relation().count}}</span>
         </div>
         } @else {
         <div class="arrow-left-start">
-            <p-badge [value]="relation().count"></p-badge>
+            <span class="inline-flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[10px] font-bold rounded-full px-1.5 min-w-[18px] h-4.5 border border-zinc-200 dark:border-zinc-700">{{relation().count}}</span>
         </div>
         }
     </div>

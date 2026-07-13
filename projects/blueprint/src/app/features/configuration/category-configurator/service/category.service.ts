@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SkosConcept, SkosConceptScheme } from '../model/skos.model';
-import { TreeNode } from 'primeng/api';
+import { TreeNode } from '@blueprint/model/tree-node.model';
 
 
 

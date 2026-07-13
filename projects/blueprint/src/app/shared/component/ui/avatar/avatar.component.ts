@@ -1,12 +1,15 @@
-import { Component, computed, input } from '@angular/core';
-import { AvatarModule } from 'primeng/avatar';
-import { AvatarGroupModule } from 'primeng/avatargroup';
-
+import {
+  Component,
+  computed,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 @Component({
   selector: 'bp-avatar',
-  imports: [AvatarModule, AvatarGroupModule],
+  imports: [],
   templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
   avatars = input.required<Avatar[]>();
@@ -16,15 +19,14 @@ export class AvatarComponent {
 
   uniqueAvatars = computed<AvatarWithId[]>(() => {
     const unique = new Map<string, AvatarWithId>();
-    this.avatars().forEach(avatar => {
+    this.avatars().forEach((avatar) => {
       const avatarKey = `${avatar.label}-${avatar.icon}-${avatar.color}`;
       if (!unique.has(avatarKey)) {
         unique.set(avatarKey, { ...avatar, id: avatarKey });
       }
     });
     return Array.from(unique.values());
-  }
-  );
+  });
 }
 
 export interface Avatar {
@@ -32,7 +34,6 @@ export interface Avatar {
   icon: string;
   color: string;
 }
-
 
 interface AvatarWithId extends Avatar {
   id: string;

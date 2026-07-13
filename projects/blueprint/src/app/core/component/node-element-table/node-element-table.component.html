@@ -1,11 +1,10 @@
 <div class="row">
     @for(p of nodeElements(); track p.iri ){
     <div style="position: relative;" [ngClass]="highlightedIri() === p.iri ? 'highlight' : ''">
-        <div style="position:absolute; right: 0; top: 0">
-            <p-button icon="pi pi-sun" [rounded]="true"
-                [severity]="forcedHighlightIri() === p.iri ? 'info' : 'secondary'" [text]="true"
-                (click)="forceHighlight(p.iri)" />
-
+        <div style="position:absolute; right: 4px; top: 4px; z-index: 10;">
+            <button mat-icon-button (click)="forceHighlight(p.iri)" aria-label="Highlight node">
+                <i class="fas fa-sun" [class.text-blue-500]="forcedHighlightIri() === p.iri" [class.text-zinc-400]="forcedHighlightIri() !== p.iri"></i>
+            </button>
         </div>
 
         <bp-hierarchy-card (click)="emitNodeSelected(p)" (mouseenter)="setHoveredIri(p.iri) "

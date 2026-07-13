@@ -1,6 +1,5 @@
-// scss variable 
-@use '../../../../styles/media-queries' as mq;
-
+// scss variable
+@use "../../../../styles/media-queries" as mq;
 
 $nav-top-height: 95px;
 
@@ -54,7 +53,6 @@ $title-height: 118px;
     overflow-x: clip;
     color: var(--quaternary-contrast);
   }
-
 }
 
 .graph {
@@ -74,8 +72,12 @@ $title-height: 118px;
   }
 
   @include mq.for-tablet {
-    height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
-    max-height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
+    height: calc(
+      100vh - $page-padding - $nav-top-height - $title-height - 38px
+    );
+    max-height: calc(
+      100vh - $page-padding - $nav-top-height - $title-height - 38px
+    );
     width: calc(100vw - $page-padding * 2 - 16px);
     max-width: calc(100vw - $page-padding * 2 - 16px);
   }
@@ -83,7 +85,6 @@ $title-height: 118px;
   .content-style {
     // background-color: var(--page-background);
     border: 1px solid var(--octonary-contrast);
-
   }
 
   .content-size {
@@ -97,14 +98,13 @@ $title-height: 118px;
       max-width: calc(100vw - $page-padding * 2 - 16px);
     }
 
-
     @include mq.for-tablet {
-      height: calc(100vh - $page-padding - $nav-top-height - $title-height - 38px);
+      height: calc(
+        100vh - $page-padding - $nav-top-height - $title-height - 38px
+      );
       width: calc(100vw - $page-padding * 2 - 16px);
       max-width: calc(100vw - $page-padding * 2 - 16px);
     }
-
-
   }
 }
 
@@ -120,15 +120,12 @@ $title-height: 118px;
   }
 }
 
-
 .hierarchy-container {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--surface-border);
   margin-top: 12px;
-
 }
-
 
 .iri {
   font-size: 9px;
@@ -138,7 +135,6 @@ $title-height: 118px;
   text-overflow: ellipsis;
   margin-bottom: 2em;
 }
-
 
 .drawer-title {
   font-size: 16px;
@@ -154,4 +150,3 @@ $title-height: 118px;
   justify-content: space-between;
   width: 100%;
 }
-

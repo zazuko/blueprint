@@ -1,0 +1,253 @@
+@use '@angular/material' as mat;
+@use './styles/colors.scss' as c;
+
+@import "tailwindcss";
+
+// Customize Tailwind's dark: variant to work with the app's dark mode class
+@custom-variant dark (&:where(.bp-dark-mode, .bp-dark-mode *));
+
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Define the light theme using M3 colors (azure as primary, blue as tertiary)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+// Define the dark theme using M3 colors
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  )
+));
+
+// Apply core Angular Material theme styles at the root level
+html {
+  @include mat.all-component-themes($light-theme);
+  @include c.root-definitions();
+
+  &.bp-dark-mode {
+    @include mat.all-component-colors($dark-theme);
+    @include c.dark-mode-definitions();
+  }
+}
+
+// Page background colors (slightly darker off-white in light mode, dark gray in dark mode)
+html, body {
+  background-color: #f5f6f8;
+  color: var(--primary-contrast);
+  min-height: 100vh;
+  margin: 0;
+}
+
+html.bp-dark-mode, html.bp-dark-mode body {
+  background-color: #0f0f11;
+}
+
+@layer base {
+    h1, h2, h3, h4, h5, h6, p {
+        color: inherit;
+    }
+
+    h1 {
+        @apply text-4xl font-bold mb-4 mt-5;
+    }
+
+    h2 {
+        @apply text-3xl font-semibold mb-3 mt-4;
+    }
+
+    h3 {
+        @apply text-2xl font-semibold mb-2 mt-3;
+    }
+
+    p {
+        @apply text-base mb-4 mt-4;
+    }
+
+    input[type="text"], input[type="search"], input:not([type]) {
+        @apply text-zinc-900 dark:text-zinc-100;
+    }
+}
+
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/assets/font/orbitron.woff2') format('woff2');
+}
+
+/* Angular Material Tabs Global Enhancements */
+.mat-mdc-tab-nav-bar {
+    border-bottom: 1px solid var(--color-zinc-200);
+    
+    .bp-dark-mode & {
+        border-bottom-color: var(--color-zinc-800);
+    }
+}
+
+.mat-mdc-tab-link {
+    font-weight: 600 !important;
+    font-size: 0.925rem !important;
+    letter-spacing: 0.01em !important;
+    padding-inline: 16px !important;
+    height: 48px !important;
+    
+    /* Spacing between icon and label */
+    .mdc-tab__content {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        
+        i, .fas, .far {
+            font-size: 1.1rem !important;
+        }
+    }
+
+    .mdc-tab__text-label {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    
+    /* Active indicator */
+    .mdc-tab-indicator__active-indicator {
+        border-color: var(--color-blue-600) !important;
+        border-width: 2.5px !important;
+        
+        .bp-dark-mode & {
+            border-color: var(--color-blue-400) !important;
+        }
+    }
+}
+
+/* Specific theme overrides for text and icon color */
+.mat-mdc-tab-link {
+    color: var(--color-zinc-600) !important;
+    
+    .bp-dark-mode & {
+        color: var(--color-zinc-400) !important;
+    }
+
+    .mdc-tab__text-label,
+    .mdc-tab__icon,
+    i,
+    span {
+        color: var(--color-zinc-600) !important;
+        
+        .bp-dark-mode & {
+            color: var(--color-zinc-400) !important;
+        }
+    }
+
+    &:hover,
+    &.mat-mdc-tab-link-active,
+    &.mdc-tab-link--active,
+    &[aria-current="page"] {
+        color: var(--color-zinc-900) !important;
+        
+        .bp-dark-mode & {
+            color: var(--color-zinc-100) !important;
+        }
+
+        .mdc-tab__text-label,
+        .mdc-tab__icon,
+        i,
+        span {
+            color: var(--color-zinc-900) !important;
+            
+            .bp-dark-mode & {
+                color: var(--color-zinc-100) !important;
+            }
+        }
+    }
+}
+
+/* Theme picker dropdown menu overrides */
+.mat-mdc-menu-panel.theme-select {
+    background-color: #ffffff !important;
+    border: 1px solid #e4e3e6 !important;
+    border-radius: 8px !important;
+    
+    .mat-mdc-menu-content {
+        background-color: transparent !important;
+        padding: 8px !important;
+    }
+}
+
+.bp-dark-mode .mat-mdc-menu-panel.theme-select {
+    background-color: #0f0f11 !important;
+    border: 1px solid #413e46 !important;
+}
+
+/* Angular Material Button Toggle Overrides */
+.mat-mdc-button-toggle-group {
+    background-color: var(--color-zinc-100) !important;
+    border: 1px solid var(--color-zinc-200) !important;
+}
+
+.mat-mdc-button-toggle {
+    background-color: transparent !important;
+}
+
+.mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-600) !important;
+}
+
+.mat-mdc-button-toggle:hover .mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-900) !important;
+}
+
+.mat-mdc-button-toggle-checked {
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-900) !important;
+}
+
+/* Dark Mode Overrides */
+.bp-dark-mode {
+    .mat-mdc-button-toggle-group {
+        background-color: var(--color-zinc-900) !important;
+        border: 1px solid var(--color-zinc-800) !important;
+    }
+
+    .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-400) !important;
+    }
+
+    .mat-mdc-button-toggle:hover .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-200) !important;
+    }
+
+    .mat-mdc-button-toggle-checked {
+        background-color: var(--color-zinc-800) !important;
+    }
+
+    .mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-100) !important;
+    }
+}
+
+/* Global Mat Icon Button Overrides to Center Custom Icons (like FontAwesome) */
+button.mat-mdc-icon-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    i, .fas, .far, .fa-solid {
+        font-size: 1.15rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

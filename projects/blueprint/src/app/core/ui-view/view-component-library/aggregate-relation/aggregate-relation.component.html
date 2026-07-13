@@ -21,7 +21,7 @@
                 @if(s.source !== null) {
                 <div (click)="emitNodeSelected(s.source.iri, $event)"
                     (keyup.enter)="emitNodeSelected(s.source.iri, $event)" tabindex="1" class="connection-point"
-                    [pTooltip]="s.source.classLabel + ' ' + s.source.label"
+                    [matTooltip]="s.source.classLabel + ' ' + s.source.label"
                     [ngStyle]="{'backgroundColor': s.source.color}">
                 </div> }
                 }
@@ -58,7 +58,7 @@
                     @if(c.target !== null) {
                     <div (click)="emitNodeSelected(c.target.iri, $event)"
                         (keyup.enter)="emitNodeSelected(c.target.iri, $event)" tabindex="1" class="connection-point"
-                        [pTooltip]="c.target.classLabel + ' ' + c.target.label"
+                        [matTooltip]="c.target.classLabel + ' ' + c.target.label"
                         [ngStyle]="{'backgroundColor': c.target.color}">
                     </div>
                     }
