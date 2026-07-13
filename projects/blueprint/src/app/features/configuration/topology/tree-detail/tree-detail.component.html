@@ -28,9 +28,9 @@
       <div class="w-[2px] h-6 bg-zinc-300 dark:bg-zinc-700"></div>
       
       <!-- Children columns -->
-      <div class="flex gap-8">
+      <div class="grid w-full" [style.grid-template-columns]="'repeat(' + node.children.length + ', minmax(0, 1fr))'">
         @for (child of node.children; track child.label; let first = $first; let last = $last) {
-          <div class="flex flex-col items-center relative">
+          <div class="flex flex-col items-center relative px-4">
             <!-- Connecting lines -->
             <div class="absolute top-0 left-0 right-0 h-[2px] bg-zinc-300 dark:bg-zinc-700"
                  [class.left-1/2]="first"
