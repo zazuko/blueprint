@@ -126,3 +126,53 @@
     background-color: #0f0f11 !important;
     border: 1px solid #413e46 !important;
 }
+
+/* Angular Material Button Toggle Overrides */
+.mat-mdc-button-toggle-group {
+    background-color: var(--color-zinc-100) !important;
+    border: 1px solid var(--color-zinc-200) !important;
+}
+
+.mat-mdc-button-toggle {
+    background-color: transparent !important;
+}
+
+.mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-600) !important;
+}
+
+.mat-mdc-button-toggle:hover .mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-900) !important;
+}
+
+.mat-mdc-button-toggle-checked {
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+    color: var(--color-zinc-900) !important;
+}
+
+/* Dark Mode Overrides */
+.bp-dark-mode {
+    .mat-mdc-button-toggle-group {
+        background-color: var(--color-zinc-900) !important;
+        border: 1px solid var(--color-zinc-800) !important;
+    }
+
+    .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-400) !important;
+    }
+
+    .mat-mdc-button-toggle:hover .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-200) !important;
+    }
+
+    .mat-mdc-button-toggle-checked {
+        background-color: var(--color-zinc-800) !important;
+    }
+
+    .mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+        color: var(--color-zinc-100) !important;
+    }
+}
