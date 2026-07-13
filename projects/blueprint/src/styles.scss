@@ -30,11 +30,11 @@ $dark-theme: mat.define-theme((
 
 // Apply core Angular Material theme styles at the root level
 html {
-  @include mat.theme($light-theme);
+  @include mat.all-component-themes($light-theme);
   @include c.root-definitions();
 
   &.bp-dark-mode {
-    @include mat.theme($dark-theme);
+    @include mat.all-component-themes($dark-theme);
     @include c.dark-mode-definitions();
   }
 }
