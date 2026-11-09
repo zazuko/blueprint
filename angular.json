@@ -95,7 +95,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:web-test-runner",
+          "builder": "@angular/build:karma",
           "options": {
             "polyfills": [],
             "tsConfig": "projects/blueprint/tsconfig.spec.json",

@@ -14,6 +14,8 @@ describe('HierarchyCardComponent', () => {
     
     fixture = TestBed.createComponent(HierarchyCardComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('firstLine', 'Fixture title');
+    fixture.componentRef.setInput('avatars', []);
     fixture.detectChanges();
   });
 

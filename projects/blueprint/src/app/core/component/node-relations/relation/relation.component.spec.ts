@@ -1,3 +1,4 @@
+import { relationFixture, resourceFixture } from 'projects/blueprint/src/app/testing/rdf-fixtures';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RelationComponent } from './relation.component';
@@ -14,6 +15,8 @@ describe('RelationComponent', () => {
 
     fixture = TestBed.createComponent(RelationComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('relation', relationFixture());
+    fixture.componentRef.setInput('exploredResource', resourceFixture());
     fixture.detectChanges();
   });
 

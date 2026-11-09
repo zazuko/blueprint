@@ -14,10 +14,15 @@ describe('SigmaGraphComponent', () => {
 
     fixture = TestBed.createComponent(SigmaGraphComponent);
     component = fixture.componentInstance;
+    const element: HTMLElement = fixture.nativeElement;
+    element.style.cssText = 'display:block;width:640px;height:480px';
+    fixture.componentRef.setInput('graph', { nodes: [], links: [] });
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelectorAll('canvas').length).toBeGreaterThan(0);
   });
 });

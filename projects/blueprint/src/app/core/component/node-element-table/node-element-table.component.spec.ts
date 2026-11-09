@@ -1,3 +1,4 @@
+import { nodeFixture } from 'projects/blueprint/src/app/testing/rdf-fixtures';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NodeElementTableComponent } from './node-element-table.component';
@@ -14,6 +15,7 @@ describe('NodeElementTableComponent', () => {
 
     fixture = TestBed.createComponent(NodeElementTableComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('nodeElements', [nodeFixture()]);
     fixture.detectChanges();
   });
 
