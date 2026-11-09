@@ -1,6 +1,7 @@
+import { rdfEnvironment } from 'projects/blueprint/src/app/core/rdf/rdf-environment';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LiteralComponent } from './literal.component';
+import { LiteralComponent, LiteralRenderType } from './literal.component';
 
 describe('LiteralComponent', () => {
   let component: LiteralComponent;
@@ -14,6 +15,7 @@ describe('LiteralComponent', () => {
 
     fixture = TestBed.createComponent(LiteralComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('literal', { ruleIri: 'http://example.org/rule', label: 'Fixture label', value: [rdfEnvironment.literal('Fixture value')], renderer: LiteralRenderType.PLAIN, order: 0 });
     fixture.detectChanges();
   });
 

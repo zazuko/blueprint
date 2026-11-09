@@ -14,6 +14,8 @@ describe('ThemePickerMenuItemComponent', () => {
     
     fixture = TestBed.createComponent(ThemePickerMenuItemComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('item', { label: 'Light', theme: 'light', icon: 'fas fa-sun' });
+    fixture.componentRef.setInput('active', true);
     fixture.detectChanges();
   });
 

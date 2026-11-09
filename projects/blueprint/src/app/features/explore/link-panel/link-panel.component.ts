@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
-import { IUiLink } from '@blueprint/component/graph/model/graph.model';
+import { IUConsolidatedLink } from '@blueprint/component/graph/model/graph.model';
 import { rdfEnvironment } from '../../../core/rdf/rdf-environment';
 import { LinkListItemComponent } from './link-list-item/link-list-item.component';
 
@@ -18,7 +18,7 @@ import { LinkListItemComponent } from './link-list-item/link-list-item.component
   styleUrl: './link-panel.component.scss',
 })
 export class LinkPanelComponent {
-  link = input.required<IUiLink>();
+  link = input.required<IUConsolidatedLink>();
   /*
     outPathElements = computed<PropertyPathSegment[]>(() => {
       const path = this.link().outgoingLabels;

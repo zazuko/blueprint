@@ -7,7 +7,7 @@ import {
 
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { LabelWithLinkDefinition } from '@blueprint/component/graph/model/graph.model';
+import { UiLinkDefinition } from '@blueprint/model/ui-link-definition/ui-link-definition';
 import {
   rdfEnvironment,
   RdfTypes,
@@ -22,13 +22,16 @@ import { FieldComponent } from 'projects/blueprint/src/app/shared/component/ui/f
   styleUrl: './link-list-item.component.scss',
 })
 export class LinkListItemComponent {
-  label = input.required<LabelWithLinkDefinition>();
+  label = input.required<UiLinkDefinition>();
 
   path = computed<PathElement[]>(() => {
-    const path = this.label().linkDefinition.propertyPathFragments.map(
+    const path = this.label().propertyPathFragments.map(
       (fragment, index) => {
         const isInverse = fragment.startsWith('^');
-        const predicateIri = isInverse ? fragment.slice(1) : fragment;
+        const pathToken = isInverse ? fragment.slice(1) : fragment;
+        const predicateIri = pathToken.startsWith('<') && pathToken.endsWith('>')
+          ? pathToken.slice(1, -1)
+          : pathToken;
         const shrinkedPredicate = `${rdfEnvironment.shrink(predicateIri)}`;
         const ngForIndex = `${predicateIri}-${index}`;
         const displayString = isInverse

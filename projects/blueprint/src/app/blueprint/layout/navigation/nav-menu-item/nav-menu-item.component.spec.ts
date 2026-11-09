@@ -14,6 +14,8 @@ describe('NavMenuItemComponent', () => {
     
     fixture = TestBed.createComponent(NavMenuItemComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('item', { label: 'Explore', route: '/explore', icon: 'fas fa-search' });
+    fixture.componentRef.setInput('active', true);
     fixture.detectChanges();
   });
 
